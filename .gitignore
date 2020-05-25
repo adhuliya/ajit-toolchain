@@ -15,6 +15,7 @@
 *.so
 *.dylib
 *.dll
+!/src/buildroot-2014.08/**/*.so
 
 # Fortran module files
 *.mod
@@ -35,6 +36,7 @@
 *.log
 
 # buildroot related
-buildroot-2014.08/
-buildroot-2014.08.*
+/buildroot-2014.08/
+/development/
+/buildroot-2014.08.*
 
