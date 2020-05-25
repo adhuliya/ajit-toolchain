@@ -33,3 +33,8 @@
 
 # log files
 *.log
+
+# buildroot related
+buildroot-2014.08/
+buildroot-2014.08.*
+
