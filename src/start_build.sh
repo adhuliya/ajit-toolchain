@@ -17,6 +17,11 @@ echo "Copying src/$BUILDROOT_DIR_NAME" |& tee -a $BUILD_OUTFILE;
 sleep 3;
 cp -r src/$BUILDROOT_DIR_NAME $BUILDROOT_DIR_NAME;
 
+# STEP 1.5: Merge the splits of gcc and linuz archives
+cd $BUILDROOT_DIR_NAME/dl;
+cat gcc-4.7.4.tar.bz2.aa gcc-4.7.4.tar.bz2.ab > gcc-4.7.4.tar.bz2;
+cat linix-3.15.6.tar.xz.aa linix-3.15.6.tar.xz.ab > linix-3.15.6.tar.xz;
+cd ../..;
 
 # STEP 2: Start the build
 
