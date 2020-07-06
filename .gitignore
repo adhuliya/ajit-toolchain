@@ -40,3 +40,6 @@
 /development/
 /buildroot-2014.08.*
 
+# vim
+*.swp
+
