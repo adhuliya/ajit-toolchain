@@ -1,4 +1,0 @@
-Install following libraries to set terminal type to wxt from x11, which is needed to run gnuplot:
-    sudo apt-get install libwxgtk2.8-dev libwxgtk2.8-dbg
-    
-NOTE : Install pygraphviz using synaptic package manager
