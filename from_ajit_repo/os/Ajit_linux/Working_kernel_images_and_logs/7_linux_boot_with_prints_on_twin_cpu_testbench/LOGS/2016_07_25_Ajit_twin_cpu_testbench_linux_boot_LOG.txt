@@ -1,0 +1,49 @@
+Info:pThreadUtils: started thread memoryAccess
+Info:pThreadUtils: started thread displayDriver
+Info:pThreadUtils: started thread keyboardDriver
+Info:pThreadUtils: started thread IRC_Control
+Info:pThreadUtils: started thread IRC_Output
+Info:pThreadUtils: started thread Timer_Control
+Info:pThreadUtils: started thread Timer_Output
+Info:pThreadUtils: started thread Serial_Control
+Info:pThreadUtils: started thread Serial_Rx
+Info:pThreadUtils: started thread Serial_Tx
+Info:pThreadUtils: started thread Console_Output
+Info:pThreadUtils: started thread Console_Input
+Info:pThreadUtils: started thread monitorLogger
+Info:pThreadUtils: started thread DemuxMMUtoCaches
+Info:pThreadUtils: started thread Icache
+Info:pThreadUtils: started thread Dcache
+Info:pThreadUtils: started thread Mmu
+Starting Riffa Interface Daemons.
+In cetr_start_daemons().
+FPGA opened successfully
+Starting C cpu thread
+Registering C cpu pipes
+Info:pThreadUtils: started thread cpu
+Info:pThreadUtils: started thread cetr_icache_to_cpu_daemon
+Info:pThreadUtils: started thread cetr_dcache_to_cpu_daemon
+Info:pThreadUtils: started thread cetr_debug_to_cpu_daemon
+Info:pThreadUtils: started thread cetr_interface_daemon
+This C cpu model has be compiled with the following flags:  LOGGER .
+Logger : reseting logger
+asserted reset.
+processor put into reset-mode.
+pipe C_ENV_to_AJIT_irl is not written into.
+pipe C_ENV_to_AJIT_irl is not read from.
+pipe noblock_debug_to_cpu is not written into.
+pipe noblock_debug_to_cpu is not read from.
+pipe noblock_dcache_to_cpu is not written into.
+pipe noblock_dcache_to_cpu is not read from.
+pipe noblock_icache_to_cpu is not written into.
+pipe noblock_icache_to_cpu is not read from.
+pipe AJIT_to_ENV_processor_mode is not read from.
+pipe AJIT_to_ENV_logger is not written into.
+pipe AJIT_to_ENV_error is not written into.
+pipe MMU_to_CACHE_fsr is not written into.
+processor brought out of reset-mode.
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 
+------ Mmu context-register = 0 --------------
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 
+------ MMU TLB flushed due to context-table-pointer-write (=7000000) ------
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 

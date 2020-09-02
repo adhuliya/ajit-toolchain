@@ -1,0 +1,103 @@
+Cross-compiler toolchain installed here.
+
+
+steps:
+
+
+versions tried: 
+X	gcc4.6.2 with binutils 2.22
+X	gcc4.0.1 with binutils 2.16
+X	gcc4.0.1 with binutils 2.22
+gcc4.4.3 with binutils 2.20.1
+
+
+
+
+
+Installing binutils
+------------------------------------------------
+1. install binutils version 2.16
+	download binutils-2.16.1.tar.bz2 from http://ftp.gnu.org/gnu/binutils/
+	store it in /usr/local/cross/tar
+
+2. extract in usr/local/cross/src/ by the following:
+	bunzip2 binutils-2.16.1.tar.bz2
+	then tar -xvf binutils-2.16.1.tar
+
+3. mkdir /usr/local/cross/src/binutils-2.16.1_build
+
+4. cd  /usr/local/cross/src/binutils-2.16.1_build
+
+5. ../binutils-2.16.1/configure --target=sparc-elf --prefix=/usr/local/cross
+
+6. this will create a Makefile. Now make followed by su root, make install
+---------------------------------------------------
+
+
+
+
+Installing gcc version 4.0.1
+--------------------------------------------------------
+1. download gcc-4.0.1.tar.bz2 from http://mirrors.rcn.net/pub/sourceware/gcc/releases/gcc-4.0.1/
+	store it in /usr/local/cross/tar
+
+2. extract in usr/local/cross/src/ by the following:
+	bunzip2 gcc-4.0.1.tar.bz2
+	then tar -xvf gcc-4.0.1.tar
+
+3. mkdir /usr/local/cross/src/gcc-4.0.1_build
+
+4. cd /usr/local/cross/src/gcc-4.0.1_build
+
+5  ../gcc-4.0.1/configure --target=sparc-elf --with-newlib --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --prefix=/usr/local/cross
+
+
+6. this will create a Makefile. Now make followed by su root, make install
+
+if there's a spar-ar not found error:
+$> PATH=/usr/local/cross/bin:${PATH} make
+
+$> PATH=/usr/local/cross/bin:${PATH} make install
+
+---------------------------------------------------
+
+
+Finally what worked:
+
+binutils 2.20.1
+gmp 5.0.2
+mpfr 3.1.0
+mpc 0.9
+gcc4.4.3 
+
+1. binutils installed fine.
+2. unzip gcc 
+3. download gmp, mpc and mpfr. unzip each and rename folder to /gmp /mpfr /mpc.
+4. move all these folders inside the gcc source folder.
+5. make a gcc_build folder and run ../gcc_source-folder/configure ...flags
+6. inside the build folder run make and make install.
+7. you might need to do
+ PATH=/usr/local/cross/bin:${PATH} make
+
+
+
+
+gcc configuration flags:
+
+~$ sparc-elf-gcc -v
+
+Using built-in specs.
+Target: sparc-elf
+Configured with: ../gcc-4.4.3/configure --target=sparc-elf --with-newlib
+--with-gnu-as --with-gnu-ld --enable-languages=c --disable-nls
+--prefix=/usr/local/cross --disable-multilib
+--with-mpfr-lib=/usr/local/cross/lib
+--with-mpfr-include=/usr/local/cross/include --without-headers --disable-libssp
+Thread model: single
+gcc version 4.4.3 (GCC)
+nehak@nehak:~$
+
+
+
+
+

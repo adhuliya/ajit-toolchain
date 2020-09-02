@@ -1,0 +1,13 @@
+os/
+	Ajit linux port for kernel version 3.16.1
+
+simulators/
+	simulators.  currently contains the c system
+	model executable only
+
+tools/
+	ajit access routines, minimal print,timer routines,
+	build scripts.
+
+verification/
+	32bit tests, 64bit tests.

@@ -1,0 +1,10 @@
+SOURCES = test_flush_with_mmu_enabled.s
+
+RESULTS = 
+l3 = 0xABCD
+g1=0x00000080
+g2=0xABC
+g3=0xDEF
+g4=0x123
+g5=0x456
+

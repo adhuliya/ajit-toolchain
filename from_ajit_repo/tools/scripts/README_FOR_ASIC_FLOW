@@ -1,0 +1,174 @@
+0.Title
+	Physical Design Flow for the AJIT Processor
+
+1.Purpose of the document
+	This document describes the detailed procedure to run the steps in the physical design for AJIT processor
+
+2.Environment (includes standard cell library setup etc.).
+ 	To run the setup on the AJIT machines, $AJIT_PROJECT_HOME environment variable has to be set. For this,
+	$ source exports.sh
+	
+	All the technology related files are picked up from /processor/ASIC directory in AjitRepoV2. 
+
+3.Logic Synthesis.
+	Step 1: Copy the vhdl files from AjitRepoV2 and ahir_repository to a directory named 'vhdl_files'.
+		On the AJIT machine, 
+		$ mkdir vhdl_files
+		$ cd mkdir
+		$ cd ~/AjitRepoV2
+		$ source exports.sh
+		$ cd -
+		$ source chip_vhdl_files.sh
+		
+		chip_vhdl_files.sh copies the vhdl files and removes the assert statements from ahir.vhdl and aHir_ieee_proposed.vhdl
+
+		1.b: Set the constants in the 'GlobalConstants' package in ahirASIC.vhdl as below.
+			max_single_bit_queue_depth_per_stage = 8
+			global_pipe_shallowness_threshold = 16	
+
+	Step 2: To synthesize the design using  Design compiler, below script is used.
+		topo_pnr.sh < design > < library > < clock_period > < DFT y/n > < PNR y/n > < top y/n >
+		
+		design	     ->  module for synthesis
+		library      ->  design library linked to the module
+		clock_period ->  clock for the design in nano seconds (ns).
+		DFT y/n      ->  'y' to insert scan chains into the design, 'n' to run the synthesis in topographical mode
+		PNR y/n      ->  'y' to run PNR after the completion of PNR, 'n' to stop the script after synthesis
+		top y/n      ->  'y' to insert IO pads to the pins in synthesis and PNR. (Used only for chip)
+
+		2.a: To run synthesis in topographical mode without DFT, with out a following PNR
+		     for 'iunit' linked to library 'teu_iunit' with a clock period of 15ns,
+			$ source topo_pnr.sh iunit teu_iunit 15 n n n
+		
+		2.b: To run the synthesis and PNR for 'iunit' with a clock period of 15ns,
+			$ source topo_pnr.sh iunit teu_iunit 15 n y n
+		
+		2.c: To run the synthesis along with DFT insertion and PNR with a clock period of 15ns,
+			i. Include TEST_SE, TEST_MODE as input ports to the design's entity and component in the design's vhdl file.
+			$ source topo_pnr.sh iunit teu_iunit 15 y y n
+		
+		2.d: To run the top-level topographical synthesis of the chip with DFT and IO pads and 
+		     PNR with a clock period of 15ns,
+			$ source chip_vhdl_files.sh chip_with_io chip_top 15 y y y 
+
+4. DFT insertion
+	1. 10 scan chains are inserted in the design with the 'topo_pnr.sh' script.
+	2. Scan_in and Scan_out ports are multiplexed with functional IOs in the top level
+
+5.Formality.
+	To run the formality alone, generate tcl script using,
+	$ buildFormality.py < design > < library > < clock period > 
+	Output: formality.tcl script. Copy it to vlsilab machine.
+
+	Copy the vhdl files under 'vhdl_files' directory on vlsi lab machine
+	Copy the /${design}_${period}_op_data/${design}.ddc to /${design}_${period}_op_data/${design}.ddc in the 
+	same directory
+	Copy the ${design}.svf to vlsi lab machine
+	
+	$ source /vlsi/cad/synopsys/digitalbashrc	
+	$ fm_shell -f formality.tcl | tee formality_transcript.log
+	
+6.Place and route.
+	To run the placement and routing alone,
+	Assumptions: 1. synthesized ddc file is present as in the ./${design}_${period}_op_data/${design}.ddc
+		     2. scandef file is present as in the ./${design}_${period}_op_data/${design}.ddc
+	
+	$ buildICC.py < design > < period > < top y/n >
+	$ icc_shell -f icc.tcl | tee icc_transcript.log
+
+7.LVS  
+8.Timing
+9.Pads
+10.Example
+11.Hierarchical flow.
+	To run hierarchical synthesis and PNR, block abstractions have to be created after synthesis and PNR.
+	Step 1: Perform the synthesis of the sub modules seperately using the 'topo_pnr.sh' script.
+ 	       After completion, ${design}_block.ddc file is created under ${design}_${period}_op_data directory.
+
+	Step 2: To perform the synthesis of the upper hierarchical module, generate the tcl script for synthesis using,
+		$ buildTOPO.py -d design -l library -p period     (or)
+		$ buildDFT.py -d design -l library -p period -t top_y/n
+	
+	Step 3: In the topo.tcl or dft.tcl, include the following,
+	       After 'open_mw_lib syn_topo' command, 
+	       set_top_implementation_options -block_references {block1 block2} 
+	       read_ddc block1.ddc
+	       read_ddc block2.ddc
+
+	Step 4: Perform the synthesis of the upper hierarchical module as,
+	       $ dc_shell -topo -f topo.tcl | tee topo_transcript.log    (or)
+ 	       $ dc_shell -topo -f dft.tcl | tee dft_transcript.log
+	
+	Step 5: Perform the PNR of block1 and block2 one after the other in the same directory so that thier designs are saved in the
+		same milkyway libray 'syn_topo'
+	
+	Step 6: To perform the PNR of the upper hierarchical module, generate the tcl script for PNR using,
+		$ buildICC.py -d design -l library -p period -t top_y/n
+	
+	Step 7: In the icc.tcl, include the following,
+		After the 'open_mw_lib syn_topo' command,
+		set_top_implementation_options -block_references {block1 block2} 
+
+	Step 8: Perform the PNR of upper module as,
+		$ icc_shell -f icc.tcl | tee icc_transcript.log
+12.Example
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

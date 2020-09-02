@@ -1,0 +1,611 @@
+Info:pThreadUtils: started thread memoryAccess
+Info:pThreadUtils: started thread displayDriver
+Info:pThreadUtils: started thread keyboardDriver
+Info:pThreadUtils: started thread IRC_Control
+Info:pThreadUtils: started thread IRC_Output
+Info:pThreadUtils: started thread Timer_Control
+Info:pThreadUtils: started thread Timer_Output
+Info:pThreadUtils: started thread Serial_Control
+Info:pThreadUtils: started thread Serial_Rx
+Info:pThreadUtils: started thread Serial_Tx
+Info:pThreadUtils: started thread Console_Output
+Info:pThreadUtils: started thread Console_Input
+Info:pThreadUtils: started thread DemuxMMUtoCaches
+Info:pThreadUtils: started thread Icache
+Info:pThreadUtils: started thread Dcache
+Info:pThreadUtils: started thread Mmu
+Info:pThreadUtils: started thread cpu
+
+
+ Ajit Bootloader 
+
+ setting up initial page tables ...PROMLIB: obio_ranges 1
+PROMLIB: Sun Boot Prom Version 0 Revision 0
+
+-----------------------------------
+
+  Hello World from Ajit processor 
+-----------------------------------
+
+------ entering function in file init/main.c, line 512 at JIFFIES = fffedb08 
+Linux version 3.16.1 (nehak@Marvin) (gcc version 4.7.4 (Buildroot 2014.08-g6ce428a-dirty) ) #64 Wed Apr 6 11:12:00 IST 2016
+boot console [earlyprom0] enabled
+TYPE: Ajit Processor
+Ethernet address: 01:02:03:04:05:06
+
+------ entering function in file arch/sparc/mm/init_32.c, line 254 
+
+ Mmu num_contexts = 256
+------bootmem_init(&pages_avail)
+------srmmu_nocache_calcsize()
+------srmmu_nocache_init()
+------__alloc_bootmem()
+------memset()
+------__alloc_bootmem()
+------__bit_map_init()
+------__srmmu_get_nocache()
+------__srmmu_early_allocate_ptable_skeleton()
+**** PAGE_OFFSET = 0xf0000000
+**** phys_base = 0x0
+**** SRMMU_NOCACHE_VADDR = 0xfc000000
+**** srmmu_nocache_pool = 0xf0240000
+**** srmmu_nocache_end  = 0xfc226000
+**** srmmu_nocache_size = 0x226000
+**** srmmu_swapper_pg_dir = 0xfc000000
+****  __pa((unsigned long)srmmu_nocache_pool) = 0x240000
+------srmmu_inherit_prom_mappings()
+------map_kernel()
+------free_area_init_core()
+------pgdat_resize_init()
+------pgdat_page_cgroup_init()
+------zone_spanned_pages_in_node()
+------calc_memmap_size()
+------mod_zone_page_state()
+------set_pageblock_order()
+------setup_usemap()
+------init_currently_empty_zone()
+------memmap_init()
+------zone_spanned_pages_in_node()
+------calc_memmap_size()
+------mod_zone_page_state()
+------zone_spanned_pages_in_node()
+------calc_memmap_size()
+------mod_zone_page_state()
+------zone_spanned_pages_in_node()
+------calc_memmap_size()
+------mod_zone_page_state()
+------ entering function in file arch/sparc/mm/init_32.c, line 256 
+PROM: Built device tree with 2933 bytes of memory.
+
+------ entering function in file arch/sparc/mm/init_32.c, line 258 
+
+------ entering function in file arch/sparc/mm/init_32.c, line 260 
+Booting Linux...
+Kernel command line:  debug lpj=10000 loglevel=7 console=ttyS0 
+
+------ entering function in file init/main.c, line 563 at JIFFIES = fffedb08 
+ PID hash table entries: 512 (order: -1, 2048 bytes)
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Sorting __ex_table...
+NR_IRQS:64
+
+ Entering time_init()
+------Ajit_build_device_irq()
+ Timer request_irq() succeeded with irq=1
+------ entering function in file init/main.c, line 653 at JIFFIES = fffedb08 
+
+Console: colour dummy device 80x25
+
+AJIT_CONSOLE_WRITE :  console [ttyS0] enabled
+
+ console [ttyS0] enabled
+
+AJIT_CONSOLE_WRITE : bootconsole [earlyprom0] disabled
+
+bootconsole [earlyprom0] disabled
+
+ late_time_init = f01486ac
+ Entering late_time_init()
+ In clockevents_register_device(dev) dev = f0200120
+ (dev->mode != CLOCK_EVT_MODE_UNUSED)= 0
+ Entering tick_check_new_device()
+------ entering function in file init/main.c, line 689 at JIFFIES = fffedb08 
+
+AJIT_CONSOLE_WRITE : In calibrate_delay()
+
+AJIT_CONSOLE_WRITE : 
+
+
+AJIT_CONSOLE_WRITE : Calibrating delay loop (skipped) preset value.. 
+
+AJIT_CONSOLE_WRITE : pid_max: default: 4096 minimum: 301
+
+
+AJIT_CONSOLE_WRITE : Mount-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+
+AJIT_CONSOLE_WRITE : Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+
+------ entering function in file init/main.c, line 727 at JIFFIES = fffedb10 
+ 
+------ entering function in file init/main.c, line 997 at JIFFIES = fffedb12 
+ 
+------ entering function do_one_initcall(f014883c)
+------ entering function do_one_initcall(f014c2c0)
+------ entering function do_one_initcall(f014c7b8)
+------ entering function do_one_initcall(f0152974)
+------ entering function do_one_initcall(f00efb44)
+------ entering function in file init/main.c, line 1071 at JIFFIES = fffedb18 
+ 
+------ entering function in file init/main.c, line 930 
+
+------ entering function in file init/main.c, line 932 
+
+------ entering function in file init/main.c, line 934 
+
+------ entering function in file init/main.c, line 936 
+
+AJIT_CONSOLE_WRITE : devtmpfs: initialized
+
+
+------ entering function in file init/main.c, line 938 
+
+------ entering function in file init/main.c, line 940 
+
+------ entering function in file init/main.c, line 942 
+
+------ entering function in file init/main.c, line 944 
+
+------ entering function do_initcall_level(0)
+------ entering function do_one_initcall(f0152064)
+------ entering function do_initcall_level(1)
+------ entering function do_one_initcall(f014c7a0)
+------ entering function do_one_initcall(f014d0f8)
+------ entering function do_one_initcall(f014df88)
+------ entering function do_one_initcall(f014fde4)
+------ entering function do_one_initcall(f0151ac4)
+------ entering function do_one_initcall(f0151ae4)
+------ entering function do_one_initcall(f01528d4)
+------ entering function do_one_initcall(f01540b4)
+------ entering function do_initcall_level(2)
+------ entering function do_one_initcall(f0149868)
+------ entering function do_one_initcall(f014eeb0)
+------ entering function do_one_initcall(f014ef68)
+------ entering function do_one_initcall(f015297c)
+------ entering function do_one_initcall(f0152e3c)
+------ entering function do_initcall_level(3)
+------ entering function do_one_initcall(f0147f30)
+------ entering function do_initcall_level(4)
+------ entering function do_one_initcall(f0147ff0)
+------ entering function do_one_initcall(f014ba18)
+------ entering function do_one_initcall(f014bcb4)
+------ entering function do_one_initcall(f014c680)
+------ entering function do_one_initcall(f014cc40)
+------ entering function do_one_initcall(f014d6a4)
+------ entering function do_one_initcall(f014eef8)
+------ entering function do_one_initcall(f0154824)
+------ entering function do_one_initcall(f0072130)
+------ entering function do_one_initcall(f0072100)
+------ entering function do_one_initcall(f015353c)
+------ entering function do_one_initcall(f0153f30)
+------ entering function do_one_initcall(f015404c)
+------ entering function do_initcall_level(5)
+------ entering function do_one_initcall(f0148694)
+------ entering function do_one_initcall(f0149e00)
+------ entering function do_one_initcall(f014df44)
+AJIT_CONSOLE_WRITE : Switched to clocksource timer_cs
+
+
+------ entering function do_one_initcall(f01513ac)
+------ entering function do_one_initcall(f0151c6c)
+------ entering function do_one_initcall(f0151c9c)
+------ entering function do_one_initcall(f0151ccc)
+------ entering function do_one_initcall(f0151cfc)
+------ entering function do_one_initcall(f0151d2c)
+------ entering function do_one_initcall(f0151d5c)
+------ entering function do_one_initcall(f0151d8c)
+------ entering function do_one_initcall(f0151dbc)
+------ entering function do_one_initcall(f0151dec)
+------ entering function do_one_initcall(f0151e1c)
+------ entering function do_one_initcall(f0151e4c)
+------ entering function do_one_initcall(f0151ec8)
+------ entering function do_one_initcall(f0151ef8)
+------ entering function do_one_initcall(f0152004)
+------ entering function do_one_initcall(f0153460)
+------ entering function do_one_initcall(f01477cc)
+------ in populate_rootfs()
+------ in unpack_to_rootfs()
+------ entering function in file init/initramfs.c, line 434 
+
+------ entering function in file init/initramfs.c, line 436 
+
+------ entering function in file init/initramfs.c, line 438 
+
+------ entering function in file init/initramfs.c, line 463 
+
+AJIT_CONSOLE_WRITE : Compressed data magic: 0x1f 0x8b
+
+Detected gzip compressed data
+
+------ entering function in file init/initramfs.c, line 468 
+
+------ entering function in file init/initramfs.c, line 488 
+
+------ entering function in file init/initramfs.c, line 490 
+
+------ entering function in file init/initramfs.c, line 492 
+
+------ entering function in file init/initramfs.c, line 494 
+
+------ entering function do_initcall_level(6)
+------ entering function do_one_initcall(f014a024)
+------ entering function do_one_initcall(f014a078)
+------ entering function do_one_initcall(f014c234)
+------ entering function do_one_initcall(f014c458)
+------ entering function do_one_initcall(f014cde4)
+------ entering function do_one_initcall(f014cfc4)
+------ entering function do_one_initcall(f014dbc4)
+------ entering function do_one_initcall(f014dec8)
+------ entering function do_one_initcall(f014dfa8)
+------ entering function do_one_initcall(f014dfe0)
+------ entering function do_one_initcall(f014e158)
+------ entering function do_one_initcall(f014e1d0)
+------ entering function do_one_initcall(f014e200)
+------ entering function do_one_initcall(f014e230)
+------ entering function do_one_initcall(f0154664)
+------ entering function do_one_initcall(f014edd8)
+------ entering function do_one_initcall(f014ee20)
+------ entering function do_one_initcall(f014fa50)
+------ entering function do_one_initcall(f014fd5c)
+------ entering function do_one_initcall(f014fe94)
+------ entering function do_one_initcall(f0150ec0)
+------ entering function do_one_initcall(f0150ec8)
+------ entering function do_one_initcall(f01513f4)
+------ entering function do_one_initcall(f0151780)
+------ entering function do_one_initcall(f0152b4c)
+------ entering function do_one_initcall(f01533b8)
+------ entering function do_one_initcall(f01533c0)
+Registering Ajit_serial driver
+In Ajit_serial driver, registering port
+Ajit_config_port()
+Ajit_request_port: port=f0141324; port->mapbase=3200
+
+ entering request_mem_region()
+ entering ioremap()
+AJIT_CONSOLE_WRITE : ttyS0 at MMIO 0x3200 (irq = 12, base_baud = 0) is a Ajit_serial
+
+
+Registration of Ajit_serial driver was successful
+
+------ entering function do_one_initcall(f00f0c60)
+AJIT_CONSOLE_WRITE : stringReverser: Device Registration successful
+
+
+------ entering function do_one_initcall(f00f8508)
+------ entering function do_one_initcall(f0153eb0)
+------ entering function do_one_initcall(f015409c)
+------ entering function do_initcall_level(7)
+------ entering function do_one_initcall(f0149d74)
+------ entering function do_one_initcall(f002137c)
+------ entering function do_one_initcall(f014d630)
+------ entering function do_one_initcall(f014da20)
+------ entering function do_one_initcall(f0152884)
+------ entering function do_one_initcall(f00f4d6c)
+------ entering function in file init/main.c, line 946 
+
+ Trying to open file /home/README ...
+ Opened file /home/README  successfully
+ Read the following characters : Hello from /home/README.
+
+ Trying to open file /dev/stringReverser ...
+ ERROR : Unable to open file /dev/stringReverser
+
+Ajit_startup()
+ Requesting irq port->irq=12 
+------Ajit_build_device_irq()
+ Ajit_build_device_irq(NULL, 12) returned 2 
+ call to request_irq() SUCCEEDED
+------ entering function in file init/main.c, line 1169 at JIFFIES = fffee014 
+ 
+------ entering function in file init/main.c, line 1001 at JIFFIES = fffee015 
+ 
+AJIT_CONSOLE_WRITE : Freeing unused kernel memory: 744K (f0145000 - f01ff000)
+
+
+------ entering function in file init/main.c, line 1007 at JIFFIES = fffee030 
+ 
+------ ramdisk_execute_command = /init
+------ entering function in file init/main.c, line 1012 at JIFFIES = fffee030 
+ 
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4bc00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3ec8c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8c81c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x69074 to MMU through DCACHEinit shell script called ...
+running exec 0</dev/console
+running exec /sbin/init 
+
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8a128 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97f40 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x58130 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x92d70 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x58130 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x92d70 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x6d020 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x9313c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x6d020 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x9313c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x58130 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x23268 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHEmount: mounting devpts on /dev/pts failed: No such device
+
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x25504 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4bc00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3ec8c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8c81c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x73074 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3f768 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022b84 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50050de0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x14ca0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4bc00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x91878 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3ec8c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8c81c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x69074 to MMU through DCACHEStarting logging: 
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3f768 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022b84 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50050de0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x75258 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97fec to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x155c4 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97eac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50030464 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50001598 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x155c4 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97f00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x759c8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049b98 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002d208 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50031db8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50050e54 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3f768 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022b84 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50050de0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4db38 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x75258 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97fec to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x155c4 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97eac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50030464 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHEOK
+
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50001598 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049b98 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x155c4 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x97f00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x759c8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002d208 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50031db8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50050e54 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4d404 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+Welcome to Buildroot
+buildroot login: root
+
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x92d70 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHEJan  1 00:00:07 login[30]: root login on 'ttyS0'
+
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x4bc00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x91878 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3ec8c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8c81c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x73074 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5005cfcc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3fe34 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50030920 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x14d08 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x6ab7c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5005cfcc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3fe34 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50030920 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x14d08 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x6ab7c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5005cfcc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3fe34 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x25504 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE# ls /
+
+CPU: wrote FSR=0x346, FAR=0x50062cc0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x437a8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500301dc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50022ad0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500534ac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x3f768 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x96b74 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5004fdac to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50000ec0 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5006471c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50049cdc to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x50052f4c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x5002de00 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x500362f8 to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x6c55c to MMU through DCACHE
+CPU: wrote FSR=0x346, FAR=0x8d34c to MMU through DCACHE[0;0mAJIT_MODIFICATIONS[0m  [1;36minit[0m                [1;34mopt[0m                 [1;34msys[0m
+[1;32mAjit_init[0m           [1;34mlib[0m                 [1;36moriginal_init[0m       [1;34mtmp[0m
+[1;34mbin[0m                 [1;36mlib32[0m               [1;34mproc[0m                [1;34musr[0m
+[1;34mdev[0m                 [1;36mlinuxrc[0m             [1;34mroot[0m                [1;34mvar[0m
+[1;34metc[0m                 [1;34mmedia[0m               [1;36mrun[0m
+[1;34mhome[0m                [1;34mmnt[0m                 [1;34msbin[0m
+# 

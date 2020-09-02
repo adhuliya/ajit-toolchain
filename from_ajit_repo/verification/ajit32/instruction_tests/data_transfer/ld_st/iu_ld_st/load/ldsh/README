@@ -1,0 +1,5 @@
+Instruction : LDSH
+Details :
+Load a half-word from the memory into one register and sign extend it's MSB.
+
+ldshTV - checking for trap cases

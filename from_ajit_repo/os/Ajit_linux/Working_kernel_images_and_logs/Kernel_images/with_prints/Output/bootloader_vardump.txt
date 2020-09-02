@@ -1,0 +1,120 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 02 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, big endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Sparc
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          75240 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         2
+  Size of section headers:           40 (bytes)
+  Number of section headers:         17
+  Section header string table index: 14
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00000000 010000 000ce0 00  AX  0   0  8
+  [ 2] .rodata           PROGBITS        00000ce0 010ce0 000018 00   A  0   0  8
+  [ 3] .data             PROGBITS        00000cf8 010cf8 000028 00  WA  0   0  4
+  [ 4] .bss              NOBITS          00000d20 010d20 000120 00  WA  0   0  4
+  [ 5] .debug_info       PROGBITS        00000000 010d20 000b9d 00      0   0  1
+  [ 6] .debug_abbrev     PROGBITS        00000000 0118bd 0001ea 00      0   0  1
+  [ 7] .debug_loc        PROGBITS        00000000 011aa7 000160 00      0   0  1
+  [ 8] .debug_aranges    PROGBITS        00000000 011c07 000030 00      0   0  1
+  [ 9] .debug_ranges     PROGBITS        00000000 011c37 000020 00      0   0  1
+  [10] .debug_line       PROGBITS        00000000 011c57 0001b1 00      0   0  1
+  [11] .debug_str        PROGBITS        00000000 011e08 0005f3 01  MS  0   0  1
+  [12] .comment          PROGBITS        00000000 0123fb 00002e 01  MS  0   0  1
+  [13] .debug_frame      PROGBITS        00000000 01242c 000118 00      0   0  4
+  [14] .shstrtab         STRTAB          00000000 012544 0000a3 00      0   0  1
+  [15] .symtab           SYMTAB          00000000 012890 000350 10     16  33  4
+  [16] .strtab           STRTAB          00000000 012be0 000214 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x010000 0x00000000 0x00000000 0x00d20 0x00e40 RWE 0x10000
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text .rodata .data .bss 
+   01     
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+
+There are no unwind sections in this file.
+
+Symbol table '.symtab' contains 53 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 SECTION LOCAL  DEFAULT    1 
+     2: 00000ce0     0 SECTION LOCAL  DEFAULT    2 
+     3: 00000cf8     0 SECTION LOCAL  DEFAULT    3 
+     4: 00000d20     0 SECTION LOCAL  DEFAULT    4 
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 00000000     0 SECTION LOCAL  DEFAULT    6 
+     7: 00000000     0 SECTION LOCAL  DEFAULT    7 
+     8: 00000000     0 SECTION LOCAL  DEFAULT    8 
+     9: 00000000     0 SECTION LOCAL  DEFAULT    9 
+    10: 00000000     0 SECTION LOCAL  DEFAULT   10 
+    11: 00000000     0 SECTION LOCAL  DEFAULT   11 
+    12: 00000000     0 SECTION LOCAL  DEFAULT   12 
+    13: 00000000     0 SECTION LOCAL  DEFAULT   13 
+    14: 00000000     0 FILE    LOCAL  DEFAULT  ABS AjitBootloader.c
+    15: 000003ac    40 FUNC    LOCAL  DEFAULT    1 mmu_bypass_load
+    16: 000003d4    36 FUNC    LOCAL  DEFAULT    1 mmu_bypass_store
+    17: 000003f8    40 FUNC    LOCAL  DEFAULT    1 mmu_bypass_store_byte
+    18: 00000420    68 FUNC    LOCAL  DEFAULT    1 enableTx
+    19: 00000464    52 FUNC    LOCAL  DEFAULT    1 writetoTx
+    20: 00000498    88 FUNC    LOCAL  DEFAULT    1 getTxfull
+    21: 000004f0   104 FUNC    LOCAL  DEFAULT    1 pv_nbputchar
+    22: 00000558   128 FUNC    LOCAL  DEFAULT    1 ajit_putstring
+    23: 00000d24     4 OBJECT  LOCAL  DEFAULT    4 EMPTY_sync_hook
+    24: 000007d0     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_start
+    25: 000007d0     0 NOTYPE  LOCAL  DEFAULT    1 _dt_header
+    26: 00000cdb     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_abs_end
+    27: 00000808     0 NOTYPE  LOCAL  DEFAULT    1 _dt_struct_start
+    28: 00000c2c     0 NOTYPE  LOCAL  DEFAULT    1 _dt_strings_start
+    29: 000007f8     0 NOTYPE  LOCAL  DEFAULT    1 _dt_reserve_map
+    30: 00000cdb     0 NOTYPE  LOCAL  DEFAULT    1 _dt_strings_end
+    31: 00000c2c     0 NOTYPE  LOCAL  DEFAULT    1 _dt_struct_end
+    32: 00000cdb     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_end
+    33: 00000d28   280 OBJECT  GLOBAL DEFAULT    4 Ajit_romvec
+    34: 00000cdb     0 NOTYPE  GLOBAL DEFAULT    1 dt_strings_end
+    35: 000007d0     0 NOTYPE  GLOBAL DEFAULT    1 dt_header
+    36: 00000d1c     1 OBJECT  GLOBAL DEFAULT    3 AJIT_PROMDEV_TTYA
+    37: 00000d18     4 OBJECT  GLOBAL DEFAULT    3 avail_p
+    38: 000002dc   208 FUNC    GLOBAL DEFAULT    1 bootloader
+    39: 00000cfc    12 OBJECT  GLOBAL DEFAULT    3 totphys
+    40: 000007d0     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_start
+    41: 00000c2c     0 NOTYPE  GLOBAL DEFAULT    1 dt_struct_end
+    42: 00000cf8     4 OBJECT  GLOBAL DEFAULT    3 Ajit_romvec_ptr
+    43: 000007f8     0 NOTYPE  GLOBAL DEFAULT    1 dt_reserve_map
+    44: 00000d20     4 OBJECT  GLOBAL DEFAULT    4 null_ptr
+    45: 00000000   732 FUNC    GLOBAL DEFAULT    1 main
+    46: 000005d8   504 FUNC    GLOBAL DEFAULT    1 get_Ajit_romvec
+    47: 00000d14     4 OBJECT  GLOBAL DEFAULT    3 totphys_p
+    48: 00000cdb     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_end
+    49: 00000c2c     0 NOTYPE  GLOBAL DEFAULT    1 dt_strings_start
+    50: 00000d08    12 OBJECT  GLOBAL DEFAULT    3 avail
+    51: 00000cdb     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_abs_end
+    52: 00000808     0 NOTYPE  GLOBAL DEFAULT    1 dt_struct_start
+
+No version information found in this file.

@@ -1,0 +1,13 @@
+
+.text
+  instructions.
+
+.rodata
+
+.data
+
+.bss
+
+
+.. many other sections..
+

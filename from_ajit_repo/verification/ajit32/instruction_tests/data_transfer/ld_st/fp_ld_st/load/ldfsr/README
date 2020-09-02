@@ -1,0 +1,5 @@
+Instruction : LDFSR
+Details :
+Loads a word from memory into the floating-point status register.
+
+ldfsrTV - test cases for trap conditions

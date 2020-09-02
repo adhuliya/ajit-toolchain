@@ -1,0 +1,5 @@
+SOURCES = MemoryTest.c
+
+
+RESULTS =
+g5=0xF00

@@ -1,0 +1,531 @@
+
+AjitBootloader.elf:     file format elf32-sparc
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	9d e3 bf 90 	save  %sp, -112, %sp
+   4:	90 10 20 0a 	mov  0xa, %o0
+   8:	40 00 00 8a 	call  230 <putChar>
+   c:	01 00 00 00 	nop 
+  10:	03 00 00 01 	sethi  %hi(0x400), %g1
+  14:	90 10 63 98 	or  %g1, 0x398, %o0	! 798 <getString+0xf0>
+  18:	40 00 00 a7 	call  2b4 <putString>
+  1c:	01 00 00 00 	nop 
+  20:	03 00 00 01 	sethi  %hi(0x400), %g1
+  24:	90 10 63 b0 	or  %g1, 0x3b0, %o0	! 7b0 <getString+0x108>
+  28:	40 00 00 a3 	call  2b4 <putString>
+  2c:	01 00 00 00 	nop 
+  30:	03 1c 00 00 	sethi  %hi(0x70000000), %g1
+  34:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+  38:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+  3c:	05 01 c0 00 	sethi  %hi(0x7000000), %g2
+  40:	84 10 a1 01 	or  %g2, 0x101, %g2	! 7000101 <getString+0x6fffa59>
+  44:	c4 20 40 00 	st  %g2, [ %g1 ]
+  48:	03 1c 00 04 	sethi  %hi(0x70001000), %g1
+  4c:	c2 27 bf f8 	st  %g1, [ %fp + -8 ]
+  50:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+  54:	84 10 20 9e 	mov  0x9e, %g2
+  58:	c4 20 40 00 	st  %g2, [ %g1 ]
+  5c:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+  60:	82 00 63 c0 	add  %g1, 0x3c0, %g1
+  64:	84 10 20 9e 	mov  0x9e, %g2
+  68:	c4 20 40 00 	st  %g2, [ %g1 ]
+  6c:	03 01 c0 00 	sethi  %hi(0x7000000), %g1
+  70:	c2 27 bf f4 	st  %g1, [ %fp + -12 ]
+  74:	82 10 20 00 	clr  %g1
+  78:	84 10 22 00 	mov  0x200, %g2
+  7c:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+  80:	c2 07 bf f4 	ld  [ %fp + -12 ], %g1
+  84:	84 10 21 00 	mov  0x100, %g2
+  88:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+  8c:	82 10 20 01 	mov  1, %g1
+  90:	84 10 20 00 	clr  %g2
+  94:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+  98:	05 3c 00 10 	sethi  %hi(0xf0004000), %g2
+  9c:	81 c0 80 00 	jmp  %g2
+  a0:	01 00 00 00 	nop 
+  a4:	01 00 00 00 	nop 
+  a8:	01 00 00 00 	nop 
+  ac:	40 00 00 58 	call  20c <halt>
+  b0:	01 00 00 00 	nop 
+  b4:	82 10 20 00 	clr  %g1	! 0 <main>
+  b8:	b0 10 00 01 	mov  %g1, %i0
+  bc:	81 e8 00 00 	restore 
+  c0:	81 c3 e0 08 	retl 
+  c4:	01 00 00 00 	nop 
+
+000000c8 <load_char>:
+  c8:	9d e3 bf 98 	save  %sp, -104, %sp
+  cc:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+  d0:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+  d4:	fa 88 45 e0 	lduba  [ %g1 ] (47), %i5
+  d8:	fa 2f bf ff 	stb  %i5, [ %fp + -1 ]
+  dc:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+  e0:	83 28 60 18 	sll  %g1, 0x18, %g1
+  e4:	83 38 60 18 	sra  %g1, 0x18, %g1
+  e8:	b0 10 00 01 	mov  %g1, %i0
+  ec:	81 e8 00 00 	restore 
+  f0:	81 c3 e0 08 	retl 
+  f4:	01 00 00 00 	nop 
+
+000000f8 <load_int>:
+  f8:	9d e3 bf 98 	save  %sp, -104, %sp
+  fc:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 100:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+ 104:	fa 80 45 e0 	lda  [ %g1 ] (47), %i5
+ 108:	fa 27 bf fc 	st  %i5, [ %fp + -4 ]
+ 10c:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+ 110:	b0 10 00 01 	mov  %g1, %i0
+ 114:	81 e8 00 00 	restore 
+ 118:	81 c3 e0 08 	retl 
+ 11c:	01 00 00 00 	nop 
+
+00000120 <load_float>:
+ 120:	9d e3 bf 98 	save  %sp, -104, %sp
+ 124:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 128:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+ 12c:	fa 80 45 e0 	lda  [ %g1 ] (47), %i5
+ 130:	fa 27 bf fc 	st  %i5, [ %fp + -4 ]
+ 134:	d1 07 bf fc 	ld  [ %fp + -4 ], %f8
+ 138:	81 a0 00 28 	fmovs  %f8, %f0
+ 13c:	81 e8 00 00 	restore 
+ 140:	81 c3 e0 08 	retl 
+ 144:	01 00 00 00 	nop 
+
+00000148 <load_double>:
+ 148:	9d e3 bf 98 	save  %sp, -104, %sp
+ 14c:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 150:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+ 154:	f8 98 45 e0 	ldda  [ %g1 ] (47), %i4
+ 158:	f8 3f bf f8 	std  %i4, [ %fp + -8 ]
+ 15c:	d1 1f bf f8 	ldd  [ %fp + -8 ], %f8
+ 160:	81 a0 00 28 	fmovs  %f8, %f0
+ 164:	83 a0 00 29 	fmovs  %f9, %f1
+ 168:	81 e8 00 00 	restore 
+ 16c:	81 c3 e0 08 	retl 
+ 170:	01 00 00 00 	nop 
+
+00000174 <store_char>:
+ 174:	9d e3 bf a0 	save  %sp, -96, %sp
+ 178:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 17c:	82 10 00 19 	mov  %i1, %g1
+ 180:	c2 2f a0 48 	stb  %g1, [ %fp + 0x48 ]
+ 184:	c2 0f a0 48 	ldub  [ %fp + 0x48 ], %g1
+ 188:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+ 18c:	c2 a8 85 e0 	stba  %g1, [ %g2 ] (47)
+ 190:	81 e8 00 00 	restore 
+ 194:	81 c3 e0 08 	retl 
+ 198:	01 00 00 00 	nop 
+
+0000019c <store_int>:
+ 19c:	9d e3 bf a0 	save  %sp, -96, %sp
+ 1a0:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 1a4:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
+ 1a8:	c2 07 a0 48 	ld  [ %fp + 0x48 ], %g1
+ 1ac:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+ 1b0:	c2 a0 85 e0 	sta  %g1, [ %g2 ] (47)
+ 1b4:	81 e8 00 00 	restore 
+ 1b8:	81 c3 e0 08 	retl 
+ 1bc:	01 00 00 00 	nop 
+
+000001c0 <store_float>:
+ 1c0:	9d e3 bf a0 	save  %sp, -96, %sp
+ 1c4:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 1c8:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
+ 1cc:	c4 07 a0 48 	ld  [ %fp + 0x48 ], %g2
+ 1d0:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+ 1d4:	c4 a0 45 e0 	sta  %g2, [ %g1 ] (47)
+ 1d8:	81 e8 00 00 	restore 
+ 1dc:	81 c3 e0 08 	retl 
+ 1e0:	01 00 00 00 	nop 
+
+000001e4 <store_double>:
+ 1e4:	9d e3 bf 98 	save  %sp, -104, %sp
+ 1e8:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 1ec:	f2 27 bf f8 	st  %i1, [ %fp + -8 ]
+ 1f0:	f4 27 bf fc 	st  %i2, [ %fp + -4 ]
+ 1f4:	c4 1f bf f8 	ldd  [ %fp + -8 ], %g2
+ 1f8:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+ 1fc:	c4 b8 45 e0 	stda  %g2, [ %g1 ] (47)
+ 200:	81 e8 00 00 	restore 
+ 204:	81 c3 e0 08 	retl 
+ 208:	01 00 00 00 	nop 
+
+0000020c <halt>:
+ 20c:	9d e3 bf a0 	save  %sp, -96, %sp
+ 210:	81 88 00 00 	mov  %g0, %psr
+ 214:	01 00 00 00 	nop 
+ 218:	01 00 00 00 	nop 
+ 21c:	01 00 00 00 	nop 
+ 220:	91 d0 20 00 	ta  0
+ 224:	81 e8 00 00 	restore 
+ 228:	81 c3 e0 08 	retl 
+ 22c:	01 00 00 00 	nop 
+
+00000230 <putChar>:
+ 230:	9d e3 bf 98 	save  %sp, -104, %sp
+ 234:	82 10 00 18 	mov  %i0, %g1
+ 238:	c2 2f a0 44 	stb  %g1, [ %fp + 0x44 ]
+ 23c:	82 10 20 01 	mov  1, %g1
+ 240:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 244:	10 80 00 07 	b  260 <putChar+0x30>
+ 248:	01 00 00 00 	nop 
+ 24c:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 250:	7f ff ff 9e 	call  c8 <load_char>
+ 254:	01 00 00 00 	nop 
+ 258:	82 10 00 08 	mov  %o0, %g1
+ 25c:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 260:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 264:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 268:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 26c:	80 a0 60 00 	cmp  %g1, 0
+ 270:	14 bf ff f7 	bg  24c <putChar+0x1c>
+ 274:	01 00 00 00 	nop 
+ 278:	c2 0f a0 44 	ldub  [ %fp + 0x44 ], %g1
+ 27c:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 280:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 284:	05 00 00 04 	sethi  %hi(0x1000), %g2
+ 288:	90 10 a1 00 	or  %g2, 0x100, %o0	! 1100 <getString+0xa58>
+ 28c:	92 10 00 01 	mov  %g1, %o1
+ 290:	7f ff ff b9 	call  174 <store_char>
+ 294:	01 00 00 00 	nop 
+ 298:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 29c:	92 10 20 01 	mov  1, %o1
+ 2a0:	7f ff ff b5 	call  174 <store_char>
+ 2a4:	01 00 00 00 	nop 
+ 2a8:	81 e8 00 00 	restore 
+ 2ac:	81 c3 e0 08 	retl 
+ 2b0:	01 00 00 00 	nop 
+
+000002b4 <putString>:
+ 2b4:	9d e3 bf 98 	save  %sp, -104, %sp
+ 2b8:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 2bc:	c0 27 bf fc 	clr  [ %fp + -4 ]
+ 2c0:	10 80 00 0e 	b  2f8 <putString+0x44>
+ 2c4:	01 00 00 00 	nop 
+ 2c8:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+ 2cc:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+ 2d0:	82 00 80 01 	add  %g2, %g1, %g1
+ 2d4:	c2 08 40 00 	ldub  [ %g1 ], %g1
+ 2d8:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 2dc:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 2e0:	90 10 00 01 	mov  %g1, %o0
+ 2e4:	7f ff ff d3 	call  230 <putChar>
+ 2e8:	01 00 00 00 	nop 
+ 2ec:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+ 2f0:	82 00 60 01 	inc  %g1
+ 2f4:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+ 2f8:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+ 2fc:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+ 300:	82 00 80 01 	add  %g2, %g1, %g1
+ 304:	c2 08 40 00 	ldub  [ %g1 ], %g1
+ 308:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 30c:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 310:	80 a0 60 00 	cmp  %g1, 0
+ 314:	12 bf ff ed 	bne  2c8 <putString+0x14>
+ 318:	01 00 00 00 	nop 
+ 31c:	81 e8 00 00 	restore 
+ 320:	81 c3 e0 08 	retl 
+ 324:	01 00 00 00 	nop 
+
+00000328 <putInt>:
+ 328:	9d e3 bf 98 	save  %sp, -104, %sp
+ 32c:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 330:	82 10 20 02 	mov  2, %g1
+ 334:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 338:	10 80 00 07 	b  354 <putInt+0x2c>
+ 33c:	01 00 00 00 	nop 
+ 340:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 344:	7f ff ff 61 	call  c8 <load_char>
+ 348:	01 00 00 00 	nop 
+ 34c:	82 10 00 08 	mov  %o0, %g1
+ 350:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 354:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 358:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 35c:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 360:	80 a0 60 00 	cmp  %g1, 0
+ 364:	14 bf ff f7 	bg  340 <putInt+0x18>
+ 368:	01 00 00 00 	nop 
+ 36c:	03 00 00 04 	sethi  %hi(0x1000), %g1
+ 370:	90 10 61 00 	or  %g1, 0x100, %o0	! 1100 <getString+0xa58>
+ 374:	d2 07 a0 44 	ld  [ %fp + 0x44 ], %o1
+ 378:	7f ff ff 89 	call  19c <store_int>
+ 37c:	01 00 00 00 	nop 
+ 380:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 384:	92 10 20 02 	mov  2, %o1
+ 388:	7f ff ff 7b 	call  174 <store_char>
+ 38c:	01 00 00 00 	nop 
+ 390:	81 e8 00 00 	restore 
+ 394:	81 c3 e0 08 	retl 
+ 398:	01 00 00 00 	nop 
+
+0000039c <putFloat>:
+ 39c:	9d e3 bf 98 	save  %sp, -104, %sp
+ 3a0:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 3a4:	82 10 20 03 	mov  3, %g1
+ 3a8:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 3ac:	10 80 00 07 	b  3c8 <putFloat+0x2c>
+ 3b0:	01 00 00 00 	nop 
+ 3b4:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 3b8:	7f ff ff 44 	call  c8 <load_char>
+ 3bc:	01 00 00 00 	nop 
+ 3c0:	82 10 00 08 	mov  %o0, %g1
+ 3c4:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 3c8:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 3cc:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 3d0:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 3d4:	80 a0 60 00 	cmp  %g1, 0
+ 3d8:	14 bf ff f7 	bg  3b4 <putFloat+0x18>
+ 3dc:	01 00 00 00 	nop 
+ 3e0:	03 00 00 04 	sethi  %hi(0x1000), %g1
+ 3e4:	90 10 61 00 	or  %g1, 0x100, %o0	! 1100 <getString+0xa58>
+ 3e8:	d2 07 a0 44 	ld  [ %fp + 0x44 ], %o1
+ 3ec:	7f ff ff 75 	call  1c0 <store_float>
+ 3f0:	01 00 00 00 	nop 
+ 3f4:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 3f8:	92 10 20 03 	mov  3, %o1
+ 3fc:	7f ff ff 5e 	call  174 <store_char>
+ 400:	01 00 00 00 	nop 
+ 404:	81 e8 00 00 	restore 
+ 408:	81 c3 e0 08 	retl 
+ 40c:	01 00 00 00 	nop 
+
+00000410 <putDouble>:
+ 410:	9d e3 bf 90 	save  %sp, -112, %sp
+ 414:	f0 3f bf f0 	std  %i0, [ %fp + -16 ]
+ 418:	82 10 20 04 	mov  4, %g1
+ 41c:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 420:	10 80 00 07 	b  43c <putDouble+0x2c>
+ 424:	01 00 00 00 	nop 
+ 428:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 42c:	7f ff ff 27 	call  c8 <load_char>
+ 430:	01 00 00 00 	nop 
+ 434:	82 10 00 08 	mov  %o0, %g1
+ 438:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 43c:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 440:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 444:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 448:	80 a0 60 00 	cmp  %g1, 0
+ 44c:	14 bf ff f7 	bg  428 <putDouble+0x18>
+ 450:	01 00 00 00 	nop 
+ 454:	03 00 00 04 	sethi  %hi(0x1000), %g1
+ 458:	90 10 61 00 	or  %g1, 0x100, %o0	! 1100 <getString+0xa58>
+ 45c:	d2 07 bf f0 	ld  [ %fp + -16 ], %o1
+ 460:	d4 07 bf f4 	ld  [ %fp + -12 ], %o2
+ 464:	7f ff ff 60 	call  1e4 <store_double>
+ 468:	01 00 00 00 	nop 
+ 46c:	11 00 00 04 	sethi  %hi(0x1000), %o0
+ 470:	92 10 20 04 	mov  4, %o1
+ 474:	7f ff ff 40 	call  174 <store_char>
+ 478:	01 00 00 00 	nop 
+ 47c:	81 e8 00 00 	restore 
+ 480:	81 c3 e0 08 	retl 
+ 484:	01 00 00 00 	nop 
+
+00000488 <getChar>:
+ 488:	9d e3 bf 98 	save  %sp, -104, %sp
+ 48c:	82 10 20 01 	mov  1, %g1
+ 490:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 494:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 498:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 49c:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 4a0:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 4a4:	92 10 00 01 	mov  %g1, %o1
+ 4a8:	7f ff ff 33 	call  174 <store_char>
+ 4ac:	01 00 00 00 	nop 
+ 4b0:	10 80 00 07 	b  4cc <getChar+0x44>
+ 4b4:	01 00 00 00 	nop 
+ 4b8:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 4bc:	7f ff ff 03 	call  c8 <load_char>
+ 4c0:	01 00 00 00 	nop 
+ 4c4:	82 10 00 08 	mov  %o0, %g1
+ 4c8:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 4cc:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 4d0:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 4d4:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 4d8:	80 a0 60 00 	cmp  %g1, 0
+ 4dc:	14 bf ff f7 	bg  4b8 <getChar+0x30>
+ 4e0:	01 00 00 00 	nop 
+ 4e4:	03 00 00 08 	sethi  %hi(0x2000), %g1
+ 4e8:	90 10 61 00 	or  %g1, 0x100, %o0	! 2100 <getString+0x1a58>
+ 4ec:	7f ff fe f7 	call  c8 <load_char>
+ 4f0:	01 00 00 00 	nop 
+ 4f4:	82 10 00 08 	mov  %o0, %g1
+ 4f8:	c2 2f bf fe 	stb  %g1, [ %fp + -2 ]
+ 4fc:	c2 0f bf fe 	ldub  [ %fp + -2 ], %g1
+ 500:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 504:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 508:	b0 10 00 01 	mov  %g1, %i0
+ 50c:	81 e8 00 00 	restore 
+ 510:	81 c3 e0 08 	retl 
+ 514:	01 00 00 00 	nop 
+
+00000518 <getInt>:
+ 518:	9d e3 bf 98 	save  %sp, -104, %sp
+ 51c:	82 10 20 02 	mov  2, %g1
+ 520:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 524:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 528:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 52c:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 530:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 534:	92 10 00 01 	mov  %g1, %o1
+ 538:	7f ff ff 0f 	call  174 <store_char>
+ 53c:	01 00 00 00 	nop 
+ 540:	10 80 00 07 	b  55c <getInt+0x44>
+ 544:	01 00 00 00 	nop 
+ 548:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 54c:	7f ff fe df 	call  c8 <load_char>
+ 550:	01 00 00 00 	nop 
+ 554:	82 10 00 08 	mov  %o0, %g1
+ 558:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 55c:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 560:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 564:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 568:	80 a0 60 00 	cmp  %g1, 0
+ 56c:	14 bf ff f7 	bg  548 <getInt+0x30>
+ 570:	01 00 00 00 	nop 
+ 574:	03 00 00 08 	sethi  %hi(0x2000), %g1
+ 578:	90 10 61 00 	or  %g1, 0x100, %o0	! 2100 <getString+0x1a58>
+ 57c:	7f ff fe df 	call  f8 <load_int>
+ 580:	01 00 00 00 	nop 
+ 584:	d0 27 bf f8 	st  %o0, [ %fp + -8 ]
+ 588:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+ 58c:	b0 10 00 01 	mov  %g1, %i0
+ 590:	81 e8 00 00 	restore 
+ 594:	81 c3 e0 08 	retl 
+ 598:	01 00 00 00 	nop 
+
+0000059c <getFloat>:
+ 59c:	9d e3 bf 98 	save  %sp, -104, %sp
+ 5a0:	82 10 20 03 	mov  3, %g1
+ 5a4:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 5a8:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 5ac:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 5b0:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 5b4:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 5b8:	92 10 00 01 	mov  %g1, %o1
+ 5bc:	7f ff fe ee 	call  174 <store_char>
+ 5c0:	01 00 00 00 	nop 
+ 5c4:	10 80 00 07 	b  5e0 <getFloat+0x44>
+ 5c8:	01 00 00 00 	nop 
+ 5cc:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 5d0:	7f ff fe be 	call  c8 <load_char>
+ 5d4:	01 00 00 00 	nop 
+ 5d8:	82 10 00 08 	mov  %o0, %g1
+ 5dc:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 5e0:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 5e4:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 5e8:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 5ec:	80 a0 60 00 	cmp  %g1, 0
+ 5f0:	14 bf ff f7 	bg  5cc <getFloat+0x30>
+ 5f4:	01 00 00 00 	nop 
+ 5f8:	03 00 00 08 	sethi  %hi(0x2000), %g1
+ 5fc:	90 10 61 00 	or  %g1, 0x100, %o0	! 2100 <getString+0x1a58>
+ 600:	7f ff fe c8 	call  120 <load_float>
+ 604:	01 00 00 00 	nop 
+ 608:	c1 27 bf f8 	st  %f0, [ %fp + -8 ]
+ 60c:	d1 07 bf f8 	ld  [ %fp + -8 ], %f8
+ 610:	81 a0 00 28 	fmovs  %f8, %f0
+ 614:	81 e8 00 00 	restore 
+ 618:	81 c3 e0 08 	retl 
+ 61c:	01 00 00 00 	nop 
+
+00000620 <getDouble>:
+ 620:	9d e3 bf 90 	save  %sp, -112, %sp
+ 624:	82 10 20 04 	mov  4, %g1
+ 628:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 62c:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 630:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 634:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 638:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 63c:	92 10 00 01 	mov  %g1, %o1
+ 640:	7f ff fe cd 	call  174 <store_char>
+ 644:	01 00 00 00 	nop 
+ 648:	10 80 00 07 	b  664 <getDouble+0x44>
+ 64c:	01 00 00 00 	nop 
+ 650:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 654:	7f ff fe 9d 	call  c8 <load_char>
+ 658:	01 00 00 00 	nop 
+ 65c:	82 10 00 08 	mov  %o0, %g1
+ 660:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 664:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 668:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 66c:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 670:	80 a0 60 00 	cmp  %g1, 0
+ 674:	14 bf ff f7 	bg  650 <getDouble+0x30>
+ 678:	01 00 00 00 	nop 
+ 67c:	03 00 00 08 	sethi  %hi(0x2000), %g1
+ 680:	90 10 61 00 	or  %g1, 0x100, %o0	! 2100 <getString+0x1a58>
+ 684:	7f ff fe b1 	call  148 <load_double>
+ 688:	01 00 00 00 	nop 
+ 68c:	c1 3f bf f0 	std  %f0, [ %fp + -16 ]
+ 690:	d1 1f bf f0 	ldd  [ %fp + -16 ], %f8
+ 694:	81 a0 00 28 	fmovs  %f8, %f0
+ 698:	83 a0 00 29 	fmovs  %f9, %f1
+ 69c:	81 e8 00 00 	restore 
+ 6a0:	81 c3 e0 08 	retl 
+ 6a4:	01 00 00 00 	nop 
+
+000006a8 <getString>:
+ 6a8:	9d e3 bf 90 	save  %sp, -112, %sp
+ 6ac:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+ 6b0:	82 10 20 05 	mov  5, %g1
+ 6b4:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 6b8:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 6bc:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 6c0:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 6c4:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 6c8:	92 10 00 01 	mov  %g1, %o1
+ 6cc:	7f ff fe aa 	call  174 <store_char>
+ 6d0:	01 00 00 00 	nop 
+ 6d4:	10 80 00 07 	b  6f0 <getString+0x48>
+ 6d8:	01 00 00 00 	nop 
+ 6dc:	11 00 00 08 	sethi  %hi(0x2000), %o0
+ 6e0:	7f ff fe 7a 	call  c8 <load_char>
+ 6e4:	01 00 00 00 	nop 
+ 6e8:	82 10 00 08 	mov  %o0, %g1
+ 6ec:	c2 2f bf ff 	stb  %g1, [ %fp + -1 ]
+ 6f0:	c2 0f bf ff 	ldub  [ %fp + -1 ], %g1
+ 6f4:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 6f8:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 6fc:	80 a0 60 00 	cmp  %g1, 0
+ 700:	14 bf ff f7 	bg  6dc <getString+0x34>
+ 704:	01 00 00 00 	nop 
+ 708:	c0 27 bf f8 	clr  [ %fp + -8 ]
+ 70c:	10 80 00 19 	b  770 <getString+0xc8>
+ 710:	01 00 00 00 	nop 
+ 714:	c4 07 bf f8 	ld  [ %fp + -8 ], %g2
+ 718:	03 00 00 08 	sethi  %hi(0x2000), %g1
+ 71c:	82 10 61 00 	or  %g1, 0x100, %g1	! 2100 <getString+0x1a58>
+ 720:	82 00 80 01 	add  %g2, %g1, %g1
+ 724:	90 10 00 01 	mov  %g1, %o0
+ 728:	7f ff fe 68 	call  c8 <load_char>
+ 72c:	01 00 00 00 	nop 
+ 730:	82 10 00 08 	mov  %o0, %g1
+ 734:	c2 2f bf f7 	stb  %g1, [ %fp + -9 ]
+ 738:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+ 73c:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+ 740:	82 00 80 01 	add  %g2, %g1, %g1
+ 744:	c4 0f bf f7 	ldub  [ %fp + -9 ], %g2
+ 748:	c4 28 40 00 	stb  %g2, [ %g1 ]
+ 74c:	c2 0f bf f7 	ldub  [ %fp + -9 ], %g1
+ 750:	83 28 60 18 	sll  %g1, 0x18, %g1
+ 754:	83 38 60 18 	sra  %g1, 0x18, %g1
+ 758:	80 a0 60 00 	cmp  %g1, 0
+ 75c:	02 80 00 0b 	be  788 <getString+0xe0>
+ 760:	01 00 00 00 	nop 
+ 764:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+ 768:	82 00 60 01 	inc  %g1
+ 76c:	c2 27 bf f8 	st  %g1, [ %fp + -8 ]
+ 770:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+ 774:	80 a0 63 e7 	cmp  %g1, 0x3e7
+ 778:	04 bf ff e7 	ble  714 <getString+0x6c>
+ 77c:	01 00 00 00 	nop 
+ 780:	10 80 00 03 	b  78c <getString+0xe4>
+ 784:	01 00 00 00 	nop 
+ 788:	01 00 00 00 	nop 
+ 78c:	81 e8 00 00 	restore 
+ 790:	81 c3 e0 08 	retl 
+ 794:	01 00 00 00 	nop 

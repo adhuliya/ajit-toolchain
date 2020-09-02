@@ -1,0 +1,20 @@
+linker related stuff.
+	LinkerScript.lnk
+		linker script starts program at PC=0x0
+                and data at 0x00020000. Forces includes of
+		.text.* sections.
+
+	LinkerScript.lnk.old
+		old linker script starts program at PC=0xf0004000
+                and data at 0xf0104000
+
+	validationLinkerScript.lnk
+		linker script to be used for validation.. starts text at
+		0x0 and data 0x10000.
+
+	bootRomLinkerScript.lnk
+		for making a bootrom link.
+
+	makeLinkerScript.py
+		a script which can make a custom linker script 
+		by specifying text, data section starts.

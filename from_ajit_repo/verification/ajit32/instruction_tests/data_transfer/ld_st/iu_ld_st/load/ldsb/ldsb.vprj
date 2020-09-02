@@ -1,0 +1,10 @@
+SOURCES = ldsb.s
+
+
+
+RESULTS = 
+g1=0x00000080
+o0=0x70
+o1=0x71
+l1 = 0xFFFFFFA1
+l2 = 0x52

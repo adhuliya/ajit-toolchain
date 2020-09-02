@@ -1,0 +1,1 @@
+stdbuf -o 0  AJIT_cpu_cache_mmu_testbench_logger  ../Kernel_images/without_prints/Output/mem_map_for_initial_PC_f0004000.txt   Results.txt  Log.txt  10.107.90.65  9997  2>&1 |tee ./Ajit_C_linux_boot_LOG.txt

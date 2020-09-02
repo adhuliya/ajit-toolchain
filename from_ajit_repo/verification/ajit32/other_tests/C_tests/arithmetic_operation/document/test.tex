@@ -1,0 +1,133 @@
+\documentclass[12pt]{article}
+\usepackage{listings}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+\usepackage{float}
+\usepackage{array}
+\usepackage{enumitem}
+\newcommand\XOR{\mathbin{\char`\^}}
+\newcommand\AND{\mathbin{\char`\&}}
+\newcommand\OR{\mathbin{\char`\|}}
+\usepackage{amsmath,amsfonts,amssymb}
+\geometry{legalpaper, left=20mm, top=1in}
+\begin{document}
+
+\title{Instruction based validation of Arithmetic Operations on AJIT processor}
+\author{Asha Devi\\Prof. Madhav P Desai \\ Department of Electrical Engineering \\ Indian Institute of Technology \\
+	Mumbai 400076 India}
+\date{}
+\maketitle
+\section*{Abstract}
+AJIT processor is a SPARC V8 Instruction Set Architecture (ISA) complient processor developed at IIT Bombay.This document describes the set of tests done for instruction based validation of arithmetic operations implemented on the processor.The tests are performed on the following operations:
+\begin{itemize}
+  \item Integer Operations
+
+	\begin{itemize}
+
+		\item Unsigned Integer Operations : addition(add),subtraction(sub),multiplication\\
+(umul)and division(udiv)
+
+	
+		\item Signed Integer Operations : multplication(smul) and division(sdiv)
+	 \end{itemize}
+  \item Floating point Operations
+	\begin{itemize}
+		\item Single Precision Floating Point operations : addition(fadds),subtraction(fsubs),
+multiplication(fmuls),division(fdivs) and square root(fsqrts)
+		\item Double Precision Floating Point operations : addition(faddd),subtraction(fsubd),
+multiplication(fmuld),division(fdivd) and square root(fsqrtd)
+		\item Integer to Float Conversion :Integer to single (fitos),Integer to double(fitod)
+		\item Float to Integer Conversion :Single to Integer (fstoi),Double to Integer (fdtoi) 
+		\item Conversion between floating point formats :Single to Double (fstod) ,Double to single (fdtos)
+	\end{itemize}
+\end{itemize}
+\section*{Validation Scheme}
+We describe the validation of arithmetic operations of a processor conforming to the SPARC-V8 Instruction Set Architecture (ISA) based on the SPARC Architecture Manual, Version 8 [1]. 
+In order to validate arithmetic operations over the entire range of integers/floats ,the concept of generating random test cases has been used. 
+Linear Feedback Shift Register (LFSR) has been used for generation of pseudo-random numbers [2]. Comparing result of individual random tests with host machine requires huge computational effort as 
+well as occupies enormous memory space. A signature capturing information of each result from all random tests is generated instead. Since, signature captures the history of all test cases, matching
+of signature with host machine ensures the correctness of individual tests and the validation of the arithmetic operations.\par
+\noindent
+The psuedo code used for testing is described below:
+\begin{itemize}
+  \item Initialize a signature say s=0
+  \item then $for(count=0;count \le maxcount;count++)$
+		\begin{itemize}
+		\item[] $\{$
+		\begin{itemize}
+		\item Generate two operands using pseudo random number generator(LFSR)
+		\item Compute the result for each operation :\\
+			add = a + b ;\\
+			mul = add * b ;\\
+			sub = mul - add ;\\
+			div=mul $\div$ sub ;\\
+			sqrt=$\surd$div;\\
+		\item Update the signature s = s xor sqrt
+		\item Allocate signature to memory
+		\end{itemize}
+		\item[] $\}$
+		\end{itemize}
+\item Compare the final signature with a signature computed on a host machine(Intel)			
+\end{itemize}
+Note:\\
+1. For all integer operations - a,b are 32 bits except for signed and unsigned division where a is 64 bit.\\
+2. maxcount = 10 million for C ,1 million for FPGA model,10 thousand for Aa model.
+\section*{LFSR Implementation}
+Fibonacci Linear Feedback Shift Register (LFSR) has been used for generation of pseudo-random numbers.The 32-bit Fibonacci LFSR equation is given below:\\
+a=((((a$\gg$31)$\XOR$(a$\gg$6)$\XOR$(a$\gg$4)$\XOR$(a$\gg$1)$\XOR$a)$\AND$1)$\ll$31)$\OR$(a$\gg$1)
+
+\section*{Test Implementation}
+Tests are located in following directories:
+\begin{itemize}
+  \item Unsigned integers(add,sub,umul,udiv) in :
+\begin{lstlisting}
+AjitRepoV2/processor/C/validation/C_tests/arithmetic_operation
+/unsigned_integer_operation
+\end{lstlisting}
+\item Signed multiplication(smul) in :
+\begin{lstlisting}
+AjitRepoV2/processor/C/validation/C_tests/arithmetic_operation
+/signed_mul
+\end{lstlisting}
+\item Signed division(sdiv) in :
+\begin{lstlisting}
+AjitRepoV2/processor/C/validation/C_tests/arithmetic_operation
+/signed_div
+\end{lstlisting}
+\item Floating point single,double precision and conversions(fadds,fsubs,fdivs,fmuls,fsqrts,faddd,fsubd,\\
+fmuld,fdivd,fsqrtd,fitos,fitod,fstoi,fdtoi,fstod,fdtos) in :
+\begin{lstlisting}
+AjitRepoV2/processor/C/validation/C_tests/arithmetic_operation/
+fp_final_all_check
+\end{lstlisting}
+\end{itemize}
+\section*{Results}
+
+\begin{tabular}{|p{5cm}|c|c|c|}
+%\begin{tabular}{|P{1.8cm}|P{1.2cm}|P{1.3cm}|P{1.3cm}|P{1.3cm}|P{1.4cm}|P{1.4cm}|P{1.4cm}|P{1.4cm}|P{0.6cm}|}	
+  \hline
+ \textbf{Operation} & \parbox[t]{3cm}{\textbf{FPGA model (1 million)}} & \parbox[t]{3cm}{\textbf{C model (10 million)}} & \parbox[t]{3cm} {\textbf{Aa model (10 thousand)}}\\
+  \hline
+  unsigned integer operations & pass & pass & pass\\
+  \hline
+  signed integer operations & pass & pass & pass\\
+   \hline
+  floating point single,double precision & pass & pass & pass\\
+  \hline
+\end{tabular}
+
+\section*{Conclusion}
+The result generated by the integer and floating point unit is found as expected.
+\section*{References}
+\begin{lstlisting}
+[1] The SPARC Architecture Manual Version 8. [Online]. Available: 
+http://www.sparc.org/technical-documents-test-2/specifications/#ARCH. 
+[2]https://www.xilinx.com/support/documentation/application_notes
+   /xapp052.pdf
+\end{lstlisting}
+
+
+\end{document}
+

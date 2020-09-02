@@ -1,0 +1,2 @@
+#!/bin/sh
+PKG_CONFIG_LIBDIR=${PKG_CONFIG_LIBDIR:-/home/nehak/AJITproject/AjitRepoV2/tools/buildroot/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/pkgconfig:/home/nehak/AJITproject/AjitRepoV2/tools/buildroot/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/share/pkgconfig} PKG_CONFIG_SYSROOT_DIR=${PKG_CONFIG_SYSROOT_DIR:-/home/nehak/AJITproject/AjitRepoV2/tools/buildroot/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot} $(dirname $0)/pkgconf  $@

@@ -1,0 +1,5 @@
+Contains the tests for Floating point unit memory load operations
+
+	1. LDF ( Load Floating-point Word )
+	2. LDDF ( Load Floating-point Double Word )
+	3. LDFSR ( Load Floating-point Status Register )

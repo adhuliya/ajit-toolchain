@@ -1,0 +1,81 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 02 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, big endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Sparc
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          52 (bytes into file)
+  Start of section headers:          67760 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           32 (bytes)
+  Number of program headers:         2
+  Size of section headers:           40 (bytes)
+  Number of section headers:         15
+  Section header string table index: 12
+
+Section Headers:
+  [Nr] Name              Type            Addr     Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            00000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        00000000 010000 000264 00  AX  0   0  4
+  [ 2] .rodata           PROGBITS        00000268 010268 000008 00   A  0   0  8
+  [ 3] .debug_info       PROGBITS        00000000 010270 00013f 00      0   0  1
+  [ 4] .debug_abbrev     PROGBITS        00000000 0103af 0000c4 00      0   0  1
+  [ 5] .debug_loc        PROGBITS        00000000 010473 000060 00      0   0  1
+  [ 6] .debug_aranges    PROGBITS        00000000 0104d3 000028 00      0   0  1
+  [ 7] .debug_ranges     PROGBITS        00000000 0104fb 000018 00      0   0  1
+  [ 8] .debug_line       PROGBITS        00000000 010513 000176 00      0   0  1
+  [ 9] .debug_str        PROGBITS        00000000 010689 000106 01  MS  0   0  1
+  [10] .comment          PROGBITS        00000000 01078f 00002e 01  MS  0   0  1
+  [11] .debug_frame      PROGBITS        00000000 0107c0 000058 00      0   0  4
+  [12] .shstrtab         STRTAB          00000000 010818 000098 00      0   0  1
+  [13] .symtab           SYMTAB          00000000 010b08 000100 10     14  15  4
+  [14] .strtab           STRTAB          00000000 010c08 000033 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings)
+  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+  O (extra OS processing required) o (OS specific), p (processor specific)
+
+There are no section groups in this file.
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x010000 0x00000000 0x00000000 0x00270 0x00270 R E 0x10000
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text .rodata 
+   01     
+
+There is no dynamic section in this file.
+
+There are no relocations in this file.
+
+There are no unwind sections in this file.
+
+Symbol table '.symtab' contains 16 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 SECTION LOCAL  DEFAULT    1 
+     2: 00000268     0 SECTION LOCAL  DEFAULT    2 
+     3: 00000000     0 SECTION LOCAL  DEFAULT    3 
+     4: 00000000     0 SECTION LOCAL  DEFAULT    4 
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 00000000     0 SECTION LOCAL  DEFAULT    6 
+     7: 00000000     0 SECTION LOCAL  DEFAULT    7 
+     8: 00000000     0 SECTION LOCAL  DEFAULT    8 
+     9: 00000000     0 SECTION LOCAL  DEFAULT    9 
+    10: 00000000     0 SECTION LOCAL  DEFAULT   10 
+    11: 00000000     0 SECTION LOCAL  DEFAULT   11 
+    12: 00000000     0 FILE    LOCAL  DEFAULT  ABS AjitBootloader.c
+    13: 000001c8    28 FUNC    LOCAL  DEFAULT    1 pv_nbputchar
+    14: 000001e4   128 FUNC    LOCAL  DEFAULT    1 ajit_putstring
+    15: 00000000   456 FUNC    GLOBAL DEFAULT    1 main
+
+No version information found in this file.

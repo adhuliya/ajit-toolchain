@@ -1,0 +1,6 @@
+validation.console.*
+validation.job.*
+src_file*
+log/
+compiled/
+

@@ -1,0 +1,7 @@
+SOURCES = CheckWriteMisses.s
+
+
+
+RESULTS = 
+g1=0x00000080
+l1=0xFABBCCDD

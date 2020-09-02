@@ -1,0 +1,6 @@
+SOURCES = simple_address_translation.c
+
+
+RESULTS = 
+g1 = 0xF00
+

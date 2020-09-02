@@ -1,0 +1,5 @@
+SOURCES = serial_tx_check.s
+
+
+RESULTS = 
+g3=0x1

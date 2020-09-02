@@ -1,0 +1,5 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+env.Program('./bin/genVmapAsm', './src/genVmapAsm.c', CCFLAGS=' -g', LINKFLAGS='-g ')
+env.Program('./bin/remapMemmap', './src/remapMemmap.c', CCFLAGS=' -g', LINKFLAGS='-g ')

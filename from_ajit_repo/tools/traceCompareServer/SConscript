@@ -1,0 +1,20 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+
+#AHIR-related
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+
+env.Append(CPPPATH = AHIR_INCLUDE + ":")
+LLIBS = ' SockPipes pthread '
+#libraries used by testbench with environment v1 (with caches, mmu etc)
+
+
+LLIBPATHS =  AHIR_LIBPATH 
+
+env.Program('./bin/traceCompareServer', './src/traceCompareServer.c', CCFLAGS=' -pthread -g -DSW ', LINKFLAGS='-g ', LIBS=Split(LLIBS), LIBPATH=Split(LLIBPATHS))
+env.Program('./bin/traceGen', './test_util/traceGen.c', CCFLAGS=' -pthread -g -DSW ', LINKFLAGS='-g ', LIBS=Split(LLIBS), LIBPATH=Split(LLIBPATHS))

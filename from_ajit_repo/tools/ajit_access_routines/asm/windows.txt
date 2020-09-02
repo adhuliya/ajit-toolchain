@@ -1,0 +1,25 @@
+Initial state
+  
+   			7 6 5 4 3 2 1 0
+current-window  	x - - - - - - -
+wim     		0 0 0 0 0 0 0 1 
+stack                   v i i i i i i v
+
+after save
+current-window  	- x - - - - - -
+wim     		0 0 0 0 0 0 0 1 
+stack                   v v i i i i i v
+                        
+
+at wof trap-handler
+current-window		- - - - - - - x
+wim     		0 0 0 0 0 0 0 1 
+stack                   v v v v v v v v
+
+
+The main problem: when an interrupt is
+taken, do we have a valid stack in the interrupt
+handler window or not?
+
+If yes, then we should use it to save the
+window registers.

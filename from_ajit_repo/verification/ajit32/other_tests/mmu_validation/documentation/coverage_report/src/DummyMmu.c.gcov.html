@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - libbash test coverage - src/DummyMmu.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - DummyMmu.c<span style="font-size: 80%;"> (source / <a href="DummyMmu.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">libbash test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : // DummyMmu.c</a>
+<span class="lineNum">       2 </span>            : //
+<span class="lineNum">       3 </span>            : //Dummy Mmu Behavior
+<span class="lineNum">       4 </span>            : //Simply forwards messages between
+<span class="lineNum">       5 </span>            : //cpu-side and memory side interfaces
+<span class="lineNum">       6 </span>            : // AUTHOR: Neha Karanjkar
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      10 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      11 </span>            : #include &quot;MmuInterface.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;CacheInterface.h&quot;
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<span class="lineNum">      14 </span>            : //Dummy Mmu Behavior
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 : void DummyMmu()</span>
+<span class="lineNum">      16 </span>            : {
+<span class="lineNum">      17 </span>            :     //temporary variables:
+<span class="lineNum">      18 </span>            :     uint8_t asi;
+<span class="lineNum">      19 </span>            :     uint32_t addr;
+<span class="lineNum">      20 </span>            :     uint8_t request_type;
+<span class="lineNum">      21 </span>            :     uint8_t byte_mask;
+<span class="lineNum">      22 </span>            :     uint64_t data;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :     //source/destination variables
+<span class="lineNum">      25 </span>            :     //keep track of whether the message is
+<span class="lineNum">      26 </span>            :     //associated with Icache or Dcache
+<span class="lineNum">      27 </span>            :     uint8_t  source;
+<span class="lineNum">      28 </span>            :     uint8_t  destination;
+<span class="lineNum">      29 </span>            :     
+<span class="lineNum">      30 </span>            :     uint8_t  mae;
+<span class="lineNum">      31 </span>            :     uint8_t cacheable;
+<span class="lineNum">      32 </span>            :     
+<span class="lineNum">      33 </span>            :     //the main loop ..runs forever:
+<span class="lineNum">      34 </span>            :     while(1)
+<span class="lineNum">      35 </span>            :     {
+<span class="lineNum">      36 </span>            :         //reset temporary variables
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :         asi=0;</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :         addr=0;</span>
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         request_type=0;</span>
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         byte_mask=0;</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         data=0;</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :         source =0;</span>
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :         destination=0;</span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :         mae=0;</span>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :         //keep cacheable=1, so that caches 
+<span class="lineNum">      47 </span>            :         //can be tested
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :         cacheable=1;</span>
+<span class="lineNum">      49 </span>            :         
+<span class="lineNum">      50 </span>            :         
+<span class="lineNum">      51 </span>            :         //wait for a request from caches
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         readCacheToMmuRequest(&amp;asi, &amp;addr, &amp;request_type, &amp;byte_mask, &amp;data, &amp;source);</span>
+<span class="lineNum">      53 </span>            :         
+<span class="lineNum">      54 </span>            :         //forward the request to System bus
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :         sendMmuToMemoryRequest(request_type, addr, data, byte_mask);</span>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :         //wait for a response from Memory
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         readMemoryToMmuResponse(&amp;data);</span>
+<span class="lineNum">      59 </span>            :         
+<span class="lineNum">      60 </span>            :         //send the response back to the cache
+<span class="lineNum">      61 </span>            :         //that created this request
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :         destination=source;</span>
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :         sendMmuToCacheResponse(mae,data,cacheable,destination);</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">      65 </span>            : }
+<span class="lineNum">      66 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

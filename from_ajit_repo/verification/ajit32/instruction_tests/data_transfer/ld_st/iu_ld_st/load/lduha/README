@@ -1,0 +1,5 @@
+Instruction : LDUHA
+Details :
+Load a half-word from the alternate memory into one register and discard the sign information.
+
+lduhaTV - test cases for trap conditions

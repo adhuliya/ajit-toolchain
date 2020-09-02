@@ -1,0 +1,74 @@
+--- AJIT_device_tree.S	2014-12-16 12:51:28.798276255 +0530
++++ Corrected.S	2014-12-16 12:52:18.822274687 +0530
+@@ -9,25 +9,29 @@
+ 	/* magic */
+ 	.byte 0xd0; .byte 0x0d; .byte 0xfe; .byte 0xed
+ 	/* totalsize */
+-	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 24) & 0xff
+-	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 16) & 0xff
+-	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 8) & 0xff
+-	.byte	(_dt_blob_abs_end - _dt_blob_start) & 0xff
++	.word	((_dt_blob_abs_end - _dt_blob_start))
++!	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 24) & 0xff
++!	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 16) & 0xff
++!	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 8) & 0xff
++!	.byte	(_dt_blob_abs_end - _dt_blob_start) & 0xff
+ 	/* off_dt_struct */
+-	.byte	((_dt_struct_start - _dt_blob_start) >> 24) & 0xff
+-	.byte	((_dt_struct_start - _dt_blob_start) >> 16) & 0xff
+-	.byte	((_dt_struct_start - _dt_blob_start) >> 8) & 0xff
+-	.byte	(_dt_struct_start - _dt_blob_start) & 0xff
++	.word	((_dt_struct_start - _dt_blob_start))
++!	.byte	((_dt_struct_start - _dt_blob_start) >> 24) & 0xff
++!	.byte	((_dt_struct_start - _dt_blob_start) >> 16) & 0xff
++!	.byte	((_dt_struct_start - _dt_blob_start) >> 8) & 0xff
++!	.byte	(_dt_struct_start - _dt_blob_start) & 0xff
+ 	/* off_dt_strings */
+-	.byte	((_dt_strings_start - _dt_blob_start) >> 24) & 0xff
+-	.byte	((_dt_strings_start - _dt_blob_start) >> 16) & 0xff
+-	.byte	((_dt_strings_start - _dt_blob_start) >> 8) & 0xff
+-	.byte	(_dt_strings_start - _dt_blob_start) & 0xff
++	.word	((_dt_strings_start - _dt_blob_start))
++!	.byte	((_dt_strings_start - _dt_blob_start) >> 24) & 0xff
++!	.byte	((_dt_strings_start - _dt_blob_start) >> 16) & 0xff
++!	.byte	((_dt_strings_start - _dt_blob_start) >> 8) & 0xff
++!	.byte	(_dt_strings_start - _dt_blob_start) & 0xff
+ 	/* off_mem_rsvmap */
+-	.byte	((_dt_reserve_map - _dt_blob_start) >> 24) & 0xff
+-	.byte	((_dt_reserve_map - _dt_blob_start) >> 16) & 0xff
+-	.byte	((_dt_reserve_map - _dt_blob_start) >> 8) & 0xff
+-	.byte	(_dt_reserve_map - _dt_blob_start) & 0xff
++	.word	((_dt_reserve_map - _dt_blob_start))
++!	.byte	((_dt_reserve_map - _dt_blob_start) >> 24) & 0xff
++!	.byte	((_dt_reserve_map - _dt_blob_start) >> 16) & 0xff
++!	.byte	((_dt_reserve_map - _dt_blob_start) >> 8) & 0xff
++!	.byte	(_dt_reserve_map - _dt_blob_start) & 0xff
+ 	/* version */
+ 	.byte 0x00; .byte 0x00; .byte 0x00; .byte 0x11
+ 	/* last_comp_version */
+@@ -35,15 +39,17 @@
+ 	/* boot_cpuid_phys */
+ 	.byte 0x00; .byte 0x00; .byte 0x00; .byte 0x00
+ 	/* size_dt_strings */
+-	.byte	((_dt_strings_end - _dt_strings_start) >> 24) & 0xff
+-	.byte	((_dt_strings_end - _dt_strings_start) >> 16) & 0xff
+-	.byte	((_dt_strings_end - _dt_strings_start) >> 8) & 0xff
+-	.byte	(_dt_strings_end - _dt_strings_start) & 0xff
++	.word	((_dt_strings_end - _dt_strings_start))
++!	.byte	((_dt_strings_end - _dt_strings_start) >> 24) & 0xff
++!	.byte	((_dt_strings_end - _dt_strings_start) >> 16) & 0xff
++!	.byte	((_dt_strings_end - _dt_strings_start) >> 8) & 0xff
++!	.byte	(_dt_strings_end - _dt_strings_start) & 0xff
+ 	/* size_dt_struct */
+-	.byte	((_dt_struct_end - _dt_struct_start) >> 24) & 0xff
+-	.byte	((_dt_struct_end - _dt_struct_start) >> 16) & 0xff
+-	.byte	((_dt_struct_end - _dt_struct_start) >> 8) & 0xff
+-	.byte	(_dt_struct_end - _dt_struct_start) & 0xff
++	.word	((_dt_struct_end - _dt_struct_start))
++!	.byte	((_dt_struct_end - _dt_struct_start) >> 24) & 0xff
++!	.byte	((_dt_struct_end - _dt_struct_start) >> 16) & 0xff
++!	.byte	((_dt_struct_end - _dt_struct_start) >> 8) & 0xff
++!	.byte	(_dt_struct_end - _dt_struct_start) & 0xff
+ 	.balign	8, 0
+ 	.globl	dt_reserve_map
+ dt_reserve_map:

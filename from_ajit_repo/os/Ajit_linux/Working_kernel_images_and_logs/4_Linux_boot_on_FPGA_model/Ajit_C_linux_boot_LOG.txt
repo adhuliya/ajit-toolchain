@@ -1,0 +1,26 @@
+Info:pThreadUtils: started thread memoryAccess
+Info:pThreadUtils: started thread displayDriver
+Info:pThreadUtils: started thread keyboardDriver
+Info:pThreadUtils: started thread IRC_Control
+Info:pThreadUtils: started thread IRC_Output
+Info:pThreadUtils: started thread Timer_Control
+Info:pThreadUtils: started thread Timer_Output
+Info:pThreadUtils: started thread Serial_Control
+Info:pThreadUtils: started thread Serial_Rx
+Info:pThreadUtils: started thread Serial_Tx
+Info:pThreadUtils: started thread Console_Output
+Info:pThreadUtils: started thread Console_Input
+Info:pThreadUtils: started thread DemuxMMUtoCaches
+Info:pThreadUtils: started thread Icache
+Info:pThreadUtils: started thread Dcache
+Info:pThreadUtils: started thread Mmu
+Info:pThreadUtils: started thread hwServer
+Info:pThreadUtils: started thread cpu
+Connection established with HW Server !
+Hardware Server started !
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 
+------ Mmu context-register = 0 --------------
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 
+------ MMU TLB flushed due to context-table-pointer-write (=7000000) ------
+----- DCACHE FLUSHED DUE TO MMU CONTEXT-REG-WRITE  ---- 
+PROMLIB: obio_ranges 1

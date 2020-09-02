@@ -1,0 +1,3 @@
+initramfs.cpio is the final initram image used by buildroot for embedding into the generated kernel image.
+
+

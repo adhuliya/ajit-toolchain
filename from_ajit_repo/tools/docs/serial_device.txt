@@ -1,0 +1,99 @@
+A description of the serial device:
+-------------------------------------
+   Madhav Desai, Neha Karanjkar
+
+The serial device is a memory mapped I/O device that
+allows for exchange of bytes between the CPU and
+an external I/O device such as a UART.
+
+It has a CPU-side interface which looks like a
+memory interface, and an environment-side interface
+which has two byte-wide pipes
+	- CONSOLE_to_SERIAL_RX
+		an input pipe on which data is received.
+	- SERIAL_TX_to_CONSOLE
+		an output pipe on which data is transmitted.
+
+It has three internal registers
+   - an 8-bit rx_register into which data read from the input pipe
+	is stored.
+   - an 8-bit tx_register into which data from the CPU is written.
+   - a 5-bit control/status register which
+     has the following bit-fields
+     4: rx-register-full.
+	if set indicates that the rx-register has data that needs
+	to be read.  The rx-register will not be updated until 
+	data has been read by the CPU.
+		NOTE: writes to the control register will not modify 
+			this bit.  The bit is set when data is written
+			into the rx-register.  The bit is cleared when
+			the rx-register is read.
+     3: tx-register-full.
+	if set indicates that the tx-register has been updated by
+        the CPU but has not yet been transmitted.
+		NOTE: writes to the control register will not modify 
+			this bit.  The bit is set when data is written
+			into the tx-register.  The bit is cleared when
+			the tx-register is transmitted.
+
+     2: rx-interrupt-enable.
+	if set indicates that an interrupt should be raised whenever
+	the rx-register has been updated.
+     1: rx-enable
+	if set (by the CPU) indicates that the receive function is
+	active.
+     0: tx-enable
+	if set (by the CPU) indicates that the transmit function is
+	active.
+
+
+Internally, its behaviour is modeled by two state machines,
+the rx and tx state machines.
+
+The rx state machine
+     Starts in idle.  If rx-enable is set, moves to enabled state.
+     In enabled state, looks to read from the input pipe and if
+     data is read, moves to the received state (and if rx-interrupt-enable
+     is set, raises an interrupt).  Stays in the received state 
+     until the rx-register is read by the CPU, at which point it
+     moves to either disabled/enabled state as indicated by the
+     rx-enable bit.
+
+The tx state machine
+    Starts in idle.  If tx-enable is set, moves to enabled state.
+    In the enabled state waits for a tx-register write from the CPU,
+    and when this happens, moves to the transmit state, and sets
+    tx-full to 1.  In the transmit state, writes the tx-register to 
+    an internal pipe to a transmit daemon, and goes to a transmit-done-wait
+    state.  In this state, when it receives an OK from the transmit 
+    daemon, clears rx-full = 0, and moves to either disabled/enabled
+    state as indicated by the tx-enable bit.
+
+
+To use the serial device on the RX side
+
+   The cpu must enable the rx function. The serial device will then
+   attempt to read a byte into the rx-buffer.  If the cpu has also 
+   enabled the rx-interrupt function, an interrupt is generated
+   when  the byte is read into the rx-buffer. The rx-full flag
+   is also asserted.  When the CPU reads the rx-buffer, the rx-full
+   flag is deasserted and the rx state goes back to enable.  Thus,
+   the CPU should use the RX in the following ways
+     rx-enable -> poll-rx-full -> read-rx-register -> disable (or leave enabled).
+     rx-enable -> wait-intr -> read-rx-register -> disable (or leave enabled).
+
+To use the serial device on the TX side
+  
+  The cpu must enable the tx function.  When the cpu writes to the
+  tx-buffer, the serial device sets tx-full, and will attempt to write the byte out,
+  and when it succeeds, will clear tx-full.  The cpu should monitor tx-full
+  and if it is empty, disable the tx function.
+
+    tx-enable -> write-tx-buf -> poll-tx-full -> disable.
+
+NOTES:
+
+   The implementation of the serial device should not, at any point,
+   cause the CPU to block.  That is, for every CPU access, a response
+   should be generated immediately!
+
