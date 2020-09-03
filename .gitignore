@@ -43,3 +43,10 @@
 # vim
 *.swp
 
+# ajit build system related
+*.elf
+*.hex
+*.mmap*
+*.objdump
+*wtrace*
+

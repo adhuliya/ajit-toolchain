@@ -14,6 +14,14 @@ To build stay in this directory and execute:
   ./src/setup.sh
 
 
-To restart the build always clean the current directory:
+To restart the build always clean the current directory first:
 
-  ./src/clean.sh
+  ./src/clean.sh;./src/setup.sh;
+
+
+## Important Locations
+
+* `examples/` folder contains examples that demonstrate the
+  use of many of the tools in this repo.
+
+
