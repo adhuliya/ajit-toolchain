@@ -1,0 +1,9 @@
+This folder contains the hardware server in hardware to support the debugging of sparc v8 cpu.
+
+CONTENTS:
+	include	: headers for hardware server
+	antlr3Cruntime : Necessary files for parsing while validating
+	src	: C files for hardware server	
+	lib	: hardware server library gets created here
+	tests	: Test validation projects
+	SConscript : build script used by scons

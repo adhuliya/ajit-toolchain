@@ -1,0 +1,14 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+Import('COMPILATION_FLAGS')
+DEBUG_COMPILATION_FLAGS = COMPILATION_FLAGS 
+# + ' -DGDB_DBG '
+Export('DEBUG_COMPILATION_FLAGS')
+
+SConscript(['spi_common/SConscript'])
+SConscript(['hwServer/SConscript'])
+SConscript(['gpb/SConscript'])
+SConscript(['doval/SConscript'])
+
+

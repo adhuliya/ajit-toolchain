@@ -1,0 +1,5 @@
+
+swap/ldstub
+
+	-  must make these pass-through accesses
+		so that locking is effective.

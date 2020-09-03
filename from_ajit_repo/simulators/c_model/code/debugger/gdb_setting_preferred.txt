@@ -1,0 +1,4 @@
+set remote hardware-watchpoint-limit 16
+set remote hardware-breakpoint-limit 16
+set can-use-hw-watchpoints 1
+set can-use-hw-breakpoints 1
