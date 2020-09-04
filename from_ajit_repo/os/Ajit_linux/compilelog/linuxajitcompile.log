@@ -1,0 +1,681 @@
+=================================================
+ STEP 1: 
+  copying kernel source code (using rync)
+  from: ./Ajit_linux_3.16.1/
+  to  : ./buildroot-2014.08/output/build/linux-custom
+=================================================
+sending incremental file list
+./
+arch/sparc/Ajit/
+arch/sparc/crypto/
+arch/sparc/kernel/
+arch/sparc/math-emu/
+arch/sparc/mm/
+arch/sparc/net/
+block/
+crypto/
+drivers/
+drivers/amba/
+drivers/auxdisplay/
+drivers/base/
+drivers/base/power/
+drivers/block/
+drivers/bus/
+drivers/cdrom/
+drivers/char/
+drivers/char/agp/
+drivers/clk/
+drivers/clocksource/
+drivers/firewire/
+drivers/firmware/
+drivers/gpio/
+drivers/gpu/
+drivers/gpu/drm/
+drivers/gpu/drm/bridge/
+drivers/gpu/drm/i2c/
+drivers/gpu/drm/panel/
+drivers/gpu/vga/
+drivers/hsi/
+drivers/hsi/clients/
+drivers/hsi/controllers/
+drivers/i2c/
+drivers/i2c/algos/
+drivers/i2c/busses/
+drivers/i2c/muxes/
+drivers/idle/
+drivers/input/
+drivers/irqchip/
+drivers/leds/
+drivers/lguest/
+drivers/macintosh/
+drivers/media/
+drivers/media/common/
+drivers/media/common/b2c2/
+drivers/media/common/saa7146/
+drivers/media/common/siano/
+drivers/media/firewire/
+drivers/media/i2c/
+drivers/media/i2c/soc_camera/
+drivers/media/mmc/
+drivers/media/mmc/siano/
+drivers/media/parport/
+drivers/media/pci/
+drivers/media/pci/b2c2/
+drivers/media/pci/ddbridge/
+drivers/media/pci/dm1105/
+drivers/media/pci/mantis/
+drivers/media/pci/ngene/
+drivers/media/pci/pluto2/
+drivers/media/pci/pt1/
+drivers/media/pci/saa7146/
+drivers/media/pci/ttpci/
+drivers/media/platform/
+drivers/media/platform/davinci/
+drivers/media/rc/
+drivers/media/rc/keymaps/
+drivers/media/tuners/
+drivers/media/usb/
+drivers/media/usb/b2c2/
+drivers/media/usb/dvb-usb-v2/
+drivers/media/usb/dvb-usb/
+drivers/media/usb/s2255/
+drivers/media/usb/siano/
+drivers/media/usb/stkwebcam/
+drivers/media/usb/ttusb-budget/
+drivers/media/usb/ttusb-dec/
+drivers/media/usb/zr364xx/
+drivers/mfd/
+drivers/misc/
+drivers/misc/carma/
+drivers/misc/cb710/
+drivers/misc/eeprom/
+drivers/misc/lis3lv02d/
+drivers/misc/mic/
+drivers/misc/ti-st/
+drivers/mmc/
+drivers/net/
+drivers/nfc/
+drivers/of/
+drivers/pinctrl/
+drivers/platform/
+drivers/pwm/
+drivers/rtc/
+drivers/sbus/
+drivers/sbus/char/
+drivers/soc/
+drivers/tty/
+drivers/tty/ipwireless/
+drivers/tty/serial/
+drivers/tty/vt/
+drivers/video/
+drivers/video/backlight/
+drivers/video/fbdev/
+drivers/video/fbdev/core/
+drivers/video/fbdev/omap2/
+drivers/video/fbdev/omap2/displays-new/
+drivers/video/fbdev/omap2/dss/
+firmware/
+fs/
+fs/devpts/
+fs/exofs/
+fs/kernfs/
+fs/notify/
+fs/notify/dnotify/
+fs/notify/fanotify/
+fs/notify/inotify/
+fs/proc/
+fs/quota/
+fs/ramfs/
+fs/sysfs/
+init/
+ipc/
+kernel/
+kernel/irq/
+kernel/locking/
+kernel/power/
+kernel/printk/
+kernel/rcu/
+kernel/sched/
+kernel/time/
+lib/
+lib/zlib_inflate/
+mm/
+net/
+net/ieee802154/
+scripts/basic/
+scripts/mod/
+security/
+sound/
+usr/
+
+sent 1,124,056 bytes  received 3,739 bytes  751,863.33 bytes/sec
+total size is 540,571,588  speedup is 479.32
+ Running make clean inside linux build directory
+  CLEAN   .
+  CLEAN   kernel
+  CLEAN   usr
+  CLEAN   .tmp_versions
+/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 2: 
+  Running 'make' inside buildroot folder.
+=================================================
+#
+# configuration written to /ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/.config
+#
+/usr/bin/make -j1  HOSTCC="/usr/bin/gcc" HOSTCXX="/usr/bin/g++" silentoldconfig
+make[1]: Entering directory '/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08'
+BR2_DEFCONFIG='' KCONFIG_AUTOCONFIG=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/auto.conf KCONFIG_AUTOHEADER=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/autoconf.h KCONFIG_TRISTATE=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/tristate.config BR2_CONFIG=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/.config BR2_EXTERNAL=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/Ajit_buildroot_configs /ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/conf --silentoldconfig Config.in
+make[1]: Leaving directory '/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08'
+[7m>>> linux custom Building[27m
+PATH="/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/bin:/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin:/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/sbin:/home/saurabh/esp/esp-idf/tools:/home/saurabh/bin:/home/saurabh/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/saurabh/esp/xtensa-lx106-elf/bin" /usr/bin/make -j9 HOSTCC="/usr/bin/gcc" HOSTCFLAGS="" ARCH=sparc INSTALL_MOD_PATH=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target CROSS_COMPILE=" /ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-" DEPMOD=/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin/depmod -C /ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom vmlinux
+make[1]: Entering directory '/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom'
+  CHK     include/config/kernel.release
+  CHK     include/generated/uapi/linux/version.h
+  CHK     include/generated/utsrelease.h
+  HOSTCC  scripts/basic/fixdep
+  CC      scripts/mod/empty.o
+  HOSTCC  scripts/mod/mk_elfconfig
+  CC      scripts/mod/devicetable-offsets.s
+  GEN     scripts/mod/devicetable-offsets.h
+  MKELF   scripts/mod/elfconfig.h
+  HOSTCC  scripts/mod/file2alias.o
+  HOSTCC  scripts/mod/modpost.o
+  HOSTCC  scripts/mod/sumversion.o
+  HOSTLD  scripts/mod/modpost
+  CC      kernel/bounds.s
+  GEN     include/generated/bounds.h
+  CC      arch/sparc/kernel/asm-offsets.s
+  GEN     include/generated/asm-offsets.h
+  CALL    scripts/checksyscalls.sh
+  CC      init/main.o
+  CHK     include/generated/compile.h
+  CC      init/do_mounts.o
+  CC      init/do_mounts_initrd.o
+  CC      init/initramfs.o
+  CC      init/calibrate.o
+  CC      init/init_task.o
+  CC      init/version.o
+  HOSTCC  usr/gen_init_cpio
+  CC      arch/sparc/Ajit/fdt.o
+  CC      arch/sparc/Ajit/fdt_ro.o
+  CC      arch/sparc/math-emu/math_32.o
+  AS      arch/sparc/kernel/entry.o
+  LD      arch/sparc/crypto/built-in.o
+  GEN     usr/initramfs_data.cpio.gz
+  CC      arch/sparc/Ajit/Ajit_nodeops.o
+  CC      kernel/fork.o
+  AS      arch/sparc/kernel/wof.o
+  AS      arch/sparc/kernel/wuf.o
+  AS      arch/sparc/kernel/etrap_32.o
+  AS      arch/sparc/kernel/rtrap_32.o
+  AS      usr/initramfs_data.o
+  CC      mm/filemap.o
+  LD      init/mounts.o
+  CC      kernel/exec_domain.o
+  CC      kernel/panic.o
+  LD      init/built-in.o
+  LD      usr/built-in.o
+  CC      kernel/cpu.o
+  CC      arch/sparc/kernel/traps_32.o
+  CC      mm/mempool.o
+  LD      arch/sparc/Ajit/built-in.o
+  CC      mm/oom_kill.o
+  CC      kernel/exit.o
+  CC      kernel/itimer.o
+  HZFILE  kernel/hz.bc
+  CC      kernel/softirq.o
+  CC      arch/sparc/kernel/irq_32.o
+  CC      mm/fadvise.o
+  CC      kernel/resource.o
+  CC      arch/sparc/mm/fault_32.o
+  CC      arch/sparc/mm/init_32.o
+  LD      arch/sparc/net/built-in.o
+  CC      kernel/sysctl.o
+  CC      arch/sparc/kernel/sun4m_irq.o
+  CC      arch/sparc/kernel/sun4d_irq.o
+  CC      arch/sparc/mm/extable.o
+  CC      mm/maccess.o
+  CC      arch/sparc/mm/srmmu.o
+  CC      kernel/sysctl_binary.o
+  CC      kernel/capability.o
+  CC      arch/sparc/kernel/Ajit_irq.o
+  CC      arch/sparc/kernel/process_32.o
+  CC      arch/sparc/mm/iommu.o
+  CC      mm/page_alloc.o
+  CC      kernel/ptrace.o
+  CC      arch/sparc/kernel/signal_32.o
+  CC      kernel/timer.o
+  CC      mm/page-writeback.o
+  CC      arch/sparc/kernel/sigutil_32.o
+  CC      kernel/user.o
+  CC      arch/sparc/mm/io-unit.o
+  CC      arch/sparc/kernel/ioport.o
+  CC      arch/sparc/kernel/setup_32.o
+  AS      arch/sparc/mm/srmmu_access.o
+  AS      arch/sparc/mm/hypersparc.o
+  CC      kernel/signal.o
+  AS      arch/sparc/mm/viking.o
+  LD      arch/sparc/math-emu/built-in.o
+  AS      arch/sparc/mm/tsunami.o
+  CC      kernel/sys.o
+  CC      mm/readahead.o
+  CC      kernel/kmod.o
+  AS      arch/sparc/mm/swift.o
+  CC      arch/sparc/mm/leon_mm.o
+  CC      arch/sparc/mm/Ajit_srmmu.o
+  CC      arch/sparc/kernel/idprom.o
+  CC      mm/swap.o
+  CC      arch/sparc/mm/highmem.o
+  CC      mm/truncate.o
+  CC      kernel/workqueue.o
+  CC      arch/sparc/kernel/sys_sparc_32.o
+  CC      kernel/pid.o
+  LD      arch/sparc/mm/built-in.o
+  CC      kernel/task_work.o
+  CC      mm/vmscan.o
+  CC      mm/shmem.o
+  CC      kernel/extable.o
+  AS      arch/sparc/kernel/systbls_32.o
+  CC      kernel/params.o
+  CC      arch/sparc/kernel/time_32.o
+  CC      fs/open.o
+  CC      kernel/posix-timers.o
+  CC      arch/sparc/kernel/windows.o
+  LD      ipc/built-in.o
+  CC      mm/util.o
+  CC      kernel/kthread.o
+  CC      arch/sparc/kernel/cpu.o
+  CC      security/commoncap.o
+  CC      arch/sparc/kernel/devices.o
+  CC      arch/sparc/kernel/ptrace_32.o
+  CC      fs/read_write.o
+  CC      mm/mmzone.o
+  CC      kernel/sys_ni.o
+  CC      mm/vmstat.o
+  CC      kernel/posix-cpu-timers.o
+  CC      arch/sparc/kernel/unaligned_32.o
+  CC      mm/backing-dev.o
+  CC      security/min_addr.o
+  CC      kernel/hrtimer.o
+  CC      kernel/nsproxy.o
+  LD      security/built-in.o
+  CC      kernel/notifier.o
+  CC      mm/mm_init.o
+  AS      arch/sparc/kernel/una_asm_32.o
+  CC      kernel/ksysfs.o
+  LD      crypto/built-in.o
+  CC      arch/sparc/kernel/prom_common.o
+  CC      fs/file_table.o
+  CC      fs/super.o
+  CC      kernel/cred.o
+  CC      mm/mmu_context.o
+  CC      kernel/reboot.o
+  CC      mm/percpu.o
+  LD      block/built-in.o
+  CC      arch/sparc/kernel/prom_32.o
+  CC      arch/sparc/kernel/of_device_common.o
+  LD      drivers/amba/built-in.o
+  LD      drivers/auxdisplay/built-in.o
+  CC      fs/char_dev.o
+  CC      drivers/base/component.o
+  LD      drivers/block/built-in.o
+  CC      fs/stat.o
+  CC      fs/exec.o
+  CC      arch/sparc/kernel/of_device_32.o
+  CC      kernel/async.o
+  CC      arch/sparc/kernel/leon_kernel.o
+  CC      kernel/range.o
+  CC      kernel/groups.o
+  CC      drivers/base/core.o
+  CC      kernel/smpboot.o
+  CC      arch/sparc/kernel/leon_pmc.o
+  CC      arch/sparc/kernel/auxio_32.o
+  CC      arch/sparc/kernel/dma.o
+  CC      mm/slab_common.o
+  CC      arch/sparc/kernel/apc.o
+  CC      mm/compaction.o
+  CC      kernel/irq/irqdesc.o
+  CC      fs/pipe.o
+  CC      fs/namei.o
+  CC      kernel/irq/handle.o
+  CC      fs/fcntl.o
+  CC      arch/sparc/kernel/pmc.o
+  CC      fs/ioctl.o
+  CC      kernel/irq/manage.o
+  CC      fs/readdir.o
+  CC      mm/balloon_compaction.o
+  AS      arch/sparc/kernel/head_32.o
+scripts/Makefile.build:404: recipe for target 'arch/sparc/kernel' failed
+Makefile:901: recipe for target 'arch/sparc' failed
+  CC      mm/vmacache.o
+  CC      kernel/irq/spurious.o
+  CC      mm/interval_tree.o
+  CC      fs/select.o
+  CC      drivers/base/bus.o
+  CC      mm/list_lru.o
+  CC      kernel/irq/resend.o
+  CC      fs/dcache.o
+  CC      mm/workingset.o
+  CC      kernel/irq/chip.o
+  CC      kernel/irq/dummychip.o
+  CC      mm/iov_iter.o
+  CC      kernel/locking/mutex.o
+  CC      mm/fremap.o
+  CC      mm/gup.o
+  CC      kernel/irq/devres.o
+  CC      drivers/base/dd.o
+  CC      fs/inode.o
+  CC      kernel/locking/semaphore.o
+  CC      kernel/locking/rwsem.o
+  CC      kernel/irq/proc.o
+  CC      drivers/base/syscore.o
+  CC      mm/highmem.o
+  CC      mm/memory.o
+  CC      mm/madvise.o
+  LD      drivers/bus/built-in.o
+  CC      mm/mincore.o
+  CC      kernel/locking/mcs_spinlock.o
+  LD      kernel/irq/built-in.o
+  CC      kernel/power/qos.o
+  CC      mm/mlock.o
+  CC      kernel/locking/rwsem-spinlock.o
+  CC      drivers/base/driver.o
+  CC      drivers/base/class.o
+  CC      drivers/base/platform.o
+  CC      fs/attr.o
+  CC      mm/mmap.o
+  CC      fs/bad_inode.o
+  LD      kernel/locking/built-in.o
+  CC      kernel/printk/printk.o
+  LD      kernel/power/built-in.o
+  CC      kernel/rcu/update.o
+  CC      drivers/base/cpu.o
+  CC      kernel/rcu/srcu.o
+  CC      fs/file.o
+  CC      fs/filesystems.o
+  CC      kernel/rcu/tiny.o
+  CC      fs/namespace.o
+  CC      drivers/base/firmware.o
+  CC      mm/mprotect.o
+  CC      kernel/sched/core.o
+  CC      drivers/base/init.o
+  CC      kernel/sched/proc.o
+  LD      kernel/rcu/built-in.o
+  CC      kernel/sched/clock.o
+  CC      drivers/base/map.o
+  CC      fs/seq_file.o
+  CC      mm/mremap.o
+  CC      kernel/sched/cputime.o
+  CC      kernel/sched/idle_task.o
+  CC      drivers/base/devres.o
+  CC      drivers/base/attribute_container.o
+  CC      kernel/sched/fair.o
+  CC      kernel/sched/rt.o
+  LD      kernel/printk/built-in.o
+  CC      mm/msync.o
+  CC      kernel/time/timekeeping.o
+  CC      drivers/base/transport_class.o
+  CC      drivers/base/topology.o
+  CC      fs/xattr.o
+  CC      fs/libfs.o
+  CC      mm/rmap.o
+  CC      kernel/sched/deadline.o
+  CC      fs/fs-writeback.o
+  CC      kernel/sched/stop_task.o
+  CC      kernel/sched/wait.o
+  CC      drivers/base/container.o
+  CC      drivers/base/devtmpfs.o
+  LD      drivers/cdrom/built-in.o
+  CC      drivers/char/mem.o
+  LD      drivers/base/power/built-in.o
+  CC      drivers/base/dma-mapping.o
+  CC      kernel/time/ntp.o
+  CC      fs/pnode.o
+  CC      kernel/sched/completion.o
+  CC      mm/vmalloc.o
+  CC      mm/pagewalk.o
+  CC      mm/pgtable-generic.o
+  CC      mm/init-mm.o
+  LD      drivers/base/built-in.o
+  CC      kernel/sched/idle.o
+  LD      drivers/clk/built-in.o
+  LD      drivers/clocksource/built-in.o
+  CC      fs/splice.o
+  CC      kernel/dma.o
+  CC      kernel/up.o
+  CC      drivers/char/random.o
+  CC      kernel/time/clocksource.o
+  CC      mm/bootmem.o
+  CC      kernel/utsname_sysctl.o
+  CC      mm/dmapool.o
+  CC      kernel/elfcore.o
+  LD      kernel/sched/built-in.o
+  CC      kernel/irq_work.o
+  LD      drivers/firewire/built-in.o
+  LD      drivers/firmware/built-in.o
+  BC      kernel/timeconst.h
+  LD      drivers/gpio/built-in.o
+  LD      drivers/gpu/drm/bridge/built-in.o
+  LD      drivers/gpu/drm/i2c/built-in.o
+  LD      drivers/gpu/drm/panel/built-in.o
+  LD      drivers/gpu/drm/built-in.o
+  CC      drivers/char/misc.o
+  LD      drivers/gpu/vga/built-in.o
+  LD      drivers/gpu/built-in.o
+  LD      drivers/char/agp/built-in.o
+  CC      drivers/char/Ajit_simple_char.o
+  CC      kernel/time/jiffies.o
+  LD      drivers/hsi/clients/built-in.o
+  LD      drivers/i2c/algos/built-in.o
+  LD      drivers/hsi/controllers/built-in.o
+  LD      drivers/i2c/busses/built-in.o
+  LD      drivers/hsi/built-in.o
+  LD      drivers/idle/built-in.o
+  CC      mm/slab.o
+  CC      drivers/input/input.o
+  LD      drivers/i2c/muxes/built-in.o
+  CC      drivers/input/input-compat.o
+  LD      drivers/i2c/built-in.o
+  CC      kernel/time.o
+  LD      drivers/irqchip/built-in.o
+  LD      drivers/leds/built-in.o
+  CC      kernel/time/timer_list.o
+  CC      kernel/time/timeconv.o
+  CC      kernel/time/posix-clock.o
+  LD      drivers/char/built-in.o
+  CC      fs/sync.o
+  LD      drivers/lguest/built-in.o
+  CC      drivers/input/input-mt.o
+  LD      drivers/macintosh/built-in.o
+  CC      kernel/time/alarmtimer.o
+  LD      drivers/media/common/b2c2/built-in.o
+  LD      drivers/media/common/saa7146/built-in.o
+  LD      drivers/media/common/siano/built-in.o
+  LD      drivers/media/common/built-in.o
+  CC      kernel/time/clockevents.o
+  LD      drivers/media/firewire/built-in.o
+  LD      drivers/media/i2c/soc_camera/built-in.o
+  LD      drivers/media/i2c/built-in.o
+  LD      drivers/media/mmc/siano/built-in.o
+  LD      drivers/media/parport/built-in.o
+  LD      drivers/media/mmc/built-in.o
+  CC      kernel/time/tick-common.o
+  LD      drivers/media/pci/b2c2/built-in.o
+  LD      drivers/media/pci/ddbridge/built-in.o
+  LD      drivers/media/platform/davinci/built-in.o
+  LD      drivers/media/pci/dm1105/built-in.o
+  LD      drivers/media/platform/built-in.o
+  LD      drivers/media/pci/ngene/built-in.o
+  LD      drivers/mfd/built-in.o
+  LD      drivers/media/pci/pluto2/built-in.o
+  LD      drivers/media/pci/mantis/built-in.o
+  CC      drivers/input/ff-core.o
+  LD      drivers/media/pci/pt1/built-in.o
+  LD      drivers/media/pci/saa7146/built-in.o
+  CC      fs/utimes.o
+  CC      fs/stack.o
+  LD      drivers/media/pci/ttpci/built-in.o
+  LD      drivers/media/pci/built-in.o
+  LD      drivers/media/rc/keymaps/built-in.o
+  LD      drivers/media/rc/built-in.o
+  LD      drivers/media/tuners/built-in.o
+  LD      drivers/mmc/built-in.o
+  LD      drivers/media/usb/b2c2/built-in.o
+  LD      drivers/misc/carma/built-in.o
+  LD      drivers/media/usb/dvb-usb-v2/built-in.o
+  LD      drivers/media/usb/dvb-usb/built-in.o
+  CC      fs/fs_struct.o
+  LD      drivers/media/usb/s2255/built-in.o
+  LD      drivers/misc/cb710/built-in.o
+  LD      kernel/time/built-in.o
+  LD      drivers/media/usb/siano/built-in.o
+  LD      kernel/built-in.o
+  LD      drivers/misc/eeprom/built-in.o
+  LD      drivers/misc/lis3lv02d/built-in.o
+  LD      drivers/net/built-in.o
+  LD      drivers/misc/mic/built-in.o
+  LD      drivers/media/usb/ttusb-budget/built-in.o
+  LD      drivers/media/usb/stkwebcam/built-in.o
+  LD      mm/built-in.o
+  LD      drivers/media/usb/ttusb-dec/built-in.o
+  LD      drivers/nfc/built-in.o
+  CC      drivers/of/base.o
+  LD      drivers/misc/ti-st/built-in.o
+  LD      drivers/pinctrl/built-in.o
+  LD      drivers/misc/built-in.o
+  LD      drivers/input/input-core.o
+  LD      drivers/input/built-in.o
+  CC      drivers/of/platform.o
+  CC      drivers/of/device.o
+  LD      drivers/platform/built-in.o
+  CC      fs/statfs.o
+  CC      drivers/of/pdt.o
+  LD      drivers/media/usb/zr364xx/built-in.o
+  CC      fs/no-block.o
+  LD      drivers/media/usb/built-in.o
+  LD      drivers/media/built-in.o
+  LD      drivers/pwm/built-in.o
+  CC      fs/proc_namespace.o
+  CC      drivers/rtc/rtc-lib.o
+  LD      fs/devpts/built-in.o
+  CC      drivers/rtc/class.o
+  LD      fs/exofs/built-in.o
+  LD      drivers/soc/built-in.o
+  CC      fs/kernfs/mount.o
+  CC      drivers/sbus/char/openprom.o
+  CC      fs/kernfs/inode.o
+  CC      drivers/rtc/interface.o
+  CC      drivers/rtc/rtc-m48t59.o
+  CC      fs/kernfs/dir.o
+  LD      fs/notify/dnotify/built-in.o
+  CC      drivers/tty/tty_io.o
+  LD      fs/notify/fanotify/built-in.o
+  LD      drivers/video/backlight/built-in.o
+  LD      fs/notify/inotify/built-in.o
+  CC      drivers/video/fbdev/core/fb_notify.o
+  LD      fs/notify/built-in.o
+  CC      drivers/tty/n_tty.o
+  LD      drivers/sbus/char/built-in.o
+  LD      drivers/sbus/built-in.o
+  LD      drivers/of/built-in.o
+  LD      drivers/video/fbdev/omap2/displays-new/built-in.o
+  LD      drivers/video/fbdev/omap2/dss/built-in.o
+  CC      fs/proc/task_mmu.o
+  LD      fs/quota/built-in.o
+  LD      drivers/video/fbdev/omap2/built-in.o
+  CC      drivers/tty/tty_ioctl.o
+  CC      fs/ramfs/inode.o
+  CC      fs/proc/inode.o
+  LD      drivers/rtc/rtc-core.o
+  LD      drivers/rtc/built-in.o
+  LD      drivers/video/fbdev/core/built-in.o
+  LD      drivers/video/fbdev/built-in.o
+  LD      drivers/video/built-in.o
+  CC      fs/proc/root.o
+  CC      drivers/tty/tty_ldisc.o
+  CC      fs/kernfs/file.o
+  CC      fs/ramfs/file-mmu.o
+  CC      drivers/tty/tty_buffer.o
+  CC      drivers/tty/tty_port.o
+  CC      fs/proc/base.o
+  CC      drivers/tty/tty_mutex.o
+  CC      fs/kernfs/symlink.o
+  CC      drivers/tty/tty_ldsem.o
+  LD      fs/ramfs/ramfs.o
+  LD      fs/ramfs/built-in.o
+  CC      fs/sysfs/file.o
+  LD      drivers/tty/ipwireless/built-in.o
+  CC      drivers/tty/serial/serial_core.o
+  CC      drivers/tty/serial/suncore.o
+  CC      drivers/tty/serial/Ajit_serial.o
+  LD      fs/kernfs/built-in.o
+  CC      fs/binfmt_script.o
+  LD      drivers/tty/vt/built-in.o
+  CC      fs/binfmt_elf.o
+  CC      fs/proc/generic.o
+  CC      fs/sysfs/dir.o
+  CC      fs/drop_caches.o
+  CC      fs/proc/array.o
+  CC      fs/sysfs/symlink.o
+  CC      fs/sysfs/mount.o
+  CC      fs/sysfs/group.o
+  CC      fs/proc/proc_tty.o
+  CC      fs/proc/fd.o
+  CC      fs/proc/cmdline.o
+  CC      fs/proc/consoles.o
+  LD      fs/sysfs/built-in.o
+  CC      fs/proc/devices.o
+  CC      fs/proc/cpuinfo.o
+  CC      fs/proc/interrupts.o
+  CC      fs/proc/loadavg.o
+  CC      fs/proc/meminfo.o
+  CC      fs/proc/stat.o
+  CC      fs/proc/uptime.o
+  CC      fs/proc/softirqs.o
+  CC      fs/proc/namespaces.o
+  CC      fs/proc/version.o
+  LD      drivers/tty/serial/built-in.o
+  CC      fs/proc/self.o
+  LD      drivers/tty/built-in.o
+  LD      drivers/built-in.o
+  CC      fs/proc/proc_sysctl.o
+  CC      fs/proc/kmsg.o
+  CC      fs/proc/page.o
+  LD      fs/proc/proc.o
+  LD      fs/proc/built-in.o
+  LD      fs/built-in.o
+make[1]: Leaving directory '/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom'
+package/pkg-generic.mk:177: recipe for target '/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom/.stamp_built' failed
+/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 3: 
+  Compiling the device tree.
+=================================================
+Checking if Device tree compiler (dtc) is installed ...
+/usr/bin/dtc
+dtc is installed.
+generated device tree blob Ajit_device_tree.S
+applying patch to device tree blob
+patching file Ajit_device_tree.S
+patched Ajit_device_tree.S
+Preprocessing Ajit_device_tree.S file to generate assembly Ajit_device_tree.s file
+/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 4: 
+  Compiling bootloader code.
+=================================================
+ERROR : environment variable AJIT_PROJECT_HOME is not defined.
+/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 5: 
+  Combining the bootloader executable and the kernel image 
+  into a single memory-map
+=================================================
+/ajit/ajit-toolchain/from_ajit_repo/os/Ajit_linux/Ajit_bootloader
+=================================================
+ 
+  If there were no errors, the memory map will be created in 
+  ./Generated_memory_map/Output/mem_map.txt
+ 
+=================================================
