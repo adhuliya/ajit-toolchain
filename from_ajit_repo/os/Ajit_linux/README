@@ -20,4 +20,14 @@ REFERENCE MATERIAL THAT CAN BE FETCHED FROM THE NET:
 	
 
 
+BUILD INSTRUCTIONS:
+-------------------
+	To build the OS, run
 
+		./GeneratememMapForAjit.sh
+
+	followed by
+
+		./vmLinuzToMemmapAtf0004000.sh
+
+	Note: paths to the bin-utils must be setup before doing this.

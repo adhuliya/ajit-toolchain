@@ -36,13 +36,6 @@ def getScriptPath():
 
 sys.path.append(getScriptPath())
 
-#add path of other scripts such as compileToSparc.py
-ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
-if(ajit_project_home == None):
-  print ("ERROR : environment variable AJIT_PROJECT_HOME is not defined.")
-  exit(1)
-scripts_path=ajit_project_home+"/tools/scripts"
-sys.path.append(scripts_path)
 import compileToSparc 
 
 
@@ -76,11 +69,6 @@ def main():
     #strip off extension
     input_name = os.path.splitext(input_file)[0]
     
-    #get location of pico kernel:
-    ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
-    if(ajit_project_home == None):
-      print ("\n ERROR : environment variable AJIT_PROJECT_HOME is not defined.")
-      return 1
   
     # call compileToSparc.py
     command = "compileToSparc.py "
