@@ -37,10 +37,14 @@ ANTLR_PATH = "../debugger/doval/antlr3Cruntime/build/lib "
 
 
 #Need to link to Console and Char_server libraries:
-CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
-CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
-CHAR_SERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
-CHAR_SERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
+CONSOLE_LIB=AJIT_64_C_REF_MODEL+"/console/lib"
+CONSOLE_INCLUDE=AJIT_64_C_REF_MODEL+"/console/include"
+CHAR_SERVER_LIB=AJIT_64_C_REF_MODEL+"/char_client_server/lib"
+CHAR_SERVER_INCLUDE=AJIT_64_C_REF_MODEL+"/char_client_server/include"
+#CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
+#CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
+#CHAR_SERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
+#CHAR_SERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
 
 env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:"+MONITOR_LOGGER_INCLUDE + ":" + CONSOLE_INCLUDE+ ":"+CHAR_SERVER_INCLUDE + ":" + HALFPREC_INCLUDE)
 

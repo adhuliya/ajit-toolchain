@@ -643,6 +643,140 @@ uint32_t executeSwap( Opcode op,
 	return tv;
 }
 
+// 32 bit compare and swap.
+uint32_t executeCswap( Opcode op, 
+				uint32_t operand1, 
+				uint32_t operand2,
+				uint32_t *result, 
+				uint32_t operand3,
+				uint32_t trap_vector, uint8_t asi, uint8_t imm_flag,
+				ProcessorState* state,
+				StatusRegisters *status_reg, 
+				StateUpdateFlags*  reg_update_flags,
+				uint8_t *flags)
+{
+#ifdef DEBUG
+	fprintf(stderr,"\tInfo : CSWAP  op-code=0x%x operand1=0x%x operand2=0x%x operand3=0x%x\n", op, 
+			operand1, 
+			operand2, 
+			operand3);
+#endif 
+
+	uint32_t tv = trap_vector;
+	uint32_t psr = status_reg->psr;
+	uint8_t s = getBit32(psr, 7);
+	uint8_t f = *flags;
+	uint8_t addr_space = 0;
+	uint32_t address = 0;
+	uint8_t is_privileged_trap = 0;
+	uint8_t is_illegal_instr_trap = 0;
+	if(op==_CSWAP_)
+	{
+		address = operand1;
+		addr_space = (s ? 11 : 10);
+	}
+	else if(op == _CSWAPA_)
+	{
+		if(s==0)
+		{
+			tv = setBit32(tv, _TRAP_, 1);
+			tv = setBit32(tv, _PRIVILEGED_INSTRUCTION_, 1);
+			is_privileged_trap = 1;
+		}
+		else if(imm_flag)
+		{
+			tv = setBit32(tv, _TRAP_, 1);
+			tv = setBit32(tv, _ILLEGAL_INSTRUCTION_, 1);
+			is_illegal_instr_trap = 1;
+		}
+		else
+		{
+			address =  operand1;
+			addr_space=asi;
+		}
+	}
+
+
+	// address must be single word aligned.
+	uint8_t is_alignment_trap = 0;
+	uint8_t b2bits = getSlice32(address, 1, 0);
+	if(!is_privileged_trap && !is_illegal_instr_trap && (b2bits != 0))
+	{
+		tv = setBit32(tv, _TRAP_, 1) ;
+		tv = setBit32(tv, _MEM_ADDRESS_NOT_ALIGNED_, 1);
+		is_alignment_trap = 1;
+	}
+
+
+	uint8_t  mae 	   = 0;
+
+	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
+	{
+		uint32_t read_data;
+
+		lockAndReadData(state->mmu_state,  
+					state->dcache, 
+					addr_space, 
+					address,
+					&mae, 	
+					&read_data);
+
+		if(mae)
+		{
+			tv = setBit32(tv, _TRAP_, 1) ;
+			tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
+		}
+		else
+		{
+			if(read_data == operand2)
+			{
+				// swap register with memory.
+				writeData(state->mmu_state, 
+						state->dcache,  
+						addr_space, address, 
+						0xF, 
+						operand3,
+						&mae);
+				*result = read_data;
+			}
+			else
+			{
+				//
+				// write back the word just read in order
+				// to unlock the system bus.  This may
+				// be wasteful but so what?
+				//
+				writeData(state->mmu_state, 
+						state->dcache,  
+						addr_space, 
+						address, 
+						0xF, 
+						read_data,
+						&mae);
+
+				//
+				// destination register maintains its old value.
+				//
+				*result  = operand3;
+			}
+		}
+		if(mae)
+		{
+			tv = setBit32(tv, _TRAP_, 1) ;
+			tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1) ;
+		}
+	}
+
+
+	// result to be written back.
+	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	*flags = f;
+	
+
+	//return traps.
+	return (tv);
+}
+
 
 //
 // Implement in VHDL and make it a functionLibrary Aa element.
@@ -1885,7 +2019,7 @@ uint32_t executeInstruction(
 	uint8_t is_store = ((opcode >= _STB_) && (opcode <= _STDA_));
 	uint8_t is_atomic = ((opcode == _LDSTUB_) || (opcode == _LDSTUBA_));
 	uint8_t is_swap = ((opcode == _SWAP_) || (opcode == _SWAPA_));
-	uint8_t is_cswap_64 = ((opcode == _CSWAPD_) || (opcode == _CSWAPDA_));
+	uint8_t is_cswap = ((opcode == _CSWAP_) || (opcode == _CSWAPA_));
 	uint8_t is_sethi = (opcode == _SETHI_);
 	uint8_t is_nop = (opcode == _NOP_);
 
@@ -1949,11 +2083,11 @@ uint32_t executeInstruction(
 	else if(is_store) 	tv = 	executeStore(opcode, operand1, operand2, result_h, result_l, data0, data1, status_reg,trap_vector, asi, rd, s);
 	else if(is_atomic) 	tv = 	executeLdstub(opcode, operand1, operand2, result_l, status_reg,&(s->reg_update_flags), trap_vector, asi, flags, s);
 	else if(is_swap) 	tv = 	executeSwap(opcode, operand1, operand2, result_l, status_reg,&(s->reg_update_flags), trap_vector, asi, imm_flag, data0, flags, s);
-	else if(is_cswap_64) 	tv = 	executeCswap64(opcode, 
+	else if(is_cswap) 	tv = 	executeCswap(opcode, 
 							operand1,  // rs1
-						 	operand2_0, operand2_1, // rs2-pair
-							result_h, result_l, // destination.
-							data0, data1,
+						 	operand2,  // rs2
+							result_l, // destination.
+							data0,
 							trap_vector, 
 							asi, imm_flag, 
 							s,

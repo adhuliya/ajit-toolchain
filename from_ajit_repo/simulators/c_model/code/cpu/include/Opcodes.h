@@ -58,8 +58,8 @@ typedef enum _Opcode
 	//SWAP Register with Memory,
 	_SWAP_, // 001111 SWAP register with memory
 	_SWAPA_, // 011111 SWAP register with Alternate space memory
-	_CSWAPD_, // 101111 COMPARE-AND-SWAP-D  register-pair with memory
-	_CSWAPDA_, // 111111 COMPARE-AND-SWAP-D register-pair with Alternate space memory
+	_CSWAP_, // 101111 COMPARE-AND-SWAP  register with memory
+	_CSWAPA_, // 111111 COMPARE-AND-SWAP register with Alternate space memory
 
 	//SETHI Instruction
 	_SETHI_, // 00 100 Set High-Order 22 bits
@@ -411,6 +411,6 @@ int isFpReduceInstr  (Opcode opcode);
 int isFpHalfConvertInstr (Opcode opcode);
 int isSimdFpHalfConvertInstr (Opcode opcode);
 int isSimdFpuInstr   (Opcode opcode);
-int isCswap64Instr   (Opcode opcode);
+int isCswapInstr   (Opcode opcode);
 
 #endif

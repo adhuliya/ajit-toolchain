@@ -39,6 +39,16 @@ uint32_t executeSwap( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t 
 			StatusRegisters *status_reg, StateUpdateFlags* reg_update_flags, 
 			uint32_t trap_vector, uint8_t asi, uint8_t imm_flag,  uint32_t temp, uint8_t *flags, 
 			ProcessorState* state);
+uint32_t executeCswap( Opcode op, 
+				uint32_t operand1, 
+				uint32_t operand2,
+				uint32_t *result,
+				uint32_t operand3,
+				uint32_t trap_vector, uint8_t asi,  uint8_t imm_flag,
+				ProcessorState* state,
+				StatusRegisters *status_reg, 
+				StateUpdateFlags*  reg_update_flags,
+				uint8_t *flags);
 void executeNop();
 void executeLogical( Opcode op, uint32_t operand1, uint32_t operand2, 
 			uint32_t *result, StatusRegisters *status_reg, StateUpdateFlags*  reg_update_flags,
@@ -105,19 +115,10 @@ uint32_t executeUnImplemented( uint32_t trap_vector);
 uint32_t executeFlush(uint32_t flush_addr, uint32_t trap_vector, StateUpdateFlags* reg_update_flags,
 			ProcessorState* s );
 
+
 ////////////////////////////////////////////////////////////////////////////////////
 // 64-bit ISA extension related executes.
 ////////////////////////////////////////////////////////////////////////////////////
-uint32_t executeCswap64( Opcode op, 
-				uint32_t operand1, 
-				uint32_t operand2_0, uint32_t operand2_1, 
-				uint32_t *result_h,  uint32_t* result_l,
-				uint32_t data0,  uint32_t data1,
-				uint32_t trap_vector, uint8_t asi,  uint8_t imm_flag,
-				ProcessorState* state,
-				StatusRegisters *status_reg, 
-				StateUpdateFlags*  reg_update_flags,
-				uint8_t *flags);
 void execute64BitLogical( Opcode op, 
 			uint32_t operand1_0, uint32_t operand1_1, 
 			uint32_t operand2_0, uint32_t operand2_1,

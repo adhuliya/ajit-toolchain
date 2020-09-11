@@ -535,7 +535,7 @@ uint32_t decodeInstruction(uint32_t instruction, uint32_t isa_mode,
 		else if(op3_30_5) opcode = _STFSR_ 	;
 		else if(op3_30_6) opcode = _STDFQ_ 	;
 		else if(op3_30_7) opcode = _STDF_ 	;
-		else if(op3_30_f) opcode = _CSWAPD_ 	;
+		else if(op3_30_f) opcode = _CSWAP_ 	;
 	}
 
 	uint8_t f4_3 = (op_3 && op3_54_3);
@@ -548,7 +548,7 @@ uint32_t decodeInstruction(uint32_t instruction, uint32_t isa_mode,
 		else if(op3_30_5) opcode = _STCSR_ 	;
 		else if(op3_30_6) opcode = _STDCQ_ 	;
 		else if(op3_30_7) opcode = _STDC_ 	;
-		else if(op3_30_f) opcode = _CSWAPDA_ 	;
+		else if(op3_30_f) opcode = _CSWAPA_ 	;
 	}
 
 	if 	(f3_0 || f3_1 || (f3_2 && (op3_30_0 || op3_30_1 || op3_30_2 || op3_30_3 || op3_30_4))
@@ -631,9 +631,8 @@ void readOperands(RegisterFile* rf,
 
 	uint8_t std_oprnd_2 = (std_oprnd_1 && (i == 0));
 	uint8_t oprnd_2_is_64_bits = 
-		(isCswap64Instr(opcode) ||
 		 (is64BitAluInstr(opcode) && !isByteReduceInstr(opcode) && 
-		  !isBytePosInstr(opcode) && (instr_type != _SHIFT_INS_)));
+		  !isBytePosInstr(opcode) && (instr_type != _SHIFT_INS_));
 	uint8_t std_imm_oprnd_2 = 
 		(((instr_type == _ARITH_LOGICAL_INS_) || 
 		  (instr_type == _WRITE_STATE_REG_INS_) || 
@@ -694,8 +693,6 @@ void readOperands(RegisterFile* rf,
 				  };
 
 		case _STD_ 	:
-		case _CSWAPD_  :
-		case _CSWAPDA_ :
 		case _STDA_	:
 				  {
 					  d0=readRegister(rf, (rd & 0x1E), cwp); 
@@ -710,8 +707,11 @@ void readOperands(RegisterFile* rf,
 		case _STB_ 	:
 		case _STBA_ 	: {d0=readRegister(rf, rd, cwp); break;};
 
+		case _CSWAP_  :
+		case _CSWAPA_ :
 		case _SWAP_ 	:
 		case _SWAPA_ 	: {d0=readRegister(rf, rd, cwp); break;};
+
 		default :	break;
 	}
 
@@ -898,9 +898,9 @@ int isSimdFpHalfConvertInstr (Opcode opcode)
 	return((opcode == _VFI16TOH_) || (opcode == _VFHTOI16_));
 }
 
-int isCswap64Instr   (Opcode opcode)
+int isCswapInstr   (Opcode opcode)
 {
-	int ret_val = (opcode == _CSWAPD_) || (opcode == _CSWAPDA_);
+	int ret_val = (opcode == _CSWAP_) || (opcode == _CSWAPA_);
 	return(ret_val);
 }
 
