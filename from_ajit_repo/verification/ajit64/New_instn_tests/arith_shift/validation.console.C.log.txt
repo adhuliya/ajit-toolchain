@@ -1,0 +1,407 @@
+readelf: Warning: Section '.bss' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
+readelf: Warning: Section '.data' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata' was not dumped because it does not exist!
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+File /tmp/objdump-trace.txt open error with error number 24.
+Info: cpu will run in 64-bit mode.
+Info: branch-predictor table size=16.
+Info: starting environment threads
+Info:pThreadUtils: started thread rlutDaemon_0
+Info:pThreadUtils: started thread icacheInvalidateDaemon_0
+Info:pThreadUtils: started thread dcacheInvalidateDaemon_0
+
+Info: registering hw-server pipes for cpu-id 0
+Info:pThreadUtils: started thread hwServer_0
+Info:pThreadUtils: started thread cpu_0
+Info:pThreadUtils: started thread IRC_Control
+Info:pThreadUtils: started thread IRC_Output
+
+Info: starting hw-server for cpu-id 0
+Info:pThreadUtils: started thread Timer_Control
+Info:pThreadUtils: started thread Timer_Output
+Info:pThreadUtils: started thread Serial_Control
+Info:pThreadUtils: started thread Serial_Rx
+Info:pThreadUtils: started thread Serial_Tx
+Info: starting console threads.
+Info:pThreadUtils: started thread consoleOutput
+Info:pThreadUtils: started thread consoleInput
+Info:pThreadUtils: started thread bridge_cpu_0
+Info:ProcessorCore  : Processor entered ERROR MODE at PC=0x1808 (cpu-id=0)
+ 
+Info: doval connected to CPU 0
+
+
+Validating : Result file = /home/gaurip/verification/arith_shift/compiled/main/main.results, Log file = /home/gaurip/verification/arith_shift/log/main.log
+/home/gaurip/verification/arith_shift/compiled/main/main.results(10)  : error 1 : Unexpected token, at offset 3
+    near [Index: 48 (Start: 19173589-Stop: 19173589) ='o', type<23> Line: 10 LinePos:3]
+     : syntax error...
+
+
+Tests Successful.
+Info:pThreadUtils: started thread checkErrorStateAndExit_0
+Processor 0 entered ERROR MODE at PC=0x1808
+ Program exited with a trap type = 0x0
+Statistics for CPU 0:
+    number-of-instructions-executed = 51
+    number-of-traps  = 3
+    number-of-cti  = 0, mispredicts=0
+    cycle-count estimate = 3809
+Info: for CPU 0: 4kB pages accessed are (starting virtual-address of the page is shown):
+     0x00000000
+     0x00001000
+Total time taken by testbench: 0 secs
+Statistics of RLUT for cpuid=0:
+Statistics for ICACHE cpuid=0
+    number-of-accesses=53
+    number-of-misses=53
+Statistics for DCACHE cpuid=0
+Info: elf-file to be produced  = main.elf.
+Info: var-dump-file to be produced  = main.vars.
+Info: hex-dump-file to be produced  = main.hex.
+Info: memory-map-file to be produced  = main.mmap.
+Info: object-dump-file to be produced  = main.objdump.
+Info: added assembly-file = /home/gaurip/verification/arith_shift/main.s.
+Info: Executing:
+	rm -rf .//sparc-assembly
+Info: Executing:
+	mkdir .//sparc-assembly
+Info: Executing:
+	rm -rf .//sparc-obj
+Info: Executing:
+	mkdir .//sparc-obj
+Info: Executing:
+	sparc-linux-as   -Av8  /home/gaurip/verification/arith_shift/main.s -o .//sparc-obj/main.o
+Info: Executing:
+	sparc-linux-ld  --verbose=5 -L/home/gaurip/ajit_release/tools/cross-compiler/buildroot_cross_compiler/usr/sparc-buildroot-linux-uclibc/lib/ -e main -T /home/gaurip/ajit_release/tools/scripts/LinkerScript.lnk .//sparc-obj/main.o   -o .//main.elf
+GNU ld (GNU Binutils) 2.22
+  Supported emulations:
+   elf32_sparc
+   sparclinux
+   elf64_sparc
+   sun4
+opened script file /home/gaurip/ajit_release/tools/scripts/LinkerScript.lnk
+using external linker script:
+==================================================
+
+/*========================================================*/
+/*                                                        */
+/* Linker script for Sparc simulator 	                  */
+/*                                                        */
+/*========================================================*/
+
+ENTRY(_start)
+__DYNAMIC = 0;
+SECTIONS
+{
+	. = 0x00000000;
+	.text ALIGN(4) : {
+    KEEP(*(.text.ajitstart))  /* NOTE: in file `init.s` */
+    *(.text)
+    *(.text.*)
+    /* KEEP(*(.text.pagetablesetup)) */ /* NOTE: not needed */
+    KEEP(*(.text.traphandlers))  /* NOTE: in file `trap_handlers.s` */
+    KEEP(*(.text.traptablebase))  /* NOTE: in file `trap_handlers.s` */
+  }
+	. = 0x40000000;
+	.rodata ALIGN(4) : { * (.rodata) * (.rodata.*) }
+	.data   ALIGN(4) : { * (.data) * (.data.*) *(.bss)}
+}
+
+==================================================
+attempt to open .//sparc-obj/main.o succeeded
+.//sparc-obj/main.o
+Info: Executing:
+	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  .//main.elf | tr -cd '\11\12\15\40-\176' | grep 0x > .//main.hex
+Info: Executing:
+	sparc-linux-readelf  --symbols .//main.elf  > .//main.vars
+Info: Executing:
+	Info: Generating memory map .//main.mmap
+Info: Executing:
+	sparc-linux-objdump -d  .//main.elf > .//main.objdump
+Connection established with HW Server !
+
+Reached HwServer - TA 0 (cpu-id=0)
+
+Mmu statistics for cpuid=0: MMU ENABLED = 0
+	TLB size (number of entries) = 64
+	Accesses with Mmu bypassed or disabled 	= 53
+	Mmu_probe_requests  	= 0
+	Mmu_flush_requests  	= 0
+	Mmu_register_reads   	= 0
+	Mmu_register_writes 	= 0
+	Mmu_translated_accesses = 0
+	Mmu_TLB_hits            = 0
+
+Mmu Register values :
+	Control register 	= 0x0
+	Context table ptr 	= 0x0
+	Context register   	= 0x0
+	FSR		   	= 0x0
+	FAR		 	= 0x0
+Warning : 'INCLUDES' list empty/not present/incorrect in /home/gaurip/verification/arith_shift/main.vprj
+Warning : 'DEFINES' list empty/not present in /home/gaurip/verification/arith_shift/main.vprj
+Note: vprj /home/gaurip/verification/arith_shift/main.vprj has test files : ['main.s']
+Note: executing command: compileToSparc.py  -E main.elf -V main.vars -H main.hex -M main.mmap -O main.objdump -s /home/gaurip/verification/arith_shift/main.s 
+Note: executing /home/gaurip/C/testbench/bin/ajit_C_system_model -d -m /home/gaurip/verification/arith_shift/compiled/main/main.mmap -r /home/gaurip/verification/arith_shift/compiled/main/main.results -l /home/gaurip/verification/arith_shift/log/main.log-u 64 
+Note: validation of  /home/gaurip/verification/arith_shift/main.vprj is successful
+0.18user 0.07system 0:00.22elapsed 112%CPU (0avgtext+0avgdata 44720maxresident)k
+0inputs+1168outputs (0major+28916minor)pagefaults 0swaps
+Note : total failed cases = 0
+Note : total time taken by all jobs = 0.132 s
+Note : total vprj = 1
