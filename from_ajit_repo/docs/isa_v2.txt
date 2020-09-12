@@ -55,6 +55,12 @@ Some instructions have been renamed.
 	VFMUL	     replaced with VFMUL32
 			opcode modified.
 
+	CSWAPD	     replaced with CSWAP
+	CSWAPDA	     replaced with CSWAPA
+			(note the new versions swap
+				32-bit words between
+				register and memory).
+				
 
 Some instructions have been added.   Opcodes
 have been assigned (see below).
@@ -593,34 +599,34 @@ even number (lowest bit must be 0).
 
 	We introduce a CSWAP instruction in two flavours
 		
-		CSWAPD     rs1, rs2-pair/immediate, rd-pair
+		CSWAP     rs1, rs2/immediate, rd
 			op=3
 			op3= 10 1111
 				(rest of instruction similar to SWAP)
 
-			cswapd %rs1, %rs2/imm, %rd
+			cswap %rs1, %rs2/imm, %rd
 			
-		CSWAPDA    rs1, rs2-pair/immediate, rd-pair, asi
+		CSWAPA    rs1, rs2-pair/immediate, rd-pair, asi
 			op=3
 			op3= 11 1111
 				(rest of instruction similar to SWAPA)
 
-			cswapda %rs1, %rs2/imm, %rd with asi specified.
+			cswapa %rs1, %rs2/imm, %rd with asi specified.
 
 	The semantics of the instruction (the entire sequence is atomic)
-		TMPVAL = mem[rs1]  (load double, lock system bus)
-		if <rs2-pair/immediate> == TMPVAL 
-			(store double, unlock) mem[rs1] = <rd-pair>  
-			<rd-pair>  = TMPVAL
+		TMPVAL = mem[rs1]  (load word, lock system bus)
+		if <rs2/immediate> == TMPVAL 
+			(store, unlock) mem[rs1] = <rd>  
+			<rd>  = TMPVAL
 		else
-			(store double, unlock) mem[rs1] = TMPVAL
+			(store, unlock) mem[rs1] = TMPVAL
 
 	The write under else is redundant but is required in order to unlock the bus.
 
 	Similar to SWAP, 
 		- mem[rs1] is left either with its value prior to the instruction or 
-			with the value in rd-pair.
-		- <rd-pair> is left either with its value prior to the instruction or
+			with the value in rd.
+		- <rd> is left either with its value prior to the instruction or
 			with the value in mem[rs1].
-	The processor can check rd-pair after execution to confirm if the swap
+	The processor can check rd after execution to confirm if the swap
 	succeeded.
