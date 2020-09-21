@@ -31,3 +31,4 @@ BUILD INSTRUCTIONS:
 		./vmLinuzToMemmapAtf0004000.sh
 
 	Note: paths to the bin-utils must be setup before doing this.
+	Note: device-tree-compiler needs to be installed.
