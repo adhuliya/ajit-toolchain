@@ -235,13 +235,15 @@ typedef struct sparc_opcode
 /* AJIT Additions */
 /* Bit setters */
 #define OP_AJIT_BIT_5(x)          (((x) & 0x1) << 5)                          /* Set the bit 5 (6th bit) for AJIT */
+#define OP_AJIT_BIT_6_AND_7(x)	  (((x) & 0x3) << 6)                          /* Set the bits 6 and 7 for AJIT */
 #define OP_AJIT_BIT_5_AND_6(x)    (((x) & 0x3) << 5)                          /* Set the bits 5 and 6 for AJIT */
 #define OP_AJIT_BIT_7_THRU_9(x)   (((x) & 0x7) << 7)                          /* Set bits 7 through 9 for AJIT */
 
 /* Match and lose setters */
 #define F4(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_5(b))            /* Format 3 with bit 5 */
-#define F5(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b))     /* Format 3 with bits 5 and 6 */
-#define F6(x, y, z, b, a)         (F5 (x, y, z, b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 5-6 and 7-9 */
+#define F5(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_6_AND_7 (b))     /* Format 3 with bits 6 and 7 */
+#define F6(x, y, z, b, a)         (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 5-6 and 7-9 */
+
 
 /* Bit setters for full instructions */
 #define OP_AJIT_BITS_30_TO_31(x)    (((x) & 0x03) << 30) /* op, match */
