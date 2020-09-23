@@ -1115,10 +1115,10 @@ const struct sparc_opcode sparc_opcodes[] = {
 
 /* AJIT Additions */
 /* CSWAP family */
-{ "cswapd",     F3(3, 0x2f, 0), F3(~3, ~0x2f, ~0), "[1+2]A,d", 0, v8}, /* AJIT */
-{ "cswapd",     F3(3, 0x2f, 1), F3(~3, ~0x2f, ~1), "[1+i],d",  0, v8}, /* AJIT */
-{ "cswapda",    F3(3, 0x3f, 0), F3(~3, ~0x3f, ~0), "[1+2]A,d", 0, v8}, /* AJIT */
-{ "cswapda",    F3(3, 0x3f, 1), F3(~3, ~0x3f, ~1), "[1+i],d",  0, v8}, /* AJIT */
+{ "cswap",     F3(3, 0x2f, 0), F3(~3, ~0x2f, ~0), "[1+2]A,d", 0, v8}, /* AJIT */
+{ "cswap",     F3(3, 0x2f, 1), F3(~3, ~0x2f, ~1), "[1+i],d",  0, v8}, /* AJIT */
+{ "cswapa",    F3(3, 0x3f, 0), F3(~3, ~0x3f, ~0), "[1+2]A,d", 0, v8}, /* AJIT */
+{ "cswapa",    F3(3, 0x3f, 1), F3(~3, ~0x3f, ~1), "[1+i],d",  0, v8}, /* AJIT */
 
 { "call",	F1(0x1), F1(~0x1), "L", F_JSR|F_DELAYED, v6 },
 { "call",	F1(0x1), F1(~0x1), "L,#", F_JSR|F_DELAYED, v6 },
