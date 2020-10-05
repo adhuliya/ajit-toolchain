@@ -22,3 +22,8 @@
 #define ADDR_SERIAL_TX_REGISTER      0xFFFF3210
 #define ADDR_SERIAL_RX_REGISTER      0xFFFF3220
 
+//
+// TODO: assign addresses to the SD card host controller
+//     For example you could start from 0xffff4000 for
+//     the SD card registers.
+//
