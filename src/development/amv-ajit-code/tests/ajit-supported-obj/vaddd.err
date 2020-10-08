@@ -1,0 +1,195 @@
+AMV: init_default_arch(): sa->opcode_arch      : ajit
+AMV: init_default_arch(): max_architecture is  : 0
+AMV: init_default_arch(): AJIT_OPCODE_ARCH_BAD : 5
+
+NEXT AMV== Starting special case analysis: Instruction is: "set 0xf008c6f8,%l2"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "set".
+AMV== == Match found is                       : 0x1000000.
+AMV== == Match found is                       : 0000 0001 0000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : S0,d.
+AMV== == == Examining argument                : S0,d.
+AMV== == == Examining argument                : 0,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 0010 0101 0000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x25000000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000002.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "set 0xf008c6f8,%l3"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "set".
+AMV== == Match found is                       : 0x1000000.
+AMV== == Match found is                       : 0000 0001 0000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : S0,d.
+AMV== == == Examining argument                : S0,d.
+AMV== == == Examining argument                : 0,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 0010 0111 0000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x27000000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000002.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "set 0xf000d2fa,%l4"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "set".
+AMV== == Match found is                       : 0x1000000.
+AMV== == Match found is                       : 0000 0001 0000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : S0,d.
+AMV== == == Examining argument                : S0,d.
+AMV== == == Examining argument                : 0,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 0010 1001 0000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x29000000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000002.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "set 0xf000d2fa,%l5"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "set".
+AMV== == Match found is                       : 0x1000000.
+AMV== == Match found is                       : 0000 0001 0000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : S0,d.
+AMV== == == Examining argument                : S0,d.
+AMV== == == Examining argument                : 0,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 0010 1011 0000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x2B000000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000002.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "vaddd8 %l2,%l4,%g2"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "vaddd8".
+AMV== == Match found is                       : 0x800000C0.
+AMV== == Match found is                       : 1000 0000 0000 0000 0000 0000 1100 0000 
+AMV== == Arguments pattern is                 : 1,2,d.
+AMV== == == Examining argument                : 1,2,d.
+AMV== == == Examining argument                : ,2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 0100 0000 0100 1000 0000 1101 0100 
+AMVEE == Opcode fully determined?             : 0x840480D4.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "vaddd16 %l2,%l4,%g4"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "vaddd16".
+AMV== == Match found is                       : 0x80000140.
+AMV== == Match found is                       : 1000 0000 0000 0000 0000 0001 0100 0000 
+AMV== == Arguments pattern is                 : 1,2,d.
+AMV== == == Examining argument                : 1,2,d.
+AMV== == == Examining argument                : ,2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1000 0000 0100 1000 0001 0101 0100 
+AMVEE == Opcode fully determined?             : 0x88048154.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "vaddd32 %l2,%l4,%g6"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "vaddd32".
+AMV== == Match found is                       : 0x80000240.
+AMV== == Match found is                       : 1000 0000 0000 0000 0000 0010 0100 0000 
+AMV== == Arguments pattern is                 : 1,2,d.
+AMV== == == Examining argument                : 1,2,d.
+AMV== == == Examining argument                : ,2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1100 0000 0100 1000 0010 0101 0100 
+AMVEE == Opcode fully determined?             : 0x8C048254.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "ta 0"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "ta".
+AMV== == Match found is                       : 0x91D02000.
+AMV== == Match found is                       : 1001 0001 1101 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i.
+AMV== == == Examining argument                : i.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1001 0001 1101 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x91D02000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.

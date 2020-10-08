@@ -1,0 +1,1049 @@
+AMV: init_default_arch(): sa->opcode_arch      : ajit
+AMV: init_default_arch(): max_architecture is  : 0
+AMV: init_default_arch(): AJIT_OPCODE_ARCH_BAD : 5
+
+NEXT AMV== Starting special case analysis: Instruction is: "mov 2,%g2"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "mov".
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,2,m.
+AMV== == == Examining argument                : 1,2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,i,m.
+AMV== == == Examining argument                : 1,i,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : M,d.
+AMV== == == Examining argument                : M,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : y,d.
+AMV== == == Examining argument                : y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81480000.
+AMV== == Match found is                       : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : p,d.
+AMV== == == Examining argument                : p,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81480000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81500000.
+AMV== == Match found is                       : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : w,d.
+AMV== == == Examining argument                : w,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81500000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81580000.
+AMV== == Match found is                       : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : t,d.
+AMV== == == Examining argument                : t,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81580000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,m.
+AMV== == == Examining argument                : 2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,m.
+AMV== == == Examining argument                : i,m.
+AMV== == == Examining argument                : ,m.
+AMV== == == Examining argument                : m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,y.
+AMV== == == Examining argument                : 2,y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,y.
+AMV== == == Examining argument                : i,y.
+AMV== == == Examining argument                : ,y.
+AMV== == == Examining argument                : y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81880000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,p.
+AMV== == == Examining argument                : 2,p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81880000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81882000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,p.
+AMV== == == Examining argument                : i,p.
+AMV== == == Examining argument                : ,p.
+AMV== == == Examining argument                : p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81882000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81900000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,w.
+AMV== == == Examining argument                : 2,w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81900000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81902000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,w.
+AMV== == == Examining argument                : i,w.
+AMV== == == Examining argument                : ,w.
+AMV== == == Examining argument                : w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81902000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81980000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,t.
+AMV== == == Examining argument                : 2,t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81980000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81982000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,t.
+AMV== == == Examining argument                : i,t.
+AMV== == == Examining argument                : ,t.
+AMV== == == Examining argument                : t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81982000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80100000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == Opcode fully determined?             : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x80100000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80102000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,d.
+AMV== == == Examining argument                : i,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 0100 0001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x84102000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "mov 1,%g7"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "mov".
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,2,m.
+AMV== == == Examining argument                : 1,2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,i,m.
+AMV== == == Examining argument                : 1,i,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : M,d.
+AMV== == == Examining argument                : M,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : y,d.
+AMV== == == Examining argument                : y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81480000.
+AMV== == Match found is                       : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : p,d.
+AMV== == == Examining argument                : p,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81480000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81500000.
+AMV== == Match found is                       : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : w,d.
+AMV== == == Examining argument                : w,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81500000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81580000.
+AMV== == Match found is                       : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : t,d.
+AMV== == == Examining argument                : t,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81580000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,m.
+AMV== == == Examining argument                : 2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,m.
+AMV== == == Examining argument                : i,m.
+AMV== == == Examining argument                : ,m.
+AMV== == == Examining argument                : m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,y.
+AMV== == == Examining argument                : 2,y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,y.
+AMV== == == Examining argument                : i,y.
+AMV== == == Examining argument                : ,y.
+AMV== == == Examining argument                : y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81880000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,p.
+AMV== == == Examining argument                : 2,p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81880000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81882000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,p.
+AMV== == == Examining argument                : i,p.
+AMV== == == Examining argument                : ,p.
+AMV== == == Examining argument                : p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81882000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81900000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,w.
+AMV== == == Examining argument                : 2,w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81900000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81902000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,w.
+AMV== == == Examining argument                : i,w.
+AMV== == == Examining argument                : ,w.
+AMV== == == Examining argument                : w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81902000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81980000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,t.
+AMV== == == Examining argument                : 2,t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81980000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81982000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,t.
+AMV== == == Examining argument                : i,t.
+AMV== == == Examining argument                : ,t.
+AMV== == == Examining argument                : t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81982000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80100000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == Opcode fully determined?             : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x80100000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80102000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,d.
+AMV== == == Examining argument                : i,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1110 0001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x8E102000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "mov 1,%g6"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "mov".
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,2,m.
+AMV== == == Examining argument                : 1,2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,i,m.
+AMV== == == Examining argument                : 1,i,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : M,d.
+AMV== == == Examining argument                : M,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : y,d.
+AMV== == == Examining argument                : y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81480000.
+AMV== == Match found is                       : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : p,d.
+AMV== == == Examining argument                : p,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81480000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81500000.
+AMV== == Match found is                       : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : w,d.
+AMV== == == Examining argument                : w,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81500000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81580000.
+AMV== == Match found is                       : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : t,d.
+AMV== == == Examining argument                : t,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81580000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,m.
+AMV== == == Examining argument                : 2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,m.
+AMV== == == Examining argument                : i,m.
+AMV== == == Examining argument                : ,m.
+AMV== == == Examining argument                : m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,y.
+AMV== == == Examining argument                : 2,y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,y.
+AMV== == == Examining argument                : i,y.
+AMV== == == Examining argument                : ,y.
+AMV== == == Examining argument                : y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81880000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,p.
+AMV== == == Examining argument                : 2,p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81880000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81882000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,p.
+AMV== == == Examining argument                : i,p.
+AMV== == == Examining argument                : ,p.
+AMV== == == Examining argument                : p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81882000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81900000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,w.
+AMV== == == Examining argument                : 2,w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81900000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81902000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,w.
+AMV== == == Examining argument                : i,w.
+AMV== == == Examining argument                : ,w.
+AMV== == == Examining argument                : w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81902000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81980000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,t.
+AMV== == == Examining argument                : 2,t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81980000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81982000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,t.
+AMV== == == Examining argument                : i,t.
+AMV== == == Examining argument                : ,t.
+AMV== == == Examining argument                : t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81982000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80100000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == Opcode fully determined?             : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x80100000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80102000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,d.
+AMV== == == Examining argument                : i,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1100 0001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x8C102000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "mov 1,%g5"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "mov".
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,2,m.
+AMV== == == Examining argument                : 1,2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,i,m.
+AMV== == == Examining argument                : 1,i,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : M,d.
+AMV== == == Examining argument                : M,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : y,d.
+AMV== == == Examining argument                : y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81480000.
+AMV== == Match found is                       : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : p,d.
+AMV== == == Examining argument                : p,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81480000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81500000.
+AMV== == Match found is                       : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : w,d.
+AMV== == == Examining argument                : w,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81500000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81580000.
+AMV== == Match found is                       : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : t,d.
+AMV== == == Examining argument                : t,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81580000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,m.
+AMV== == == Examining argument                : 2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,m.
+AMV== == == Examining argument                : i,m.
+AMV== == == Examining argument                : ,m.
+AMV== == == Examining argument                : m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,y.
+AMV== == == Examining argument                : 2,y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,y.
+AMV== == == Examining argument                : i,y.
+AMV== == == Examining argument                : ,y.
+AMV== == == Examining argument                : y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81880000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,p.
+AMV== == == Examining argument                : 2,p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81880000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81882000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,p.
+AMV== == == Examining argument                : i,p.
+AMV== == == Examining argument                : ,p.
+AMV== == == Examining argument                : p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81882000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81900000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,w.
+AMV== == == Examining argument                : 2,w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81900000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81902000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,w.
+AMV== == == Examining argument                : i,w.
+AMV== == == Examining argument                : ,w.
+AMV== == == Examining argument                : w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81902000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81980000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,t.
+AMV== == == Examining argument                : 2,t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81980000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81982000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,t.
+AMV== == == Examining argument                : i,t.
+AMV== == == Examining argument                : ,t.
+AMV== == == Examining argument                : t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81982000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80100000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == Opcode fully determined?             : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x80100000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80102000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,d.
+AMV== == == Examining argument                : i,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1010 0001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x8A102000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "mov 1,%g4"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "mov".
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,2,m.
+AMV== == == Examining argument                : 1,2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,i,m.
+AMV== == == Examining argument                : 1,i,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : M,d.
+AMV== == == Examining argument                : M,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81400000.
+AMV== == Match found is                       : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : y,d.
+AMV== == == Examining argument                : y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81400000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81480000.
+AMV== == Match found is                       : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : p,d.
+AMV== == == Examining argument                : p,d.
+AMV== == Opcode fully determined?             : 1000 0001 0100 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81480000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81500000.
+AMV== == Match found is                       : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : w,d.
+AMV== == == Examining argument                : w,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81500000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81580000.
+AMV== == Match found is                       : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : t,d.
+AMV== == == Examining argument                : t,d.
+AMV== == Opcode fully determined?             : 1000 0001 0101 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81580000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,m.
+AMV== == == Examining argument                : 2,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,m.
+AMV== == == Examining argument                : i,m.
+AMV== == == Examining argument                : ,m.
+AMV== == == Examining argument                : m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : 1,m.
+AMV== == == Examining argument                : 1,m.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81800000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,y.
+AMV== == == Examining argument                : 2,y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81800000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81802000.
+AMV== == Match found is                       : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,y.
+AMV== == == Examining argument                : i,y.
+AMV== == == Examining argument                : ,y.
+AMV== == == Examining argument                : y.
+AMV== == Opcode fully determined?             : 1000 0001 1000 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81802000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81880000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,p.
+AMV== == == Examining argument                : 2,p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81880000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81882000.
+AMV== == Match found is                       : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,p.
+AMV== == == Examining argument                : i,p.
+AMV== == == Examining argument                : ,p.
+AMV== == == Examining argument                : p.
+AMV== == Opcode fully determined?             : 1000 0001 1000 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81882000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81900000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,w.
+AMV== == == Examining argument                : 2,w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81900000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81902000.
+AMV== == Match found is                       : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,w.
+AMV== == == Examining argument                : i,w.
+AMV== == == Examining argument                : ,w.
+AMV== == == Examining argument                : w.
+AMV== == Opcode fully determined?             : 1000 0001 1001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81902000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81980000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,t.
+AMV== == == Examining argument                : 2,t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81980000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81982000.
+AMV== == Match found is                       : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,t.
+AMV== == == Examining argument                : i,t.
+AMV== == == Examining argument                : ,t.
+AMV== == == Examining argument                : t.
+AMV== == Opcode fully determined?             : 1000 0001 1001 1000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x81982000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80100000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMV== == Arguments pattern is                 : 2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == Opcode fully determined?             : 1000 0000 0001 0000 0000 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x80100000.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x80102000.
+AMV== == Match found is                       : 1000 0000 0001 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i,d.
+AMV== == == Examining argument                : i,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1000 0001 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x88102000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "slld %g7,1,%g6"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "slld".
+AMV== == Match found is                       : 0x81282040.
+AMV== == Match found is                       : 1000 0001 0010 1000 0010 0000 0100 0000 
+AMV== == Arguments pattern is                 : 1,Y,d.
+AMV== == == Examining argument                : 1,Y,d.
+AMV== == == Examining argument                : ,Y,d.
+AMV== == == Examining argument                : Y,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1101 0010 1001 1110 0000 0100 0000 
+AMVEE == Opcode fully determined?             : 0x8D29E040.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "slld %g5,%g2,%g5"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "slld".
+AMV== == Match found is                       : 0x81282040.
+AMV== == Match found is                       : 1000 0001 0010 1000 0010 0000 0100 0000 
+AMV== == Arguments pattern is                 : 1,Y,d.
+AMV== == == Examining argument                : 1,Y,d.
+AMV== == == Examining argument                : ,Y,d.
+AMV== == == Examining argument                : Y,d.
+AMV== == Opcode fully determined?             : 1000 0001 0010 1001 0110 0000 0100 0000 
+AMVEE == Opcode fully determined?             : 0x81296040.
+AMV EE Error analysis follows.
+AMV EE == match is 0.                         .
+AMV== == Match found is                       : 0x81280040.
+AMV== == Match found is                       : 1000 0001 0010 1000 0000 0000 0100 0000 
+AMV== == Arguments pattern is                 : 1,2,d.
+AMV== == == Examining argument                : 1,2,d.
+AMV== == == Examining argument                : ,2,d.
+AMV== == == Examining argument                : 2,d.
+AMV== == == Examining argument                : ,d.
+AMV== == == Examining argument                : d.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1000 1011 0010 1001 0100 0000 0100 0010 
+AMVEE == Opcode fully determined?             : 0x8B294042.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
+
+NEXT AMV== Starting special case analysis: Instruction is: "ta 0"
+AMV== Number of opcodes in AJIT               : 741.
+AMV== == A known opcode. Finding the insn     
+AMV== == Insn found for later return is       : "ta".
+AMV== == Match found is                       : 0x91D02000.
+AMV== == Match found is                       : 1001 0001 1101 0000 0010 0000 0000 0000 
+AMV== == Arguments pattern is                 : i.
+AMV== == == Examining argument                : i.
+AMV== == == Examining argument                : .
+AMV== == Opcode fully determined?             : 1001 0001 1101 0000 0010 0000 0000 0000 
+AMVEE == Opcode fully determined?             : 0x91D02000.
+AMV EE Error analysis follows.
+AMV EE == match is non zero                   : 1.
+AMV EE == Architecture mask                   : 0x00000008.
+AMV EE == Insn flags                          : 0x00000000.
+AMV EE == HWCAP Mask                          : 0x00FFFF00.
+AMV EE == Hardware capabilities               : 0x00000000.
+AMV EE == Allowed Hardware capabilities       : 0x00000700.
+AMV EE == NOT Allowed Hardware capabilities   : 0xFFFFF8FF.
+AMV EE == (hwcaps & ~hwcap_allowed)           : 0x00000000.
