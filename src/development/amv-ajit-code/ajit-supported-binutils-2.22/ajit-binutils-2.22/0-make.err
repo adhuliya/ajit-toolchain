@@ -1,0 +1,11 @@
+./chew.c: In function ‘print_stack_level’:
+./chew.c:479:3: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat]
+./chew.c:480:3: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat]
+./chew.c: In function ‘main’:
+./chew.c:1567:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat]
+ldgram.y: In function ‘yyparse’:
+ldgram.y:627:27: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
+In file included from ./ldlex-wrapper.c:6:0:
+ldlex.c: In function ‘yy_scan_buffer’:
+ldlex.c:3764:41: warning: declaration of ‘base’ shadows a global declaration [-Wshadow]
+./ldlang.h:474:20: warning: shadowed declaration is here [-Wshadow]
