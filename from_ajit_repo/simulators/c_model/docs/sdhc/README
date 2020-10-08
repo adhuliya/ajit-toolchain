@@ -1,0 +1,86 @@
+Date : 8/10/20
+Authors: Saurabh Bansode
+Version : 0.1
+
+This document describes the SDHC incorporation 
+in the Ajit_C_system_model keeping SDHC version
+3.0 is used as the reference.
+
+
+The underlying registers of the SDHC as specified 
+in the SD Host Controller Simplified Specification
+Version 3.00, as well as the internal registers of 
+the SD card as specified in the Physical Layer Sim-
+plified Specification Version 3.01  are modelled. 
+
+The SDHC+SD card implementation is defined in 
+	../c_model/code/devices/src/sdhc.c
+
+The SDHC registers are declared in 
+	../c_model/code/devices/include/sdhc.h
+
+The internal SD registers & raw memory is defined in
+	../c_model/code/devices/include/sd.h	
+
+
+The subsequences of using a SD card for any processor,
+as described in the version 3.00 specification doc
+are implemented. There are total 12 subsequences,
+2 being optional. The description also includes the
+flowchart figure's number in the SD Host Controller 
+Simplified Specification Version 3.00
+
+Subsequence 1: SD Card Detection
+	Deals with card insertion and removal related
+	tasks and flags
+	Fig: 3-2
+
+Subsequence 2: SD Clock control
+	Providing clock to SDHC, stopping the clock
+	supply and changing clock frequency.
+	Fig: 3-3, 3-4 and 3-5
+
+Subsequence 3: SD Bus Power Control
+	For controlling the Bus power
+	Fig: 3-6
+
+Subsequence 4: Changing bus width
+	Deals with changing bit modes for host and card.	
+	Fig: 3-7
+
+Subsequence 5: Timeout settings on DAT line
+	To detect timeout errors on DAT line
+	Fig: 3-8
+	
+Subsequence 6: Card Initialization and Identification
+	Check which category of card is inserted and other
+	identification routines
+	Fig: 3-9 and 3-10	
+
+Subsequence 7: SD Transaction Generation
+	1. Transactions that do not use DAT Line
+	2. Transactions that use DAT only for line busy
+	3. Transactions that use DAT for transferring data
+	Fig: 3-11, 3-12, 3-13, 3-14 and 3-15
+
+Subsequence 8: Abort Transaction
+	Use CMD12 command for SD Memory Card
+	Fig: 3-16: Asynchronous Abort
+	Fig: 3-17: Synchronous Abort
+
+Subsequence 9: Changing Bus Speed Mode
+	CMD6 used to change memory card bus speed mode.
+	
+Subsequence 10: Error Recovery
+	Error Interrupt Recovery
+	CMD12 Error Recovery
+	Fig: 3-21, 3-22
+
+Subsequence 11: Wakeup Control
+	If Host System goes into standby,
+	using 3 methods in total, the system can be 
+	revived back to its original state.
+	Fig: 3-23, 3-24
+
+Subsequence 12: Suspend/Resume
+	Optional
