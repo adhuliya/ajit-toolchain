@@ -1,6 +1,6 @@
 /*	SDHC.c
 
-AUTHORS: Saurabh Bansode, Vishnu Easwaran
+AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
 last modified: 12 Oct 2020 by Saurabh
 
@@ -12,8 +12,6 @@ Device Registers:
 	 are defined in Sdhc.h
 */
 
-#include "Ajit_Hardware_Configuration.h"
-#include "Sdhc.h"
 #include <stdlib.h>
 #include <stdint.h>
 #ifdef SW
@@ -21,11 +19,15 @@ Device Registers:
 #include <unistd.h>
 #endif
 #include <pthread.h>
+
 #include "pthreadUtils.h"
 #include "Pipes.h"
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"
 #include "Ancillary.h"
+#include "Ajit_Hardware_Configuration.h"
+
+#include "Sdhc.h"
 
 // Thread declarations
 void SDHC_Control();
@@ -36,14 +38,14 @@ DEFINE_THREAD(SDHC_Control);
 void SDHC_Read();
 DEFINE_THREAD(SDHC_Read);
 
-//This thread recieves data from a pipe and stores
+//This thread receives data from a pipe and stores
 // it in SD Card
 void SDHC_Write();
 DEFINE_THREAD(SDHC_Write);
 
 
 
-void SDHC_initialize(); //Page 92 of the specfication doc
+void SDHC_initialize(); //Page 92 of the specification doc
 {
 	struct SdhcState__ sdhcinit;
 	int tempvar=3;
