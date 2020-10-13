@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 12 Oct 2020 by Saurabh
+last modified: 13 Oct 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -19,8 +19,12 @@ Device Registers:
 #include "Sdhc.h"
 //#include "pthreadUtils.h"
 
+struct SdhcState__ sdhc_init;
 
-// Thread declarations
+#define CARD_INSERT_INTR_FLAG 1 //Flag for card insertion interrupt 
+#define CARD_REMOVE_INTR_FLAG 0 //Flag for card removal interrupt
+
+// **** Thread declarations ******//
 void SDHC_Control();
 DEFINE_THREAD(SDHC_Control);
 
@@ -34,25 +38,33 @@ DEFINE_THREAD(SDHC_Read);
 void SDHC_Write();
 DEFINE_THREAD(SDHC_Write);
 
-//mimics the action of SD card
-void card_insertion();
+				/*	Subsequence 3.1: SD Card Detection, Page 92	*/
+//Routine that mimics the actions of SD card and
+//their effect on the registers
+int card_insert_remove(int irflag)
 {
- return x;
+	if(irflag==CARD_INSERT_INTR_FLAG) //card inserted
+	{
+		//change sdhc and sd regs
+		sdhc_init.normal_intr_status = 1<<8;
+	}
+	else if(irflag==CARD_REMOVE_INTR_FLAG)
+	{		
+	//change sdhc and sd regs accordingly
+		sdhc_init.normal_intr_status = 1<<7;
+	}
+ return irflag;
 }
 
-void SDHC_detection(); //Page 92 of the specification doc | Sequence 3.1
+void SD_detection() 	
 {
-	struct SdhcState__ sdhcinit;
-	int tempvar=3;
-	sdhc_init.normal_intr_status_enable = tempvar<<7; 
-	sdhc_init.normal_intr_signal_enable = tempvar<<7;
-	if(x==0)
-	{ 
-	sdhc.init.present_state = 
-	sdhc_init.normal_intr_status_enable
-	sdhc_init.normal_intr_signal_enable
-	}
+	sdhc_init.normal_intr_status_enable = 3<<7; 
+	sdhc_init.normal_intr_signal_enable = 3<<7;
+	card_insert_remove(1); //default mode selected as insertion
+	sdhc_init.present_state =  1<<16; //card inserted flag set in PSR
+	printf("PSR=%d\r\n",sdhc_init.present_state);
 }
+				/*	End of subsequence 3.1: SD Card Detection, Page 92	*/
 
 /* SDHC SD Clock control. pg no. 105 */
 

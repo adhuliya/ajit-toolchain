@@ -66,6 +66,10 @@
 #define  SDHCI_CLOCK_MUL_MASK	0x00FF0000
 #define  SDHCI_CLOCK_MUL_SHIFT	16
 
+
+int card_insert_remove();
+void SD_detection();
+
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
 
