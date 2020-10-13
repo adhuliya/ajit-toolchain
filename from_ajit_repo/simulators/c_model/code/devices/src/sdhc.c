@@ -11,23 +11,14 @@ Device Registers:
 	SDHC registers, SD registers & flash memory
 	 are defined in Sdhc.h
 */
-
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#ifdef SW
-#include <stdio.h>
-#include <unistd.h>
-#endif
 #include <pthread.h>
 
-#include "pthreadUtils.h"
-#include "Pipes.h"
-#include "pipeHandler.h"
-#include "RequestTypeValues.h"
-#include "Ancillary.h"
-#include "Ajit_Hardware_Configuration.h"
-
 #include "Sdhc.h"
+//#include "pthreadUtils.h"
+
 
 // Thread declarations
 void SDHC_Control();
@@ -43,14 +34,23 @@ DEFINE_THREAD(SDHC_Read);
 void SDHC_Write();
 DEFINE_THREAD(SDHC_Write);
 
+//mimics the action of SD card
+void card_insertion();
+{
+ return x;
+}
 
-
-void SDHC_initialize(); //Page 92 of the specification doc
+void SDHC_detection(); //Page 92 of the specification doc | Sequence 3.1
 {
 	struct SdhcState__ sdhcinit;
 	int tempvar=3;
 	sdhc_init.normal_intr_status_enable = tempvar<<7; 
 	sdhc_init.normal_intr_signal_enable = tempvar<<7;
-	
+	if(x==0)
+	{ 
+	sdhc.init.present_state = 
+	sdhc_init.normal_intr_status_enable
+	sdhc_init.normal_intr_signal_enable
+	}
 }
 

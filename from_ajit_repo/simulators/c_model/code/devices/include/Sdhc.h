@@ -8,8 +8,6 @@
 #define _SDHC_H
 
 #include<stdint.h>
-#include <pthread.h>
-#include "pthreadUtils.h"
 
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
