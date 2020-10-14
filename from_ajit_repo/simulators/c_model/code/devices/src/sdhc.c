@@ -20,7 +20,7 @@ Device Registers:
 //#include "pthreadUtils.h"
 
 struct SdhcState__ sdhc_init;
-
+struct SdcardState sd_init; 
 #define CARD_INSERT_INTR_FLAG 1 //Flag for card insertion interrupt 
 #define CARD_REMOVE_INTR_FLAG 0 //Flag for card removal interrupt
 
@@ -38,7 +38,7 @@ DEFINE_THREAD(SDHC_Read);
 void SDHC_Write();
 DEFINE_THREAD(SDHC_Write);
 
-				/*	Subsequence 3.1: SD Card Detection, Page 92	*/
+				/*	Subsequence 3.1: SD Card Detection, Page 103	*/
 //Routine that mimics the actions of SD card and
 //their effect on the registers
 int card_insert_remove(int irflag)
@@ -64,7 +64,7 @@ void SD_detection()
 	sdhc_init.present_state =  1<<16; //card inserted flag set in PSR
 	printf("PSR=%d\r\n",sdhc_init.present_state);
 }
-				/*	End of subsequence 3.1: SD Card Detection, Page 92	*/
+				/*	End of subsequence 3.1: SD Card Detection, Page 104	*/
 
 /* SDHC SD Clock control. pg no. 105 */
 
@@ -121,4 +121,46 @@ void sdhc_sd_clk_freq_change(uint64_t freq)
 {
 	sdhc_clk_stop(); // can be skipped if clock still off
 	sdhc_sd_clk_supply(freq);
+}
+
+/*		Subsequence 3.3 SD Bus Power Control Page 107	*/
+/*
+(1) By reading the Capabilities register, get the support voltage of the Host Controller.
+(2) Set SD Bus Voltage Select in the Power Control register with maximum voltage that the Host
+Controller supports.
+(3) Set SD Bus Power in the Power Control register to 1.
+(4) Get the OCR value of all function internal of SD card.
+(5) Judge whether SD Bus voltage needs to be changed or not. In case where SD Bus voltage needs
+to be changed, go to step (6). In case where SD Bus voltage does not need to be changed, go to
+'End'.
+(6) Set SD Bus Power in the Power Control register to 0 for clearing this bit. The card requires
+voltage rising from 0 volt to detect it correctly. The Host Driver shall clear SD Bus Power before
+changing voltage by setting SD Bus Voltage Select.
+(7) Set SD Bus Voltage Select in the Power Control register.
+(8) Set SD Bus Power in the Power Control register to 1.
+*/
+int buspower()
+{
+sdhc_init.capabilities = 7<<26; 
+// assuming that SDHC supports all Voltage levels
+//cases are written regardless of this.
+//we are assuming that step 6 won't be executed and 
+//card will run in 3.3V range
+// In case of using low voltage mode(1.8V), the bus power
+// sequence will need to be changed.
+	if((sdhc_init.capabilities&SDHCI_CAN_VDD_330)&&(1))
+	{
+		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_330); //3.3V supported	
+	}
+	else if((sdhc_init.capabilities&SDHCI_CAN_VDD_300))
+	{
+		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_300); //3.0V supported
+	}
+	else((sdhc_init.capabilities&SDHCI_CAN_VDD_180))
+	{ 
+		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_180);	//1.8V supported
+	}
+	sdhc_init.pwr_ctrl |= (SDHCI_BUS_POWER_ON); //set SD BUS Power to 1
+	sd_init.ocr = 1<<31; //indicator that card power-up sequence is completed
+	sd_init.ocr = 1<<30; //indicator that card is SDHC/SDXC
 }

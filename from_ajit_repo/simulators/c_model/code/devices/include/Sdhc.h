@@ -66,10 +66,21 @@
 #define  SDHCI_CLOCK_MUL_MASK	0x00FF0000
 #define  SDHCI_CLOCK_MUL_SHIFT	16
 
+//power control register
+#define  SDHCI_BUS_POWER_ON		0x01
+#define  SDHCI_BUS_POWER_180	0x0A
+#define  SDHCI_BUS_POWER_300	0x0C
+#define  SDHCI_BUS_POWER_330	0x0E
+
+/* OCR bit definitions */
+#define SD_OCR_S18R		(1 << 24)    /* 1.8V switching request */
+#define SD_ROCR_S18A	SD_OCR_S18R  /* 1.8V switching accepted by card */
+#define SD_OCR_XPC		(1 << 28)    /* SDXC power control */
+#define SD_OCR_CCS		(1 << 30)    /* Card Capacity Status */
 
 int card_insert_remove();
 void SD_detection();
-
+int buspower();
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
 
@@ -122,7 +133,7 @@ typedef struct SdhcState__ {
 /* sd card */
 typedef struct SdcardState {
 	// registers
-
+	uint32_t ocr; //Holds VDD storage profile of the card
 	// storage array.
 } SdcardState;
 
