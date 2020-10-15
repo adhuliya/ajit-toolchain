@@ -66,23 +66,24 @@ void SD_detection()
 }
 				/*	End of subsequence 3.1: SD Card Detection, Page 104	*/
 
-/* SDHC SD Clock control. pg no. 105 */
+/* 3.2 SDHC SD Clock control. pg no. 105 */
 
+// 3.2.1
 // The sequence for supplying SD Clock to a SD card is described in Figure 3-3. The clock shall be supplied
 // to the card before either of the following actions is taken.
 // a) 	Issuing a SD command
 // b) 	Detect an interrupt from a SD card in 4-bit mode.
 // 
-// (1) 	Calculate a divisor to determine SD Clock frequency by reading Base Clock Frequency For SD
-// 	Clock in the Capabilities register. If Base Clock Frequency For SD Clock is 00 0000b, the Host
-// 	System shall provide this information to the Host Driver by another method.
-// (2) 	Set Internal Clock Enable and SDCLK Frequency Select in the Clock Control register in
-// 	accordance with the calculated result of step (1).
-// (3) 	Check Internal Clock Stable in the Clock Control register. Repeat this step until Clock Stable is 1.
-// (4) 	Set SD Clock Enable in the Clock Control register to 1. Then, the Host Controller starts to supply
-// the SD Clock
+// 	(1) 	Calculate a divisor to determine SD Clock frequency by reading Base Clock Frequency For SD
+// 		Clock in the Capabilities register. If Base Clock Frequency For SD Clock is 00 0000b, the Host
+// 		System shall provide this information to the Host Driver by another method.
+// 	(2) 	Set Internal Clock Enable and SDCLK Frequency Select in the Clock Control register in
+// 		accordance with the calculated result of step (1).
+// 	(3) 	Check Internal Clock Stable in the Clock Control register. Repeat this step until Clock Stable is 1.
+// 	(4) 	Set SD Clock Enable in the Clock Control register to 1. Then, the Host Controller starts to supply
+// 		the SD Clock
 
-void sdhc_sd_clk_supply(uint64_t freq)
+int sdhc_sd_clk_supply(uint64_t freq)
 {
 	struct SdhcState__ sdhcinit;
 
@@ -99,15 +100,18 @@ void sdhc_sd_clk_supply(uint64_t freq)
 	// wait till stable and enable sd clock
 	while(!(sdhcinit.clk_ctrl & SDHCI_CLOCK_INT_STABLE)) {}
 	sdhcinit.clk_ctrl |= SDHCI_CLOCK_CARD_EN;
+	
+	return 0;
 
 }
 
+// 3.2.2 SD Clock Stop sequence
 // The Host Driver shall not stop the SD Clock when a SD transaction is occurring on the SD Bus -- namely, 
 // when either Command Inhibit (DAT) or Command Inhibit (CMD) in the Present State register is set to 1.
 // (1) Set SD Clock Enable in the Clock Control register to 0. Then, the Host Controller stops supplying
 // the SD Clock
 
-void sdhc_clk_stop()
+int sdhc_clk_stop()
 {
 	struct SdhcState__ sdhcinit;
 
@@ -115,12 +119,17 @@ void sdhc_clk_stop()
 
 	// set sd clk enable to 0
 	sdhcinit.clk_ctrl &= ~(SDHCI_CLOCK_CARD_EN);
+
+	return 0;
 }
 
-void sdhc_sd_clk_freq_change(uint64_t freq)
+// 3.2.3 Clock Frequency Change sequence
+int16_t sdhc_sd_clk_freq_change(uint64_t freq)
 {
 	sdhc_clk_stop(); // can be skipped if clock still off
 	sdhc_sd_clk_supply(freq);
+
+	return 0;
 }
 
 /*		Subsequence 3.3 SD Bus Power Control Page 107	*/
@@ -163,4 +172,27 @@ sdhc_init.capabilities = 7<<26;
 	sdhc_init.pwr_ctrl |= (SDHCI_BUS_POWER_ON); //set SD BUS Power to 1
 	sd_init.ocr = 1<<31; //indicator that card power-up sequence is completed
 	sd_init.ocr = 1<<30; //indicator that card is SDHC/SDXC
+}
+
+/* 3.4 changing bus width pg no. 108 */
+
+// The sequence for changing bit mode on SD Bus
+// 	(1)	Set Card Interrupt Status Enable in the Normal Interrupt Status Enable register to 0 for masking
+// 		incorrect interrupts that may occur while changing the bus width.
+// 	(2)	In case of SD memory only card, go to step (4). In case of other card, go to step (3).
+// 	(3)	Set "IENM" of the CCCR in a SDIO or SD combo card to 0 by CMD52. Please refer to Section
+// 		3.7.1 for how to generate CMD52.
+// 	(4)	Change the bus width mode for a SD card. SD Memory Card bus width is changed by ACMD6 and
+// 		SDIO card bus width is changed by setting Bus Width of Bus Interface Control register in CCCR.
+// 	(5)	In case of changing to 4-bit mode, set Data Transfer Width to 1 in the Host Control 1 register. In
+// 		another case (1-bit mode), set this bit to 0.
+// 	(6)	In case of SD memory only card, go to the 'End'. In case of other card, go to step (7).
+// 	(7)	Set "IENM" of the CCCR in a SDIO or SD combo card to 1 by CMD52.
+// 	(8)	Set Card Interrupt Status Enable in the Normal Interrupt Status Enable register to 1.
+// Note that if the card is locked, bus width cannot be changed. Unlock the card is required before changing
+// bus width.
+
+int sdhc_change_bus_width()
+{
+	return 0;
 }
