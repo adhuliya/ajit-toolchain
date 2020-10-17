@@ -108,8 +108,6 @@ all: stamp-picdir $(TARGETLIB) required-list all-subdir
 check: check-subdir
 installcheck: installcheck-subdir
 
-# Warning: this fragment is automatically generated
-enable_shared = no
 
 INCDIR=$(srcdir)/$(MULTISRCTOP)../include
 

@@ -90,7 +90,7 @@ MAINTAINER_MODE_TRUE = #
 # -------------------------------------------------
 
 # The gcc driver likes to know the arguments it was configured with.
-TOPLEVEL_CONFIGURE_ARGUMENTS=./configure --prefix=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr --sysconfdir=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/etc --enable-shared --disable-static --disable-gtk-doc --disable-doc --disable-docs --disable-documentation --with-xmlto=no --with-fop=no --disable-multilib --disable-werror --target=sparc-buildroot-linux-uclibc --disable-shared --enable-static --with-sysroot=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot --disable-sim --disable-gdb
+TOPLEVEL_CONFIGURE_ARGUMENTS=./configure --prefix=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr --sysconfdir=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/etc --enable-shared --disable-static --disable-gtk-doc --disable-doc --disable-docs --disable-documentation --with-xmlto=no --with-fop=no --disable-multilib --disable-werror --target=sparc-buildroot-linux-uclibc --disable-shared --enable-static --with-sysroot=/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot --disable-sim --disable-gdb target_alias=sparc-buildroot-linux-uclibc CC=/usr/bin/gcc CFLAGS='-O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include' LDFLAGS='-L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/lib -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib -Wl,-rpath,/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib' CPPFLAGS=-I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include CXX=/usr/bin/g++ CXXFLAGS='-O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include' AR=/usr/bin/ar AS=/usr/bin/as LD=/usr/bin/ld NM=/usr/bin/nm RANLIB=/usr/bin/ranlib OBJCOPY=/usr/bin/objcopy --no-create --no-recursion
 
 tooldir = ${exec_prefix}/sparc-buildroot-linux-uclibc
 build_tooldir = ${exec_prefix}/sparc-buildroot-linux-uclibc
@@ -144,7 +144,7 @@ BUILD_EXPORTS = \
 	AR="$(AR_FOR_BUILD)"; export AR; \
 	AS="$(AS_FOR_BUILD)"; export AS; \
 	CC="$(CC_FOR_BUILD)"; export CC; \
-	CFLAGS="-g $(CFLAGS_FOR_BUILD)"; export CFLAGS; \
+	CFLAGS="$(CFLAGS_FOR_BUILD)"; export CFLAGS; \
 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
 	CXX="$(CXX_FOR_BUILD)"; export CXX; \
 	CXXFLAGS="$(CXXFLAGS_FOR_BUILD)"; export CXXFLAGS; \
@@ -154,7 +154,7 @@ BUILD_EXPORTS = \
 	GOCFLAGS="$(GOCFLAGS_FOR_BUILD)"; export GOCFLAGS; \
 	DLLTOOL="$(DLLTOOL_FOR_BUILD)"; export DLLTOOL; \
 	LD="$(LD_FOR_BUILD)"; export LD; \
-	LDFLAGS="-g $(LDFLAGS_FOR_BUILD)"; export LDFLAGS; \
+	LDFLAGS="$(LDFLAGS_FOR_BUILD)"; export LDFLAGS; \
 	NM="$(NM_FOR_BUILD)"; export NM; \
 	RANLIB="$(RANLIB_FOR_BUILD)"; export RANLIB; \
 	WINDRES="$(WINDRES_FOR_BUILD)"; export WINDRES; \
@@ -163,7 +163,7 @@ BUILD_EXPORTS = \
 # These variables must be set on the make command line for directories
 # built for the build system to override those in BASE_FLAGS_TO_PASSS.
 EXTRA_BUILD_FLAGS = \
-	CFLAGS="-g $(CFLAGS_FOR_BUILD)" \
+	CFLAGS="$(CFLAGS_FOR_BUILD)" \
 	LDFLAGS="$(LDFLAGS_FOR_BUILD)"
 
 # This is the list of directories to built for the host system.
@@ -182,7 +182,7 @@ HOST_EXPORTS = \
 	$(BASE_EXPORTS) \
 	CC="$(CC)"; export CC; \
 	ADA_CFLAGS="$(ADA_CFLAGS)"; export ADA_CFLAGS; \
-	CFLAGS="-g $(CFLAGS)"; export CFLAGS; \
+	CFLAGS="$(CFLAGS)"; export CFLAGS; \
 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
 	CXX="$(CXX)"; export CXX; \
 	CXXFLAGS="$(CXXFLAGS)"; export CXXFLAGS; \
@@ -194,7 +194,7 @@ HOST_EXPORTS = \
 	CC_FOR_BUILD="$(CC_FOR_BUILD)"; export CC_FOR_BUILD; \
 	DLLTOOL="$(DLLTOOL)"; export DLLTOOL; \
 	LD="$(LD)"; export LD; \
-	LDFLAGS="-g $(STAGE1_LDFLAGS) $(LDFLAGS)"; export LDFLAGS; \
+	LDFLAGS="$(STAGE1_LDFLAGS) $(LDFLAGS)"; export LDFLAGS; \
 	NM="$(NM)"; export NM; \
 	RANLIB="$(RANLIB)"; export RANLIB; \
 	WINDRES="$(WINDRES)"; export WINDRES; \
@@ -248,7 +248,7 @@ BASE_TARGET_EXPORTS = \
 	AR="$(AR_FOR_TARGET)"; export AR; \
 	AS="$(COMPILER_AS_FOR_TARGET)"; export AS; \
 	CC="$(CC_FOR_TARGET) $(XGCC_FLAGS_FOR_TARGET) $$TFLAGS"; export CC; \
-	CFLAGS="-g $(CFLAGS_FOR_TARGET)"; export CFLAGS; \
+	CFLAGS="$(CFLAGS_FOR_TARGET)"; export CFLAGS; \
 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
 	CPPFLAGS="$(CPPFLAGS_FOR_TARGET)"; export CPPFLAGS; \
 	CXXFLAGS="$(CXXFLAGS_FOR_TARGET)"; export CXXFLAGS; \
@@ -257,7 +257,7 @@ BASE_TARGET_EXPORTS = \
 	GOC="$(GOC_FOR_TARGET) $(XGCC_FLAGS_FOR_TARGET) $$TFLAGS"; export GOC; \
 	DLLTOOL="$(DLLTOOL_FOR_TARGET)"; export DLLTOOL; \
 	LD="$(COMPILER_LD_FOR_TARGET)"; export LD; \
-	LDFLAGS="-g $(LDFLAGS_FOR_TARGET)"; export LDFLAGS; \
+	LDFLAGS="$(LDFLAGS_FOR_TARGET)"; export LDFLAGS; \
 	LIPO="$(LIPO_FOR_TARGET)"; export LIPO; \
 	NM="$(COMPILER_NM_FOR_TARGET)"; export NM; \
 	OBJDUMP="$(OBJDUMP_FOR_TARGET)"; export OBJDUMP; \
@@ -314,14 +314,14 @@ PWD_COMMAND = $${PWDCMD-pwd}
 AR_FOR_BUILD = $(AR)
 AS_FOR_BUILD = $(AS)
 CC_FOR_BUILD = $(CC)
-CFLAGS_FOR_BUILD = -g -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
-CXXFLAGS_FOR_BUILD = -g -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
+CFLAGS_FOR_BUILD = -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
+CXXFLAGS_FOR_BUILD = -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
 CXX_FOR_BUILD = $(CXX)
 DLLTOOL_FOR_BUILD = $(DLLTOOL)
 GCJ_FOR_BUILD = $(GCJ)
 GFORTRAN_FOR_BUILD = $(GFORTRAN)
 GOC_FOR_BUILD = $(GOC)
-LDFLAGS_FOR_BUILD = -g -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/lib -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib -Wl,-rpath,/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib
+LDFLAGS_FOR_BUILD = -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/lib -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib -Wl,-rpath,/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib
 LD_FOR_BUILD = $(LD)
 NM_FOR_BUILD = $(NM)
 RANLIB_FOR_BUILD = $(RANLIB)
@@ -341,12 +341,12 @@ BOOT_ADAFLAGS=-gnatpg -gnata
 
 AWK = gawk
 SED = /bin/sed
-BISON = bison
-YACC = bison -y
-FLEX = flex
-LEX = flex
+BISON = /home/gauri/ajit-toolchain/development/amv-ajit-code/ajit-binutils-2.22/missing bison
+YACC = /home/gauri/ajit-toolchain/development/amv-ajit-code/ajit-binutils-2.22/missing bison -y
+FLEX = /home/gauri/ajit-toolchain/development/amv-ajit-code/ajit-binutils-2.22/missing flex
+LEX = /home/gauri/ajit-toolchain/development/amv-ajit-code/ajit-binutils-2.22/missing flex
 M4 = m4
-MAKEINFO = /lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/build/host-binutils-2.22/missing makeinfo
+MAKEINFO = /home/gauri/ajit-toolchain/development/amv-ajit-code/ajit-binutils-2.22/missing makeinfo
 EXPECT = expect
 RUNTEST = runtest
 
@@ -375,11 +375,11 @@ STRIP = strip
 WINDRES = windres
 WINDMC = windmc
 
-GNATBIND = no
-GNATMAKE = no
+GNATBIND = gnatbind
+GNATMAKE = gnatmake
 
-CFLAGS = -g -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
-LDFLAGS = -g -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/lib -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib -Wl,-rpath,/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib
+CFLAGS = -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
+LDFLAGS = -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/lib -L/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib -Wl,-rpath,/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/lib
 LIBCFLAGS = $(CFLAGS)
 CXXFLAGS = -O2 -I/lindata/My-work/Professional/iitb/build/buildroot-2014.08/output/host/usr/include
 LIBCXXFLAGS = $(CXXFLAGS) -fno-implicit-templates

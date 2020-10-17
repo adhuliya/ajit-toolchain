@@ -36,6 +36,7 @@ main:
 	ordcc   %g1, %g2, %g1
 	ordn    %g1, %g2, %g1
 	ordncc  %g1, %g2, %g1
+	xord	%g1, %g2, %g1
 	xordcc  %g1, %g2, %g1
 	xnord   %g1, %g2, %g1
 	xnordcc %g1, %g2, %g1

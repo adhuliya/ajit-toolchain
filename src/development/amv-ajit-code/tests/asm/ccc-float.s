@@ -38,11 +38,17 @@ main:
         ## vfmul   %f2, %f4, %f6
         ## vfdiv   %f2, %f4, %f6
         ## vfsqrt  %f2, %f4, %f6
-        vfadd   %f2, %f4, %f6
-        vfsub   %f2, %f4, %f6
-        vfmul   %f2, %f4, %f6
-        vfdiv   %f2, %f4, %f6
-        vfsqrt  %f2, %f4, %f6
+        vfadd32   %f2, %f4, %f6
+        vfsub32   %f2, %f4, %f6
+        vfmul32   %f2, %f4, %f6
+        vfadd16   %f2, %f4, %f6
+        vfsub16   %f2, %f4, %f6
+        vfmul16   %f2, %f4, %f6
+	faddreduce16 %f0,%f2
+	fstoh %f1, %f2
+	fhtos %f1, %f3
+	vfi16toh %f0, %f2,%f4
+	vfhtoi16 %f0, %f2,%f4
 	adddcc  %g1, %g2, %g1
 	subd    %g1, %g2, %g1
 	subdcc  %g1, %g2, %g1

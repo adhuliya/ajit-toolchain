@@ -4,9 +4,9 @@ Dump of assembler code for function main:
    0x00000008 <+8>:	adddcc  %g1, %g2, %g1
    0x0000000c <+12>:	subd  %g1, %g2, %g1
    0x00000010 <+16>:	subdcc  %g1, %g2, %g1
-   0x00000014 <+20>:	slld  %g1, 0x38, %g2
-   0x00000018 <+24>:	srld  %g1, 0x38, %g2
-   0x0000001c <+28>:	srad  %g1, 0x38, %g2
+   0x00000014 <+20>:	slld  %g1, 0x18, %g2
+   0x00000018 <+24>:	srld  %g1, 0x18, %g2
+   0x0000001c <+28>:	srad  %g1, 0x18, %g2
    0x00000020 <+32>:	slld  %g1, %g3, %g2
    0x00000024 <+36>:	srld  %g1, %g3, %g2
    0x00000028 <+40>:	srad  %g1, %g3, %g2

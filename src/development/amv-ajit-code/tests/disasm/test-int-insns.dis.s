@@ -1,5 +1,5 @@
 
-/home/codeman/.itsoflife/mydata/local/packages-live/ajit-toolchain/development/amv-ajit-code/tests/obj/test-int-insns.o:     file format elf32-sparc
+/home/gauri/ajit-toolchain//development/amv-ajit-code/tests/obj/test-int-insns.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
@@ -10,12 +10,12 @@ Disassembly of section .text:
    8:	82 80 40 22 	adddcc  %g1, %g2, %g1
    c:	82 20 40 22 	subd  %g1, %g2, %g1
   10:	82 a0 40 22 	subdcc  %g1, %g2, %g1
-  14:	85 28 60 38 	slld  %g1, 0x38, %g2
-  18:	85 30 60 38 	srld  %g1, 0x38, %g2
-  1c:	85 38 60 38 	srad  %g1, 0x38, %g2
-  20:	85 28 40 23 	slld  %g1, %g3, %g2
-  24:	85 30 40 23 	srld  %g1, %g3, %g2
-  28:	85 38 40 23 	srad  %g1, %g3, %g2
+  14:	85 28 60 98 	slld  %g1, 0x18, %g2
+  18:	85 30 60 98 	srld  %g1, 0x18, %g2
+  1c:	85 38 60 98 	srad  %g1, 0x18, %g2
+  20:	85 28 40 83 	slld  %g1, %g3, %g2
+  24:	85 30 40 83 	srld  %g1, %g3, %g2
+  28:	85 38 40 83 	srad  %g1, %g3, %g2
   2c:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
   30:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
   34:	c0 27 bf fc 	clr  [ %fp + -4 ]

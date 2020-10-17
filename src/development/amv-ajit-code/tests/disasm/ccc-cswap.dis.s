@@ -1,15 +1,15 @@
 
-/home/codeman/.itsoflife/mydata/local/packages-live/ajit-toolchain/development/amv-ajit-code/tests/obj/ccc-cswap.o:     file format elf32-sparc
+/home/gauri/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-cswap.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
 
 00000000 <main>:
    0:	9d e3 bf 88 	save  %sp, -120, %sp
-   4:	c9 78 81 01 	cswapd  [ %g2 + %g1 ] (8), %g4
-   8:	c9 78 af ff 	cswapd  [ %g2 + 0xfff ], %g4
-   c:	c9 f8 81 41 	cswapda  [ %g2 + %g1 ] (10), %g4
-  10:	c9 f8 af ff 	cswapda  [ %g2 + 0xfff ], %g4
+   4:	c9 78 81 01 	cswap  [ %g2 + %g1 ] (8), %g4
+   8:	c9 78 af ff 	cswap  [ %g2 + 0xfff ], %g4
+   c:	c9 f8 81 41 	cswapa  [ %g2 + %g1 ] (10), %g4
+  10:	c9 f8 af ff 	cswapa  [ %g2 + 0xfff ], %g4
   14:	82 80 40 22 	adddcc  %g1, %g2, %g1
   18:	82 20 40 22 	subd  %g1, %g2, %g1
   1c:	82 a0 40 22 	subdcc  %g1, %g2, %g1

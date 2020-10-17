@@ -1,5 +1,5 @@
 
-/home/codeman/.itsoflife/mydata/local/packages-live/ajit-toolchain/development/amv-ajit-code/tests/obj/ccc-shift-ops.o:     file format elf32-sparc
+/home/gauri/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-shift-ops.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
@@ -7,12 +7,12 @@ Disassembly of section .text:
 00000000 <main>:
    0:	9d e3 bf 88 	save  %sp, -120, %sp
    4:	82 f8 40 22 	sdivdcc  %g1, %g2, %g1
-   8:	83 28 80 22 	slld  %g2, %g2, %g1
-   c:	83 28 60 20 	slld  %g1, 0x20, %g1
-  10:	83 30 80 22 	srld  %g2, %g2, %g1
-  14:	83 30 60 20 	srld  %g1, 0x20, %g1
-  18:	83 38 80 22 	srad  %g2, %g2, %g1
-  1c:	83 38 60 20 	srad  %g1, 0x20, %g1
+   8:	83 28 80 82 	slld  %g2, %g2, %g1
+   c:	83 28 60 a0 	slld  %g1, 0x20, %g1
+  10:	83 30 80 82 	srld  %g2, %g2, %g1
+  14:	83 30 60 a0 	srld  %g1, 0x20, %g1
+  18:	83 38 80 82 	srad  %g2, %g2, %g1
+  1c:	83 38 60 a0 	srad  %g1, 0x20, %g1
   20:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
   24:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
   28:	c0 27 bf fc 	clr  [ %fp + -4 ]

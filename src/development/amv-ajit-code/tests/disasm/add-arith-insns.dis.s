@@ -1,5 +1,5 @@
 
-/home/codeman/.itsoflife/mydata/local/packages-live/ajit-toolchain/development/amv-ajit-code/tests/obj/add-arith-insns.o:     file format elf32-sparc
+/home/gauri/ajit-toolchain//development/amv-ajit-code/tests/obj/add-arith-insns.o:     file format elf32-sparc
 
 
 Disassembly of section .text:

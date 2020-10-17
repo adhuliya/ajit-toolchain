@@ -44,6 +44,8 @@ enum sparc_opcode_arch_val
   SPARC_OPCODE_ARCH_V8,
   SPARC_OPCODE_ARCH_SPARCLET,
   SPARC_OPCODE_ARCH_SPARCLITE,
+  /* Can this break other tools? Impact analysis needed! */
+  /* SPARC_OPCODE_ARCH_V8_AJIT, */
   /* V9 variants must appear last.  */
   SPARC_OPCODE_ARCH_V9,
   SPARC_OPCODE_ARCH_V9A, /* V9 with ultrasparc additions.  */
@@ -56,6 +58,14 @@ enum sparc_opcode_arch_val
 
 /* Given an enum sparc_opcode_arch_val, return the bitmask to use in
    insn encoding/decoding.  */
+
+/***************************************************************** AMV
+ * AJIT is at  some (e.g. 5th) position in the  enum above. This macro
+ * will  set the  corresponding bit!   Adding AJIT  to the  enum above
+ * makes  it have  NINE values,  0 to  8. Before  addition,  bits from
+ * within a  single byte could  be used to identify  the architecture.
+ * What might happen now?
+ */
 #define SPARC_OPCODE_ARCH_MASK(arch) (1 << (arch))
 
 /* Given a valid sparc_opcode_arch_val, return non-zero if it's v9.  */
@@ -99,6 +109,7 @@ typedef struct sparc_opcode
   const char *args;
   /* This was called "delayed" in versions before the flags.  */
   unsigned int flags;
+  unsigned int hwcaps;
   short architecture;	/* Bitmask of sparc_opcode_arch_val's.  */
 } sparc_opcode;
 
@@ -110,25 +121,57 @@ typedef struct sparc_opcode
 #define	F_JSR		0x00000010 /* Subroutine call.  */
 #define F_FLOAT		0x00000020 /* Floating point instruction (not a branch).  */
 #define F_FBR		0x00000040 /* Floating point branch.  */
-#define F_MUL32		0x00000100 /* umul/umulcc/smul/smulcc insns */
-#define F_DIV32		0x00000200 /* udiv/udivcc/sdiv/sdivcc insns */
-#define F_FSMULD	0x00000400 /* 'fsmuld' insn */
-#define F_V8PLUS	0x00000800 /* v9 insns available to 32bit */
-#define F_POPC		0x00001000 /* 'popc' insn */
-#define F_VIS		0x00002000 /* VIS insns */
-#define F_VIS2		0x00004000 /* VIS2 insns */
-#define F_ASI_BLK_INIT	0x00008000 /* block init ASIs */
-#define F_FMAF		0x00010000 /* fused multiply-add */
-#define F_VIS3		0x00020000 /* VIS3 insns */
-#define F_HPC		0x00040000 /* HPC insns */
-#define F_RANDOM	0x00080000 /* 'random' insn */
-#define F_TRANS		0x00100000 /* transaction insns */
-#define F_FJFMAU	0x00200000 /* unfused multiply-add */
-#define F_IMA		0x00400000 /* integer multiply-add */
-#define F_ASI_CACHE_SPARING \
-			0x00800000 /* cache sparing ASIs */
+/* #define F_MUL32		0x00000100 /\* umul/umulcc/smul/smulcc insns *\/ */
+/* #define F_DIV32		0x00000200 /\* udiv/udivcc/sdiv/sdivcc insns *\/ */
+/* #define F_FSMULD	0x00000400 /\* 'fsmuld' insn *\/ */
+/* #define F_V8PLUS	0x00000800 /\* v9 insns available to 32bit *\/ */
+/* #define F_POPC		0x00001000 /\* 'popc' insn *\/ */
+/* #define F_VIS		0x00002000 /\* VIS insns *\/ */
+/* #define F_VIS2		0x00004000 /\* VIS2 insns *\/ */
+/* #define F_ASI_BLK_INIT	0x00008000 /\* block init ASIs *\/ */
+/* #define F_FMAF		0x00010000 /\* fused multiply-add *\/ */
+/* #define F_VIS3		0x00020000 /\* VIS3 insns *\/ */
+/* #define F_HPC		0x00040000 /\* HPC insns *\/ */
+/* #define F_RANDOM	0x00080000 /\* 'random' insn *\/ */
+/* #define F_TRANS		0x00100000 /\* transaction insns *\/ */
+/* #define F_FJFMAU	0x00200000 /\* unfused multiply-add *\/ */
+/* #define F_IMA		0x00400000 /\* integer multiply-add *\/ */
+/* #define F_ASI_CACHE_SPARING \ */
+/* 			0x00800000 /\* cache sparing ASIs *\/ */
 
-#define F_HWCAP_MASK	0x00ffff00
+/* #define F_HWCAP_MASK	0x00ffff00 */
+/* These must match the HWCAP_* values precisely.  */
+#define HWCAP_MUL32	0x00000001 /* umul/umulcc/smul/smulcc insns */
+#define HWCAP_DIV32	0x00000002 /* udiv/udivcc/sdiv/sdivcc insns */
+#define HWCAP_FSMULD	0x00000004 /* 'fsmuld' insn */
+#define HWCAP_V8PLUS	0x00000008 /* v9 insns available to 32bit */
+#define HWCAP_POPC	0x00000010 /* 'popc' insn */
+#define HWCAP_VIS	0x00000020 /* VIS insns */
+#define HWCAP_VIS2	0x00000040 /* VIS2 insns */
+#define HWCAP_ASI_BLK_INIT	\
+			0x00000080 /* block init ASIs */
+#define HWCAP_FMAF	0x00000100 /* fused multiply-add */
+#define HWCAP_VIS3	0x00000400 /* VIS3 insns */
+#define HWCAP_HPC	0x00000800 /* HPC insns */
+#define HWCAP_RANDOM	0x00001000 /* 'random' insn */
+#define HWCAP_TRANS	0x00002000 /* transaction insns */
+#define HWCAP_FJFMAU	0x00004000 /* unfused multiply-add */
+#define HWCAP_IMA	0x00008000 /* integer multiply-add */
+#define HWCAP_ASI_CACHE_SPARING \
+			0x00010000 /* cache sparing ASIs */
+#define HWCAP_AES	0x00020000 /* AES crypto insns */
+#define HWCAP_DES	0x00040000 /* DES crypto insns */
+#define HWCAP_KASUMI	0x00080000 /* KASUMI crypto insns */
+#define HWCAP_CAMELLIA 	0x00100000 /* CAMELLIA crypto insns */
+#define HWCAP_MD5	0x00200000 /* MD5 hashing insns */
+#define HWCAP_SHA1	0x00400000 /* SHA1 hashing insns */
+#define HWCAP_SHA256	0x00800000 /* SHA256 hashing insns */
+#define HWCAP_SHA512	0x01000000 /* SHA512 hashing insns */
+#define HWCAP_MPMUL	0x02000000 /* Multiple Precision Multiply */
+#define HWCAP_MONT	0x04000000 /* Montgomery Mult/Sqrt */
+#define HWCAP_PAUSE	0x08000000 /* Pause insn */
+#define HWCAP_CBCOND	0x10000000 /* Compare and Branch insns */
+#define HWCAP_CRC32C	0x20000000 /* CRC32C insn */
 
 /* All sparc opcodes are 32 bits, except for the `set' instruction (really a
    macro), which is 64 bits. It is handled as a special case.
@@ -217,6 +260,7 @@ typedef struct sparc_opcode
 #define OPF_LOW5(x)	OPF ((x) & 0x1f)     /* V9.  */
 #define OPF_LOW4(x)	OPF ((x) & 0xf)      /* V9.  */
 #define F3F(x, y, z)	(OP (x) | OP3 (y) | OPF (z)) /* Format3 float insns.  */
+#define F3F4(x, y, z)	(OP (x) | OP3 (y) | OPF_LOW4 (z))
 #define F3I(x)		(((x) & 0x1) << 13)  /* Immediate field of format 3 insns.  */
 #define F2(x, y)	(OP (x) | OP2(y))    /* Format 2 insns.  */
 #define F3(x, y, z)	(OP (x) | OP3(y) | F3I(z)) /* Format3 insns.  */
@@ -235,39 +279,51 @@ typedef struct sparc_opcode
 /* AJIT Additions */
 /* Bit setters */
 #define OP_AJIT_BIT_5(x)          (((x) & 0x1) << 5)                          /* Set the bit 5 (6th bit) for AJIT */
-#define OP_AJIT_BIT_6_AND_7(x)	  (((x) & 0x3) << 6)                          /* Set the bits 6 and 7 for AJIT */
 #define OP_AJIT_BIT_5_AND_6(x)    (((x) & 0x3) << 5)                          /* Set the bits 5 and 6 for AJIT */
+#define OP_AJIT_BIT_6_AND_7(x)    (((x) & 0x3) << 6)                          /* Set the bits 6 and 7 for AJIT */
 #define OP_AJIT_BIT_7_THRU_9(x)   (((x) & 0x7) << 7)                          /* Set bits 7 through 9 for AJIT */
 
 /* Match and lose setters */
 #define F4(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_5(b))            /* Format 3 with bit 5 */
 #define F5(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_6_AND_7 (b))     /* Format 3 with bits 6 and 7 */
-#define F6(x, y, z, b, a)         (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 5-6 and 7-9 */
-
+#define F6(x, y, z, b, a)         (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 6-7 and 7-9 */
 
 /* Bit setters for full instructions */
-#define OP_AJIT_BITS_30_TO_31(x)    (((x) & 0x03) << 30) /* op, match */
-#define OP_AJIT_BITS_25_TO_29(x)    (((x) & 0x1F) << 25) /* rd */
-#define OP_AJIT_BITS_19_TO_24(x)    (((x) & 0x3F) << 19) /* op3, match */
-#define OP_AJIT_BITS_14_TO_18(x)    (((x) & 0x1F) << 14) /* rs1 */
-#define OP_AJIT_BITS_13_TO_13(x)    (((x) & 0x1) << 13) /* i */
-#define OP_AJIT_BITS_05_TO_12(x)    (((x) & 0xFF) << 05) /* ???, set to zero */
-#define OP_AJIT_BITS_00_TO_04(x)    (((x) & 0x1F) << 00) /* rs2 */
-#define OP_AJIT_BITS_05_TO_13(x)    (((x) & 0x1FF) << 05) /* opf */
-#define OP_AJIT_BITS_08_TO_12(x)    (((x) & 0x1F) << 8)
-#define OP_AJIT_BITS_00_TO_07(x)    (((x) & 0xFF) << 00)
+#define OP_AJIT_BITS_30_TO_31(x)    (((x) & 0x03)  << 30)  /* op, match */
+#define OP_AJIT_BITS_25_TO_29(x)    (((x) & 0x1F)  << 25)  /* rd */
+#define OP_AJIT_BITS_19_TO_24(x)    (((x) & 0x3F)  << 19)  /* op3, match */
+#define OP_AJIT_BITS_14_TO_18(x)    (((x) & 0x1F)  << 14)  /* rs1 */
+#define OP_AJIT_BITS_13_TO_13(x)    (((x) & 0x1)   << 13)  /* i */
+#define OP_AJIT_BITS_05_TO_12(x)    (((x) & 0xFF)  << 05)  /* ???, set to zero */
+#define OP_AJIT_BITS_00_TO_04(x)    (((x) & 0x1F)  << 00)  /* rs2 */
+#define OP_AJIT_BITS_05_TO_13(x)    (((x) & 0x1FF) << 05)  /* opf */
+/* #define OP_AJIT_BITS_07_TO_09(x)    (((x) & 0x07) << 07)  /\* bits [9:7] for SIMD II, version 2 *\/ */
+/* #define OP_AJIT_BITS_05_TO_06(x)    (((x) & 0x03) << 05)  /\* bits [6:5] for SIMD II, version 2 *\/ */
+#define OP_AJIT_BITS_10_TO_12(x)    (((x) & 0x7)   << 8)
+#define OP_AJIT_BITS_08_TO_12(x)    (((x) & 0x1F)  << 8)
+#define OP_AJIT_BITS_00_TO_07(x)    (((x) & 0xFF)  << 00)
+
+#define SET13   OP_AJIT_BITS_13_TO_13(1)
+#define RESET13 OP_AJIT_BITS_13_TO_13(0)
+  
 
 /* For SIMD II instructions */
-#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c))
-#define F10(a, b, c, d)           (OP_AJIT_BITS_30_TO_31(a) | \
-				   OP_AJIT_BITS_19_TO_24(b) | \
-				   OP_AJIT_BITS_13_TO_13(c) | \
-				   OP_AJIT_BITS_08_TO_12(0))
 
-/* For SIMD Floating point ops */
-#define F8(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \
-				   OP_AJIT_BITS_19_TO_24(b) | \
-				   OP_AJIT_BITS_05_TO_13(c))
+/*define F11(a)                    (RESET13                  | \*/
+/*				   OP_AJIT_BITS_10_TO_12(0) | \*/
+/*				   OP_AJIT_BIT_7_THRU_9(a))*/
+#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | OP_AJIT_BIT_7_THRU_9(d)) 
+/* { "adddreduce8",  F7(2, 0x2d, 0x0, 0x0), F7(~2, ~0x2d, ~0x0, ~0x0), "1,2,d", 0, v8}, /\* AJIT *\/ */
+/*#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | F11(d))*/
+/*#define F10(a, b, c, d)           (OP_AJIT_BITS_30_TO_31(a) | \*/
+/*				   OP_AJIT_BITS_19_TO_24(b) | \  */
+/*				   OP_AJIT_BITS_13_TO_13(c) | \ */
+/*				   OP_AJIT_BITS_08_TO_12(0)) */
+
+/* /\* For SIMD Floating point ops *\/ */
+/* #define F8(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \ */
+/* 				   OP_AJIT_BITS_19_TO_24(b) | \ */
+/* 				   OP_AJIT_BITS_05_TO_13(c)) */
 /* For CSWAP non immediate ops */
 #define F9(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \
 				   OP_AJIT_BITS_19_TO_24(b) | \

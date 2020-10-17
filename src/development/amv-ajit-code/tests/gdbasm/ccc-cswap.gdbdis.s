@@ -1,9 +1,9 @@
 Dump of assembler code for function main:
    0x00000000 <+0>:	save  %sp, -120, %sp
-   0x00000004 <+4>:	cswapd  [ %g2 + %g1 ] (8), %g4
-   0x00000008 <+8>:	cswapd  [ %g2 + 0xfff ], %g4
-   0x0000000c <+12>:	cswapda  [ %g2 + %g1 ] (10), %g4
-   0x00000010 <+16>:	cswapda  [ %g2 + 0xfff ], %g4
+   0x00000004 <+4>:	cswap  [ %g2 + %g1 ] (8), %g4
+   0x00000008 <+8>:	cswap  [ %g2 + 0xfff ], %g4
+   0x0000000c <+12>:	cswapa  [ %g2 + %g1 ] (10), %g4
+   0x00000010 <+16>:	cswapa  [ %g2 + 0xfff ], %g4
    0x00000014 <+20>:	adddcc  %g1, %g2, %g1
    0x00000018 <+24>:	subd  %g1, %g2, %g1
    0x0000001c <+28>:	subdcc  %g1, %g2, %g1
