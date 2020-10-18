@@ -1,5 +1,5 @@
 
-/home/gauri/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-vaddd8.o:     file format elf32-sparc
+/home/gauri/NEW/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-vaddd8.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
