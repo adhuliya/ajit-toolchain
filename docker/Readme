@@ -1,0 +1,11 @@
+Run the following steps to setup the docker image and run it
+
+    -   ./dockbuild
+        this creates an image with all the necessary packages and 
+        base as ubuntu:16.04
+    -   ./dockrun.sh
+        this is a script for starting and running the docker image we created 
+        in the previous step. When successfully run, you will be in your  host 
+        home director,y but within the container. Same user name, group and accesses 
+        as your host system is setup in the container for convenience. 
+        Execute 'exit' twice to exit the running container.
