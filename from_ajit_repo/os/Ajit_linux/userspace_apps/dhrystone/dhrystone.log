@@ -1,0 +1,1041 @@
+
+ Ajit Bootloader
+PROMLIB: obio_ranges 1
+
+PROMLIB: Sun Boot Prom Version 0 Revision 0
+
+
+
+-----------------------------------
+
+  Hello World from Ajit processor 
+
+-----------------------------------
+
+ Romvec pointer passed by bootloader= 0xf0000cc8
+
+
+
+------ entering function in file init/main.c, line 512 at JIFFIES = fffedb08 
+
+
+
+------ lockdep_init
+
+
+
+------ smp_setup_processor_id
+
+
+
+------ debug_objects_early_init
+
+
+
+------ boot_init_stack_canary
+
+
+
+------ cgroup_init_early
+
+
+
+------ local_irq_disable
+
+
+
+------ early_boot_irqs_disabled
+
+
+
+------ boot_cpu_init
+
+
+
+------ page_address_init
+
+Linux version 3.16.1 (saurabh@saurabh-HP-Laptop-15g-br1xx) (gcc version 4.7.4 (Buildroot 2014.08-g7156a1f) ) #10 Thu Oct 22 10:23:09 IST 2020
+
+boot console [earlyprom0] enabled
+
+TYPE: Ajit Processor
+
+Ethernet address: 01:02:03:04:05:06
+
+
+
+------ entering function in file arch/sparc/mm/init_32.c, line 256 
+
+
+
+ Mmu num_contexts = 256
+
+------bootmem_init(&pages_avail)
+
+Reserving memory for kernel text/data/bss, physical base =0xf0000000, size=0x1db000
+
+Reserving bootmem map. size=0x100
+
+------srmmu_nocache_calcsize()
+
+------srmmu_nocache_init()
+
+------__alloc_bootmem()
+
+------memset()
+
+------__alloc_bootmem()
+
+------__bit_map_init()
+
+------__srmmu_get_nocache()
+
+------__srmmu_early_allocate_ptable_skeleton()
+
+**** PAGE_OFFSET = 0xf0000000
+
+**** phys_base = 0xf0000000
+
+**** SRMMU_NOCACHE_VADDR = 0xfc000000
+
+**** srmmu_nocache_pool = 0xf0200000
+
+**** srmmu_nocache_end  = 0xfc040000
+
+**** srmmu_nocache_size = 0x40000
+
+**** srmmu_swapper_pg_dir = 0xfc000000
+
+****  __pa((unsigned long)srmmu_nocache_pool) = 0xf0200000
+
+------srmmu_inherit_prom_mappings()
+
+------map_kernel()
+
+------free_area_init_core()
+
+------pgdat_resize_init()
+
+------pgdat_page_cgroup_init()
+
+------zone_spanned_pages_in_node()
+
+------calc_memmap_size()
+
+------mod_zone_page_state()
+
+------set_pageblock_order()
+
+------setup_usemap()
+
+------init_currently_empty_zone()
+
+------memmap_init()
+
+------zone_spanned_pages_in_node()
+
+------calc_memmap_size()
+
+------mod_zone_page_state()
+
+------zone_spanned_pages_in_node()
+
+------calc_memmap_size()
+
+------mod_zone_page_state()
+
+------zone_spanned_pages_in_node()
+
+------calc_memmap_size()
+
+------mod_zone_page_state()
+
+------ entering function in file arch/sparc/mm/init_32.c, line 258 
+
+PROM: Built device tree with 7016 bytes of memory.
+
+
+
+------ entering function in file arch/sparc/mm/init_32.c, line 260 
+
+
+
+------ entering function in file arch/sparc/mm/init_32.c, line 262 
+
+Booting Linux...
+
+Kernel command line:  debug lpj=10000 loglevel=7 console=ttyS0 
+
+
+
+------ entering function in file init/main.c, line 575 at JIFFIES = fffedb08 
+
+ PID hash table entries: 32 (order: -5, 128 bytes)
+
+Dentry cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+Sorting __ex_table...
+
+NR_IRQS:64
+
+
+
+Reading device tree...
+
+Read information from device tree: ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER=0xffff3000
+
+Read information from device tree: ADDR_TIMER_CONTROL_REGISTER=0xffff3100
+
+Read information from device tree: TIMER_IRQ_LEVEL=10
+
+Read information from device tree: TIMER_TICK_REAL_FREQUENCY=100000000
+
+Read information from device tree: TIMER_TICK_VIRTUAL_FREQUENCY=100000000
+
+ Entering time_init()
+
+------Ajit_build_device_irq()
+
+ Timer request_irq() succeeded with irq=1
+
+------ entering function in file init/main.c, line 665 at JIFFIES = fffedb08 
+
+
+
+
+
+ console [ttyS0] enabled
+
+ console [ttyS0] enabled
+
+bootconsole [earlyprom0] disabled
+
+bootconsole [earlyprom0] disabled
+
+
+
+ late_time_init = f010d758
+
+ Entering late_time_init()
+
+ In clockevents_register_device(dev) dev = f01bffa0
+
+ (dev->mode != CLOCK_EVT_MODE_UNUSED)= 0
+
+ Entering tick_check_new_device()
+
+------ entering function in file init/main.c, line 701 at JIFFIES = fffedb09 
+
+In calibrate_delay()
+
+Calibrating delay loop (skipped) preset value.. pid_max: default: 4096 minimum: 301
+
+Mount-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes)
+
+
+
+------ entering function in file init/main.c, line 739 at JIFFIES = fffedb0f 
+
+ 
+
+------ entering function in file init/main.c, line 1009 at JIFFIES = fffedb10 
+
+ 
+
+------ entering function do_one_initcall(f010d8e8)
+
+------ entering function do_one_initcall(f01110e8)
+
+------ entering function do_one_initcall(f01115e0)
+
+------ entering function do_one_initcall(f0117680)
+
+------ entering function do_one_initcall(f00ce0a8)
+
+------ entering function in file init/main.c, line 1083 at JIFFIES = fffedb17 
+
+ 
+
+------ entering function in file init/main.c, line 942 
+
+
+
+------ entering function in file init/main.c, line 944 
+
+
+
+------ entering function in file init/main.c, line 946 
+
+
+
+------ entering function in file init/main.c, line 948 
+
+devtmpfs: initialized
+
+
+
+------ entering function in file init/main.c, line 950 
+
+
+
+------ entering function in file init/main.c, line 952 
+
+
+
+------ entering function in file init/main.c, line 954 
+
+
+
+------ entering function in file init/main.c, line 956 
+
+
+
+------ entering function do_initcall_level(0)
+
+------ entering function do_one_initcall(f0116dac)
+
+------ entering function do_initcall_level(1)
+
+------ entering function do_one_initcall(f01115c8)
+
+------ entering function do_one_initcall(f0111fc8)
+
+------ entering function do_one_initcall(f0112dcc)
+
+------ entering function do_one_initcall(f0114b9c)
+
+------ entering function do_one_initcall(f011680c)
+
+------ entering function do_one_initcall(f011682c)
+
+------ entering function do_one_initcall(f0117594)
+
+------ entering function do_one_initcall(f011879c)
+
+------ entering function do_initcall_level(2)
+
+------ entering function do_one_initcall(f010e7f4)
+
+------Ajit_build_device_irq()
+
+------Ajit_build_device_irq()
+
+------Ajit_build_device_irq()
+
+------ entering function do_one_initcall(f0113c94)
+
+------ entering function do_one_initcall(f0113d4c)
+
+------ entering function do_one_initcall(f0117688)
+
+------ entering function do_initcall_level(3)
+
+------ entering function do_one_initcall(f010d058)
+
+------ entering function do_initcall_level(4)
+
+------ entering function do_one_initcall(f010d0cc)
+
+------ entering function do_one_initcall(f0110888)
+
+------ entering function do_one_initcall(f0110b04)
+
+------ entering function do_one_initcall(f01114a8)
+
+------ entering function do_one_initcall(f0111a44)
+
+------ entering function do_one_initcall(f0113cdc)
+
+------ entering function do_one_initcall(f0118f08)
+
+------ entering function do_one_initcall(f0069b18)
+
+------ entering function do_one_initcall(f0069ae8)
+
+------ entering function do_one_initcall(f0117b58)
+
+------ entering function do_one_initcall(f0118618)
+
+------ entering function do_one_initcall(f0118734)
+
+------ entering function do_initcall_level(5)
+
+------ entering function do_one_initcall(f010d740)
+
+------ entering function do_one_initcall(f010ed84)
+
+------ entering function do_one_initcall(f0112d88)Switched to clocksource timer_cs
+
+
+
+------ entering function do_one_initcall(f0116120)
+
+------ entering function do_one_initcall(f01169b4)
+
+------ entering function do_one_initcall(f01169e4)
+
+------ entering function do_one_initcall(f0116a14)
+
+------ entering function do_one_initcall(f0116a44)
+
+------ entering function do_one_initcall(f0116a74)
+
+------ entering function do_one_initcall(f0116aa4)
+
+------ entering function do_one_initcall(f0116ad4)
+
+------ entering function do_one_initcall(f0116b04)
+
+------ entering function do_one_initcall(f0116b34)
+
+------ entering function do_one_initcall(f0116b64)
+
+------ entering function do_one_initcall(f0116b94)
+
+------ entering function do_one_initcall(f0116c10)
+
+------ entering function do_one_initcall(f0116c40)
+
+------ entering function do_one_initcall(f0116d4c)
+
+------ entering function do_one_initcall(f0117a78)
+
+------ entering function do_one_initcall(f010c934)
+
+------ in populate_rootfs()
+
+------ in unpack_to_rootfs()
+
+------ entering function in file init/initramfs.c, line 434 
+
+
+
+------ entering function in file init/initramfs.c, line 436 
+
+
+
+------ entering function in file init/initramfs.c, line 438 
+
+
+
+------ entering function in file init/initramfs.c, line 463 
+
+Compressed data magic: 0x1f 0x8b
+
+Detected gzip compressed data
+
+
+
+------ entering function in file init/initramfs.c, line 468 
+
+
+
+------ entering function in file init/initramfs.c, line 488 
+
+
+
+------ entering function in file init/initramfs.c, line 490 
+
+
+
+------ entering function in file init/initramfs.c, line 492 
+
+
+
+------ entering function in file init/initramfs.c, line 494 
+
+
+
+------ entering function do_initcall_level(6)
+
+------ entering function do_one_initcall(f010efa8)
+
+------ entering function do_one_initcall(f010effc)
+
+------ entering function do_one_initcall(f011105c)
+
+------ entering function do_one_initcall(f01111a8)
+
+------ entering function do_one_initcall(f0111cf0)
+
+------ entering function do_one_initcall(f0111ed0)
+
+------ entering function do_one_initcall(f0112a0c)
+
+------ entering function do_one_initcall(f0112d0c)
+
+------ entering function do_one_initcall(f0112dec)
+
+------ entering function do_one_initcall(f0112e24)
+
+------ entering function do_one_initcall(f0112f98)
+
+------ entering function do_one_initcall(f0113010)
+
+------ entering function do_one_initcall(f0113040)
+
+------ entering function do_one_initcall(f0118d4c)
+
+------ entering function do_one_initcall(f0113bbc)
+
+------ entering function do_one_initcall(f0113c04)
+
+------ entering function do_one_initcall(f0114834)
+
+------ entering function do_one_initcall(f0114b14)
+
+------ entering function do_one_initcall(f0114c4c)
+
+------ entering function do_one_initcall(f0115c68)
+
+------ entering function do_one_initcall(f0115c70)
+
+------ entering function do_one_initcall(f0116168)
+
+------ entering function do_one_initcall(f01164d4)
+
+------ entering function do_one_initcall(f01178d0)
+
+------ entering function do_one_initcall(f01178d8)
+
+Reading device tree...
+
+Ajit_serial : found base register address = 0xffff3200
+
+Ajit_serial : found interrupt number = 0xc
+
+Registering Ajit_serial driver
+
+In Ajit_serial driver, registering port
+
+Ajit_config_port()
+
+Ajit_request_port: port=f0105d24; port->mapbase=ffff3200
+
+
+
+ entering request_mem_region()
+
+ entering ioremap()ttyS0 at MMIO 0xffff3200 (irq = 12, base_baud = 0) is a Ajit_serial
+
+
+
+Registration of Ajit_serial driver was successful
+
+
+
+------ entering function do_one_initcall(f00cf38c)stringReverser: Device Registration successful
+
+
+
+------ entering function do_one_initcall(f00d675c)
+
+------ entering function do_one_initcall(f0118598)
+
+------ entering function do_one_initcall(f0118784)
+
+------ entering function do_initcall_level(7)
+
+------ entering function do_one_initcall(f010ed00)
+
+------ entering function do_one_initcall(f001f7a0)
+
+------ entering function do_one_initcall(f01124ac)
+
+------ entering function do_one_initcall(f0112868)
+
+------ entering function do_one_initcall(f0117630)
+
+------ entering function do_one_initcall(f00d3248)
+
+------ entering function in file init/main.c, line 958 
+
+
+
+ AJIT FILESYSTEM TEST : Trying to open file /home/README ...
+
+ Opened file /home/README  successfully
+
+ Read the following characters : Hello from /home/README.
+
+
+
+ AJIT CONSOLE TEST : Trying to open file /dev/ttyS0 ...
+
+Ajit_startup()
+
+ Requesting irq port->irq=12 
+
+------Ajit_build_device_irq()
+
+ Ajit_build_device_irq(NULL, 12) returned 2 
+
+ call to request_irq() SUCCEEDED
+
+ Opened file /dev/ttyS0  successfully
+
+ Writing a string 
+
+abc
+
+ to file ...
+
+abc
+
+
+
+------ entering function in file init/main.c, line 1176 at JIFFIES = fffedd3d 
+
+ 
+
+------ entering function in file init/main.c, line 1013 at JIFFIES = fffedd3e 
+
+ Freeing unused kernel memory: 724K (f010a000 - f01bf000)
+
+
+
+------ entering function in file init/main.c, line 1019 at JIFFIES = fffedd47 
+
+ 
+
+------ ramdisk_execute_command = /init
+
+------ entering function in file init/main.c, line 1024 at JIFFIES = fffedd48 
+
+ init shell script called ...
+
+running exec 0</dev/console
+
+running exec /sbin/init 
+
+mount: mounting devpts on /dev/pts failed: No such device
+
+Starting logging: OK
+
+Initializing random number generator... random: dd urandom read with 1 bits of entropy available
+
+done.
+
+Starting network...
+
+ip: socket: Function not implemented
+
+ip: socket: Function not implemented
+
+
+
+
+Welcome to Buildroot
+
+
+buildroot login: root
+
+Jan  1 00:03:47 login[41]: root login on 'ttyS0'
+
+
+# dhrys
+# dhrystone 
+
+
+
+Dhrystone Benchmark, Version 2.1 (Language: C)
+
+
+
+Program compiled without 'register' attribute
+
+
+
+Please give the number of runs through the benchmark: 100000
+
+
+
+Execution starts, 100000 runs through Dhrystone
+
+Execution ends
+
+
+
+Final values of the variables used in the benchmark:
+
+
+
+Int_Glob:            5
+
+        should be:   5
+
+Bool_Glob:           1
+
+        should be:   1
+
+Ch_1_Glob:           A
+
+        should be:   A
+
+Ch_2_Glob:           B
+
+        should be:   B
+
+Arr_1_Glob[8]:       7
+
+        should be:   7
+
+Arr_2_Glob[8][7]:    100010
+
+        should be:   Number_Of_Runs + 10
+
+Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent)
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         2
+
+        should be:   2
+
+  Int_Comp:          17
+
+        should be:   17
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Next_Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent), same as above
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         1
+
+        should be:   1
+
+  Int_Comp:          18
+
+        should be:   18
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Int_1_Loc:           5
+
+        should be:   5
+
+Int_2_Loc:           13
+
+        should be:   13
+
+Int_3_Loc:           7
+
+        should be:   7
+
+Enum_Loc:            1
+
+        should be:   1
+
+Str_1_Loc:           DHRYSTONE PROGRAM, 1'ST STRING
+
+        should be:   DHRYSTONE PROGRAM, 1'ST STRING
+
+Str_2_Loc:           DHRYSTONE PROGRAM, 2'ND STRING
+
+        should be:   DHRYSTONE PROGRAM, 2'ND STRING
+
+
+
+Measured time too small to obtain meaningful results
+
+Please increase number of runs
+
+
+
+# 
+# dhrystone 
+
+
+
+Dhrystone Benchmark, Version 2.1 (Language: C)
+
+
+
+Program compiled without 'register' attribute
+
+
+
+Please give the number of runs through the benchmark: 220000
+
+
+
+Execution starts, 220000 runs through Dhrystone
+
+Execution ends
+
+
+
+Final values of the variables used in the benchmark:
+
+
+
+Int_Glob:            5
+
+        should be:   5
+
+Bool_Glob:           1
+
+        should be:   1
+
+Ch_1_Glob:           A
+
+        should be:   A
+
+Ch_2_Glob:           B
+
+        should be:   B
+
+Arr_1_Glob[8]:       7
+
+        should be:   7
+
+Arr_2_Glob[8][7]:    220010
+
+        should be:   Number_Of_Runs + 10
+
+Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent)
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         2
+
+        should be:   2
+
+  Int_Comp:          17
+
+        should be:   17
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Next_Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent), same as above
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         1
+
+        should be:   1
+
+  Int_Comp:          18
+
+        should be:   18
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Int_1_Loc:           5
+
+        should be:   5
+
+Int_2_Loc:           13
+
+        should be:   13
+
+Int_3_Loc:           7
+
+        should be:   7
+
+Enum_Loc:            1
+
+        should be:   1
+
+Str_1_Loc:           DHRYSTONE PROGRAM, 1'ST STRING
+
+        should be:   DHRYSTONE PROGRAM, 1'ST STRING
+
+Str_2_Loc:           DHRYSTONE PROGRAM, 2'ND STRING
+
+        should be:   DHRYSTONE PROGRAM, 2'ND STRING
+
+
+
+Microseconds for one run through Dhrystone:    9.2 
+
+Dhrystones per Second:                      108374.4 
+
+
+
+# 
+# dhrystone 
+
+
+
+Dhrystone Benchmark, Version 2.1 (Language: C)
+
+
+
+Program compiled without 'register' attribute
+
+
+
+Please give the number of runs through the benchmark: 300000
+
+
+
+Execution starts, 300000 runs through Dhrystone
+
+Execution ends
+
+
+
+Final values of the variables used in the benchmark:
+
+
+
+Int_Glob:            5
+
+        should be:   5
+
+Bool_Glob:           1
+
+        should be:   1
+
+Ch_1_Glob:           A
+
+        should be:   A
+
+Ch_2_Glob:           B
+
+        should be:   B
+
+Arr_1_Glob[8]:       7
+
+        should be:   7
+
+Arr_2_Glob[8][7]:    300010
+
+        should be:   Number_Of_Runs + 10
+
+Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent)
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         2
+
+        should be:   2
+
+  Int_Comp:          17
+
+        should be:   17
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Next_Ptr_Glob->
+
+  Ptr_Comp:          151560
+
+        should be:   (implementation-dependent), same as above
+
+  Discr:             0
+
+        should be:   0
+
+  Enum_Comp:         1
+
+        should be:   1
+
+  Int_Comp:          18
+
+        should be:   18
+
+  Str_Comp:          DHRYSTONE PROGRAM, SOME STRING
+
+        should be:   DHRYSTONE PROGRAM, SOME STRING
+
+Int_1_Loc:           5
+
+        should be:   5
+
+Int_2_Loc:           13
+
+        should be:   13
+
+Int_3_Loc:           7
+
+        should be:   7
+
+Enum_Loc:            1
+
+        should be:   1
+
+Str_1_Loc:           DHRYSTONE PROGRAM, 1'ST STRING
+
+        should be:   DHRYSTONE PROGRAM, 1'ST STRING
+
+Str_2_Loc:           DHRYSTONE PROGRAM, 2'ND STRING
+
+        should be:   DHRYSTONE PROGRAM, 2'ND STRING
+
+
+
+Microseconds for one run through Dhrystone:    9.2 
+
+Dhrystones per Second:                      108303.3 
+
+
+
+# aji
+# ajittest 
+
+Hi world:8
+
+
+hello world:9
+
+
+# aseco
+# asecondtest 
+
+value of a is:8
+
+
+sum of a and b is :17
+
+
+# powe
+# poweroff 
+
