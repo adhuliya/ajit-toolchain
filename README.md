@@ -25,3 +25,17 @@ To restart the build always clean the current directory first:
   use of many of the tools in this repo.
 
 
+
+## Some notes:
+
+Visited directory:
+
+
+## Some notes:
+
+The following command sequence worked:
+
+  cd ./from_ajit_repo/simulators/c_model/code/debugger/doval/antlr3Cruntime
+  scons
+
+

@@ -50,3 +50,5 @@
 *.objdump
 *wtrace*
 
+# scons
+*.dblite
