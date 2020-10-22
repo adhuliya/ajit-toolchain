@@ -50,3 +50,11 @@
 *.objdump
 *wtrace*
 
+
+# python related
+__pycache__/
+.py[cod]
+*$py.class
+
+
+
