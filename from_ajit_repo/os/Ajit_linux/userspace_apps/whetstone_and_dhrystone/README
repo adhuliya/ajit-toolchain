@@ -1,0 +1,12 @@
+The whet-dhry.bin file contains the AJIT Linux image with
+following applications added externally:
+1. ajittest
+2. asecondtest
+3. dhrystone
+4. whetstone 
+
+The Config and Makefiles for first two applications were
+written by the team.
+For the Dhrystone and Whetstone applications however, the required Config
+and Makefiles came with the Buildroot setup under their 
+'Debugging, profiling and benchmarking' target applications.
