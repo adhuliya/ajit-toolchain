@@ -13,6 +13,9 @@ To build stay in this directory and execute:
 
   ./src/setup.sh
 
+  To add buildroot binaries paths and uclibc paths execute:
+
+	source build_path.sh
 
 To restart the build always clean the current directory first:
 
