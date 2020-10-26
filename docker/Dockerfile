@@ -43,5 +43,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN mkdir -p      /src/misc
 ADD startup.sh    /src/misc/startup.sh
 RUN chmod a+x     /src/misc/startup.sh
-ENTRYPOINT cd     /src/misc ; ./startup.sh
-
+ADD path.sh       /src/misc/path.sh
+RUN chmod a+x     /src/misc/path.sh
+ENTRYPOINT cd     /src/misc ; ./startup.sh  
