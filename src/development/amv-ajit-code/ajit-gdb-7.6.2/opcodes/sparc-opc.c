@@ -1624,8 +1624,8 @@ CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 { "ordreduce16",  F7(2, 0x2e, 0x0, 0x2), F7(~2, ~0x2e, ~0x0, ~0x2), "1,2,d", 0, 0, v8}, /* AJIT */
 { "anddreduce16", F7(2, 0x2f, 0x0, 0x2), F7(~2, ~0x2f, ~0x0, ~0x2), "1,2,d", 0, 0, v8}, /* AJIT */
 { "xordreduce16", F7(2, 0x3e, 0x0, 0x2), F7(~2, ~0x3e, ~0x0, ~0x2), "1,2,d", 0, 0, v8}, /* AJIT */
-{ "zbytedpos",    F7(2, 0x3f, 0x0, 0x0), F7(~2, ~0x3f, ~0x0, ~0x0), "1,2,d", 0, 0, v8}, /* AJIT */
-{ "zbytedpos",    F7(2, 0x3f, 0x1, 0x0), F7(~2, ~0x3f, ~0x1, ~0x0), "1,i,d", 0, 0, v8}, /* AJIT */
+{ "zbytedpos",    F10(2, 0x3f, 0x0), F10(~2, ~0x3f, ~0x0), "1,2,d", 0, 0, v8}, /* AJIT */
+{ "zbytedpos",    F10(2, 0x3f, 0x1), F10(~2, ~0x3f, ~0x1), "1,i,d", 0, 0, v8}, /* AJIT */
 
 /* FPop1 and FPop2 are not instructions.  Don't accept them.  */
 

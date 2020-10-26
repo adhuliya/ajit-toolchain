@@ -1,5 +1,5 @@
 
-/home/gauri/NEW/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-simd-2.o:     file format elf32-sparc
+/home/gauri/isav2/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-simd-2.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
@@ -15,7 +15,7 @@ Disassembly of section .text:
   1c:	8d f0 80 84 	xordreduce8  %g2, %g4, %g6
   20:	8f f0 81 05 	xordreduce16  %g2, %g5, %g7
   24:	89 f8 80 01 	zbytedpos  %g2, %g1, %g4
-  28:	89 f8 a0 ff 	unknown
+  28:	89 f8 a0 ff 	zbytedpos  %g2, 0xff, %g4
   2c:	82 80 40 22 	adddcc  %g1, %g2, %g1
   30:	82 20 40 22 	subd  %g1, %g2, %g1
   34:	82 a0 40 22 	subdcc  %g1, %g2, %g1

@@ -261,7 +261,8 @@ typedef struct sparc_opcode
 /* #define F11(a)                    (RESET13                  | \ */
 /* 				   OP_AJIT_BITS_10_TO_12(0) | \ */
 /* 				   OP_AJIT_BIT_7_THRU_9(a)) */
-#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | OP_AJIT_BIT_7_THRU_9(d)) 
+#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | OP_AJIT_BIT_7_THRU_9(d))
+#define F10(a, b, c )            (OP(a) | OP3(b) | F3I(c) )	
 /* #define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | F11(d)) */
 /* #define F10(a, b, c, d)           (OP_AJIT_BITS_30_TO_31(a) | \ */
 /* 				   OP_AJIT_BITS_19_TO_24(b) | \ */

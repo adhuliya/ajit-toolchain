@@ -9,7 +9,7 @@ Dump of assembler code for function main:
    0x0000001c <+28>:	xordreduce8  %g2, %g4, %g6
    0x00000020 <+32>:	xordreduce16  %g2, %g5, %g7
    0x00000024 <+36>:	zbytedpos  %g2, %g1, %g4
-   0x00000028 <+40>:	unknown
+   0x00000028 <+40>:	zbytedpos  %g2, 0xff, %g4
    0x0000002c <+44>:	adddcc  %g1, %g2, %g1
    0x00000030 <+48>:	subd  %g1, %g2, %g1
    0x00000034 <+52>:	subdcc  %g1, %g2, %g1
