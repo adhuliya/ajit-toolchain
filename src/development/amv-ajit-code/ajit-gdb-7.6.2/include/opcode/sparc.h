@@ -44,8 +44,6 @@ enum sparc_opcode_arch_val
   SPARC_OPCODE_ARCH_V8,
   SPARC_OPCODE_ARCH_SPARCLET,
   SPARC_OPCODE_ARCH_SPARCLITE,
-  /* Can this break other tools? Impact analysis needed! */
-  /* SPARC_OPCODE_ARCH_V8_AJIT, */
   /* V9 variants must appear last.  */
   SPARC_OPCODE_ARCH_V9,
   SPARC_OPCODE_ARCH_V9A, /* V9 with ultrasparc additions.  */
@@ -58,14 +56,6 @@ enum sparc_opcode_arch_val
 
 /* Given an enum sparc_opcode_arch_val, return the bitmask to use in
    insn encoding/decoding.  */
-
-/***************************************************************** AMV
- * AJIT is at  some (e.g. 5th) position in the  enum above. This macro
- * will  set the  corresponding bit!   Adding AJIT  to the  enum above
- * makes  it have  NINE values,  0 to  8. Before  addition,  bits from
- * within a  single byte could  be used to identify  the architecture.
- * What might happen now?
- */
 #define SPARC_OPCODE_ARCH_MASK(arch) (1 << (arch))
 
 /* Given a valid sparc_opcode_arch_val, return non-zero if it's v9.  */
@@ -279,50 +269,38 @@ typedef struct sparc_opcode
 /* AJIT Additions */
 /* Bit setters */
 #define OP_AJIT_BIT_5(x)          (((x) & 0x1) << 5)                          /* Set the bit 5 (6th bit) for AJIT */
+#define OP_AJIT_BIT_6_AND_7(x)	  (((x) & 0x3) << 6)                          /* Set the bits 6 and 7 for AJIT */
 #define OP_AJIT_BIT_5_AND_6(x)    (((x) & 0x3) << 5)                          /* Set the bits 5 and 6 for AJIT */
 #define OP_AJIT_BIT_7_THRU_9(x)   (((x) & 0x7) << 7)                          /* Set bits 7 through 9 for AJIT */
 
 /* Match and lose setters */
 #define F4(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_5(b))            /* Format 3 with bit 5 */
-#define F5(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b))     /* Format 3 with bits 5 and 6 */
-#define F6(x, y, z, b, a)         (F5 (x, y, z, b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 5-6 and 7-9 */
+#define F5(x, y, z, b)            (F3(x, y, z) | OP_AJIT_BIT_6_AND_7 (b))     /* Format 3 with bits 6 and 7 */
+#define F6(x, y, z, b, a)         (F3(x, y, z)             | \
+                                   OP_AJIT_BIT_5_AND_6 (b) | \
+                                   OP_AJIT_BIT_7_THRU_9(a))                   /* Format 3 with bits 5-6 and 7-9 */
 
 /* Bit setters for full instructions */
-#define OP_AJIT_BITS_30_TO_31(x)    (((x) & 0x03)  << 30)  /* op, match */
-#define OP_AJIT_BITS_25_TO_29(x)    (((x) & 0x1F)  << 25)  /* rd */
-#define OP_AJIT_BITS_19_TO_24(x)    (((x) & 0x3F)  << 19)  /* op3, match */
-#define OP_AJIT_BITS_14_TO_18(x)    (((x) & 0x1F)  << 14)  /* rs1 */
-#define OP_AJIT_BITS_13_TO_13(x)    (((x) & 0x1)   << 13)  /* i */
-#define OP_AJIT_BITS_05_TO_12(x)    (((x) & 0xFF)  << 05)  /* ???, set to zero */
-#define OP_AJIT_BITS_00_TO_04(x)    (((x) & 0x1F)  << 00)  /* rs2 */
-#define OP_AJIT_BITS_05_TO_13(x)    (((x) & 0x1FF) << 05)  /* opf */
-/* #define OP_AJIT_BITS_07_TO_09(x)    (((x) & 0x07) << 07)  /\* bits [9:7] for SIMD II, version 2 *\/ */
-/* #define OP_AJIT_BITS_05_TO_06(x)    (((x) & 0x03) << 05)  /\* bits [6:5] for SIMD II, version 2 *\/ */
-#define OP_AJIT_BITS_10_TO_12(x)    (((x) & 0x7)   << 8)
-#define OP_AJIT_BITS_08_TO_12(x)    (((x) & 0x1F)  << 8)
-#define OP_AJIT_BITS_00_TO_07(x)    (((x) & 0xFF)  << 00)
-
-#define SET13   OP_AJIT_BITS_13_TO_13(1)
-#define RESET13 OP_AJIT_BITS_13_TO_13(0)
-  
+#define OP_AJIT_BITS_30_TO_31(x)  (((x) & 0x03)  << 30)  /* op, match */
+#define OP_AJIT_BITS_25_TO_29(x)  (((x) & 0x1F)  << 25)  /* rd */
+#define OP_AJIT_BITS_19_TO_24(x)  (((x) & 0x3F)  << 19)  /* op3, match */
+#define OP_AJIT_BITS_14_TO_18(x)  (((x) & 0x1F)  << 14)  /* rs1 */
+#define OP_AJIT_BITS_13_TO_13(x)  (((x) & 0x1)   << 13)  /* i */
+#define OP_AJIT_BITS_05_TO_12(x)  (((x) & 0xFF)  << 05)  /* ???, set to zero */
+#define OP_AJIT_BITS_00_TO_04(x)  (((x) & 0x1F)  << 00)  /* rs2 */
+#define OP_AJIT_BITS_05_TO_13(x)  (((x) & 0x1FF) << 05)  /* opf */
+#define OP_AJIT_BITS_10_TO_12(x)  (((x) & 0x7)   << 8)
+#define OP_AJIT_BITS_08_TO_12(x)  (((x) & 0x1F)  << 8)
+#define OP_AJIT_BITS_00_TO_07(x)  (((x) & 0xFF)  << 00)
 
 /* For SIMD II instructions */
+#define REDUCE_8_16_32(x)         (((x) & 0x05)  << 7)
+#define AJIT_SHIFT(x)             (((x) & 0x03)  << 6)
 
-#define F11(a)                    (RESET13                  | \
-				   OP_AJIT_BITS_10_TO_12(0) | \
-				   OP_AJIT_BIT_7_THRU_9(a))
-/* #define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c)) */
-/* { "adddreduce8",  F7(2, 0x2d, 0x0, 0x0), F7(~2, ~0x2d, ~0x0, ~0x0), "1,2,d", 0, v8}, /\* AJIT *\/ */
-#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | F11(d))
-#define F10(a, b, c, d)           (OP_AJIT_BITS_30_TO_31(a) | \
-				   OP_AJIT_BITS_19_TO_24(b) | \
-				   OP_AJIT_BITS_13_TO_13(c) | \
-				   OP_AJIT_BITS_08_TO_12(0))
+#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | AJIT_SHIFT(d)) 
+#define F8(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | REDUCE_8_16_32(d)) 
+#define F8I(a, b, c, d)           (OP(a) | OP3(b) | F3I(c)) 
 
-/* /\* For SIMD Floating point ops *\/ */
-/* #define F8(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \ */
-/* 				   OP_AJIT_BITS_19_TO_24(b) | \ */
-/* 				   OP_AJIT_BITS_05_TO_13(c)) */
 /* For CSWAP non immediate ops */
 #define F9(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \
 				   OP_AJIT_BITS_19_TO_24(b) | \
@@ -332,7 +310,6 @@ typedef struct sparc_opcode
 				   OP_AJIT_BITS_19_TO_24(b) | \
 				   OP_AJIT_BITS_13_TO_13(1) | \
 				   SIMM13(c))
-
 /* End of AJIT specific additions */
 
 #define ANNUL	(1 << 29)
@@ -353,9 +330,3 @@ extern int sparc_encode_prefetch (const char *);
 extern const char *sparc_decode_prefetch (int);
 extern int sparc_encode_sparclet_cpreg (const char *);
 extern const char *sparc_decode_sparclet_cpreg (int);
-
-/* Local Variables:
-   fill-column: 131
-   comment-column: 0
-   End: */
-

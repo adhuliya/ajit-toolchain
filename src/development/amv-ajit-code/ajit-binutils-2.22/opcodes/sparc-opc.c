@@ -1578,16 +1578,16 @@ CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 /* AJIT Additions */
 /* SIMD II instructions */
 /* AJIT ISA V2: Aug 27, 2020. Changed success on: Sep 27, 2020. */
-{ "adddreduce8",  F7(2, 0x2d, 0x0, 0x1), F7(~2, ~0x2d, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
-{ "ordreduce8",   F7(2, 0x2e, 0x0, 0x1), F7(~2, ~0x2e, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
-{ "anddreduce8",  F7(2, 0x2f, 0x0, 0x1), F7(~2, ~0x2f, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
-{ "xordreduce8",  F7(2, 0x3e, 0x0, 0x1), F7(~2, ~0x3e, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
-{ "adddreduce16", F7(2, 0x2d, 0x0, 0x2), F7(~2, ~0x2d, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
-{ "ordreduce16",  F7(2, 0x2e, 0x0, 0x2), F7(~2, ~0x2e, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
-{ "anddreduce16", F7(2, 0x2f, 0x0, 0x2), F7(~2, ~0x2f, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
-{ "xordreduce16", F7(2, 0x3e, 0x0, 0x2), F7(~2, ~0x3e, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
-{ "zbytedpos",    F7(2, 0x3f, 0x0, 0x0), F7(~2, ~0x3f, ~0x0, ~0x0), "1,2,d", 0, v8}, /* AJIT */
-{ "zbytedpos",    F7(2, 0x3f, 0x1, 0x0), F7(~2, ~0x3f, ~0x1, ~0x0), "1,i,d", 0, v8}, /* AJIT */
+{ "adddreduce8",  F8(2, 0x2d, 0x0, 0x1), F8(~2, ~0x2d, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
+{ "ordreduce8",   F8(2, 0x2e, 0x0, 0x1), F8(~2, ~0x2e, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
+{ "anddreduce8",  F8(2, 0x2f, 0x0, 0x1), F8(~2, ~0x2f, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
+{ "xordreduce8",  F8(2, 0x3e, 0x0, 0x1), F8(~2, ~0x3e, ~0x0, ~0x1), "1,2,d", 0, v8}, /* AJIT */
+{ "adddreduce16", F8(2, 0x2d, 0x0, 0x2), F8(~2, ~0x2d, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
+{ "ordreduce16",  F8(2, 0x2e, 0x0, 0x2), F8(~2, ~0x2e, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
+{ "anddreduce16", F8(2, 0x2f, 0x0, 0x2), F8(~2, ~0x2f, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
+{ "xordreduce16", F8(2, 0x3e, 0x0, 0x2), F8(~2, ~0x3e, ~0x0, ~0x2), "1,2,d", 0, v8}, /* AJIT */
+{ "zbytedpos",    F8(2, 0x3f, 0x0, 0x0), F8(~2, ~0x3f, ~0x0, ~0x0), "1,2,d", 0, v8}, /* AJIT */
+{ "zbytedpos",    F8I(2, 0x3f, 0x1, 0x0), F8I(~2, ~0x3f, ~0x1, ~0x0), "1,i,d", 0, v8}, /* AJIT */
 
 /* FPop1 and FPop2 are not instructions.  Don't accept them.  */
 
@@ -1657,19 +1657,19 @@ CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 /* AJIT Additions */
 /* SIMD Floating point ops */
 /* AJIT ISA V2: Aug 27, 2020. Changed success on: Sep 27, 2020. */
-{ "vfadd32",      F3F(2, 0x34, 0x142), F3F(~2, ~0x34, ~0x142), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfadd16",      F3F(2, 0x34, 0x143), F3F(~2, ~0x34, ~0x143), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfsub32",      F3F(2, 0x34, 0x144), F3F(~2, ~0x34, ~0x144), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfsub16",      F3F(2, 0x34, 0x145), F3F(~2, ~0x34, ~0x145), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfmul32",      F3F(2, 0x34, 0x146), F3F(~2, ~0x34, ~0x146), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfmul16",      F3F(2, 0x34, 0x147), F3F(~2, ~0x34, ~0x147), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
+{ "vfadd32",      F3F(2, 0x34, 0x142), F3F(~2, ~0x34, ~0x142), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfadd16",      F3F(2, 0x34, 0x143), F3F(~2, ~0x34, ~0x143), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfsub32",      F3F(2, 0x34, 0x144), F3F(~2, ~0x34, ~0x144), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfsub16",      F3F(2, 0x34, 0x145), F3F(~2, ~0x34, ~0x145), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfmul32",      F3F(2, 0x34, 0x146), F3F(~2, ~0x34, ~0x146), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfmul16",      F3F(2, 0x34, 0x147), F3F(~2, ~0x34, ~0x147), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 /* AJIT ISA V2: Aug 27, 2020. Changed success on: Sep 27, 2020. */
 /* AJIT ISA V2: New additions */
-{ "vfi16toh",     F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "vfhtoi16",     F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "v,B,H", F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "v,g",   F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "fstoh",        F3F(2, 0x34, 0x151), F3F(~2, ~0x34, ~0x151), "e,g",   F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
-{ "fhtos",        F3F(2, 0x34, 0x152), F3F(~2, ~0x34, ~0x152), "e,g",   F_FLOAT, v8}, /* rs1, rs2, rd are even numbered! */ /* AJIT */
+{ "vfi16toh",     F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfhtoi16",     F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "v,B,H", F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "v,g",   F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "fstoh",        F3F(2, 0x34, 0x151), F3F(~2, ~0x34, ~0x151), "e,g",   F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "fhtos",        F3F(2, 0x34, 0x152), F3F(~2, ~0x34, ~0x152), "e,g",   F_FLOAT, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 
 #define CMPFCC(x)	(((x)&0x3)<<25)
 
