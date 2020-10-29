@@ -17,6 +17,7 @@ Device Registers:
 #include <pthread.h>
 
 #include "Sdhc.H"
+#include "sd.H"
 //#include "pthreadUtils.h"
 
 struct SdhcState__ sdhc_init;
@@ -170,8 +171,8 @@ sdhc_init.capabilities = 7<<26;
 		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_180);	//1.8V supported
 	}
 	sdhc_init.pwr_ctrl |= (SDHCI_BUS_POWER_ON); //set SD BUS Power to 1
-	sd_init.ocr = 1<<31; //indicator that card power-up sequence is completed
-	sd_init.ocr = 1<<30; //indicator that card is SDHC/SDXC
+	ocr = 1<<31; //indicator that card power-up sequence is completed
+	ocr = 1<<30; //indicator that card is SDHC/SDXC
 }
 
 /* 3.4 changing bus width pg no. 108 */
@@ -195,5 +196,5 @@ sdhc_init.capabilities = 7<<26;
 int sdhc_change_bus_width()
 {
 	sdhc_init.normal_intr_status_enable &= ~(SDHCI_INT_CARD_INT);
-	
+	SWITCH_FUNC(1); //this function will issue a ACMD6 command to SD card
 }

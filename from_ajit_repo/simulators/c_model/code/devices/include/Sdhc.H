@@ -112,6 +112,20 @@
 #define  SDHCI_INT_NORMAL_MASK	0x00007FFF
 #define  SDHCI_INT_ERROR_MASK	0xFFFF8000
 
+/*	Host Control Register*/
+
+#define SDHCI_HOST_CONTROL	0x28
+#define  SDHCI_CTRL_LED		0x01
+#define  SDHCI_CTRL_4BITBUS	0x02
+#define  SDHCI_CTRL_HISPD	0x04
+#define  SDHCI_CTRL_DMA_MASK	0x18
+#define   SDHCI_CTRL_SDMA	0x00
+#define   SDHCI_CTRL_ADMA1	0x08
+#define   SDHCI_CTRL_ADMA32	0x10
+#define   SDHCI_CTRL_ADMA64	0x18
+#define   SDHCI_CTRL_8BITBUS	0x20
+
+/*Function prototypes for SDHC*/
 int card_insert_remove();
 void SD_detection();
 int buspower();
@@ -126,6 +140,7 @@ void start_sdhc_threads();
 void SDHC_Control();
 void SDHC_Read();
 void SDHC_Write();
+
 
 // data structures
 
@@ -161,15 +176,9 @@ typedef struct SdhcState__ {
 	uint16_t host_ctrl2; //0x3E
 	uint32_t capabilities; //0x40
 	uint16_t host_controller_version; //0xFE
-	SdcardState sd_card_state;
 } SdhcState;
 
-/* sd card */
-typedef struct SdcardState {
-	// registers
-	uint32_t ocr; //Holds VDD storage profile of the card
-	// storage array.
-} SdcardState;
+
 
 void initSdcardState();
 {
