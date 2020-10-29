@@ -16,7 +16,7 @@ Device Registers:
 #include <stdint.h>
 #include <pthread.h>
 
-#include "Sdhc.h"
+#include "Sdhc.H"
 //#include "pthreadUtils.h"
 
 struct SdhcState__ sdhc_init;
@@ -194,5 +194,6 @@ sdhc_init.capabilities = 7<<26;
 
 int sdhc_change_bus_width()
 {
-	return 0;
+	sdhc_init.normal_intr_status_enable &= ~(SDHCI_INT_CARD_INT);
+	
 }
