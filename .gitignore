@@ -53,7 +53,7 @@
 
 # python related
 __pycache__/
-.py[cod]
+*.py[cod]
 *$py.class
 
 
