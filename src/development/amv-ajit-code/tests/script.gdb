@@ -1,2 +1,2 @@
-disassemble 0
+disassemble/r 0
 quit

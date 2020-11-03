@@ -1091,12 +1091,12 @@ const struct sparc_opcode sparc_opcodes[] = {
 { "umuld",	F4(2, 0x0a, 0, 1), F4(~2, ~0x0a, ~0, ~1),	"1,2,d", 0, HWCAP_MUL32, v8 }, /* AJIT */
 { "umuldcc",	F4(2, 0x1a, 0, 1), F4(~2, ~0x1a, ~0, ~1),	"1,2,d", 0, HWCAP_MUL32, v8 }, /* AJIT */
 
-{ "vumuld8",	F6(2, 0x0a, 0, 2, 1), F6(~2, ~0x0a, ~0, ~2, ~1),	"1,2,d", 0, 0, v8 }, /* AJIT */
-{ "vumuld16",	F6(2, 0x0a, 0, 2, 2), F6(~2, ~0x0a, ~0, ~2, ~3),	"1,2,d", 0, 0, v8 }, /* AJIT */
-{ "vumuld32",	F6(2, 0x0a, 0, 2, 4), F6(~2, ~0x0a, ~0, ~2, ~4),	"1,2,d", 0, 0, v8 }, /* AJIT */
-{ "vsmuld8",	F6(2, 0x1a, 0, 2, 1), F6(~2, ~0x1a, ~0, ~2, ~1),	"1,2,d", 0, 0, v8 }, /* AJIT */
-{ "vsmuld16",	F6(2, 0x1a, 0, 2, 2), F6(~2, ~0x1a, ~0, ~2, ~3),	"1,2,d", 0, 0, v8 }, /* AJIT */
-{ "vsmuld32",	F6(2, 0x1a, 0, 2, 4), F6(~2, ~0x1a, ~0, ~2, ~4),	"1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vumuld8",	F6(2, 0x0a, 0, 2, 1), F6(~2, ~0x0a, ~0, ~2, ~1), "1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vumuld16",	F6(2, 0x0a, 0, 2, 2), F6(~2, ~0x0a, ~0, ~2, ~3), "1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vumuld32",	F6(2, 0x0a, 0, 2, 4), F6(~2, ~0x0a, ~0, ~2, ~4), "1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vsmuld8",	F6(2, 0x0b, 0, 2, 1), F6(~2, ~0x0b, ~0, ~2, ~1), "1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vsmuld16",	F6(2, 0x0b, 0, 2, 2), F6(~2, ~0x0b, ~0, ~2, ~3), "1,2,d", 0, 0, v8 }, /* AJIT */
+{ "vsmuld32",	F6(2, 0x0b, 0, 2, 4), F6(~2, ~0x0b, ~0, ~2, ~4), "1,2,d", 0, 0, v8 }, /* AJIT */
 
 { "sdiv",	F3(2, 0x0f, 0), F3(~2, ~0x0f, ~0)|ASI(~0),	"1,2,d", 0, HWCAP_DIV32, v8 },
 { "sdiv",	F3(2, 0x0f, 1), F3(~2, ~0x0f, ~1),		"1,i,d", 0, HWCAP_DIV32, v8 },
@@ -1123,10 +1123,10 @@ const struct sparc_opcode sparc_opcodes[] = {
 { "udivx",	F3(2, 0x0d, 1), F3(~2, ~0x0d, ~1),		"1,i,d", 0, 0, v9 },
 
 /* AJIT Additions */
-{ "cswapd",     F3(3, 0x2f, 0), F3(~3, ~0x2f, ~0), "[1+2]A,d", 0, 0, v8}, /* AJIT */
-{ "cswapd",     F3(3, 0x2f, 1), F3(~3, ~0x2f, ~1), "[1+i],d",  0, 0, v8}, /* AJIT */
-{ "cswapda",    F3(3, 0x3f, 0), F3(~3, ~0x3f, ~0), "[1+2]A,d", 0, 0, v8}, /* AJIT */
-{ "cswapda",    F3(3, 0x3f, 1), F3(~3, ~0x3f, ~1), "[1+i],d",  0, 0, v8}, /* AJIT */
+{ "cswap",     F3(3, 0x2f, 0), F3(~3, ~0x2f, ~0), "[1+2]A,d", 0, 0, v8}, /* AJIT */
+{ "cswap",     F3(3, 0x2f, 1), F3(~3, ~0x2f, ~1), "[1+i],d",  0, 0, v8}, /* AJIT */
+{ "cswapa",    F3(3, 0x3f, 0), F3(~3, ~0x3f, ~0), "[1+2]A,d", 0, 0, v8}, /* AJIT */
+{ "cswapa",    F3(3, 0x3f, 1), F3(~3, ~0x3f, ~1), "[1+i],d",  0, 0, v8}, /* AJIT */
 
 { "call",	F1(0x1), F1(~0x1), "L", F_JSR|F_DELAYED, 0, v6 },
 { "call",	F1(0x1), F1(~0x1), "L,#", F_JSR|F_DELAYED, 0, v6 },
@@ -1697,9 +1697,9 @@ CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 { "vfmul16",    F3F(2, 0x34, 0x147), F3F(~2, ~0x34, ~0x147), "v,B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 /* AJIT ISA V2: Aug 27, 2020. Changed success on: Sep 27, 2020. */
 /* AJIT ISA V2: New additions */
-{ "vfi16toh",   F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "v,B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "vfhtoi16",   F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "v,B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "v,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfi16toh",   F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "v,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfhtoi16",   F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "v,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "v,g", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 { "fstoh",      F3F(2, 0x34, 0x151), F3F(~2, ~0x34, ~0x151), "e,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 { "fhtos",      F3F(2, 0x34, 0x152), F3F(~2, ~0x34, ~0x152), "e,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 
