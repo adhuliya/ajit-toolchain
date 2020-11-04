@@ -52,3 +52,10 @@
 
 # scons
 *.dblite
+
+# python related
+__pycache__/
+*.py[cod]
+*$py.class
+
+
