@@ -294,7 +294,7 @@ typedef struct sparc_opcode
 #define OP_AJIT_BITS_00_TO_07(x)  (((x) & 0xFF)  << 00)
 
 /* For SIMD II instructions */
-#define REDUCE_8_16_32(x)         (((x) & 0x05)  << 7)
+#define REDUCE_8_16_32(x)         (((x) & 0x07)  << 7)
 #define AJIT_SHIFT(x)             (((x) & 0x03)  << 6)
 
 #define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c) | AJIT_SHIFT(d)) 
