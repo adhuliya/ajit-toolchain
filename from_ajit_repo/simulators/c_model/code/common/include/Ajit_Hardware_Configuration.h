@@ -3,7 +3,7 @@
 
 
 
-#include"Ajit_Device_Addresses.h" // Specifies addresses used by memory-mapped devices
+#include "Ajit_Device_Addresses.h" // Specifies addresses used by memory-mapped devices
 
 
 
@@ -67,7 +67,7 @@
 #define USE_INTERRUPT_CONTROLLER_MODEL 1
 #define USE_TIMER_MODEL 1
 #define USE_SERIAL_MODEL 1
-
+#define USE_SDHC_MODEL 1
 
 //----------------------------------
 //Interrupt Controller parameters
@@ -78,7 +78,7 @@
 //Interrupt levels for interrupting sources in sparc
 #define TIMER_IRL  10
 #define SERIAL_IRL 12
-
+#define SDHC_IRL 11
 
 //----------------------------------
 //Timer Parameters

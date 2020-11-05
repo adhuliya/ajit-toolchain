@@ -4,7 +4,7 @@
 #define _SD_H
 
 #include<stdint.h>
-#include"Sdhc.H"
+#include"Sdhc.h"
 /* sd card */
 
 /*  OCR Register bit masks    */
@@ -22,7 +22,7 @@ uint32_t ocr;
 #define v2_8to9         0x00010000
 #define v2_7to8         0x00008000
 
-/*  CID Register*/
+/*  CSD Register*/
 
 struct csd {
 	uint8_t  csd_structure;
@@ -68,7 +68,7 @@ struct csd {
 
 
 /*Function prototypes for SD CARD*/
-int SWITCH_FUNC(int enable); //corresponds to ACMD6
-                            //command, required in section. 3.4
-
+int SET_BUS_WIDTH(int enable); //corresponds to ACMD6, command required in section. 3.4
+                            
+int GO_IDLE_STATE(); //sets the card in idle state
 #endif
