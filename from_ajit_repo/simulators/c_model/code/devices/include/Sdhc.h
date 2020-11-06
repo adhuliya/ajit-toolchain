@@ -185,7 +185,10 @@ typedef struct SdhcState__ {
 
 void SDHC_Commands(uint8_t cmd_num);
 
-void sendCommandToSDHC(uint64_t frame, uint32_t argument, uint8_t expectedResponse);
+void sendCommandIndexToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
+void sendCommandArgToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32);
+void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
+
 void readResponseFromSDHC(uint32_t* responseFromSD);
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);

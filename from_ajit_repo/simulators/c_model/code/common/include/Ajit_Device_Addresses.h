@@ -19,8 +19,8 @@
 #define ADDR_SERIAL_CONTROL_REGISTER 0xFFFF3200
 //Tx and Rx are 8-bit registers
 //and must be accessed using byte-operations only.
-#define ADDR_SERIAL_TX_REGISTER      0xFFFF3210 // -- 0001 0000
-#define ADDR_SERIAL_RX_REGISTER      0xFFFF3220 // -- 0010 0000
+#define ADDR_SERIAL_TX_REGISTER      0xFFFF3210 
+#define ADDR_SERIAL_RX_REGISTER      0xFFFF3220 
 
 #define ADDR_SDHC_REGISTERS 0xFFFF4000 //sdhc registers
 #define ADDR_SDHC_ARG_2                 0xFFFF4000      // 4 BYTES WIDE

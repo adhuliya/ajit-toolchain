@@ -54,7 +54,68 @@ void register_sdhc_pipes()
 	register_port("SDHC_to_IRC_INT",8,1);
 	set_pipe_is_written_into("SDHC_to_IRC_INT");
 
-	//TO DO: pipes between memoryAccess thread and SDHC device	
+	//TO DO: pipes between memoryAccess thread and SDHC device
+	depth=1;
+	//pipes between memoryAccess thread and the Serial device
+	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
+  	register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
+	register_pipe("BUS_to_SDHC_cmd_index", depth, 8, 0);
+	register_pipe("BUS_to_SDHC_arg", depth, 32, 0);
+  	register_pipe("BUS_to_SDHC_crc7", depth, 8, 0); 
+
+//the memory access thread reads from these pipes
+	set_pipe_is_read_from("BUS_to_SDHC_request_type");
+	set_pipe_is_read_from("BUS_to_SDHC_addr");
+	set_pipe_is_read_from("BUS_to_SDHC_cmd_index");
+  	set_pipe_is_read_from("BUS_to_SDHC_arg");
+	set_pipe_is_read_from("BUS_to_SDHC_crc7");
+	
+	//the memory access thread writes to these pipes
+	set_pipe_is_written_into("BUS_to_SDHC_request_type");
+	set_pipe_is_written_into("BUS_to_SDHC_request_type");
+	set_pipe_is_written_into("BUS_to_SDHC_cmd_index");
+  	set_pipe_is_written_into("BUS_to_SDHC_arg");
+	set_pipe_is_written_into("BUS_to_SDHC_crc7"); 	
+}
+
+/*Three functions below are required for sending
+ a command to SDHC from CPU via the bridge. 
+ The start, tx and end bits are constants.
+
+		***********		Command Frame		*********** 
+bits: 47     	 46   	 45:40 		39:8	7:1		0
+	   |		  |		  |			  |	 	|		|
+	  start_bit  tx bit  cmd_index   arg	crc7	end_bit 
+
+	  bits 47:40 will be sent using the sendCommandIndexToSDHC
+	  bits 39:8 using the sendCommandArgToSDHC and
+	  bits 7:0 using the sendCrc7ToSDHC */
+
+void sendCommandIndexToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8)
+{
+	#define start_bit 0
+	#define tx_bit 	  1 
+	data8 |= start_bit<<7;
+	data8 |= tx_bit<<6;
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+	write_uint8 ("BUS_to_SDHC_cmd_index",data8); 
+}
+
+void sendCommandArgToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32)
+{ 
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+  	write_uint32("BUS_to_SDHC_arg",data32);
+}
+
+void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8)
+{
+	#define end_bit   1
+	data8 |= end_bit<<0;
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+ 	write_uint8("BUS_to_SDHC_crc7",data8);
 }
 
 /*	Subsequence 3.1: SD Card Detection, Page 103	*/

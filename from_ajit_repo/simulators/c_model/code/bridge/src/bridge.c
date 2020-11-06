@@ -350,8 +350,8 @@ void bridge_cpu_core (int cpu_id,
 
 			write_uint64(rdata_pipe_name, data64);
 		}
-		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_REGISTERS||addr==ADDR_SD_REGISTERS))
-		//this is a SDHC or SD related operation
+		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_REGISTER_COMMAND))
+		//this is an operation which writes the command index
 		{
 			if(set_mem_access_lock)
 			{
@@ -359,6 +359,37 @@ void bridge_cpu_core (int cpu_id,
 						cpu_id);
 			}
 
+				uint32_t data32;
+				uint32_t response;
+
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+#endif
+				__GET_SDHC_LOCK__;//declare a lock
+				sendCommandIndexToSDHC(request_type,addr,data32);
+				__RELEASE_SDHC_LOCK__;
+
+							//send the response back to cpu
+			if(request_type == REQUEST_TYPE_WRITE) data64=0;
+			else if(getBit32(addr,2)==0) 
+				data64 = setSlice64(0x00, 63,32, response);
+			else 
+				data64 = setSlice64(0x00,31,0, response);
+#ifdef DEBUG
+			if(request_type == REQUEST_TYPE_READ)
+				fprintf(stderr,"0x%x = IRC[0x%x] CPU=%d \n", response, addr, cpu_id);
+			else
+				fprintf(stderr,"IRC[0x%x] = 0x%x CPU=%d\n", addr,data32,cpu_id);
+#endif
+
+			write_uint64(rdata_pipe_name, data64);
 		}
 		else
 		//this is a memory load/store
