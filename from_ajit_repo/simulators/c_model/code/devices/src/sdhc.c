@@ -36,17 +36,6 @@ DEFINE_THREAD(SDHC_Control);
 void SDHC_Read_Write();
 DEFINE_THREAD(SDHC_Read_Write);
 
-void start_sdhc_threads()
-{
-	register_sdhc_pipes();
-
-	PTHREAD_DECL(SDHC_Control);
-	PTHREAD_DECL(SDHC_Read_Write);
-
-	PTHREAD_CREATE(SDHC_Control);
-	PTHREAD_CREATE(SDHC_Read_Write);
-}
-
 void register_sdhc_pipes()
 {
 	int depth = 1;
@@ -78,11 +67,22 @@ void register_sdhc_pipes()
 	set_pipe_is_written_into("BUS_to_SDHC_crc7"); 	
 }
 
+void start_sdhc_threads()
+{
+	register_sdhc_pipes();
+
+	PTHREAD_DECL(SDHC_Control);
+	PTHREAD_DECL(SDHC_Read_Write);
+
+	PTHREAD_CREATE(SDHC_Control);
+	PTHREAD_CREATE(SDHC_Read_Write);
+}
+
 /*Three functions below are required for sending
  a command to SDHC from CPU via the bridge. 
  The start, tx and end bits are constants.
 
-		***********		Command Frame		*********** 
+***********		Command Frame		*********** 
 bits: 47     	 46   	 45:40 		39:8	7:1		0
 	   |		  |		  |			  |	 	|		|
 	  start_bit  tx bit  cmd_index   arg	crc7	end_bit 
@@ -116,6 +116,11 @@ void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8)
 	write_uint8 ("BUS_to_SDHC_request_type", request_type);
   	write_uint32("BUS_to_SDHC_addr",addr);
  	write_uint8("BUS_to_SDHC_crc7",data8);
+}
+
+void SDHC_Control()
+{
+	
 }
 
 /*	Subsequence 3.1: SD Card Detection, Page 103	*/

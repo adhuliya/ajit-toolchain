@@ -355,7 +355,7 @@ void bridge_cpu_core (int cpu_id,
 		{
 			if(set_mem_access_lock)
 			{
-				fprintf(stderr,"WARNING: CPU %d serial-device access lock flag set, but ignored\n",
+				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
 						cpu_id);
 			}
 
@@ -375,21 +375,33 @@ void bridge_cpu_core (int cpu_id,
 				__GET_SDHC_LOCK__;//declare a lock
 				sendCommandIndexToSDHC(request_type,addr,data32);
 				__RELEASE_SDHC_LOCK__;
+		}
 
-							//send the response back to cpu
-			if(request_type == REQUEST_TYPE_WRITE) data64=0;
-			else if(getBit32(addr,2)==0) 
-				data64 = setSlice64(0x00, 63,32, response);
+		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_ARG_1))
+		//this is an operation which writes the command argument
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
+						cpu_id);
+			}
+
+				uint32_t data32;
+				uint32_t response;
+
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
 			else 
-				data64 = setSlice64(0x00,31,0, response);
-#ifdef DEBUG
-			if(request_type == REQUEST_TYPE_READ)
-				fprintf(stderr,"0x%x = IRC[0x%x] CPU=%d \n", response, addr, cpu_id);
-			else
-				fprintf(stderr,"IRC[0x%x] = 0x%x CPU=%d\n", addr,data32,cpu_id);
-#endif
+				data32 = getSlice64(data64,31,0);
 
-			write_uint64(rdata_pipe_name, data64);
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+#endif
+				__GET_SDHC_LOCK__;//declare a lock
+				sendCommandArgToSDHC(request_type,addr,data32);
+				__RELEASE_SDHC_LOCK__;
 		}
 		else
 		//this is a memory load/store
