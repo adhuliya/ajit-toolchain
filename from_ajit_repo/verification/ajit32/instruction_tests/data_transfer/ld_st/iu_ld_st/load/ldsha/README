@@ -1,5 +1,0 @@
-Instruction : LDSHA
-Details :
-Load a half-word from the alternate memory into one register and sign extend it's MSB.
-
-ldshaTV - test cases for checking trap conditions

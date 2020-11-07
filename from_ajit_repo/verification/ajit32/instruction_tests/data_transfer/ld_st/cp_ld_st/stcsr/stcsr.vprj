@@ -1,9 +1,0 @@
-SOURCES = stcsr.s
-
-
-
-RESULTS = 
-g1 = 0x00000024
-o0 = 0x6c
-m[0x6c] = 0x0000000A
-asi = 0x0A

@@ -1,7 +1,0 @@
-SOURCES = invalid_ops.s
-
-
-
-RESULTS = 
-g2=0x00000009
-f7=0xdeadfeed

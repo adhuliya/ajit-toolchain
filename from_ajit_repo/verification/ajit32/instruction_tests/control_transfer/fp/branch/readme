@@ -1,2 +1,0 @@
-all Floating point unit branch instruction test cases and repective vprj files,
-FP_traps - checks for fp_disaled trap, if EF bit in PSR is not set.

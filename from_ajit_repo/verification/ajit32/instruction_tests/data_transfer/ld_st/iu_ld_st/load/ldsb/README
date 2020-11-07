@@ -1,3 +1,0 @@
-Instruction : LDSB
-Details :
-Load a byte from the memory into one register and sign extend it's MSB.

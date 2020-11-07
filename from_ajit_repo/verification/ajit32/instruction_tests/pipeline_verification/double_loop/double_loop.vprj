@@ -1,7 +1,0 @@
-SOURCES= double_loop.s
-
-RESULTS=
-g1=0x0
-g3=0x3c
-g4=0x4
-g5=0x0

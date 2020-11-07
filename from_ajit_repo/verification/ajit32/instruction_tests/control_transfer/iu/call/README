@@ -1,7 +1,0 @@
-Operation of CALL:
-
-r[15]<- PC
-PC<- nPC
-nPC<- PC + 30_bit_displacement<<2
-
-CALL does not cause any traps.

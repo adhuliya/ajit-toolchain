@@ -1,3 +1,0 @@
-Instruction : LDUB
-Details :
-Load a byte from the memory into one register and discard the sign information.

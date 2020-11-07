@@ -1,6 +1,0 @@
-Instruction : LDSTUB, LDSTUBA
-Details :
-The atomic load-store instructions copy a byte from memory into register, then
-rewrite the addressed byte in memory to all ones. The operation is per-
-formed atomically, that is, without allowing intervening interrupts or
-deferred traps.

@@ -1,3 +1,6 @@
+# general
+build/
+
 # Prerequisites
 *.d
 
@@ -16,6 +19,7 @@
 *.dylib
 *.dll
 !/src/buildroot-2014.08/**/*.so
+!/buildroot/buildroot-2014.08/**/*.so
 
 # Fortran module files
 *.mod
@@ -57,5 +61,4 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 

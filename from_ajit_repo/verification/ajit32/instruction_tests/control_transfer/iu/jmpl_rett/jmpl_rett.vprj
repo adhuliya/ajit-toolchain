@@ -1,8 +1,0 @@
-SOURCES = jmpl_rett.s
-
-
-RESULTS = 
-g1=0x80
-g2=0xABC
-o0=0xABC
-o1=0xABC

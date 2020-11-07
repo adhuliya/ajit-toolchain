@@ -1,8 +1,0 @@
-SOURCES = tn.s
-
-RESULTS =
-
-g1 = 0x80
-o0 = 0xF00
-o1 = 0x10
-g2 = 0x1

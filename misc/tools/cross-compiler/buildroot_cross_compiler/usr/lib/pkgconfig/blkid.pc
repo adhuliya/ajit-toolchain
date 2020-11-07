@@ -1,0 +1,11 @@
+prefix=/home/nehak/AJITproject/AjitRepoV2/tools/buildroot/buildroot-2014.08/output/host/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: blkid
+Description: Block device id library
+Version: 1.42.11
+Requires.private: uuid
+Cflags: -I${includedir}/blkid -I${includedir}
+Libs: -L${libdir} -lblkid

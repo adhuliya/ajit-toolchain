@@ -1,5 +1,0 @@
-save produces a window overflow trap if (cwp-1)modulo NWINDOWS points to an invalid window.
-restore produces a window underflow trap if (cwp+1) modulo NWINDOWS points to an invalid window.
-
-If a save/restore instruction does not trap, two operands are added and result is stored in destination register and cwp is updated.
-

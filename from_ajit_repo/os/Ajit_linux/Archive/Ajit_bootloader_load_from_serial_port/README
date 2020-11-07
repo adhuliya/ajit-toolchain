@@ -1,3 +1,0 @@
-USAGE:
-
-./Bootloader_frontend.py -m <memory_map_file> | <processor_executble>

@@ -1,5 +1,0 @@
-Instruction : STA
-Details :
-Stores the register content in a alternate memory location
-
-staTV - test cases for trap conditions

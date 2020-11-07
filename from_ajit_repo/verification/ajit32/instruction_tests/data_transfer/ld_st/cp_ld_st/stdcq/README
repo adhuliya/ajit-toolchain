@@ -1,3 +1,0 @@
-Instruction : STDCQ
-Details :
-The store coprocessor state register instruction (STCSR) copies the contents of the coprocessor state register into memory.

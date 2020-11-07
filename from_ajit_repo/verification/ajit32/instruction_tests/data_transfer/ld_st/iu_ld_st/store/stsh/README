@@ -1,5 +1,0 @@
-Instruction : STSH
-Details :
-Stores the lower half-word from the register into memory.
-
-stshTV - the test cases for trap conditions

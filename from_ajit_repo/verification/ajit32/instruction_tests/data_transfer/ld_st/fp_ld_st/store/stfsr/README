@@ -1,5 +1,0 @@
-Instruction : STFSR
-Details :
-Stores the floating-point status register content in a memory location.
-
-stfsr - test cases for trap conditions

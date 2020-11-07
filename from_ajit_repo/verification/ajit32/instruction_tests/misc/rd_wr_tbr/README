@@ -1,3 +1,0 @@
-tbr read/wr is privileged
-when s=0, it causes a privileged instruction trap
-Upon a write to TBR, bits 11:0 should remain unchanged.

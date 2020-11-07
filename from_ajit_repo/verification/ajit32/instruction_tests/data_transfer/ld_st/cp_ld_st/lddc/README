@@ -1,3 +1,0 @@
-Instruction : LDDC
-Details :
-The load double coprocessor instruction (LDDC) moves a double-word from memory into a coprocessor register pair.

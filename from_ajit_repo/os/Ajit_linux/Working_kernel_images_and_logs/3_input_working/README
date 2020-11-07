@@ -1,8 +1,0 @@
-this processor model and kernel image is as of git commit :
-
-commit a959364281dae0bece4c5889d7f3c0fffaba8d5a
-Author: Neha Karanjkar <nehak@ee.iitb.ac.in>
-Date:   Tue Apr 5 09:51:04 2016 +0530
-
-    Serial driver : resolved Rx bug
-

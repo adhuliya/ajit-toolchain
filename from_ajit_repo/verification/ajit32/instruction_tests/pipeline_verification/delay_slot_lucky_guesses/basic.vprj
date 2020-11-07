@@ -1,6 +1,0 @@
-SOURCES = basic.s
-
-RESULTS=
-o0=0xf00
-o1=0xf01
-o2=0xf02

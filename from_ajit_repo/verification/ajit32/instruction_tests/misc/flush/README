@@ -1,4 +1,0 @@
-FLUSH is tested using self modifying code.
-
-For this test, use the processor model with caches enabled and dummy MMU (which makes all loads/stores/ifetches cacheable)
-

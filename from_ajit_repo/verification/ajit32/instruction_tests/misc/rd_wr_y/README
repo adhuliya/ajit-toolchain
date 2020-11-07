@@ -1,1 +1,0 @@
-read/write Y is not privileged, and does not cause any traps.

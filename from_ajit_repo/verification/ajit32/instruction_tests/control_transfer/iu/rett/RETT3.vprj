@@ -1,7 +1,0 @@
-SOURCES = RETT3.s
-
-
-RESULTS = 
-g1=0x00000002
-g3=0xABC
-g4=0x000

@@ -1,3 +1,0 @@
-Instruction : LDCSR
-Details :
-The load coprocessor state register instruction (LDCSR) moves a word from memory into the Coprocessor State Register

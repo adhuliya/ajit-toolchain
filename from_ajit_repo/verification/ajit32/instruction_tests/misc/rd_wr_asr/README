@@ -1,7 +1,0 @@
-Whether asr reads/writes are privileged, and whether they generate an illegal_instruction trap is implementation dependant.
-
-
-As per the current implementation,
-
-asr reads/writes are *NOT* privileged, and
-they do not generate an illegal_instruction trap.

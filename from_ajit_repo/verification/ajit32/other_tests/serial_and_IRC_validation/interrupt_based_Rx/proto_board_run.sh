@@ -1,1 +1,0 @@
-ajit_cpu_uarch_test_doval_proto-board_riffa_riffa -m ./compiled/interrupt_based_Rx/interrupt_based_Rx.mmap -r ./compiled/interrupt_based_Rx/interrupt_based_Rx.results -l ./log/interrupt_based_Rx.log -s 

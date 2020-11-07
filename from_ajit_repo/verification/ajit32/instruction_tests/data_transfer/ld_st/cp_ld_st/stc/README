@@ -1,3 +1,0 @@
-Instruction : STC
-Details :
-The store single coprocessor instruction (STC) copies the contents of a coprocessor register into memory.

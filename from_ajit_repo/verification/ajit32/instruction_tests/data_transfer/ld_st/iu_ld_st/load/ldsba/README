@@ -1,5 +1,0 @@
-Instruction : LDSBA
-Details :
-Load a byte from the alternate memory into one register and sign extend it's MSB.
-
-ldsbaTV - test cases for trap conditions

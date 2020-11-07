@@ -1,9 +1,0 @@
-SOURCES = Page_setup_add_trans.c
-
-INCLUDES = 
-
-RESULTS =
-
-g4=0x0F
-g6=0x02
-g7=0x0C

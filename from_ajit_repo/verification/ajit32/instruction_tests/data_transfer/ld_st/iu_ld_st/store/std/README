@@ -1,6 +1,0 @@
-Instruction : STD
-Details :
-Moves a double-word from register pair in to the memory. The more significant word at the effective memory address will come from the even register. The less
-significant word (at the effective memory address + 4) is moved from the following odd register.
-
-stdTV - Test cases for all the trap conditions

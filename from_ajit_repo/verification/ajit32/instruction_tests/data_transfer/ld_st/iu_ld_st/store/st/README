@@ -1,5 +1,0 @@
-Instruction : ST
-Details :
-Stores the register content in a memory location
-
-stTV - Teste cases for all the trap conditions

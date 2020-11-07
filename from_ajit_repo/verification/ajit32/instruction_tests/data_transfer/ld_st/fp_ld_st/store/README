@@ -1,5 +1,0 @@
-Contains the tests for Floating point unit memory store operations
-
-	1. STF ( Store Floating-point Word )
-	2. STDF ( Store Floating-point Double Word )
-	3. STFSR ( Store Floating-point Status Register )

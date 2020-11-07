@@ -1,1 +1,0 @@
-stdbuf -o 0  ajit_cpu_uarch_HW_env_v1  -s -m ../Kernel_images/without_prints/Output/mem_map_for_initial_PC_f0004000.txt   -r Results.txt -l  Log.txt  -S 10.107.90.65  -P 9994  2>&1 |tee ./Ajit_FPGA_linux_boot_LOG.txt

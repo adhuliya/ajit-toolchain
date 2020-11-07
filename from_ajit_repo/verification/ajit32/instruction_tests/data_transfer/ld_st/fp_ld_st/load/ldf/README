@@ -1,5 +1,0 @@
-Instruction : LDF
-Details :
-Loads a word from memory into the floating-point register
-
-ldfTV - test cases for trap conditions

@@ -1,7 +1,0 @@
-SOURCES = RETT2.s
-
-
-RESULTS = 
-g1=0x00000003
-g3=0xABC
-g4=0x000

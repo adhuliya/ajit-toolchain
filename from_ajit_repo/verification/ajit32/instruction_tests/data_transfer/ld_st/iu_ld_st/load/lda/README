@@ -1,5 +1,0 @@
-Instruction : LDA
-Details :
-Loads a word from alternate memory into the register
-
-ldaTV - For checking the trap vectors

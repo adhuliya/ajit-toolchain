@@ -1,8 +1,0 @@
-Contains the tests for Integer unit memory store operations
-
-	1. ST ( Store Word )
-	2. STD ( Store Double Word )
-	3. STSB ( Store Signed Byte )
-	4. STUB ( Store Unsigned Byte )
-	5. STSH ( Store Signed Half-word )
-	6. STUH ( Store Unsigned Half-word )

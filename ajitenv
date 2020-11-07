@@ -1,0 +1,7 @@
+# source this file from this directory only
+
+export AJIT_HOME="$(pwd)";
+
+cd ahir_release;
+source ./ahir_bashrc;
+cd ..;

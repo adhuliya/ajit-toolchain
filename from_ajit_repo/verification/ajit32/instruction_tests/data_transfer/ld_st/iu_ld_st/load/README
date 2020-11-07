@@ -1,8 +1,0 @@
-Contains the tests for Integer unit memory load operations
-
-	1. LD, LDA ( Load Word ) - Normal memory & Alternative
-	2. LDD, LDDA ( Load Double Word ) - Normal memory & Alternative
-	3. LDSB, LDSBA ( Load Signed Byte ) - Normal memory & Alternative
-	4. LDUB, LDUBA ( Load Unsigned Byte ) - Normal memory & Alternative
-	5. LDSH, LDSHA ( Load Signed Half-word ) - Normal memory & Alternative
-	6. LDUH, LDUHA ( Load Unsigned Half-word ) - Normal memory & Alternative

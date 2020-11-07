@@ -1,3 +1,0 @@
-Instruction : STDC
-Details :
-The store double coprocessor instruction (STDC) copies the contents of a coprocessor register pair into memory.

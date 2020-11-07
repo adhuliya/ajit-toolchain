@@ -1,4 +1,0 @@
-Instruction : SWAP, SWAPA
-Details : 
-The SWAP and SWAPA instructions exchange register with the contents of the word at the addressed memory location. The operation is performed atomi
-cally, that is, without allowing intervening interrupts or deferred traps.

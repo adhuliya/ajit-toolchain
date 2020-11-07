@@ -1,6 +1,0 @@
-SOURCES = asm_context_switch.s
-
-RESULTS = 
-l3 = 0xABCD
-g7=0x10000000
-g3=0xcc4

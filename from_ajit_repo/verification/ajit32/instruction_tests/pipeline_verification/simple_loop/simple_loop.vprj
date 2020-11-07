@@ -1,5 +1,0 @@
-SOURCES= simple_loop.s
-
-RESULTS=
-g1=0x0
-g3=0x10

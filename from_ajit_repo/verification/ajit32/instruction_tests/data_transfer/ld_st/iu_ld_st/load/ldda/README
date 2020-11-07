@@ -1,6 +1,0 @@
-Instruction : LDDA
-Details :
-Moves a double-word from alternate memory into a register pair. The more significant word at the effective memory address is moved into the even register. The less
-significant word (at the effective memory address + 4) is moved into the following odd register.
-
-lddaTV - Testing for the trap cases

@@ -1,5 +1,0 @@
-Instruction : STDA
-Details :
-Moves a double-word from register pair in to the alternate memory. The more significant word at the effective memory address will come from the even register. The less significant word (at the effective memory address + 4) is moved from the following odd register.
-
-stdaTV - test conditions for trap cases

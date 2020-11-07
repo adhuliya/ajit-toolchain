@@ -1,7 +1,0 @@
-SOURCES = FP_traps.s
-
-
-RESULTS =
-g1 = 0x00000080
-g2 = 0x10
-
