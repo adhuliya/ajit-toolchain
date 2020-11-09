@@ -1,0 +1,7 @@
+# source this file from this directory only
+# to setup an environment to use Ajit Toolchain.
+
+# NOTE: Putting this initializtion in a ~/.bashrc file
+# is recommended.
+export AJIT_HOME="$(pwd)";
+

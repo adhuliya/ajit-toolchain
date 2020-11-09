@@ -1,17 +1,83 @@
 README
 =============
 
-The `scripts/` directory contains the scripts
-to build the Ajit toolchain.
+The Ajit build is divided into three stages,
 
-To build stay in this directory and execute:
+1. Prepare a base system with all the necessary
+   dependencies. If you are using docker,
+   this is done in an image named `ajit_base`.
 
-  ./scripts/setup.sh
+2. Start building from the sources.
+   If you are using docker, this build is saved
+   in an image named `ajit_build`.
+   After this stage you can use the whole of Ajit Toolchain.
+
+3. To reduce the system size, the third step 
+   removes unnecessary files and only keeps the
+   install files necessary for someone interested
+   in using the Ajit Toolchain (vs its development).
+   If you are using docker, this is done in the image
+   `ajit_tools` (this image is genearlly less than
+   1/5th the size of the image `ajit_build`).
+
+If you are building the system locally (not creating docker images),
+then the third step has to be done manually.
+You may refer `./docker/ajit_tools/Dockerfile` for the same.
 
 
-To restart the build always clean the current directory first:
+## Building and Installation
 
-  ./scripts/clean.sh;./scripts/setup.sh;
+First set AJIT_HOME environment variable to the
+directory this README.md file is in. This is AJIT_HOME.
+(Or run `source ./ajit_home_env` from this directory)
+
+
+### Install docker images
+
+To build docker images with Ajit Toolchain run,
+(Needs docker (on ubuntu run: `sudo apt-get install docker.io`))
+ 
+    ./docker_setup.sh
+
+Once setup is done refer `./docker/README.md`.
+
+
+### Install a local setup
+
+To setup Ajit Toolchain on the local system run,
+
+    ./setup.sh
+
+Note that if this setup fails, the user should
+refer the `./docker_setup.sh` which stands as a
+reference to the well tested system environment.
+
+
+## Clean the slate
+
+To cleanup the local system setup use,
+
+    ./clean.sh
+
+
+## Setup environment to start using the toolchain
+
+To setup the environment to start using Ajit Toolchain,
+
+    source ./ajit_home_env;
+    source ./docker/ajit_build/ajit_env;
+
+
+## Test the setup
+
+To run and test a sample example,
+
+    cd ./examples/sin
+    ./build.sh
+    ./run.sh
+
+The output of `./run.sh` should have a line `Tests Successful`.
+If so, the system is ready to use.
 
 
 ## Important Locations
@@ -19,18 +85,5 @@ To restart the build always clean the current directory first:
 * `examples/` folder contains examples that demonstrate the
   use of many of the tools in this repo.
 
-
-
-## Some notes:
-
-Visited directory:
-
-
-## Some notes:
-
-The following command sequence worked:
-
-  cd ./from_ajit_repo/simulators/c_model/code/debugger/doval/antlr3Cruntime
-  scons
 
 

@@ -4,32 +4,33 @@
 # needed to build or use the Ajit Toolchain.
 
 # Do the needed in one step.
-apt-get update \
-  && \
-apt-get -y install --no-install-recommends \
-  build-essential \
-  python \
-  python3 \
-  libncurses5-dev \
-  libsigsegv-dev \
-  rsync \
-  wget \
-  cpio \
-  unzip \
-  bc \
-  vim \
-  gcc-multilib \
-  flex \
-  bison \
-  tar \
-  locales \
-  perl \
-  sed \
-  gcc \
-  g++ \
-  git \
-  scons \
-  openjdk-8-jre-headless \
+# REF: https://buildroot.org/downloads/manual/manual.html#requirement-mandatory
+  apt-get update \
+&& \
+  apt-get -y install --no-install-recommends \
+    sed \
+    make \
+    binutils \
+    build-essential \
+    gcc \
+    g++ \
+    bash \
+    patch \
+    gzip \
+    bzip2 \
+    perl \
+    tar \
+    cpio \
+    unzip \
+    rsync \
+    file \
+    bc \
+    wget \
+    vim-tiny \
+    python \
+    python3 \
+    scons \
+    openjdk-8-jre-headless \
 && \
   apt-get -y autoremove \
 && \
@@ -37,4 +38,6 @@ apt-get -y install --no-install-recommends \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+#  libncurses5-dev \
+#  libsigsegv-dev \
 

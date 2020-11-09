@@ -64,10 +64,10 @@ export AJIT_GLIBC_INSTALL_DIR=$(pwd)/tools/glibc
 export AJIT_C_REF_RELEASE=$AJIT_TOOLS_RELEASE/c_reference_model
 
 #library paths for C-reference model...
-# export LD_LIBRARY_PATH=$AJIT_C_REF_RELEASE/lib:$LD_LIBRARY_PATH
+#AD export LD_LIBRARY_PATH=$AJIT_C_REF_RELEASE/lib:$LD_LIBRARY_PATH
 
 # executable path for C reference model.
-export PATH=$AJIT_C_REF_RELEASE/bin:$PATH
+#AD export PATH=$AJIT_C_REF_RELEASE/bin:$PATH
 
 ################################################
 #  Aa-reference model
@@ -83,9 +83,9 @@ export PATH=$AJIT_C_REF_RELEASE/bin:$PATH
 ################################################
 # export LD_LIBRARY_PATH=$AJIT_TOOLS_RELEASE/tools/cross-compiler/lib/:$LD_LIBRARY_PATH
 
-export PATH=$AJIT_TOOLS_RELEASE/tools/scripts/:$PATH
-export PATH=$AJIT_TOOLS_RELEASE/tools/bin/:$PATH
-export PATH=$AJIT_TOOLS_RELEASE/tools/cross-compiler/bin/:$PATH
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/scripts/:$PATH
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/bin/:$PATH
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/cross-compiler/bin/:$PATH
 
 export AJIT_UCLIBC_INSTALL_DIR=$UCLIBC_LIB_DIR/..;
 export AJIT_LIBGCC_INSTALL_DIR=$BUILDROOT_HOST_DIR/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4;
