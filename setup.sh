@@ -14,6 +14,8 @@ fi
 mkdir -p $AJIT_HOME/build;
 OUTFILE_LOG=$AJIT_HOME/build/local_build.log;
 
+echo -e "\nOutput log file: $OUTFILE_LOG\n";
+sleep 1;
 
 echo "################################################";
 echo "##  Setting up ajit_base.";

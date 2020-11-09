@@ -9,6 +9,6 @@ cat $AJIT_HOME/ajit_env >> $BASHRC;
 echo -e "\n## Ajit_Content END\n" >> $BASHRC;
 
 while true; do
-  echo "AjitBuild: `date`";
+  echo "AjitBuildDev: `date`";
   sleep 60;
 done

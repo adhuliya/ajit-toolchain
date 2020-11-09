@@ -2,7 +2,7 @@
 
 # remove the docker container -- takes one argument - the container name
 
-_CONT_NAME="ajit_build";
+_CONT_NAME="ajit_build_dev";
 
 if [[ $1 != "" ]]; then
   _CONT_NAME="$1";

@@ -1,5 +1,7 @@
 README
 =============
+Tested to work on: Ubuntu 16.04.
+
 
 The Ajit build is divided into three stages,
 
@@ -27,8 +29,8 @@ You may refer `./docker/ajit_tools/Dockerfile` for the same.
 
 ## Building and Installation
 
-First set AJIT_HOME environment variable to the
-directory this README.md file is in. This is AJIT_HOME.
+First set `AJIT_HOME` environment variable to the
+directory this README.md file is in. This is `AJIT_HOME`.
 (Or run `source ./ajit_home_env` from this directory)
 
 
@@ -36,8 +38,9 @@ directory this README.md file is in. This is AJIT_HOME.
 
 To build docker images with Ajit Toolchain run,
 (Needs docker (on ubuntu run: `sudo apt-get install docker.io`))
- 
-    ./docker_setup.sh
+
+    source ./ajit_home_env; 
+    ./docker_setup.sh;
 
 Once setup is done refer `./docker/README.md`.
 
@@ -46,6 +49,7 @@ Once setup is done refer `./docker/README.md`.
 
 To setup Ajit Toolchain on the local system run,
 
+    source ./ajit_home_env; 
     ./setup.sh
 
 Note that if this setup fails, the user should
