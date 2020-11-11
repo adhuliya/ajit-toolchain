@@ -16,6 +16,8 @@
 #include "InterruptController.h"
 #include "bridge.h"
 #include "memory.h"
+#include "Sdhc.h"
+#include "sd.h"
 				
 char *biu_to_rlut_pipe_names[] = {"BIU_to_RLUT_0", "BIU_to_RLUT_1", "BIU_to_RLUT_2", "BIU_to_RLUT_3"};
 
@@ -28,6 +30,7 @@ DEFINE_THREAD(bridge_cpu_3)
 MUTEX_DECL(timer_mutex)
 MUTEX_DECL(irc_mutex)
 MUTEX_DECL(serial_mutex)
+MUTEX_DECL(sdhc_mutex)
 MUTEX_DECL(memory_mutex)
 MUTEX_DECL(lock_mutex)
 
@@ -39,6 +42,9 @@ MUTEX_DECL(lock_mutex)
 
 #define __GET_SERIAL_LOCK__ 		MUTEX_LOCK(serial_mutex)
 #define __RELEASE_SERIAL_LOCK__ 	MUTEX_UNLOCK(serial_mutex)
+
+#define __GET_SDHC_LOCK__ 		MUTEX_LOCK(sdhc_mutex)
+#define __RELEASE_SDHC_LOCK__ 	MUTEX_UNLOCK(sdhc_mutex)
 
 #define __GET_MEMORY_LOCK__ 		MUTEX_LOCK(memory_mutex)
 #define __RELEASE_MEMORY_LOCK__ 	MUTEX_UNLOCK(memory_mutex)
@@ -319,7 +325,7 @@ void bridge_cpu_core (int cpu_id,
 			fprintf(stderr,"\nBRIDGE: serial access start req-type=%d, addr=0x%x, data=0x%x\n",
 					request_type, addr, data32);
 #endif
-			__GET_SERIAL_LOCK__;
+			__GET_SERIAL_LOCK__;//declare a lock
 			sendRequestToSerial(request_type,addr,data32);
 
 			//the serial device is required to send an ack on data line
@@ -344,7 +350,61 @@ void bridge_cpu_core (int cpu_id,
 
 			write_uint64(rdata_pipe_name, data64);
 		}
-		else //this is a memory load/store
+		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_REGISTER_COMMAND))
+		//this is an operation which writes the command index
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
+						cpu_id);
+			}
+
+				uint32_t data32;
+				uint32_t response;
+
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+#endif
+				__GET_SDHC_LOCK__;//declare a lock
+				sendCommandIndexToSDHC(request_type,addr,data32);
+				__RELEASE_SDHC_LOCK__;
+		}
+
+		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_ARG_1))
+		//this is an operation which writes the command argument
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
+						cpu_id);
+			}
+
+				uint32_t data32;
+				uint32_t response;
+
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+#endif
+				__GET_SDHC_LOCK__;//declare a lock
+				sendCommandArgToSDHC(request_type,addr,data32);
+				__RELEASE_SDHC_LOCK__;
+		}
+		else
+		//this is a memory load/store
 		{
 			// acquire and set lock for atomic operations.	
 			while (!testAndSetGlobalLock(set_mem_access_lock, cpu_id))

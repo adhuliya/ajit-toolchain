@@ -8,7 +8,8 @@
 #define _SDHC_H
 
 #include<stdint.h>
-
+#include <pthread.h>
+#include "pthreadUtils.h"
 // bit masks for standard registers
 
 // present state register
@@ -78,22 +79,75 @@
 #define SD_OCR_XPC		(1 << 28)    /* SDXC power control */
 #define SD_OCR_CCS		(1 << 30)    /* Card Capacity Status */
 
+/*	RESET Related	*/
+#define SDHCI_SOFTWARE_RESET	0x2F
+#define  SDHCI_RESET_ALL	0x01
+#define  SDHCI_RESET_CMD	0x02
+#define  SDHCI_RESET_DATA	0x04
+
+/*	Interrupt register related*/
+#define SDHCI_INT_STATUS	0x30
+#define SDHCI_INT_ENABLE	0x34
+#define SDHCI_SIGNAL_ENABLE	0x38
+#define  SDHCI_INT_RESPONSE	0x00000001
+#define  SDHCI_INT_DATA_END	0x00000002
+#define  SDHCI_INT_BLK_GAP	0x00000004
+#define  SDHCI_INT_DMA_END	0x00000008
+#define  SDHCI_INT_SPACE_AVAIL	0x00000010
+#define  SDHCI_INT_DATA_AVAIL	0x00000020
+#define  SDHCI_INT_CARD_INSERT	0x00000040
+#define  SDHCI_INT_CARD_REMOVE	0x00000080
+#define  SDHCI_INT_CARD_INT	0x00000100
+#define  SDHCI_INT_ERROR	0x00008000
+#define  SDHCI_INT_TIMEOUT	0x00010000
+#define  SDHCI_INT_CRC		0x00020000
+#define  SDHCI_INT_END_BIT	0x00040000
+#define  SDHCI_INT_INDEX	0x00080000
+#define  SDHCI_INT_DATA_TIMEOUT	0x00100000
+#define  SDHCI_INT_DATA_CRC	0x00200000
+#define  SDHCI_INT_DATA_END_BIT	0x00400000
+#define  SDHCI_INT_BUS_POWER	0x00800000
+#define  SDHCI_INT_ACMD12ERR	0x01000000
+#define  SDHCI_INT_ADMA_ERROR	0x02000000
+
+#define  SDHCI_INT_NORMAL_MASK	0x00007FFF
+#define  SDHCI_INT_ERROR_MASK	0xFFFF8000
+
+/*	Host Control Register*/
+
+#define SDHCI_HOST_CONTROL	0x28
+#define  SDHCI_CTRL_LED		0x01
+#define  SDHCI_CTRL_4BITBUS	0x02
+#define  SDHCI_CTRL_HISPD	0x04
+#define  SDHCI_CTRL_DMA_MASK	0x18
+#define   SDHCI_CTRL_SDMA	0x00
+#define   SDHCI_CTRL_ADMA1	0x08
+#define   SDHCI_CTRL_ADMA32	0x10
+#define   SDHCI_CTRL_ADMA64	0x18
+#define   SDHCI_CTRL_8BITBUS	0x20
+
+/*Function prototypes for SDHC*/
 int card_insert_remove();
-void SD_detection();
+void SD_detection(); 
 int buspower();
+int sdhc_sd_clk_supply();
+int sdhc_clk_stop();
+int sdhc_timeout();
+int sdhc_init_identify();
+
+
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
 
 //start SDHC thread
 void start_sdhc_threads();
-//SDHC control thread overlooks the overall ops
-//SDHC Read will perform read ops 
-//SDHC Write will perform write ops
-void SDHC_Control();
-void SDHC_Read();
-void SDHC_Write();
 
-// data structures
+// 2 threads for sdhc, one for monitoring
+//sdhc ops, another for read/write transactions
+void SDHC_Control();
+void SDHC_Read_Write();
+
+// data structures //
 
 /* sdhc */
 typedef struct SdhcState__ {
@@ -127,22 +181,16 @@ typedef struct SdhcState__ {
 	uint16_t host_ctrl2; //0x3E
 	uint32_t capabilities; //0x40
 	uint16_t host_controller_version; //0xFE
-	SdcardState sd_card_state;
 } SdhcState;
 
-/* sd card */
-typedef struct SdcardState {
-	// registers
-	uint32_t ocr; //Holds VDD storage profile of the card
-	// storage array.
-} SdcardState;
+void SDHC_Commands(uint8_t cmd_num);
 
-void initSdcardState();
-{
-	// return 0 if read ok, else 1 - communication check
-	int readBlock(SdcardState* s, int block_size_in_bytes, int block_start_byte_index, uint8_t* barray);
-	int writeBlock(SdcardState* s, int block_size_in_bytes, int block_start_byte_index, uint8_t* barray);
-	// etc...
-}
+void sendCommandIndexToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
+void sendCommandArgToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32);
+void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
+
+void readResponseFromSDHC(uint32_t* responseFromSD);
+char readDataFromSDCard();
+void writeDataToSDCard(uint64_t inputToSDCard);
 
 #endif

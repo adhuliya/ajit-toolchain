@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 13 Oct 2020 
+last modified: 4 Nov 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -15,12 +15,17 @@ Device Registers:
 #include <stdlib.h>
 #include <stdint.h>
 #include <pthread.h>
-
+#include "Ajit_Hardware_Configuration.h"
+#include "Ajit_Device_Addresses.h"
 #include "Sdhc.h"
-//#include "pthreadUtils.h"
+#include "sd.h"
+#include "pthreadUtils.h"
+#include "Pipes.h"
+#include "pipeHandler.h"
 
 struct SdhcState__ sdhc_init;
-struct SdcardState sd_init; 
+
+//struct SdcardState sd_init; 
 #define CARD_INSERT_INTR_FLAG 1 //Flag for card insertion interrupt 
 #define CARD_REMOVE_INTR_FLAG 0 //Flag for card removal interrupt
 
@@ -28,17 +33,97 @@ struct SdcardState sd_init;
 void SDHC_Control();
 DEFINE_THREAD(SDHC_Control);
 
-//This thread reads data from SD card and passes
-// it to the pipes(to cpu)/external devices(serial).
-void SDHC_Read();
-DEFINE_THREAD(SDHC_Read);
+void SDHC_Read_Write();
+DEFINE_THREAD(SDHC_Read_Write);
 
-//This thread receives data from a pipe and stores
-// it in SD Card
-void SDHC_Write();
-DEFINE_THREAD(SDHC_Write);
+void register_sdhc_pipes()
+{
+	int depth = 1;
+  	//signal going from SDHC to IRC
+	register_port("SDHC_to_IRC_INT",8,1);
+	set_pipe_is_written_into("SDHC_to_IRC_INT");
 
-				/*	Subsequence 3.1: SD Card Detection, Page 103	*/
+	//TO DO: pipes between memoryAccess thread and SDHC device
+	depth=1;
+	//pipes between memoryAccess thread and the Serial device
+	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
+  	register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
+	register_pipe("BUS_to_SDHC_cmd_index", depth, 8, 0);
+	register_pipe("BUS_to_SDHC_arg", depth, 32, 0);
+  	register_pipe("BUS_to_SDHC_crc7", depth, 8, 0); 
+
+//the memory access thread reads from these pipes
+	set_pipe_is_read_from("BUS_to_SDHC_request_type");
+	set_pipe_is_read_from("BUS_to_SDHC_addr");
+	set_pipe_is_read_from("BUS_to_SDHC_cmd_index");
+  	set_pipe_is_read_from("BUS_to_SDHC_arg");
+	set_pipe_is_read_from("BUS_to_SDHC_crc7");
+	
+	//the memory access thread writes to these pipes
+	set_pipe_is_written_into("BUS_to_SDHC_request_type");
+	set_pipe_is_written_into("BUS_to_SDHC_request_type");
+	set_pipe_is_written_into("BUS_to_SDHC_cmd_index");
+  	set_pipe_is_written_into("BUS_to_SDHC_arg");
+	set_pipe_is_written_into("BUS_to_SDHC_crc7"); 	
+}
+
+void start_sdhc_threads()
+{
+	register_sdhc_pipes();
+
+	PTHREAD_DECL(SDHC_Control);
+	PTHREAD_DECL(SDHC_Read_Write);
+
+	PTHREAD_CREATE(SDHC_Control);
+	PTHREAD_CREATE(SDHC_Read_Write);
+}
+
+/*Three functions below are required for sending
+ a command to SDHC from CPU via the bridge. 
+ The start, tx and end bits are constants.
+
+***********		Command Frame		*********** 
+bits: 47     	 46   	 45:40 		39:8	7:1		0
+	   |		  |		  |			  |	 	|		|
+	  start_bit  tx bit  cmd_index   arg	crc7	end_bit 
+
+	  bits 47:40 will be sent using the sendCommandIndexToSDHC
+	  bits 39:8 using the sendCommandArgToSDHC and
+	  bits 7:0 using the sendCrc7ToSDHC */
+
+void sendCommandIndexToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8)
+{
+	#define start_bit 0
+	#define tx_bit 	  1 
+	data8 |= start_bit<<7;
+	data8 |= tx_bit<<6;
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+	write_uint8 ("BUS_to_SDHC_cmd_index",data8); 
+}
+
+void sendCommandArgToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32)
+{ 
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+  	write_uint32("BUS_to_SDHC_arg",data32);
+}
+
+void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8)
+{
+	#define end_bit   1
+	data8 |= end_bit<<0;
+	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+  	write_uint32("BUS_to_SDHC_addr",addr);
+ 	write_uint8("BUS_to_SDHC_crc7",data8);
+}
+
+void SDHC_Control()
+{
+	
+}
+
+/*	Subsequence 3.1: SD Card Detection, Page 103	*/
 //Routine that mimics the actions of SD card and
 //their effect on the registers
 int card_insert_remove(int irflag)
@@ -60,9 +145,9 @@ void SD_detection()
 {
 	sdhc_init.normal_intr_status_enable = 3<<7; 
 	sdhc_init.normal_intr_signal_enable = 3<<7;
-	card_insert_remove(1); //default mode selected as insertion
+	card_insert_remove(CARD_INSERT_INTR_FLAG); //default mode selected as insertion
 	sdhc_init.present_state =  1<<16; //card inserted flag set in PSR
-	printf("PSR=%d\r\n",sdhc_init.present_state);
+	printf("PSR=%d\r\n",sdhc_init.present_state); //for debug purposes
 }
 				/*	End of subsequence 3.1: SD Card Detection, Page 104	*/
 
@@ -123,7 +208,7 @@ int sdhc_clk_stop()
 	return 0;
 }
 
-// 3.2.3 Clock Frequency Change sequence
+/*		3.2.3 Clock Frequency Change sequence	*/
 int16_t sdhc_sd_clk_freq_change(uint64_t freq)
 {
 	sdhc_clk_stop(); // can be skipped if clock still off
@@ -133,21 +218,7 @@ int16_t sdhc_sd_clk_freq_change(uint64_t freq)
 }
 
 /*		Subsequence 3.3 SD Bus Power Control Page 107	*/
-/*
-(1) By reading the Capabilities register, get the support voltage of the Host Controller.
-(2) Set SD Bus Voltage Select in the Power Control register with maximum voltage that the Host
-Controller supports.
-(3) Set SD Bus Power in the Power Control register to 1.
-(4) Get the OCR value of all function internal of SD card.
-(5) Judge whether SD Bus voltage needs to be changed or not. In case where SD Bus voltage needs
-to be changed, go to step (6). In case where SD Bus voltage does not need to be changed, go to
-'End'.
-(6) Set SD Bus Power in the Power Control register to 0 for clearing this bit. The card requires
-voltage rising from 0 volt to detect it correctly. The Host Driver shall clear SD Bus Power before
-changing voltage by setting SD Bus Voltage Select.
-(7) Set SD Bus Voltage Select in the Power Control register.
-(8) Set SD Bus Power in the Power Control register to 1.
-*/
+
 int buspower()
 {
 sdhc_init.capabilities = 7<<26; 
@@ -165,34 +236,35 @@ sdhc_init.capabilities = 7<<26;
 	{
 		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_300); //3.0V supported
 	}
-	else((sdhc_init.capabilities&SDHCI_CAN_VDD_180))
+	else if((sdhc_init.capabilities&SDHCI_CAN_VDD_180))
 	{ 
 		sdhc_init.pwr_ctrl |=(SDHCI_BUS_POWER_180);	//1.8V supported
 	}
 	sdhc_init.pwr_ctrl |= (SDHCI_BUS_POWER_ON); //set SD BUS Power to 1
-	sd_init.ocr = 1<<31; //indicator that card power-up sequence is completed
-	sd_init.ocr = 1<<30; //indicator that card is SDHC/SDXC
+	ocr = 1<<31; //indicator that card power-up sequence is completed
+	ocr = 1<<30; //indicator that card is SDHC/SDXC
 }
 
 /* 3.4 changing bus width pg no. 108 */
-
-// The sequence for changing bit mode on SD Bus
-// 	(1)	Set Card Interrupt Status Enable in the Normal Interrupt Status Enable register to 0 for masking
-// 		incorrect interrupts that may occur while changing the bus width.
-// 	(2)	In case of SD memory only card, go to step (4). In case of other card, go to step (3).
-// 	(3)	Set "IENM" of the CCCR in a SDIO or SD combo card to 0 by CMD52. Please refer to Section
-// 		3.7.1 for how to generate CMD52.
-// 	(4)	Change the bus width mode for a SD card. SD Memory Card bus width is changed by ACMD6 and
-// 		SDIO card bus width is changed by setting Bus Width of Bus Interface Control register in CCCR.
-// 	(5)	In case of changing to 4-bit mode, set Data Transfer Width to 1 in the Host Control 1 register. In
-// 		another case (1-bit mode), set this bit to 0.
-// 	(6)	In case of SD memory only card, go to the 'End'. In case of other card, go to step (7).
-// 	(7)	Set "IENM" of the CCCR in a SDIO or SD combo card to 1 by CMD52.
-// 	(8)	Set Card Interrupt Status Enable in the Normal Interrupt Status Enable register to 1.
-// Note that if the card is locked, bus width cannot be changed. Unlock the card is required before changing
-// bus width.
-
 int sdhc_change_bus_width()
 {
-	return 0;
+	int return_resp;
+	sdhc_init.normal_intr_status_enable &= ~(SDHCI_INT_CARD_INT);
+	return_resp = SET_BUS_WIDTH(1); //this function will issue a ACMD6 command to SD card
+	if(return_resp)
+	{
+		sdhc_init.host_ctrl |= (SDHCI_CTRL_4BITBUS);	
+	}
+		else
+		{
+			sdhc_init.host_ctrl |= ~(SDHCI_CTRL_4BITBUS);
+		}	
 }
+
+int sdhc_timeout()
+{
+	// TO DO
+	//After writing the driver
+	//test application
+}
+
