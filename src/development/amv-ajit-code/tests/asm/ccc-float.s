@@ -47,8 +47,8 @@ main:
 	faddreduce16 %f0,%f2
 	fstoh %f1, %f2
 	fhtos %f1, %f3
-	vfi16toh %f0, %f2,%f4
-	vfhtoi16 %f0, %f2,%f4
+	vfi16toh %f0, %f2
+	vfhtoi16 %f0, %f2
 	adddcc  %g1, %g2, %g1
 	subd    %g1, %g2, %g1
 	subdcc  %g1, %g2, %g1
