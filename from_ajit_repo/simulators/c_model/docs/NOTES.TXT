@@ -1,0 +1,98 @@
+
+
+1.  The CPU will access the SDHC using loads and stores
+	only.
+
+2.  The following possibilities exist while writing the 
+	driver in the CPU.
+
+	for loads
+		ld, ldub, ldsb, lduh, ldsh, ldd
+
+	for stores
+		st, stub, stsb, stuh, stsh, std
+
+3.  In the SDHC host controller, you will have 
+	a collection of bytes.
+
+
+	SDHC register set
+
+	addr          comment
+	-----------------------------------------
+         0		This is a 32-bit register
+         1		with address 0.
+         2
+         3
+	-----------------------------------------
+	 4		This is a 48-bit command 
+         5		which will accessed in two
+         6		pieces 
+         7
+         8		or as a single 64-bit piece
+         9		if a and b are left unused.
+
+	 a		unused..
+	 b
+	-----------------------------------------
+	 
+
+4.  The SD host controller only needs to respond to
+	CPU load/stores.
+
+	This may be achieved, by converting a
+	64-bit request from the CPU into two 32-bit
+	requests (in the bridge itself)
+
+
+	------ Bridge -----------------------------------------
+	if(access-is-to-sdhc)
+	{
+		doSdhcRegisterAccess
+	}
+
+	doSdhcRegisterAccess()
+	{
+		if necessary, break 64 bit
+		request into two 32-bit requests
+
+			note: byte-mask has this information
+
+
+		byte-mask values
+
+		   for single-byte request
+				00000001
+				00000010
+				00000100
+				00001000
+				00010000
+				00100000
+				01000000
+				10000000
+
+		    for a 2-byte request
+				00000011
+				00001100
+				00110000
+				11000000
+
+		    for a 4-byte request
+				00001111
+				11110000
+
+		    for an 8-byte request
+				11111111
+	}
+
+	------ SDHC -----------------------------------------
+
+	initialization..
+	while(1)
+	{
+		getBridgeReadWriteRequest()
+
+		executeActions()
+
+		sendBridgeReadWriteResponse()
+	}
