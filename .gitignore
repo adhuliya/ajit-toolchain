@@ -20,6 +20,7 @@ build/
 *.dll
 !/src/buildroot-2014.08/**/*.so
 !/buildroot/buildroot-2014.08/**/*.so
+!/ahir_release/**/*.so
 
 # Fortran module files
 *.mod
