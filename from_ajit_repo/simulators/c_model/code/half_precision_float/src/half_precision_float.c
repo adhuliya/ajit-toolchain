@@ -365,7 +365,7 @@ uint64_t vectorHalfPrecisionOpInU64Form(uint64_t x, uint64_t y, uint8_t exp_widt
 		else if(op == HMULOP)
 			mulHalf(&hx, &hy, &hz);
 
-		result = (result | (hz.value << (16*I)));
+		result = (result | (((uint64_t) hz.value) << (16*I)));
 	}
 	return(result);
 }

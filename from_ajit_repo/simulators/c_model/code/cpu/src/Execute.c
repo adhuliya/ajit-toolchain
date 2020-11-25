@@ -2160,7 +2160,7 @@ uint32_t executeInstruction(
 						status_reg, &(s->reg_update_flags), 
 						flags);
 	else if(is_halfword_reduce)
-		execute64BitReduce8 (opcode, 
+		execute64BitReduce16 (opcode, 
 						operand1_0, operand1_1, 
 						operand2, 
 						result_l, 
