@@ -22,7 +22,7 @@
 #define ADDR_SERIAL_TX_REGISTER      0xFFFF3210 
 #define ADDR_SERIAL_RX_REGISTER      0xFFFF3220 
 
-#define ADDR_SDHC_REGISTERS 0xFFFF4000 //sdhc registers
+//sdhc registers
 #define ADDR_SDHC_ARG_2                 0xFFFF4000      // 4 BYTES WIDE
 #define ADDR_SDHC_BLOCK_SIZE            0xFFFF4004      // 2 BYTES WIDE
 #define ADDR_SDHC_BLOCK_COUNT           0xFFFF4006      // 2 BYTES WIDE

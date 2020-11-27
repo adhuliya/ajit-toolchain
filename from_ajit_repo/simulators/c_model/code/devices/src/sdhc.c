@@ -15,8 +15,8 @@ Device Registers:
 #include <stdlib.h>
 #include <stdint.h>
 #include <pthread.h>
+#include "Ancillary.h"
 #include "Ajit_Hardware_Configuration.h"
-#include "Ajit_Device_Addresses.h"
 #include "Sdhc.h"
 #include "sd.h"
 #include "RequestTypeValues.h"
@@ -24,12 +24,8 @@ Device Registers:
 #include "Pipes.h"
 #include "pipeHandler.h"
 
-struct SdhcState__ sdhc_init;
 uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
-//struct SdcardState sd_init; 
-#define CARD_INSERT_INTR_FLAG 1 //Flag for card insertion interrupt 
-#define CARD_REMOVE_INTR_FLAG 0 //Flag for card removal interrupt
 
 // **** Thread declarations ******//
 void SDHC_Control();
@@ -50,13 +46,12 @@ void sdhc_initialize()
 
 void register_sdhc_pipes()
 {
-	int depth = 1;
-  	//signal going from SDHC to IRC
+	  	//signal going from SDHC to IRC
 	register_port("SDHC_to_IRC_INT",8,1);
 	set_pipe_is_written_into("SDHC_to_IRC_INT");
 
 	//pipes between system bus and SDHC device
-	depth=1;
+	int depth=1;
 	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
   register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
 	register_pipe("BUS_to_SDHC_data",depth,32,0);	
@@ -66,7 +61,7 @@ void register_sdhc_pipes()
 	set_pipe_is_written_into("BUS_to_SDHC_data");
 
 	register_pipe("SDHC_to_BUS_data", depth, 32, 0);
-	set_pipe_is_written_into("SDHC_to_BUS_data");
+	set_pipe_is_written_into("SDHC_to_BUS_addr");
 	set_pipe_is_read_from("SDHC_to_BUS_data");
 }
 
@@ -124,14 +119,13 @@ void SDHC_Control()
 			pthread_mutex_lock(&Sdhc_lock);
 			switch (addr)
 				{
-				case ADDR_SDHC_ARG_2:
+				case ADDR_SDHC_ARG_1:
 						sdhc_tx_buffer=getSlice32(data_in,31,31);
 					break;
 				case ADDR_SDHC_BLOCK_COUNT:
 						sdhc_tx_buffer=getSlice32(data_in,31,31);
 					break;
-				default: ADDR_SDHC_ARG_2;
-					return 0;
+				default:
 					break;
 				}
 			pthread_mutex_unlock(&Sdhc_lock);	
@@ -142,18 +136,18 @@ void SDHC_Control()
 			pthread_mutex_lock(&Sdhc_lock);
 					switch (addr)
 						{
-						case ADDR_SDHC_ARG_2:
+						case ADDR_SDHC_ARG_1:
 								sdhc_rx_buffer=getSlice32(data_out,31,31);
 							break;
 						case ADDR_SDHC_BLOCK_COUNT:
 								sdhc_rx_buffer=getSlice32(data_out,31,31);
 							break;
-						default: ADDR_SDHC_ARG_2;
-							return 0;
-							break;
+						default:
+						break;	
 						}
 				pthread_mutex_unlock(&Sdhc_lock);		
 				}
+	}
 }
 
 void SDHC_Read_Write()
@@ -163,11 +157,11 @@ void SDHC_Read_Write()
 			write_uint32("BUS_to_SDHC_data", sdhc_tx_buffer);
 	}		
 }
-
-/*	Subsequence 3.1: SD Card Detection, Page 103	*/
+/*
+//	Subsequence 3.1: SD Card Detection, Page 103	
 //Routine that mimics the actions of SD card and
 //their effect on the registers
-/*int card_insert_remove(int irflag)
+int card_insert_remove(int irflag)
 {
 	if(irflag==CARD_INSERT_INTR_FLAG) //card inserted
 	{
@@ -190,10 +184,10 @@ void SD_detection()
 	sdhc_init.present_state =  1<<16; //card inserted flag set in PSR
 	printf("PSR=%d\r\n",sdhc_init.present_state); //for debug purposes
 }
-				/*	End of subsequence 3.1: SD Card Detection, Page 104	*/
+					End of subsequence 3.1: SD Card Detection, Page 104	
 
 
-/*
+
 int sdhc_sd_clk_supply(uint64_t freq)
 {
 	struct SdhcState__ sdhcinit;
@@ -221,7 +215,7 @@ int sdhc_sd_clk_supply(uint64_t freq)
 // when either Command Inhibit (DAT) or Command Inhibit (CMD) in the Present State register is set to 1.
 // (1) Set SD Clock Enable in the Clock Control register to 0. Then, the Host Controller stops supplying
 // the SD Clock
-/*
+
 int sdhc_clk_stop()
 {
 	struct SdhcState__ sdhcinit;
@@ -234,7 +228,7 @@ int sdhc_clk_stop()
 	return 0;
 }
 
-/*		3.2.3 Clock Frequency Change sequence	
+		3.2.3 Clock Frequency Change sequence	
 int16_t sdhc_sd_clk_freq_change(uint64_t freq)
 {
 	sdhc_clk_stop(); // can be skipped if clock still off

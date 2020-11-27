@@ -352,7 +352,6 @@ void bridge_cpu_core (int cpu_id,
 		}
 		else if (USE_SDHC_MODEL && (addr>=ADDR_SDHC_ARG_2 && addr<=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 		{
-		//this is an operation which writes the command index
 				if(set_mem_access_lock)
 				{
 					fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
@@ -377,6 +376,15 @@ void bridge_cpu_core (int cpu_id,
 
 					readResponseFromSDHC(&response);
 					__RELEASE_SDHC_LOCK__;
+
+						//send the response back to cpu
+			if(request_type == REQUEST_TYPE_WRITE) data64=0;
+			else if(getBit32(addr,2)==0) 
+				data64 = setSlice64(0x00, 63,32, response);
+			else 
+				data64 = setSlice64(0x00,31,0, response);
+
+			write_uint64(rdata_pipe_name, data64);
 		}
 		else
 		//this is a memory load/store
