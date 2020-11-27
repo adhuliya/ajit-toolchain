@@ -350,58 +350,33 @@ void bridge_cpu_core (int cpu_id,
 
 			write_uint64(rdata_pipe_name, data64);
 		}
-		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_REGISTER_COMMAND))
+		else if (USE_SDHC_MODEL && (addr>=ADDR_SDHC_ARG_2 && addr<=ADDR_SDHC_HOST_CONTROLLER_VERSION))
+		{
 		//this is an operation which writes the command index
-		{
-			if(set_mem_access_lock)
-			{
-				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
-						cpu_id);
-			}
+				if(set_mem_access_lock)
+				{
+					fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
+							cpu_id);
+				}
 
-				uint32_t data32;
-				uint32_t response;
-
-
-			if(getBit32(addr,2)==0) 
-				data32 = getSlice64(data64,63,32);
-			else 
-				data32 = getSlice64(data64,31,0);
-
-#ifdef DEBUG
-			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
-					request_type, addr, data32);
-#endif
-				__GET_SDHC_LOCK__;//declare a lock
-				sendCommandIndexToSDHC(request_type,addr,data32);
-				__RELEASE_SDHC_LOCK__;
-		}
-
-		else if (USE_SDHC_MODEL && (addr==ADDR_SDHC_ARG_1))
-		//this is an operation which writes the command argument
-		{
-			if(set_mem_access_lock)
-			{
-				fprintf(stderr,"WARNING: CPU %d sdhc-device access lock flag set, but ignored\n",
-						cpu_id);
-			}
-
-				uint32_t data32;
-				uint32_t response;
+					uint32_t data32;
+					uint32_t response;
 
 
-			if(getBit32(addr,2)==0) 
-				data32 = getSlice64(data64,63,32);
-			else 
-				data32 = getSlice64(data64,31,0);
+				if(getBit32(addr,2)==0) 
+					data32 = getSlice64(data64,63,32);
+				else 
+					data32 = getSlice64(data64,31,0);
 
-#ifdef DEBUG
-			fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
-					request_type, addr, data32);
-#endif
-				__GET_SDHC_LOCK__;//declare a lock
-				sendCommandArgToSDHC(request_type,addr,data32);
-				__RELEASE_SDHC_LOCK__;
+	#ifdef DEBUG
+				fprintf(stderr,"\nBRIDGE: sdhc access start req-type=%d, addr=0x%x, data=0x%x\n",
+						request_type, addr, data32);
+	#endif
+					__GET_SDHC_LOCK__;//declare a lock
+					sendRequestToSDHC(request_type,addr,data32);
+
+					readResponseFromSDHC(&response);
+					__RELEASE_SDHC_LOCK__;
 		}
 		else
 		//this is a memory load/store

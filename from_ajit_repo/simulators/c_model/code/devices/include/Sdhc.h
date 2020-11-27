@@ -2,7 +2,7 @@
 //1. Prof. Madhav Desai
 //2. Saurabh Bansode
 //3. Vishnu Easwaran E
-//Last updated: 12 Oct '20 by SB
+//Last updated: 27 Nov '20
 
 #ifndef _SDHC_H
 #define _SDHC_H
@@ -126,19 +126,10 @@
 #define   SDHCI_CTRL_ADMA64	0x18
 #define   SDHCI_CTRL_8BITBUS	0x20
 
-/*Function prototypes for SDHC*/
-int card_insert_remove();
-void SD_detection(); 
-int buspower();
-int sdhc_sd_clk_supply();
-int sdhc_clk_stop();
-int sdhc_timeout();
-int sdhc_init_identify();
-
 
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
-
+void sdhc_initialize();
 //start SDHC thread
 void start_sdhc_threads();
 
@@ -146,6 +137,19 @@ void start_sdhc_threads();
 //sdhc ops, another for read/write transactions
 void SDHC_Control();
 void SDHC_Read_Write();
+
+void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32);
+void readResponseFromSDHC(uint32_t* data);
+
+
+
+
+
+
+
+
+
+
 
 // data structures //
 
@@ -182,14 +186,17 @@ typedef struct SdhcState__ {
 	uint32_t capabilities; //0x40
 	uint16_t host_controller_version; //0xFE
 } SdhcState;
-
+/*Function prototypes for SDHC
+int card_insert_remove();
+void SD_detection(); 
+int buspower();
+int sdhc_sd_clk_supply();
+int sdhc_clk_stop();
+int sdhc_timeout();
+int sdhc_init_identify();*/
 void SDHC_Commands(uint8_t cmd_num);
 
-void sendCommandIndexToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
-void sendCommandArgToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32);
-void sendCrc7ToSDHC(uint8_t request_type, uint32_t addr,uint8_t data8);
 
-void readResponseFromSDHC(uint32_t* responseFromSD);
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);
 
