@@ -19,9 +19,9 @@ git checkout ./cache/SConscript
 git checkout ./cpu_interface/SConscript
 git checkout ./common/SConscript
 git checkout ./rlut/SConscript
-#git checkout ./testbench/SConscript
+git checkout ./testbench/SConscript
 git checkout ./devices/SConscript
-#git checkout ./half_precision_float/SConscript
+git checkout ./half_precision_float/SConscript
 git checkout ./memory/SConscript
 git checkout ./bridge/SConscript
 git checkout ./console/SConscript
@@ -37,7 +37,7 @@ git checkout ./monitorLogger/SConstruct
 git checkout ./cache/SConstruct
 git checkout ./cpu_interface/SConstruct
 git checkout ./rlut/SConstruct
-#git checkout ./testbench/SConstruct
-#git checkout ./half_precision_float/SConstruct
+git checkout ./testbench/SConstruct
+git checkout ./half_precision_float/SConstruct
 git checkout ./bridge/SConstruct
 git checkout ./console/SConstruct
