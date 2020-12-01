@@ -22,3 +22,5 @@ export PYTHONPATH=$ROOTDIR/tools/scripts:$PYTHONPATH
 
 
 
+# not yet defined.
+export AJIT_AA_VALIDATION_EXECUTABLE_LOCATION=UNDEFINED
