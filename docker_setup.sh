@@ -4,10 +4,20 @@
 # This script builds the required docker images
 # It depends on the $AJIT_HOME env variable.
 
+isdocker () {
+  local count=$(cat /proc/1/cgroup | grep "/docker" | wc -l);
+  if [[ count -eq 0 ]]; then false; else true; fi
+}
+
+if isdocker; then
+  echo "Inside a docker container. EXITING!"
+  exit 1;
+fi
+
 
 if ! which docker; then
   # install docker first
-  sudo apt-get install -y docker.io;
+  bash $AJIT_HOME/install_docker.sh;
 fi
 echo "Good. Docker is installed!";
 sleep 1;

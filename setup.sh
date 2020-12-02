@@ -6,6 +6,15 @@
 # For dockerization see `./docker_setup.sh`.
 # It depends on the $AJIT_HOME env variable.
 
+isdocker () {
+  local count=$(cat /proc/1/cgroup | grep docker | wc -l);
+  if [[ count -eq 0 ]]; then
+    false;
+  else
+    true;
+  fi
+}
+
 if [[ -z $AJIT_HOME ]]; then
   echo "Please set the env variable \$AJIT_HOME";
   exit 1;
@@ -17,12 +26,16 @@ OUTFILE_LOG=$AJIT_HOME/build/local_build.log;
 echo -e "\nOutput log file: $OUTFILE_LOG\n";
 sleep 1;
 
-echo "################################################";
-echo "##  Setting up ajit_base.";
-echo "################################################";
-sleep 3;
-bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
-
+if isdocker; then 
+  echo "Inside a docker container.";
+  echo "Skipping ajit_base setup!";
+else
+  echo "################################################";
+  echo "##  Setting up ajit_base.";
+  echo "################################################";
+  sleep 3;
+  bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
+fi
 
 echo "################################################";
 echo "##  Setting up ajit_builds.";

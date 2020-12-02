@@ -10,6 +10,7 @@ else
   _TAG="1.0";
 fi
 
-cp Dockerfile ../../;
+sudo usermod -a -G docker $USER;
+chown -R $USER:docker ../..; # change the group owner
+docker build --tag $_IMG_NAME:$_TAG .;
 
-docker build --tag $_IMG_NAME:$_TAG ../..;

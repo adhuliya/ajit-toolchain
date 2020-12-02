@@ -2,11 +2,12 @@
 
 FROM ubuntu:16.04
 
+ENV AJIT /home/ajit
 ENV AJIT_HOME /home/ajit/ajit-toolchain
 
-COPY setup_ajit_base.sh $AJIT_HOME/
+COPY setup_ajit_base.sh $AJIT/
 
-RUN bash $AJIT_HOME/setup_ajit_base.sh
+RUN bash $AJIT/setup_ajit_base.sh
 
-COPY docker_cmd.sh $AJIT_HOME/
-CMD bash $AJIT_HOME/docker_cmd.sh
+COPY docker_cmd.sh $AJIT/
+CMD bash $AJIT/docker_cmd.sh

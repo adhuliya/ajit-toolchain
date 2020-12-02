@@ -1,6 +1,7 @@
-# source this file
+#!/usr/bin/env bash
+# execute or source this file
 
 _IMG_NAME="ajit_base";
-_AJIT_HOME="/home/ajit/ajit-toolchain";
+_AJIT="/home/ajit";
 
-docker exec -w $_AJIT_HOME -it $_IMG_NAME  /bin/bash;
+docker exec -w $_AJIT -it $_IMG_NAME  /bin/bash;

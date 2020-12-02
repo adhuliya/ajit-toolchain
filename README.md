@@ -36,6 +36,12 @@ directory this README.md file is in. This is `AJIT_HOME`.
 
 ### Install docker images
 
+This needs docker to be installed and running on the user
+machine. This, on an Ubuntu system, can be done using the
+provided script, please use it as a reference on other systems,
+
+    ./install_docker.sh
+
 To build docker images with Ajit Toolchain run,
 (Needs docker (on ubuntu run: `sudo apt-get install docker.io`))
 
@@ -84,7 +90,7 @@ The output of `./run.sh` should have a line `Tests Successful`.
 If so, the system is ready to use.
 
 
-## Important Locations
+## Important Files and Directories
 
 * `examples/` folder contains examples that demonstrate the
   use of many of the tools in this repo.

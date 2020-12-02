@@ -1,4 +1,5 @@
-# source this file
+#!/usr/bin/env bash
+# execute or source this file
 
 _IMG_NAME="ajit_build";
 _AJIT_HOME="/home/ajit/ajit-toolchain";
