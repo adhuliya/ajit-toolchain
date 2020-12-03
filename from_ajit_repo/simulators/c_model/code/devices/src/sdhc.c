@@ -14,6 +14,10 @@ Device Registers:
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#ifdef SW
+#include <stdio.h>
+#include <unistd.h>
+#endif
 #include <pthread.h>
 #include "Ancillary.h"
 #include "Ajit_Hardware_Configuration.h"
@@ -53,16 +57,19 @@ void register_sdhc_pipes()
 	//pipes between system bus and SDHC device
 	int depth=1;
 	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
-  register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
+  	register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
 	register_pipe("BUS_to_SDHC_data",depth,32,0);	
-
+	register_pipe("SDHC_to_BUS_data", depth, 32, 0);	
+	
 	set_pipe_is_read_from("BUS_to_SDHC_request_type");
+	set_pipe_is_read_from("BUS_to_SDHC_addr");
+	set_pipe_is_read_from("BUS_to_SDHC_data");
+	set_pipe_is_read_from("SDHC_to_BUS_data");
+
+	set_pipe_is_written_into("BUS_to_SDHC_request_type");
 	set_pipe_is_written_into("BUS_to_SDHC_addr");
 	set_pipe_is_written_into("BUS_to_SDHC_data");
-
-	register_pipe("SDHC_to_BUS_data", depth, 32, 0);
 	set_pipe_is_written_into("SDHC_to_BUS_addr");
-	set_pipe_is_read_from("SDHC_to_BUS_data");
 }
 
 void start_sdhc_threads()
@@ -91,7 +98,7 @@ bits::
 void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32)
 {
 	write_uint8 ("BUS_to_SDHC_request_type", request_type);
-  write_uint32("BUS_to_SDHC_addr",addr);
+	write_uint32("BUS_to_SDHC_addr",addr);
 	write_uint32 ("BUS_to_SDHC_data",data32); 
 }
 
@@ -109,44 +116,51 @@ void SDHC_Control()
 	while(1)
 	{
 		//wait for a request from processor-side
-		request_type	= read_uint8("BUS_to_SDHC_request_type");
-    addr = read_uint32("BUS_to_SDHC_addr");
-		data_in	= read_uint32("BUS_to_SDHC_data");
-			
+	request_type	= read_uint8("BUS_to_SDHC_request_type");
+    	addr = read_uint32("BUS_to_SDHC_addr");
+	data_in	= read_uint32("BUS_to_SDHC_data");
+
 	if(request_type==REQUEST_TYPE_WRITE)
+	{
+			//***lock the state variables***//
+		pthread_mutex_lock(&Sdhc_lock);
+		switch (addr)
 		{
-			//***lock the state variables***
-			pthread_mutex_lock(&Sdhc_lock);
+		case ADDR_SDHC_ARG_1:
+		sdhc_tx_buffer=getSlice32(data_in,31,0);
+		break;
+		case ADDR_SDHC_TRANSFER_MODE:
+		sdhc_tx_buffer=getSlice32(data_in,15,0);
+		break;
+		case ADDR_SDHC_REGISTER_COMMAND:
+		sdhc_tx_buffer=getSlice32(data_in,15,0);
+		break;
+		default:
+		break;
+		}
+		pthread_mutex_unlock(&Sdhc_lock);
+			write_uint32("BUS_to_SDHC_data",sdhc_tx_buffer);
+		}
+	else if(request_type==REQUEST_TYPE_READ)/*In progress*/
+				{
+			//***lock the state variables***//
+		pthread_mutex_lock(&Sdhc_lock);
 			switch (addr)
-				{
-				case ADDR_SDHC_ARG_1:
-						sdhc_tx_buffer=getSlice32(data_in,31,31);
-					break;
-				case ADDR_SDHC_BLOCK_COUNT:
-						sdhc_tx_buffer=getSlice32(data_in,31,31);
-					break;
-				default:
-					break;
-				}
-			pthread_mutex_unlock(&Sdhc_lock);	
-		}	
-			else if(request_type==REQUEST_TYPE_READ)
-				{
-			//***lock the state variables***
-			pthread_mutex_lock(&Sdhc_lock);
-					switch (addr)
-						{
-						case ADDR_SDHC_ARG_1:
-								sdhc_rx_buffer=getSlice32(data_out,31,31);
-							break;
-						case ADDR_SDHC_BLOCK_COUNT:
-								sdhc_rx_buffer=getSlice32(data_out,31,31);
-							break;
-						default:
-						break;	
-						}
-				pthread_mutex_unlock(&Sdhc_lock);		
-				}
+		{
+		case ADDR_SDHC_ARG_1:
+		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 31,0,(uint32_t)data_out);
+		break;
+		case ADDR_SDHC_TRANSFER_MODE:
+		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 15,0,(uint32_t)data_out);
+		break;
+		case ADDR_SDHC_REGISTER_COMMAND:
+		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 15,0,(uint32_t)data_out);
+		default:
+		break;	
+		}
+		pthread_mutex_unlock(&Sdhc_lock);
+			write_uint32("SDHC_to_BUS_data", sdhc_rx_buffer);
+			}
 	}
 }
 
@@ -154,9 +168,12 @@ void SDHC_Read_Write()
 {
 	while(1)
 	{
-			write_uint32("BUS_to_SDHC_data", sdhc_tx_buffer);
-	}		
+		write_uint32("BUS_to_SDHC_data", sdhc_tx_buffer);
+		write_uint32("SDHC_to_BUS_data",sdhc_rx_buffer);
+	}
 }
+
+
 /*
 //	Subsequence 3.1: SD Card Detection, Page 103	
 //Routine that mimics the actions of SD card and
