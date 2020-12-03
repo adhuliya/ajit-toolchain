@@ -25,6 +25,6 @@ docker run \
   --name $_CONT_NAME \
   $_IMG_NAME;
 
-echo "Ajit: Docker container started? Status: $?";
+echo "Ajit: Docker container started? Status: $? (Non Zero = ERROR)";
 
 

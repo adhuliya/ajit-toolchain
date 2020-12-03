@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# REF: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
 
 isdocker () {
   local count=$(cat /proc/1/cgroup | grep "/docker" | wc -l);
@@ -10,14 +11,19 @@ if isdocker; then
   exit 1;
 fi
 
-
 # installs docker and takes necessary steps for you.
-sudo apt-get install -y docker.io \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
   && \
-sudo usermod -a -G docker $USER \
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+  && \
+sudo apt-get update \
+  && \
+sudo apt-get install -y docker-ce \
+  && \
+sudo usermod -aG docker $USER \
   && \
 chown -R $USER:docker $AJIT_HOME; # change the group owner of this repo
 
 
-echo "Ajit: Please logout and login again for some changes to take effect!";
+echo "Ajit: Please logout and login again for user changes to take effect!";
 

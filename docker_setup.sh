@@ -48,6 +48,21 @@ echo "################################################" &>> $OUTFILE_LOG;
 echo "##  Building ajit_build image." &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
 sleep 1;
+pushd $AJIT_HOME/docker/ajit_build_dev;
+./build.sh &>> $OUTFILE_LOG;
+popd;
+
+
+################################################################################
+exit;  ############## Comment this line if images below are needed #############
+################################################################################
+
+
+echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
+echo "################################################" &>> $OUTFILE_LOG;
+echo "##  Building ajit_build image." &>> $OUTFILE_LOG;
+echo "################################################" &>> $OUTFILE_LOG;
+sleep 1;
 pushd $AJIT_HOME/docker/ajit_build;
 ./build.sh &>> $OUTFILE_LOG;
 popd;

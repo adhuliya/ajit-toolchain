@@ -27,6 +27,6 @@ docker run \
   --mount type=bind,source=$_HOST_MOUNT_DIR,target=$_CONT_MOUNT_POINT \
   $_IMG_NAME;
 
-echo "Ajit: Docker container started? Status: $?";
+echo "Ajit: Docker container started? Status: $? (Non Zero = ERROR)";
 
 
