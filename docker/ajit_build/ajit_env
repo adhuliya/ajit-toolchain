@@ -14,9 +14,9 @@ export BUILDROOT_BIN_DIR="$BUILDROOT_HOST_DIR/usr/bin";
 export UCLIBC_DIR="$BUILDROOT_HOST_DIR/usr/sparc-buildroot-linux-uclibc";
 
 # source ahir release
-pushd $AHIR_DIR;
+pushd $AHIR_DIR &> /dev/null;
 source ./ahir_bashrc;
-popd;
+popd &> /dev/null;
 
 # set program paths
 # for: sparc-linux-gcc, sparc-linux-readelf, ...

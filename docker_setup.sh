@@ -30,7 +30,7 @@ fi
 mkdir -p $AJIT_HOME/build;
 OUTFILE_LOG=$AJIT_HOME/build/docker_build.log;
 
-echo -e "\nOutput log file: $OUTFILE_LOG\n";
+echo -e "\nSee output log file: $OUTFILE_LOG\n";
 sleep 1;
 
 echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
@@ -38,19 +38,19 @@ echo "################################################" &>> $OUTFILE_LOG;
 echo "##  Building ajit_base image." &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
 sleep 1;
-pushd $AJIT_HOME/docker/ajit_base;
+pushd $AJIT_HOME/docker/ajit_base &> /dev/null;
 ./build.sh &>> $OUTFILE_LOG;
-popd;
+popd &> /dev/null;
 
 
 echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
-echo "##  Building ajit_build image." &>> $OUTFILE_LOG;
+echo "##  Building ajit_build_dev image." &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
 sleep 1;
-pushd $AJIT_HOME/docker/ajit_build_dev;
+pushd $AJIT_HOME/docker/ajit_build_dev &> /dev/null;
 ./build.sh &>> $OUTFILE_LOG;
-popd;
+popd &> /dev/null;
 
 
 ################################################################################
@@ -63,9 +63,9 @@ echo "################################################" &>> $OUTFILE_LOG;
 echo "##  Building ajit_build image." &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
 sleep 1;
-pushd $AJIT_HOME/docker/ajit_build;
+pushd $AJIT_HOME/docker/ajit_build &> /dev/null;
 ./build.sh &>> $OUTFILE_LOG;
-popd;
+popd &> /dev/null;
 
 
 echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
@@ -73,8 +73,8 @@ echo "################################################" &>> $OUTFILE_LOG;
 echo "##  Building ajit_tools image." &>> $OUTFILE_LOG;
 echo "################################################" &>> $OUTFILE_LOG;
 sleep 1;
-pushd $AJIT_HOME/docker/ajit_tools;
+pushd $AJIT_HOME/docker/ajit_tools &> /dev/null;
 ./build.sh &>> $OUTFILE_LOG;
-popd;
+popd &> /dev/null;
 
 

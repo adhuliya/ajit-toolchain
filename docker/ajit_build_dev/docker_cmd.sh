@@ -2,7 +2,7 @@
 
 # this script keeps the docker container alive.
 
-BASHRC=/root/.bashrc
+BASHRC=/home/ajit/.bashrc
 
 echo -e "\n\n\n## Ajit_Content START\n" >> $BASHRC;
 cat $AJIT_HOME/ajit_env >> $BASHRC;
