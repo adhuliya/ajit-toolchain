@@ -1,0 +1,61 @@
+Notes on alignment
+
+
+	For writes
+	----------
+
+
+	Let us say the CPU initiates a 16-bit write.
+
+	But this comes to the device as a 32-bit write
+	with a byte-mask.
+
+
+	Suppose I write the 16-bit quantity H to address
+	0x0
+	 
+ 	CPU will generate a write to address 0x0 with byte-mask 0xb1100
+	so the top two bytes in the 32-bit word with address 0x0 will
+	be filled with H 
+
+	Suppose I write the 16-bit quantity H to address
+	0x2
+
+ 	CPU will generate a write to address 0x0 with byte-mask 0xb0011
+	so the bottom two bytes in the 32-bit word with address 0x0 will
+	be filled with H 
+
+	
+
+
+
+	
+	For reads
+	----------
+
+	Suppose the CPU initiates a 16-bit read.
+
+	But this comes to the device as a 32-bit read
+	with a byte-mask.
+
+	Suppose CPU generates a read to address 0x0
+	for a 16-bit quantity.
+	
+	So the read request from CPU will come with
+	address=0x0, byte-mask 0xb1100
+
+	So you read a 16-bit value from your register
+	and put it in the upper half of the return 32-bit
+	value.
+
+
+	Suppose CPU generates a read to address 0x2
+	for a 16-bit quantity.
+
+	The read request from CPU will come with
+	address=0x0, byte-mask 0xb0011
+
+
+	So you read a 16-bit value from your register
+	and put it in the bottom half of the return 32-bit
+	value.

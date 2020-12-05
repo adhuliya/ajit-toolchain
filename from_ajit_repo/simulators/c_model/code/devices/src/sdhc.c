@@ -20,7 +20,10 @@ Device Registers:
 #endif
 #include <pthread.h>
 #include "Ancillary.h"
+
+// base address of SDHC register set is defined here.
 #include "Ajit_Hardware_Configuration.h"
+
 #include "Sdhc.h"
 #include "sd.h"
 #include "RequestTypeValues.h"
@@ -30,6 +33,12 @@ Device Registers:
 
 uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
+
+//
+// Address to SDHC will be base + index.
+// The index points to the appropriate register.
+//
+uint32_t sdhc_register_array[32];
 
 // **** Thread declarations ******//
 void SDHC_Control();
@@ -59,6 +68,9 @@ void register_sdhc_pipes()
 	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
   	register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
 	register_pipe("BUS_to_SDHC_data",depth,32,0);	
+	// you will need a byte mask.
+	register_pipe("BUS_to_SDHC_byte_mask",depth,8,0);	
+	
 	register_pipe("SDHC_to_BUS_data", depth, 32, 0);	
 	
 	set_pipe_is_read_from("BUS_to_SDHC_request_type");
@@ -95,13 +107,28 @@ bits::
 0 > end bit
 ***********		 Command Frame		***********/ 
 
+// Bridge will generate the request.. called in the bridge.
 void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32)
 {
 	write_uint8 ("BUS_to_SDHC_request_type", request_type);
+	// byte mask?
+	// write_uint8 ("BUS_to_SDHC_request_type", request_type);
+
 	write_uint32("BUS_to_SDHC_addr",addr);
 	write_uint32 ("BUS_to_SDHC_data",data32); 
 }
 
+void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in)
+{
+		// calculate the new value of register at index index.
+
+		uint32_t updated_value = calculateNewValue(index, byte_mask, data_in);
+		uint32_t updated_mask  = calculateNewValueMask(byte_mask);
+		sdhc_register_array[index] = (sdhc_register_array[index] & (~mask)) | (updated_value & mask);
+}
+
+
+// called in the bridge.
 void readResponseFromSDHC(uint32_t* data)
 {
 	*data = read_uint32("SDHC_to_BUS_data");
@@ -110,6 +137,7 @@ void readResponseFromSDHC(uint32_t* data)
 void SDHC_Control()
 {
 	uint8_t  request_type;
+	uint8_t  byte_mask;
 	uint32_t addr;
 	uint32_t data_in=0;
 	uint32_t data_out=0;
@@ -117,31 +145,30 @@ void SDHC_Control()
 	{
 		//wait for a request from processor-side
 	request_type	= read_uint8("BUS_to_SDHC_request_type");
+	byte_mask	= read_uint8("BUS_to_SDHC_byte_mask");
     	addr = read_uint32("BUS_to_SDHC_addr");
 	data_in	= read_uint32("BUS_to_SDHC_data");
+
+	uint32_t index = addr - BASE_ADDR;
 
 	if(request_type==REQUEST_TYPE_WRITE)
 	{
 			//***lock the state variables***//
+
+
 		pthread_mutex_lock(&Sdhc_lock);
-		switch (addr)
-		{
-		case ADDR_SDHC_ARG_1:
-		sdhc_tx_buffer=getSlice32(data_in,31,0);
-		break;
-		case ADDR_SDHC_TRANSFER_MODE:
-		sdhc_tx_buffer=getSlice32(data_in,15,0);
-		break;
-		case ADDR_SDHC_REGISTER_COMMAND:
-		sdhc_tx_buffer=getSlice32(data_in,15,0);
-		break;
-		default:
-		break;
-		}
+
+		// some writes may be special, some may be just
+		// modifications to registers.
+
+		// calculate the action to be performed and potentially
+		// update the register.
+		updateActionToBePerformedAndUpdateRegister(&action, index, byte_mask, data_in);
 		pthread_mutex_unlock(&Sdhc_lock);
 			write_uint32("BUS_to_SDHC_data",sdhc_tx_buffer);
-		}
+	}
 	else if(request_type==REQUEST_TYPE_READ)/*In progress*/
+	{
 				{
 			//***lock the state variables***//
 		pthread_mutex_lock(&Sdhc_lock);
