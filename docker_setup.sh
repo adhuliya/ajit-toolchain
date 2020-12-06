@@ -30,6 +30,7 @@ fi
 mkdir -p $AJIT_HOME/build;
 OUTFILE_LOG=$AJIT_HOME/build/docker_build.log;
 
+echo -e "\nRunning...";
 echo -e "\nSee output log file: $OUTFILE_LOG\n";
 sleep 1;
 

@@ -2,31 +2,11 @@ README
 =============
 Tested to work on: Ubuntu 16.04.
 
-To setup and use the system do one of the following,
-
-1. If you want to use Docker,
-
-    source ./set_ajit_home;   # sets AJIT_HOME
-    ./install_docker.sh;      # installs docker and more
-    ./docker_setup.sh;        # creates the docker images 
-
-    # on success
-    cd ./docker/ajit_build_dev; # go to the image utility directory
-    ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
-
-2. If you don't want to use Docker,
-
-    source ./set_ajit_home;   # sets AJIT_HOME
-    ./setup.sh;               # builds the system
-    source ./ajit_env;        # to setup the environment
-
-The steps above will enable you to create a working system.
-Please refer to the section below on running sample examples
-to know how the setup can be used.
+To setup and use the system see the section
+on "Building and Installation" below.
 
 
-Information
+General Information
 ------------------
 
 The Ajit build is divided into three stages.
@@ -63,20 +43,26 @@ After this stage you can use the whole of Ajit Toolchain
 from the created image or directory from the current folder
 if not using docker.
 
-3. (Optional) To reduce the docker image size, the third step 
+3. "ajit\_tools" (Optional):
+   To reduce the docker image size, the third step 
    removes unnecessary files (from "ajit\_build" image 
    and only keeps the installed files necessary for someone interested
    in using the Ajit Toolchain (vs its development).
    If you are using docker, this is done in the image
    `ajit_tools` (this image is generally less than
-   1/5th the size of the image `ajit_build`).
+   1/5th the size of the image `ajit_build` but
+   a few hundred megabytes bulkier than `ajit_build_dev` image).
 
+When using docker the `./docker_setup.sh` by default
+only builds `ajit_base` and `ajit_build_dev` images.
+To build the other two images, comment the line with
+`exit;` on it (the line is clearly documented in the script).
 
 If you are building the system locally (not creating docker images),
 then the third step has to be done manually.
 You may refer `./docker/ajit_tools/Dockerfile` to know
 which directories need to be deleted/kept to reduce the 
-disk size of the system.
+disk size of the system (this step will be automated in future).
 
 
 ## Building and Installation
@@ -97,7 +83,7 @@ directory this README.md file is in. This is `AJIT_HOME`.
     ./run.sh;                   # starts docker container `ajit_build_dev`
     ./attach_shell;             # gives you shell access to the container
 
-Once setup is done refer `./docker/README.md`.
+Once the above setup is done refer `./docker/README.md`.
 
 
 ### Do a local setup
@@ -110,7 +96,7 @@ To setup Ajit Toolchain on the local system run,
 
 Note that if this setup fails, the user should
 refer the `./docker_setup.sh` which stands as a
-reference to the well tested system environment.
+reference to a well tested system environment.
 
 
 ## Clean the slate
