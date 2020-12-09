@@ -1,0 +1,11 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+LDSBA,op3,011001,i,000000,Load Signed Byte from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldsba,4,rs1,rs2,rd,asi,end
+LDSHA,op3,011010,i,000000,Load Signed Halfword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldsha,4,rs1,rs2,rd,asi,end
+LDUBA,op3,010001,i,000000,Load Unsigned Byte from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lduba,4,rs1,rs2,rd,asi,end
+LDUHA,op3,010010,i,000000,Load Unsigned Halfword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lduha,4,rs1,rs2,rd,asi,end
+LDA,op3,010000,i,000000,Load Word from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lda,4,rs1,rs2,rd,asi,end
+LDDA,op3,010011,i,000000,Load Doubleword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldda,4,rs1,rs2,rd,asi,end
+LDSTUBA ,op3,011101,i,000000,Atomic Load-Store Unsigned Byte into Alternate space,101,B7,Load/Store,1,op34,raw,0,,rrrn,ldstuba ,4,rs1,rs2,rd,asi,end
+SWAPA ,op3,011111,i,000000,SWAP register with Alternate space memory,102,B8,Load/Store,1,op34,raw,0,,rrrn,swapa ,4,rs1,rs2,rd,asi,end
+LDSTUBA ,op3,011101,i,000000,Atomic Load-Store Unsigned Byte into Alternate space,101,B7,Load/Store,1,op34,raw,0,,rrrn,ldstuba ,4,rs1,rs2,rd,asi,end
+SWAPA ,op3,011111,i,000000,SWAP register with Alternate space memory,102,B8,Load/Store,1,op34,raw,0,,rrrn,swapa ,4,rs1,rs2,rd,asi,end

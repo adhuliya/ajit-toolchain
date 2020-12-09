@@ -1,0 +1,28 @@
+"Opcode","Field to Set","Value","Operation","Insn_Category","Format Index","Processing Status","Privilege"
+"LDSB","op3",001001,"Load Signed Byte","Load/Store","B1.1|B1.2","raw",0
+"LDSH","op3",001010,"Load Signed Halfword","Load/Store","B1.1|B1.2","raw",0
+"LDF","op3",100000,"Load Floating-point Register","Load/Store","B2.1|B2.2","raw",0
+"LDDF","op3",100011,"Load Double Floating-point Register","Load/Store","B2.1|B2.2","raw",0
+"SETHI",,,"Set High-Order 22 bits","Integer Arith","B9.1","raw",0
+"NOP",,,"No Operation","Integer Arith","B10.1","raw",0
+"AND","op3",000001,"And","Integer Arith","B11.1|B11.2","raw",0
+"OR","op3",000010,"Inclusive Or","Integer Arith","B11.1|B11.2","raw",0
+"XOR","op3",000011,"Exclusive Or","Integer Arith","B11.1|B11.2","raw",0
+"SLL","op3",100101,"Shift Left Logical","Integer Arith","B11.1|B11.2","raw",0
+"ADD","op3",000000,"Add","Integer Arith","B11.1|B11.2","raw",0
+"SUB","op3",000100,"Subtract","Integer Arith","B11.1|B11.2","raw",0
+"UMUL","op3",001010,"Unsigned Integer Multiply","Integer Arith","B11.1|B11.2","raw",0
+"SMUL","op3",001011,"Signed Integer Multiply","Integer Arith","B11.1|B11.2","raw",0
+"UDIV","op3",001110,"Unsigned Integer Divide","Integer Arith","B11.1|B11.2","raw",0
+"SDIV","op3",001111,"Signed Integer Divide","Integer Arith","B11.1|B11.2","raw",0
+"BA","cond",1000,"Branch Always","Control Transfer","B21.1","raw",0
+"BN","cond",0000,"Branch Never","Control Transfer","B21.1","raw",0
+"BNE","cond",1001,"Branch on Not Equal","Control Transfer","B21.1","raw",0
+"FBA","cond",1000,"Branch Always","Control Transfer","B22.1","raw",0
+"FBN","cond",0000,"Branch Never","Control Transfer","B22.1","raw",0
+"FBU","cond",0111,"Branch on Unordered","Control Transfer","B22.1","raw",0
+"CALL","op",01,"Call and Link","Control Transfer","B24.1","raw",0
+"JMPL","op3",111000,"Jump and Link","Control Transfer","B11.1|B11.2","raw",0
+"RETT","op3",111001,"Return from Trap","Control Transfer","B26.1|B26.2","raw",1
+"TA","cond",1000,"Trap Always","Control Transfer","B27.1|B27.2","raw",0
+"TN","cond",0000,"Trap Never","Control Transfer","B27.1|B27.2","raw",0

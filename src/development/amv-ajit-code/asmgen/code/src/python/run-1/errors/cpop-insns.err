@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/lindata/My-work/Professional/iitb/development/asmgen/code/src/python/list-all-sparc-v8-asm-code.py", line 1861, in <module>
+    main()
+  File "/lindata/My-work/Professional/iitb/development/asmgen/code/src/python/list-all-sparc-v8-asm-code.py", line 1856, in main
+    new_il = expand_all_insns (il)
+  File "/lindata/My-work/Professional/iitb/development/asmgen/code/src/python/list-all-sparc-v8-asm-code.py", line 1822, in expand_all_insns
+    out_insns_lst = expand_insn (insn)
+  File "/lindata/My-work/Professional/iitb/development/asmgen/code/src/python/list-all-sparc-v8-asm-code.py", line 1341, in expand_insn
+    thlst = expand_bit_field (bitfld, insn)
+  File "/lindata/My-work/Professional/iitb/development/asmgen/code/src/python/list-all-sparc-v8-asm-code.py", line 1270, in expand_bit_field
+    bitlst = [ args_lst [arg_detail_argnum_at],
+IndexError: list index out of range

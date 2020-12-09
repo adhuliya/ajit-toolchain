@@ -1,0 +1,202 @@
+\subsubsection{Addition and subtraction instructions:}
+\label{sec:add:sub:insn:impl}
+\begin{enumerate}
+\item \textbf{ADDD}:\\
+  \begin{center}
+    \begin{tabular}[p]{|c|c|l|l|l|}
+      \hline
+      \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} &
+                                                                          \textbf{New Meaning}\\
+      \hline
+      0 & 4 & 32 & Source register 2, rs2 & No change \\
+      5 & 12 & -- & \textbf{unused} & \textbf{Set bit 5 to ``1''} \\
+      13 & 13 & 0,1 & The \textbf{i} bit & \textbf{Set i to ``0''} \\
+      14 & 18 & 32 & Source register 1, rs1 & No change \\
+      19 & 24 & 000000 & ``\textbf{op3}'' & No change \\
+      25 & 29 & 32 & Destination register, rd & No change \\
+      30 & 31 & 4 & Always ``10'' & No change \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ADDD}: same as ADD, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{addd  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) + rs2(pair).
+  \end{itemize}
+  Bits layout:
+\begin{verbatim}
+    Offsets      : 31       24 23       16  15        8   7        0
+    Bit layout   :  XXXX  XXXX  XXXX  XXXX   XXXX  XXXX   XXXX  XXXX
+    Insn Bits    :  10       0  0000  0        0            1       
+    Destination  :    DD  DDD                                       
+    Source 1     :                     SSS   SS
+    Source 2     :                                           S  SSSS
+    Unused (0)   :                              U  UUUU   UU        
+    Final layout :  10DD  DDD0  0000  0SSS   SS0U  UUUU   UU1S  SSSS
+\end{verbatim}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set  &=& \texttt{F4(x, y, z)} &in& \texttt{sparc.h}     \\
+    Macro to reset  &=& \texttt{INVF4(x, y, z)} &in& \texttt{sparc.h}     \\
+    x &=& 0x2      &in& \texttt{OP(x)  /* ((x) \& 0x3)  $<<$ 30 */} \\
+    y &=& 0x00     &in& \texttt{OP3(y) /* ((y) \& 0x3f) $<<$ 19 */} \\
+    z &=& 0x0      &in& \texttt{F3I(z) /* ((z) \& 0x1)  $<<$ 13 */} \\
+    a &=& 0x1      &in& \texttt{OP\_AJIT\_BIT(a) /* ((a) \& 0x1)  $<<$ 5 */}
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+
+\item \textbf{ADDDCC}:\\
+  \begin{center}
+    \begin{tabular}[p]{|c|c|l|l|l|}
+      \hline
+      \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} &
+                                                                          \textbf{New Meaning}\\
+      \hline
+      0 & 4 & 32 & Source register 2, rs2 & No change \\
+      5 & 12 & -- & \textbf{unused} & \textbf{Set bit 5 to ``1''} \\
+      13 & 13 & 0,1 & The \textbf{i} bit & \textbf{Set i to ``0''} \\
+      14 & 18 & 32 & Source register 1, rs1 & No change \\
+      19 & 24 & 010000 & ``\textbf{op3}'' & No change \\
+      25 & 29 & 32 & Destination register, rd & No change \\
+      30 & 31 & 4 & Always ``10'' & No change \\
+      \hline
+    \end{tabular}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{ADDDCC}: same as ADDCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{adddcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) + rs2(pair), set Z,N
+  \end{itemize}
+  Bits layout:
+\begin{verbatim}
+    Offsets      : 31       24 23       16  15        8   7        0
+    Bit layout   :  XXXX  XXXX  XXXX  XXXX   XXXX  XXXX   XXXX  XXXX
+    Insn Bits    :  10       0  1000  0        0            1       
+    Destination  :    DD  DDD                                       
+    Source 1     :                     SSS   SS
+    Source 2     :                                           S  SSSS
+    Unused (0)   :                              U  UUUU   UU        
+    Final layout :  10DD  DDD0  1000  0SSS   SS0U  UUUU   UU1S  SSSS
+\end{verbatim}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set  &=& \texttt{F4(x, y, z)} &in& \texttt{sparc.h}     \\
+    Macro to reset  &=& \texttt{INVF4(x, y, z)} &in& \texttt{sparc.h}     \\
+    x &=& 0x2      &in& \texttt{OP(x)  /* ((x) \& 0x3)  $<<$ 30 */} \\
+    y &=& 0x10     &in& \texttt{OP3(y) /* ((y) \& 0x3f) $<<$ 19 */} \\
+    z &=& 0x0      &in& \texttt{F3I(z) /* ((z) \& 0x1)  $<<$ 13 */} \\
+    a &=& 0x1      &in& \texttt{OP\_AJIT\_BIT(a) /* ((a) \& 0x1)  $<<$ 5 */}
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+
+\item \textbf{SUBD}:\\
+  \begin{center}
+    \begin{tabular}[p]{|c|c|l|l|l|}
+      \hline
+      \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} &
+                                                                          \textbf{New Meaning}\\
+      \hline
+      0 & 4 & 32 & Source register 2, rs2 & No change \\
+      5 & 12 & -- & \textbf{unused} & \textbf{Set bit 5 to ``1''} \\
+      13 & 13 & 0,1 & The \textbf{i} bit & \textbf{Set i to ``0''} \\
+      14 & 18 & 32 & Source register 1, rs1 & No change \\
+      19 & 24 & 000100 & ``\textbf{op3}'' & No change \\
+      25 & 29 & 32 & Destination register, rd & No change \\
+      30 & 31 & 4 & Always ``10'' & No change \\
+      \hline
+    \end{tabular}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{SUBD}: same as SUB, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{subd  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) - rs2(pair).
+  \end{itemize}
+  Bits layout:
+\begin{verbatim}
+    Offsets      : 31       24 23       16  15        8   7        0
+    Bit layout   :  XXXX  XXXX  XXXX  XXXX   XXXX  XXXX   XXXX  XXXX
+    Insn Bits    :  10       0  0010  0        0            1       
+    Destination  :    DD  DDD                                       
+    Source 1     :                     SSS   SS
+    Source 2     :                                           S  SSSS
+    Unused (0)   :                              U  UUUU   UU        
+    Final layout :  10DD  DDD0  0010  0SSS   SS0U  UUUU   UU1S  SSSS
+\end{verbatim}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set  &=& \texttt{F4(x, y, z)} &in& \texttt{sparc.h}     \\
+    Macro to reset  &=& \texttt{INVF4(x, y, z)} &in& \texttt{sparc.h}     \\
+    x &=& 0x2      &in& \texttt{OP(x)  /* ((x) \& 0x3)  $<<$ 30 */} \\
+    y &=& 0x04     &in& \texttt{OP3(y) /* ((y) \& 0x3f) $<<$ 19 */} \\
+    z &=& 0x0      &in& \texttt{F3I(z) /* ((z) \& 0x1)  $<<$ 13 */} \\
+    a &=& 0x1      &in& \texttt{OP\_AJIT\_BIT(a) /* ((a) \& 0x1)  $<<$ 5 */}
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+
+\item \textbf{SUBDCC}:\\
+  \begin{center}
+    \begin{tabular}[p]{|c|c|l|l|l|}
+      \hline
+      \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} &
+                                                                          \textbf{New Meaning}\\
+      \hline
+      0 & 4 & 32 & Source register 2, rs2 & No change \\
+      5 & 12 & -- & \textbf{unused} & \textbf{Set bit 5 to ``1''} \\
+      13 & 13 & 0,1 & The \textbf{i} bit & \textbf{Set i to ``0''} \\
+      14 & 18 & 32 & Source register 1, rs1 & No change \\
+      19 & 24 & 010100 & ``\textbf{op3}'' & No change \\
+      25 & 29 & 32 & Destination register, rd & No change \\
+      30 & 31 & 4 & Always ``10'' & No change \\
+      \hline
+    \end{tabular}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{SUBDCC}: same as SUBCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{subdcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) - rs2(pair), set Z,N
+  \end{itemize}
+  Bits layout:
+\begin{verbatim}
+    Offsets      : 31       24 23       16  15        8   7        0
+    Bit layout   :  XXXX  XXXX  XXXX  XXXX   XXXX  XXXX   XXXX  XXXX
+    Insn Bits    :  10       0  1010  0        0            1       
+    Destination  :    DD  DDD                                       
+    Source 1     :                     SSS   SS
+    Source 2     :                                           S  SSSS
+    Unused (0)   :                              U  UUUU   UU        
+    Final layout :  10DD  DDD0  1010  0SSS   SS0U  UUUU   UU1S  SSSS
+\end{verbatim}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set  &=& \texttt{F4(x, y, z)} &in& \texttt{sparc.h}     \\
+    Macro to reset  &=& \texttt{INVF4(x, y, z)} &in& \texttt{sparc.h}     \\
+    x &=& 0x2      &in& \texttt{OP(x)  /* ((x) \& 0x3)  $<<$ 30 */} \\
+    y &=& 0x14     &in& \texttt{OP3(y) /* ((y) \& 0x3f) $<<$ 19 */} \\
+    z &=& 0x0      &in& \texttt{F3I(z) /* ((z) \& 0x1)  $<<$ 13 */} \\
+    a &=& 0x1      &in& \texttt{OP\_AJIT\_BIT(a) /* ((a) \& 0x1)  $<<$ 5 */}
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+\end{enumerate}

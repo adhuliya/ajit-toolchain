@@ -1,0 +1,67 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+LDSB,op3,001001,i,000000,Load Signed Byte,90,B1,Load/Store,1,op40,raw,0,,rrr,ldsb,3,rs1,rs2,rd,,end
+LDSH,op3,001010,i,000000,Load Signed Halfword,90,B1,Load/Store,1,op40,raw,0,,rrr,ldsh,3,rs1,rs2,rd,,end
+LDUB,op3,000001,i,000000,Load Unsigned Byte,90,B1,Load/Store,1,op40,raw,0,,rrr,ldub,3,rs1,rs2,rd,,end
+LDUH,op3,000010,i,000000,Load Unsigned Halfword,90,B1,Load/Store,1,op40,raw,0,,rrr,lduh,3,rs1,rs2,rd,,end
+LD,op3,000000,i,000000,Load Word,90,B1,Load/Store,1,op40,raw,0,,rrr,ld,3,rs1,rs2,rd,,end
+LDD,op3,000011,i,000000,Load Doubleword,90,B1,Load/Store,1,op40,raw,0,,rrr,ldd,3,rs1,rs2,rd,,end
+LDSBA,op3,011001,i,000000,Load Signed Byte from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldsba,4,rs1,rs2,rd,asi,end
+LDSHA,op3,011010,i,000000,Load Signed Halfword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldsha,4,rs1,rs2,rd,asi,end
+LDUBA,op3,010001,i,000000,Load Unsigned Byte from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lduba,4,rs1,rs2,rd,asi,end
+LDUHA,op3,010010,i,000000,Load Unsigned Halfword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lduha,4,rs1,rs2,rd,asi,end
+LDA,op3,010000,i,000000,Load Word from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,lda,4,rs1,rs2,rd,asi,end
+LDDA,op3,010011,i,000000,Load Doubleword from Alternate space,90,B1,Load/Store,1,op34,raw,1,asi,rrrn,ldda,4,rs1,rs2,rd,asi,end
+LDF,op3,100000,i,000000,Load Floating-point Register from memory,92,B2,Load/Store,1,op40,raw,0,,rrf,ldf,3,rs1,rs2,rd=fprd,,end
+LDDF,op3,100011,i,000000,Load Double Floating-point Register from memory,92,B2,Load/Store,1,op40,raw,0,,rrf,lddf,3,rs1,rs2,rd=fprd,,end
+LDFSR,op3,100001,i,000000,Load Floating-point State Register from memory,92,B2,Load/Store,1,op40,raw,0,,rrf,ldfsr,3,rs1,rs2,rd=%fsr,,end
+LDC,op3,110000,i,000000,Load Coprocessor Register,94,B3,Load/Store,1,op40,raw,0,,rrc,ldc,3,rs1,rs2,rd=cprd,,end
+LDDC,op3,110011,i,000000,Load Double Coprocessor Register,94,B3,Load/Store,1,op40,raw,0,,rrc,lddc,3,rs1,rs2,rd=cprd,,end
+LDCSR ,op3,110001,i,000000,Load Coprocessor State Register,94,B3,Load/Store,1,op40,raw,0,,rrc,ldcsr,3,rs1,rs2,rd=%csr,,end
+STB,op3,000101,i,000000,Store Byte,95,B4,Load/Store,1,op40,raw,0,,rrr,stb,3,rd,rs1,rs2,,end
+STH,op3,000110,i,000000,Store Halfword,95,B4,Load/Store,1,op40,raw,0,,rrr,sth,3,rd,rs1,rs2,,end
+ST,op3,000100,i,000000,Store Word,95,B4,Load/Store,1,op40,raw,0,,rrr,st,3,rd,rs1,rs2,,end
+STD,op3,000111,i,000000,Store Doubleword,95,B4,Load/Store,1,op40,raw,0,,rrr,std,3,rd,rs1,rs2,,end
+STBA,op3,010101,i,000001,Store Byte into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stba,3,rd,rs1,sign_ext (simm13),,end
+STHA,op3,010110,i,000001,Store Halfword into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stha,3,rd,rs1,sign_ext (simm13),,end
+STA,op3,010100,i,000001,Store Word into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,sta,3,rd,rs1,sign_ext (simm13),,end
+STDA ,op3,010111,i,000001,Store Doubleword into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stda ,3,rd,rs1,sign_ext (simm13),,end
+STF,op3,100100,i,000000,Store Floating-point to memory,97,B5,Load/Store,1,op40,raw,0,,frr,stf,3,rd=fprd,rs1,rs2,,end
+STDF,op3,100111,i,000000,Store Double Floating-point to memory,97,B5,Load/Store,1,op40,raw,0,,frr,stdf,3,rd=fprd,rs1,rs2,,end
+STFSR,op3,100101,i,000000,Store Floating-point State Register to memory,97,B5,Load/Store,1,op40,raw,0,,frr,stfsr,3,rd=%fsr,rs1,rs2,,end
+STDFQ ,op3,100110,i,000000,Store Double Floating-point deferred-trap Queue,97,B5,Load/Store,1,op40,raw,1,,frr,stdfq ,3,rd=%fq,rs1,rs2,,end
+STC,op3,110100,i,000000,Store Coprocessor,99,B6,Load/Store,1,op40,raw,0,,crr,stc,3,rd=cprd,rs1,rs2,,end
+STDC,op3,110111,i,000000,Store Double Coprocessor,99,B6,Load/Store,1,op40,raw,0,,crr,stdc,3,rd=cprd,rs1,rs2,,end
+STCSR,op3,110101,i,000000,Store Coprocessor State Register,99,B6,Load/Store,1,op40,raw,0,,crr,stcsr,3,rd=%csr,rs1,rs2,,end
+STDCQ,op3,110110,i,000000,Store Double Coprocessor Queue,99,B6,Load/Store,1,op40,raw,1,,crr,stdcq,3,rd=%cq,rs1,rs2,,end
+LDSTUB,op3,001101,i,000000,Atomic Load-Store Unsigned Byte,101,B7,Load/Store,1,op40,raw,0,,rrr,ldstub,3,rs1,rs2,rd,,end
+LDSTUBA ,op3,011101,i,000000,Atomic Load-Store Unsigned Byte into Alternate space,101,B7,Load/Store,1,op34,raw,0,,rrrn,ldstuba ,4,rs1,rs2,rd,asi,end
+SWAP,op3,001111,i,000000,SWAP register with memory,102,B8,Load/Store,1,op40,raw,1,,rrr,swap,3,rs1,rs2,rd,,end
+SWAPA ,op3,011111,i,000000,SWAP register with Alternate space memory,102,B8,Load/Store,1,op34,raw,0,,rrrn,swapa ,4,rs1,rs2,rd,asi,end
+STBAR,op3,101000,,,Store Barrier,136,B30,Load/Store,1,op42,raw,1,,,stbar,0,,,,,end
+FLUSH,op3,111011,i,000000,Flush Instruction Memory,138,B32,Load/Store,1,op43,raw,0,,rr,flush,2,rs1,rs2,,,end
+LDSB,op3,001001,i,000001,Load Signed Byte,90,B1,Load/Store,1,op35,raw,0,,rnr,ldsb,3,rs1,sign_ext (simm13),rd,,end
+LDSH,op3,001010,i,000001,Load Signed Halfword,90,B1,Load/Store,1,op35,raw,0,,rnr,ldsh,3,rs1,sign_ext (simm13),rd,,end
+LDUB,op3,000001,i,000001,Load Unsigned Byte,90,B1,Load/Store,1,op35,raw,0,,rnr,ldub,3,rs1,sign_ext (simm13),rd,,end
+LDUH,op3,000010,i,000001,Load Unsigned Halfword,90,B1,Load/Store,1,op35,raw,0,,rnr,lduh,3,rs1,sign_ext (simm13),rd,,end
+LD,op3,000000,i,000001,Load Word,90,B1,Load/Store,1,op35,raw,0,,rnr,ld,3,rs1,sign_ext (simm13),rd,,end
+LDD,op3,000011,i,000001,Load Doubleword,90,B1,Load/Store,1,op35,raw,0,,rnr,ldd,3,rs1,sign_ext (simm13),rd,,end
+LDF,op3,100000,i,000001,Load Floating-point Register,92,B2,Load/Store,1,op35,raw,0,,rnf,ldf,3,rs1,sign_ext (simm13),rd=fprd,,end
+LDDF,op3,100011,i,000001,Load Double Floating-point Register,92,B2,Load/Store,1,op35,raw,0,,rnf,lddf,3,rs1,sign_ext (simm13),rd=fprd,,end
+LDFSR,op3,100001,i,000001,Load Floating-point State Register,92,B2,Load/Store,1,op35,raw,0,,rng,ldfsr,3,rs1,sign_ext (simm13),rd=%fsr,,end
+LDC,op3,110000,i,000001,Load Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,ldc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDDC,op3,110011,i,000001,Load Double Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,lddc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDCSR ,op3,110001,i,000001,Load Coprocessor State Register,94,B3,Load/Store,1,op35,raw,0,,rng,ldcsr,3,rs1,sign_ext (simm13),rd=%csr,,end
+STB,op3,000101,i,000001,Store Byte,95,B4,Load/Store,1,op35,raw,0,,rrn,stb,3,rd,rs1,sign_ext (simm13),,end
+STH,op3,000110,i,000001,Store Halfword,95,B4,Load/Store,1,op35,raw,0,,rrn,sth,3,rd,rs1,sign_ext (simm13),,end
+ST,op3,000100,i,000001,Store Word,95,B4,Load/Store,1,op35,raw,0,,rrn,st,3,rd,rs1,sign_ext (simm13),,end
+STD,op3,000111,i,000001,Store Doubleword,95,B4,Load/Store,1,op35,raw,0,,rrn,std,3,rd,rs1,sign_ext (simm13),,end
+STF,op3,100100,i,000001,Store Floating-point,97,B5,Load/Store,1,op35,raw,0,,frn,stf,3,rd=fprd,rs1,sign_ext (simm13),,end
+STDF,op3,100111,i,000001,Store Double Floating-point,97,B5,Load/Store,1,op35,raw,0,,frn,stdf,3,rd=fprd,rs1,sign_ext (simm13),,end
+STFSR,op3,100101,i,000001,Store Floating-point State Register,97,B5,Load/Store,1,op35,raw,0,,grn,stfsr,3,rd=%fsr,rs1,sign_ext (simm13),,end
+STDFQ ,op3,100110,i,000001,Store Double Floating-point deferred-trap Queue,97,B5,Load/Store,1,op35,raw,0,,grn,stdfq ,3,rd=%fq,rs1,sign_ext (simm13),,end
+STC,op3,110100,i,000001,Store Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STDC,op3,110111,i,000001,Store Double Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stdc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STCSR,op3,110101,i,000001,Store Coprocessor State Register,99,B6,Load/Store,1,op35,raw,0,,grn,stcsr,3,rd=%csr,rs1,sign_ext (simm13),,end
+STDCQ,op3,110110,i,000001,Store Double Coprocessor Queue,99,B6,Load/Store,1,op35,raw,0,,grn,stdcq,3,rd=%cq,rs1,sign_ext (simm13),,end
+LDSTUB,op3,001101,i,000001,Atomic Load-Store Unsigned Byte,101,B7,Load/Store,1,op35,raw,0,,rnr,ldstub,3,rs1,sign_ext (simm13),rd,,end
+FLUSH,op3,111011,i,000001,Flush Instruction Memory,138,B32,Load/Store,1,op44,raw,0,,rn,flush,2,rs1,sign_ext (simm13),,,end

@@ -1,0 +1,3 @@
+"Opcode","Format type","Format Value","Other field","Value","Operation","Sparc V8 Manual main description page","Sparc V8 Manual main description Chapter reference","Insn Category","Insn Category Index","Format Index","Processing Status","Privilege","Notes","ASM Rator Syntax","Num Args","ASM Arg 1","ASM Arg 2","ASM Arg 3","ASM Arg 4","END"
+"SETHI","op2",100,,,"Set High-Order 22 bits",104,"B9","Integer Arith",2,"op22","raw",0,,"sethi",2,"imm22","rd",,,"end"
+"TA","op3",111010,"i",000000,"Trap Always",129,"B27","Control Transfer",3,"op37","raw",0,,"ta",3,"rs1","rs2","#software-trap",,"end"

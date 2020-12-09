@@ -1,0 +1,3 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+CPop1,op3,110110,opc,,Coprocessor Operate,149,B34,Coprocessor,6,op39,raw,0,Opc: coproc specific,cccc,cpop1,4,opc,cprs1,cprs2,cprd,end
+CPop2,op3,110111,opc,,Coprocessor Operate,149,B34,Coprocessor,6,op30,raw,0,Opc: coproc specific,cccc,cpop2,4,opc,cprs1,cprs2,cprd,end

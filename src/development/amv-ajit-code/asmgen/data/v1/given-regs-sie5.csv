@@ -1,0 +1,4 @@
+"Opcode","Format type","Format Value","Other field","Value","Operation","Sparc V8 Manual main description page","Sparc V8 Manual main description Chapter reference","Insn Category","Insn Category Index","Format Index","Processing Status","Privilege","Notes","Register Type, if any","ASM Rator Syntax","Num Args","ASM Arg 1","ASM Arg 2","ASM Arg 3","ASM Arg 4","END"
+"LDFSR","op3",100001,"i",000000,"Load Floating-point State Register",92,"B2","Load/Store",1,"op40","raw",0,,"rrf","ldfsr",3,"rs1","rs2","rd=%fsr",,"end"
+"RDY","op3",101000,,,"Read Y Register",131,"B28","State Register",4,"op41","raw",0,"rs1=0","ar","rd",2,"rs1=%y","rd",,,"end"
+"RDASR‡","op3",101000,,,"Read Ancillary State Register (reserved)",131,"B28","State Register",4,"op41","raw",0,"Rs = 1 … 15, causes undefined results","ar","rd",2,"rs1=rs1","rd",,,"end"

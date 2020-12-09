@@ -1,0 +1,644 @@
+head	1.2;
+access;
+symbols;
+locks
+	amv:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2018.09.21.14.19.05;	author amv;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2018.09.19.07.37.17;	author amv;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@Summary: Basic structure looks ok. Now define the ctors, dtors and
+mtors as necessary.
+@
+text
+@;;
+;; INSN Language
+;;
+(load "cpu-layout.scm")
+(load "insn-layout.scm")
+
+;;
+;; Simple structure: The grammar is
+;;
+;; attribute : '(' symbol value ')'
+;; structure : () | '(' attribute structure ')'
+;; symbol : variable
+;; value  : datum | structure
+;; datum  : string | number | enumerated | expression
+;;
+
+;; insn : () | '(' attribute insn ')'    ; List of attributes
+;; attribute : '(' symbol value ')'
+;; value : string | integer | enumerated | list
+
+(define insn-description
+  '((mnemonic "ADD")
+    (insn-subtype SPARC_INTEGER_ARITHMETIC)
+    (alignment-types ALIGN_WORD)
+    (length-in-bits  32)
+    (format-type 2)
+    (bit-order BIG)
+    (opcode-layout ((region ((name "op")
+			     (start 30)
+			     (end 31)
+			     (length (end - start + 1))
+			     (meaning SPARC_OP_FORMAT_ONE)
+			     (setup ((value 10)
+				     (value-representation BINARY)
+				     (value-type OPCODE)
+				     ))))
+		    (region ((name "rd")
+			     (start 25)
+			     (end 29)
+			     (length (end - start + 1))
+			     (meaning SPARC_DESTINATION_REGISTER)
+			     (setup ((value XXXXX)
+				     (value-representation BINARY)
+				     (value-type REGISTER)
+				     ))))
+		    (region ((name "op3")
+			     (start 19)
+			     (end 24)
+			     (length (end - start + 1))
+			     (meaning SPARC_OP_FORMAT_THREE)
+			     (setup ((value 000000)
+				     (value-representation BINARY)
+				     (value-type OPCODE)
+				     ))))
+		    (region ((name "rs1")
+			     (start 14)
+			     (end 18)
+			     (length (end - start + 1))
+			     (meaning SPARC_SOURCE_REGISTER_ONE)
+			     (setup ((value XXXXX)
+				     (value-representation BINARY)
+				     (value-type REGISTER)
+				     ))))
+		    (union		;; Region layout depends on value of "i" bit!
+		     (			;; LIST of different layouts of the SAME region
+		      (                  ;; Describe layout of SAME region when i = 0
+		       (region ((name "i")
+				(start 13)
+				(end 13)
+				(length (end - start + 1))
+				(meaning SPARC_BIT_I)
+				(setup ((value 0)
+					(value-representation BINARY)
+					(value-type OPCODE)
+					))))
+		       (region ((name "unused")
+				(start 5)
+				(end 12)
+				(length (end - start + 1))
+				(meaning SPARC_UNUSED)
+				(setup ((value XXXXXXXX)
+					(value-representation BINARY)
+					(value-type UNUSED)
+					))))
+		       (region (name "rs2")
+			       (start 0)
+			       (end 4)
+			       (length (region-end - region-start + 1))
+			       (meaning SPARC_SOURCE_REGISTER_TWO)
+			       (setup ((value XXXXX)
+				       (value-representation BINARY)
+				       (value-type REGISTER)
+				       )))
+		       )
+		      (                  ;; Describe layout of SAME region when i = 0
+		       (region ((name "i")
+				(start 13)
+				(end 13)
+				(length (end - start + 1))
+				(meaning SPARC_BIT_I)
+				(setup ((value 1)
+					(value-representation BINARY)
+					(value-type OPCODE)
+					))))
+		       (region ((name "simm13")
+				(start 0)
+				(end 12)
+				(length (end - start + 1))
+				(meaning SPARC_SIMM_13)
+				(setup ((value XXXXXXXXXXXXX)
+					(value-representation BINARY)
+					(value-type VALUE)
+					))))
+		       )
+		      )			;; END LIST of union layouts
+		     )			;; END union
+		    )			;; END opcode layout
+		   )
+    ))
+     
+
+
+;; (define insn-description-list
+;;   (list insn-description)
+;;   )
+
+;; (define insn-description
+;;   '((mnemonic "ADD")
+;;     (insn-subtype SPARC_INTEGER_ARITHMETIC)
+;;     (alignment-types ALIGN_WORD)
+;;     (length-in-bits  32)
+;;     (format-type 2)
+;;     (bit-order BIG)
+;;     (opcode-layout (((region-name "op")
+;; 		     (region-start 30)
+;; 		     (region-end 31)
+;; 		     (region-length (region-end - region-start + 1))
+;; 		     (region-meaning SPARC_OP_FORMAT_ONE)
+;; 		     (region-setup ((value 10)
+;; 				    (value-representation BINARY)
+;; 				    (value-type OPCODE)
+;; 				    )))
+;; 		    ((region-name "rd")
+;; 		     (region-start 25)
+;; 		     (region-end 29)
+;; 		     (region-length (region-end - region-start + 1))
+;; 		     (region-meaning SPARC_DESTINATION_REGISTER)
+;; 		     (region-setup ((value XXXXX) ; CAREFUL HERE! Need a description of register file!
+;; 				    (value-representation BINARY)
+;; 				    (value-type REGISTER)
+;; 				    )))
+;; 		    ((region-name "op3")
+;; 		     (region-start 19)
+;; 		     (region-end 24)
+;; 		     (region-length (region-end - region-start + 1))
+;; 		     (region-meaning SPARC_OP_FORMAT_THREE)
+;; 		     (region-setup ((value 000000)
+;; 				    (value-representation BINARY)
+;; 				    (value-type OPCODE)
+;; 				    )))
+;; 		    ((region-name "rs1")
+;; 		     (region-start 14)
+;; 		     (region-end 18)
+;; 		     (region-length (region-end - region-start + 1))
+;; 		     (region-meaning SPARC_SOURCE_REGISTER_ONE)
+;; 		     (region-setup ((value XXXXX) ; CAREFUL as before.
+;; 				    (value-representation BINARY)
+;; 				    (value-type REGISTER)
+;; 				    )))
+;; 		    (union		;; Region layout depends on value of "i" bit!
+;; 		     (		;; Describe layout of SAME region when i = 0
+;; 		      ((region-name "i")
+;; 		       (region-start 13)
+;; 		       (region-end 13)
+;; 		       (region-length (region-end - region-start + 1))
+;; 		       (region-meaning SPARC_BIT_I)
+;; 		       (region-setup ((value 0)
+;; 				      (value-representation BINARY)
+;; 				      (value-type OPCODE)
+;; 				      )))
+;; 		      ((region-name "unused")
+;; 		       (region-start 5)
+;; 		       (region-end 12)
+;; 		       (region-length (region-end - region-start + 1))
+;; 		       (region-meaning SPARC_UNUSED)
+;; 		       (region-setup ((value XXXXXXXX)
+;; 				      (value-representation BINARY)
+;; 				      (value-type UNUSED)
+;; 				      )))
+;; 		      ((region-name "rs2")
+;; 		       (region-start 0)
+;; 		       (region-end 4)
+;; 		       (region-length (region-end - region-start + 1))
+;; 		       (region-meaning SPARC_SOURCE_REGISTER_TWO)
+;; 		       (region-setup ((value XXXXX)
+;; 				      (value-representation BINARY)
+;; 				      (value-type REGISTER)
+;; 				      )))
+;; 		      )
+;; 		     (		;; Describe layout of SAME region when i = 1
+;; 		      ((region-name "i")
+;; 		       (region-start 13)
+;; 		       (region-end 13)
+;; 		       (region-length (region-end - region-start + 1))
+;; 		       (region-meaning SPARC_BIT_I)
+;; 		       (region-setup ((value 1)
+;; 				      (value-representation BINARY)
+;; 				      (value-type OPCODE)
+;; 				      )))
+;; 		      ((region-name "simm13") ;; Signed Immediate 13 bits
+;; 		       (region-start 0)
+;; 		       (region-end 12)
+;; 		       (region-length (region-end - region-start + 1))
+;; 		       (region-meaning SPARC_SIMM_13)
+;; 		       (region-setup ((value XXXXXXXXXXXXX)
+;; 				      (value-representation BINARY)
+;; 				      (value-type VALUE)
+;; 				      )))
+;; 		      )
+;; 		     )
+;; 		    ))
+;;     ))
+
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 19
+a19 77
+(define register-types
+  '('('description-type BIT_FLAG)
+    '(SPARC_GENERAL_PURPOSE
+      SPARC_DATA_REGISTER
+      SPARC_CONTROL_REGISTER
+      SPARC_STATUS_REGISTER
+      ALL_SPARC_REGISTER_TYPES
+      )
+    ))
+(define register-file			;; Anshuman's GOLI
+  '((('class 'global)
+      ('range-min 0)
+      ('range-max 7)
+      )
+    (('class 'input)
+      ('range-min 8)
+      ('range-max 15)
+      )
+    (('class 'local)
+      ('range-min 16)
+      ('range-max 23)
+      )
+    (('class 'output)
+      ('range-min 24)
+      ('range-max 31)
+      )
+    ))
+;; (define register-file			;; Anshuman's GOLI
+;;   '('('('class 'global)
+;;       '('range-min 0)
+;;       '('range-max 7)
+;;       )
+;;     '('('class 'input)
+;;       '('range-min 8)
+;;       '('range-max 15)
+;;       )
+;;     '('('class 'local)
+;;       '('range-min 16)
+;;       '('range-max 23)
+;;       )
+;;     '('('class 'output)
+;;       '('range-min 24)
+;;       '('range-max 31)
+;;       )
+;;     ))
+(define bit-region-meanings-list
+  '(
+    SPARC_INSN_FORMAT
+    SPARC_DESTINATION_REGISTER
+    SPARC_SOURCE_REGISTER_ONE
+    SPARC_SOURCE_REGISTER_TWO
+    SPARC_OP_FORMAT_ONE
+    SPARC_OP_FORMAT_TWO
+    SPARC_OP_FORMAT_THREE
+    SPARC_ANNUL_BIT
+    SPARC_CONDITION_CODE_MASK
+    SPARC_IMMEDIATE_22
+    SPARC_DISPLACEMENT_22
+    SPARC_DISPLACEMENT_30
+    SPARC_BIT_I		;; ALU second operand selector.
+    SPARC_ASI		;; address space identifier.
+    SPARC_SIMM_13	;; Signed Immediate. Depends on SPARC_BIT_I.
+    SPARC_OPF		;; Floating point op, or CoProcessor op.
+    SPARC_UNUSED	;; Region is unused
+    SPARC_RESERVED
+    SPARC_IGNORED
+    ALL_SPARC_REGION_MEANINGS
+    ))
+
+(define alignment-types
+  '(
+    ALIGN_BYTE		;;  1 Byte
+    ALIGN_HALF_WORD	;;  2 Bytes, 1 Half word
+    ALIGN_WORD		;;  4 Bytes, 2 Half words, 1 Word
+    ALIGN_DOUBLE_WORD	;;  8 Bytes, 4 Half words, 2 Words, 1 Double word
+    ALIGN_QUAD_WORD	;; 16 Bytes, 8 Half words, 4 Words, 2 Double words, 1 Quada word
+    ))
+d21 1
+a21 45
+(define bit-order
+  '(
+    LITTLE_ENDIAN
+    BIG_ENDIAN		;; SPARC is BIG Endian
+    ))
+
+(define insn-subtype
+  '(
+    SPARC_LOAD_STORE		;; SPARC V8: Category 1.
+    SPARC_INTEGER_ARITHMETIC	;; SPARC V8: Category 2.
+    SPARC_CONTROL_TRANSFER	;; SPARC V8: Category 3.
+    SPARC_RW_CONTROL_REGISTER	;; SPARC V8: Category 4.
+    SPARC_FLOAT_PT_OP		;; SPARC V8: Category 5.
+    SPARC_COPROC_OP		;; SPARC V8: Category 6.
+    AJIT_ADD_SUB		;; AJIT Category 1.
+    AJIT_SHIFT		        ;; AJIT Category 2.
+    AJIT_MUL_DIV		;; AJIT Category 3.
+    AJIT_64BIT_LOGICAL		;; AJIT Category 4.
+    AJIT_SIMD_I		        ;; AJIT Category 5.
+    AJIT_SIMD_II		;; AJIT Category 6.
+    AJIT_SIMD_FLOAT		;; AJIT Category 7.
+    ALL_AJIT_INSN_GROUPS		;; This must  be last. It  denotes the number of groups.
+    ))
+
+(define bit-field-type
+  '(
+    USED		;; Used and not ignored; these mean something
+    REGISTER		;; Specify some registers
+    OPCODE		;; Used to build the op code
+    RESERVED		;; Unused but reserved
+    IGNORED		;; Used but ignored, e.g. op code bits
+    LOCATION		;; Used to specify primary memory location
+    VALUE		;; Explicit number, e.g. immediate operands
+    UNUSED
+    ALL_AJIT_BIT_FIELD_TYPES
+    ))
+
+(define value-representation
+  '(BINARY
+    OCTAL
+    DECIMAL
+    HEXADECIMAL
+    ))
+
+(define insn-structure
+d26 1
+d28 91
+a118 88
+    (opcode-layout (((region-name "op")
+			(region-start 30)
+			(region-end 31)
+			(region-length (region-end - region-start + 1))
+			(region-meaning SPARC_OP_FORMAT_ONE)
+			(region-setup ((value 10)
+					  (value-representation BINARY)
+					  (value-type OPCODE)
+					  )))
+		       ((region-name "rd")
+			(region-start 25)
+			(region-end 29)
+			(region-length (region-end - region-start + 1))
+			(region-meaning SPARC_DESTINATION_REGISTER)
+			(region-setup ((value XXXXX) ; CAREFUL HERE! Need a description of register file!
+					  (value-representation BINARY)
+					  (value-type REGISTER)
+					  )))
+		       ((region-name "op3")
+			(region-start 19)
+			(region-end 24)
+			(region-length (region-end - region-start + 1))
+			(region-meaning SPARC_OP_FORMAT_THREE)
+			(region-setup ((value 000000)
+					  (value-representation BINARY)
+					  (value-type OPCODE)
+					  )))
+		       ((region-name "rs1")
+			(region-start 14)
+			(region-end 18)
+			(region-length (region-end - region-start + 1))
+			(region-meaning SPARC_SOURCE_REGISTER_ONE)
+			(region-setup ((value XXXXX) ; CAREFUL as before.
+					  (value-representation BINARY)
+					  (value-type REGISTER)
+					  )))
+		       (union		;; Region layout depends on value of "i" bit!
+			 (		;; Describe layout of SAME region when i = 0
+			  ((region-name "i")
+			   (region-start 13)
+			   (region-end 13)
+			   (region-length (region-end - region-start + 1))
+			   (region-meaning SPARC_BIT_I)
+			   (region-setup ((value 0)
+					     (value-representation BINARY)
+					     (value-type OPCODE)
+					     )))
+			  ((region-name "unused")
+			   (region-start 5)
+			   (region-end 12)
+			   (region-length (region-end - region-start + 1))
+			   (region-meaning SPARC_UNUSED)
+			   (region-setup ((value XXXXXXXX)
+					     (value-representation BINARY)
+					     (value-type UNUSED)
+					     )))
+			  ((region-name "rs2")
+			   (region-start 0)
+			   (region-end 4)
+			   (region-length (region-end - region-start + 1))
+			   (region-meaning SPARC_SOURCE_REGISTER_TWO)
+			   (region-setup ((value XXXXX)
+					     (value-representation BINARY)
+					     (value-type REGISTER)
+					     )))
+			  )
+			 (		;; Describe layout of SAME region when i = 1
+			  ((region-name "i")
+			   (region-start 13)
+			   (region-end 13)
+			   (region-length (region-end - region-start + 1))
+			   (region-meaning SPARC_BIT_I)
+			   (region-setup ((value 1)
+					     (value-representation BINARY)
+					     (value-type OPCODE)
+					     )))
+			  ((region-name "simm13") ;; Signed Immediate 13 bits
+			   (region-start 0)
+			   (region-end 12)
+			   (region-length (region-end - region-start + 1))
+			   (region-meaning SPARC_SIMM_13)
+			   (region-setup ((value XXXXXXXXXXXXX)
+					     (value-representation BINARY)
+					     (value-type VALUE)
+					     )))
+			  )
+			 )
+		       ))
+d120 1
+d122 3
+a124 48
+;; ;; Assume we have the "pp" (pretty-print) procedure
+;; (define get-attribs
+;;   (lambda (insn-data info-symbol)
+;;     (begin
+;;       (if (null? insn-data)
+;; 	  insn-data
+;; 	  (begin
+;; 	    (let ((info     (car insn-data))
+;; 		  (rest     (cdr insn-data)))
+;; 	      (if (and (list? info) (= (length info) 2))
+;; 		  (begin
+;; 		    (let ((sym   (car  info))
+;; 			  (val   (cadr info)))
+;; 		      (begin
+;; 			(pp "Checking if current symbol ")
+;; 			(pp sym)
+;; 			(pp " = given symbol ")
+;; 			(pp info-symbol)
+;; 			;; (pp "=== Checking if current symbol " sym " = given symbol " info-symbol " ...\n")
+;; 			(newline)
+;; 			(if (eqv? sym info-symbol)
+;; 			    (begin
+;; 			      (display "Returning value: ")
+;; 			      (display val)
+;; 			      (newline)
+;; 			      val
+;; 			      )
+;; 			    (begin
+;; 			      (display "Recursing to call: ")
+;; 			      (display "(get-attribs ")
+;; 			      (display rest)
+;; 			      (display " ")
+;; 			      (display info-symbol)
+;; 			      (display ") ...")
+;; 			      (newline)
+;; 			      (get-attribs rest info-symbol)
+;; 			      )
+;; 			    )
+;; 			)
+;; 		      )
+;; 		    )
+;; 		  #f
+;; 		  )
+;; 	      )
+;; 	    )
+;; 	  )
+;;       )
+;;     )
+d127 95
+a221 112
+(define get
+  (lambda (insn-data info-symbol)
+    (if (null? insn-data)
+	insn-data
+	(let ((info     (car insn-data))
+	      (rest     (cdr insn-data)))
+	  (if (and (list? info) (= (length info) 2))
+	      (let ((sym   (car  info))
+		    (val   (cadr info)))
+		(if (eqv? sym info-symbol)
+		    val
+		    (get rest info-symbol))
+		)
+	      #f
+	      )
+	  ))
+    ))
+
+;; (define insn-structure
+;;   '(('mnemonic . "ADD")
+;;     ('insn-subtype . SPARC_INTEGER_ARITHMETIC)
+;;     ('alignment-types . ALIGN_WORD)
+;;     ('length-in-bits  . 32)
+;;     ('bit-order . BIG)
+;;     ('opcode-layout . '('(('region-name . "op")
+;; 			  ('region-start . 30)
+;; 			  ('region-end . 31)
+;; 			  ('region-length . (region-end - region-start + 1))
+;; 			  ('region-meaning . SPARC_OP_FORMAT_ONE)
+;; 			  ('region-setup . '(('value . 10)
+;; 					     ('value-representation . BINARY)
+;; 					     ('value-type . OPCODE)
+;; 					     )))
+;; 			'(('region-name . "rd")
+;; 			  ('region-start . 25)
+;; 			  ('region-end . 29)
+;; 			  ('region-length . (region-end - region-start + 1))
+;; 			  ('region-meaning . SPARC_DESTINATION_REGISTER)
+;; 			  ('region-setup . '(('value . XXXXX) ; CAREFUL HERE! Need a description of register file!
+;; 					     ('value-representation . BINARY)
+;; 					     ('value-type . REGISTER)
+;; 					     )))
+;; 			'(('region-name . "op3")
+;; 			  ('region-start . 19)
+;; 			  ('region-end . 24)
+;; 			  ('region-length . (region-end - region-start + 1))
+;; 			  ('region-meaning . SPARC_OP_FORMAT_THREE)
+;; 			  ('region-setup . '(('value . 000000)
+;; 					     ('value-representation . BINARY)
+;; 					     ('value-type . OPCODE)
+;; 					     )))
+;; 			'(('region-name . "rs1")
+;; 			  ('region-start . 14)
+;; 			  ('region-end . 18)
+;; 			  ('region-length . (region-end - region-start + 1))
+;; 			  ('region-meaning . SPARC_SOURCE_REGISTER_ONE)
+;; 			  ('region-setup . '(('value . XXXXX) ; CAREFUL as before.
+;; 					     ('value-representation . BINARY)
+;; 					     ('value-type . REGISTER)
+;; 					     )))
+;; 			'(union		;; Region layout depends on value of "i" bit!
+;; 			  '(		;; Describe layout of SAME region when i = 0
+;; 			    '(('region-name . "i")
+;; 			      ('region-start . 13)
+;; 			      ('region-end . 13)
+;; 			      ('region-length . (region-end - region-start + 1))
+;; 			      ('region-meaning . SPARC_BIT_I)
+;; 			      ('region-setup . '(('value . 0)
+;; 						 ('value-representation . BINARY)
+;; 						 ('value-type . OPCODE)
+;; 						 )))
+;; 			    '(('region-name . "unused")
+;; 			      ('region-start . 5)
+;; 			      ('region-end . 12)
+;; 			      ('region-length . (region-end - region-start + 1))
+;; 			      ('region-meaning . SPARC_UNUSED)
+;; 			      ('region-setup . '(('value . XXXXXXXX)
+;; 						 ('value-representation . BINARY)
+;; 						 ('value-type . UNUSED)
+;; 						 )))
+;; 			    '(('region-name . "rs2")
+;; 			      ('region-start . 0)
+;; 			      ('region-end . 4)
+;; 			      ('region-length . (region-end - region-start + 1))
+;; 			      ('region-meaning . SPARC_SOURCE_REGISTER_TWO)
+;; 			      ('region-setup . '(('value . XXXXX)
+;; 						 ('value-representation . BINARY)
+;; 						 ('value-type . REGISTER)
+;; 						 )))
+;; 			    )
+;; 			  '(		;; Describe layout of SAME region when i = 1
+;; 			    '(('region-name . "i")
+;; 			      ('region-start . 13)
+;; 			      ('region-end . 13)
+;; 			      ('region-length . (region-end - region-start + 1))
+;; 			      ('region-meaning . SPARC_BIT_I)
+;; 			      ('region-setup . '(('value . 1)
+;; 						 ('value-representation . BINARY)
+;; 						 ('value-type . OPCODE)
+;; 						 )))
+;; 			    '(('region-name . "simm13") ;; Signed Immediate 13 bits
+;; 			      ('region-start . 0)
+;; 			      ('region-end . 12)
+;; 			      ('region-length . (region-end - region-start + 1))
+;; 			      ('region-meaning . SPARC_SIMM_13)
+;; 			      ('region-setup . '(('value . XXXXXXXXXXXXX)
+;; 						 ('value-representation . BINARY)
+;; 						 ('value-type . VALUE)
+;; 						 )))
+;; 			    )
+;; 			  )
+;; 			))
+@

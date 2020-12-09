@@ -1,0 +1,56 @@
+\chapter{AJIT Support for the GNU Binutils Toolchain}
+\label{chap:amv:work}
+
+\section{Towards a GNU Binutils Toolchain}
+\label{sec:binutils:support}
+
+This section describes the details  of adding the AJIT instructions to
+SPARC v8 part of GNU Binutils 2.22.  We use the SPARC v8 manual to get
+the details of  the sparc instruction.  It's bit  pattern is described
+\emph{again}, and  the new  bit pattern  required for  AJIT is  set up
+alongside.  Bit layouts to determine  the ``match'' etc.  of the sparc
+port  are  also  laid  out.    The  SPARC  manual  also  contains  the
+``suggested asm syntax''  that we adapt for the  new AJIT instruction.
+The sections below follow the sections in chapter~\ref{sec:isa:extns}.
+For each  instruction, we  need to  define its  bitfields in  terms of
+macros  in  \texttt{\$BINUTILSHOME/include/opcode/sparc.h} and  define
+the opcodes table in \texttt{\$BINUTILSHOME/opcodes/sparc-opc.c}.
+
+The AJIT  instructions are  variations of  the corresponding  SPARC V8
+instructions.  Please refer to the SPARC V8 manual for details of such
+corresponding SPARC  instructions. For example,  the\texttt{ADD} insn,
+pg. 108 (pg.  130 in PDF sequence) of the  manual.  Other instructions
+can be similarly found, and will not be mentioned.
+
+\subsection{Integer-Unit Extensions: Arithmetic-Logic Instructions}
+\label{sec:integer-unit-extns:arith-logic-insns:impl}
+
+The  integer  unit extensions  of  AJIT  are  based  on the  SPARC  V8
+instructions.    See:  SPArc   v8  architecture   manual.   SPARC   v8
+instructions  are  32   bits  long.   The  GNU   Binutils  2.22  SPARC
+implementation defines a  set of macros to capture the  bits set by an
+instruction.  These are the so called ``match'' masks.  Please see the
+code     in     \texttt{\$BINUTILSHOME/include/opcode/sparc.h}     and
+\texttt{\$BINUTILSHOME/opcodes/sparc-opc.c}.
+\vfill
+\newpage
+\input{../src/add-sub-insn-extns}
+\input{../src/shift-insn-extns}
+\input{../src/mul-div-insn-extns}
+\input{../src/64-bit-logical-insn-extns}
+\input{../src/int-unit-extns-summary}
+
+\subsection{Integer-Unit Extensions: SIMD Instructions}
+\label{sec:integer-unit-extns:simd-instructions:impl}
+
+\input{../src/simd-1-insn-extns}
+
+\subsection{Integer-Unit Extensions: SIMD Instructions II}
+\label{sec:integer-unit-extns:simd-instructions:2:impl}
+
+\subsection{Vector Floating Point Instructions}
+\label{sec:vector-floating-point-instructions:impl}
+
+\subsection{CSWAP instructions}
+\label{sec:cswap-instructions:impl}
+

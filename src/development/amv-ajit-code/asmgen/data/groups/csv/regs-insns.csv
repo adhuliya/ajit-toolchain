@@ -1,0 +1,70 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+LDSB,op3,001001,i,000000,Load Signed Byte,90,B1,Load/Store,1,op40,raw,0,,rrr,ldsb,3,rs1,rs2,rd,,end
+LDSH,op3,001010,i,000000,Load Signed Halfword,90,B1,Load/Store,1,op40,raw,0,,rrr,ldsh,3,rs1,rs2,rd,,end
+LDUB,op3,000001,i,000000,Load Unsigned Byte,90,B1,Load/Store,1,op40,raw,0,,rrr,ldub,3,rs1,rs2,rd,,end
+LDUH,op3,000010,i,000000,Load Unsigned Halfword,90,B1,Load/Store,1,op40,raw,0,,rrr,lduh,3,rs1,rs2,rd,,end
+LD,op3,000000,i,000000,Load Word,90,B1,Load/Store,1,op40,raw,0,,rrr,ld,3,rs1,rs2,rd,,end
+LDD,op3,000011,i,000000,Load Doubleword,90,B1,Load/Store,1,op40,raw,0,,rrr,ldd,3,rs1,rs2,rd,,end
+STB,op3,000101,i,000000,Store Byte,95,B4,Load/Store,1,op40,raw,0,,rrr,stb,3,rd,rs1,rs2,,end
+STH,op3,000110,i,000000,Store Halfword,95,B4,Load/Store,1,op40,raw,0,,rrr,sth,3,rd,rs1,rs2,,end
+ST,op3,000100,i,000000,Store Word,95,B4,Load/Store,1,op40,raw,0,,rrr,st,3,rd,rs1,rs2,,end
+STD,op3,000111,i,000000,Store Doubleword,95,B4,Load/Store,1,op40,raw,0,,rrr,std,3,rd,rs1,rs2,,end
+LDSTUB,op3,001101,i,000000,Atomic Load-Store Unsigned Byte,101,B7,Load/Store,1,op40,raw,0,,rrr,ldstub,3,rs1,rs2,rd,,end
+SWAP,op3,001111,i,000000,SWAP register with memory,102,B8,Load/Store,1,op40,raw,1,,rrr,swap,3,rs1,rs2,rd,,end
+AND,op3,000001,i,000000,And,106,B11,Integer Arith,2,op40,raw,0,,rrr,and,3,rs1,rs2,rd,,end
+ANDcc,op3,010001,i,000000,And and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,andcc,3,rs1,rs2,rd,,end
+ANDN,op3,000101,i,000000,And Not,106,B11,Integer Arith,2,op40,raw,0,,rrr,andn,3,rs1,rs2,rd,,end
+ANDNcc,op3,010101,i,000000,And Not and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,andncc,3,rs1,rs2,rd,,end
+OR,op3,000010,i,000000,Inclusive Or,106,B11,Integer Arith,2,op40,raw,0,,rrr,or,3,rs1,rs2,rd,,end
+ORcc,op3,010010,i,000000,Inclusive Or and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,orcc,3,rs1,rs2,rd,,end
+ORN,op3,000110,i,000000,Inclusive Or Not,106,B11,Integer Arith,2,op40,raw,0,,rrr,orn,3,rs1,rs2,rd,,end
+ORNcc,op3,010110,i,000000,Inclusive Or Not and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,orncc,3,rs1,rs2,rd,,end
+XOR,op3,000011,i,000000,Exclusive Or,106,B11,Integer Arith,2,op40,raw,0,,rrr,xor,3,rs1,rs2,rd,,end
+XORcc,op3,010011,i,000000,Exclusive Or and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,xorcc,3,rs1,rs2,rd,,end
+XNOR,op3,000111,i,000000,Exclusive Nor,106,B11,Integer Arith,2,op40,raw,0,,rrr,xnor,3,rs1,rs2,rd,,end
+XNORcc,op3,010111,i,000000,Exclusive Nor and modify icc,106,B11,Integer Arith,2,op40,raw,0,,rrr,xnorcc,3,rs1,rs2,rd,,end
+SLL,op3,100101,i,000000,Shift Left Logical,107,B12,Integer Arith,2,op40,raw,0,,rrr,sll,3,rs1,rs2,rd,,end
+SRL,op3,100110,i,000000,Shift Right Logical,107,B12,Integer Arith,2,op40,raw,0,,rrr,srl,3,rs1,rs2,rd,,end
+SRA,op3,100111,i,000000,Shift Right Arithmetic,107,B12,Integer Arith,2,op40,raw,0,,rrr,sra,3,rs1,rs2,rd,,end
+ADD,op3,000000,i,000000,Add,108,B13,Integer Arith,2,op40,raw,0,,rrr,add,3,rs1,rs2,rd,,end
+ADDcc,op3,010000,i,000000,Add and modify icc,108,B13,Integer Arith,2,op40,raw,0,,rrr,addcc,3,rs1,rs2,rd,,end
+ADDX,op3,001000,i,000000,Add with Carry,108,B13,Integer Arith,2,op40,raw,0,,rrr,addx,3,rs1,rs2,rd,,end
+ADDXcc,op3,011000,i,000000,Add with Carry and modify icc,108,B13,Integer Arith,2,op40,raw,0,,rrr,addxcc,3,rs1,rs2,rd,,end
+TADDcc,op3,100000,i,000000,Tagged Add and modify icc,109,B14,Integer Arith,2,op40,raw,0,,rrr,taddcc,3,rs1,rs2,rd,,end
+TADDccTV,op3,100010,i,000000,"Tagged Add, modify icc and Trap on Overflow",109,B14,Integer Arith,2,op40,raw,0,,rrr,taddcctv,3,rs1,rs2,rd,,end
+SUB,op3,000100,i,000000,Subtract,110,B15,Integer Arith,2,op40,raw,0,,rrr,sub,3,rs1,rs2,rd,,end
+SUBcc,op3,010100,i,000000,Subtract and modify icc,110,B15,Integer Arith,2,op40,raw,0,,rrr,subcc,3,rs1,rs2,rd,,end
+SUBX,op3,001100,i,000000,Subtract with Carry,110,B15,Integer Arith,2,op40,raw,0,,rrr,subx,3,rs1,rs2,rd,,end
+SUBXcc,op3,011100,i,000000,Subtract with Carry and modify icc,110,B15,Integer Arith,2,op40,raw,0,,rrr,subxcc,3,rs1,rs2,rd,,end
+TSUBcc,op3,100001,i,000000,Tagged Subtract and modify icc,111,B16,Integer Arith,2,op40,raw,0,,rrr,tsubcc,3,rs1,rs2,rd,,end
+TSUBccTV,op3,100011,i,000000,"Tagged Subtract, modify icc and Trap on Overflow",111,B16,Integer Arith,2,op40,raw,0,,rrr,tsubcctv,3,rs1,rs2,rd,,end
+MULScc,op3,100100,i,000000,Multiply Step and modify icc,112,B17,Integer Arith,2,op40,raw,0,,rrr,mulscc,3,rs1,rs2,rd,,end
+UMUL,op3,001010,i,000000,Unsigned Integer Multiply,113,B18,Integer Arith,2,op40,raw,0,,rrr,umul,3,rs1,rs2,rd,,end
+SMUL,op3,001011,i,000000,Signed Integer Multiply,113,B18,Integer Arith,2,op40,raw,0,,rrr,smul,3,rs1,rs2,rd,,end
+UMULcc,op3,011010,i,000000,Unsigned Integer Multiply and modify icc,113,B18,Integer Arith,2,op40,raw,0,,rrr,umulcc,3,rs1,rs2,rd,,end
+SMULcc,op3,011011,i,000000,Signed Integer Multiply and modify icc,113,B18,Integer Arith,2,op40,raw,0,,rrr,smulcc,3,rs1,rs2,rd,,end
+UDIV,op3,001110,i,000000,Unsigned Integer Divide,115,B19,Integer Arith,2,op40,raw,0,,rrr,udiv,3,rs1,rs2,rd,,end
+SDIV,op3,001111,i,000000,Signed Integer Divide,115,B19,Integer Arith,2,op40,raw,0,,rrr,sdiv,3,rs1,rs2,rd,,end
+UDIVcc,op3,011110,i,000000,Unsigned Integer Divide and modify icc,115,B19,Integer Arith,2,op40,raw,0,,rrr,udivcc,3,rs1,rs2,rd,,end
+SDIVcc,op3,011111,i,000000,Signed Integer Divide and modify icc,115,B19,Integer Arith,2,op40,raw,0,,rrr,sdivcc,3,rs1,rs2,rd,,end
+SAVE,op3,111100,i,000000,Save caller’s window,117,B20,Integer Arith,2,op40,raw,0,,rrr,save,3,rs1,rs2,rd,,end
+RESTORE,op3,111101,i,000000,Restore caller’s window,117,B20,Integer Arith,2,op40,raw,0,,rrr,restore,3,rs1,rs2,rd,,end
+JMPL,op3,111000,i,000000,Jump and Link,126,B25,Control Transfer,3,op40,raw,0,,rrr,jmpl,3,rs1,rs2,rd,,end
+RETT,op3,111001,i,000000,Return from Trap,127,B26,Control Transfer,3,op43,raw,0,,rr,rett,2,rs1,rs2,,,end
+TA,op3,111010,i,000000,Trap Always,129,B27,Control Transfer,3,op37,raw,0,,rr,ta,2,rs1,rs2,,,end
+TN,op3,111010,i,000000,Trap Never,129,B27,Control Transfer,3,op37,raw,1,,rr,tn,2,rs1,rs2,,,end
+TNE,op3,111010,i,000000,Trap on Not Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tne,2,rs1,rs2,,,end
+TE,op3,111010,i,000000,Trap on Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,te,2,rs1,rs2,,,end
+TG,op3,111010,i,000000,Trap on Greater,129,B27,Control Transfer,3,op37,raw,0,,rr,tg,2,rs1,rs2,,,end
+TLE,op3,111010,i,000000,Trap on Less or Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tle,2,rs1,rs2,,,end
+TGE,op3,111010,i,000000,Trap on Greater or Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tge,2,rs1,rs2,,,end
+TL,op3,111010,i,000000,Trap on Less,129,B27,Control Transfer,3,op37,raw,0,,rr,tl,2,rs1,rs2,,,end
+TGU,op3,111010,i,000000,Trap on Greater Unsigned,129,B27,Control Transfer,3,op37,raw,0,,rr,tgu,2,rs1,rs2,,,end
+TLEU,op3,111010,i,000000,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,op37,raw,0,,rr,tleu,2,rs1,rs2,,,end
+TCC,op3,111010,i,000000,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,op37,raw,0,,rr,tcc,2,rs1,rs2,,,end
+TCS,op3,111010,i,000000,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,op37,raw,0,,rr,tcs,2,rs1,rs2,,,end
+TPOS,op3,111010,i,000000,Trap on Positive,129,B27,Control Transfer,3,op37,raw,0,,rr,tpos,2,rs1,rs2,,,end
+TNEG,op3,111010,i,000000,Trap on Negative,129,B27,Control Transfer,3,op37,raw,0,,rr,tneg,2,rs1,rs2,,,end
+TVC,op3,111010,i,000000,Trap on Overflow Clear,129,B27,Control Transfer,3,op37,raw,0,,rr,tvc,2,rs1,rs2,,,end
+TVS,op3,111010,i,000000,Trap on Overflow Set,129,B27,Control Transfer,3,op37,raw,0,,rr,tvs,2,rs1,rs2,,,end
+FLUSH,op3,111011,i,000000,Flush Instruction Memory,138,B32,Load/Store,1,op43,raw,0,,rr,flush,2,rs1,rs2,,,end

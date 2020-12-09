@@ -1,0 +1,63 @@
+main ()
+   setup_globals()
+   parse_command_line ()
+   
+   read_data_file(df)
+   read_data_file(df)
+
+   make_lists_of_flat_bit_fields_in_formats (fl)
+      reorganise_formats_list (fl, hdr)
+   replace_format_specs_by_lists (il, fl)
+      get_fmt_list_from_fmt_index (fmt_index, fl)
+         get_format_given_str (fmt_str, fl)
+
+   expand_all_insns (il)
+      expand_insn (insn)
+         expand_bit_field (bitfld, insn)
+            analyse_args (bitfld, insn)
+               get_regs_list_for_given_type (arg_type)
+            do_generate (bitfld, insn, arglst)
+	       make_bit_mask (end, start)
+            do_given (bitfld, insn, arglst)
+	       make_bit_mask (end, start)
+            do_lookup (bitfld, insn, arglst)
+	       make_bit_mask (end, start)
+	       get_cond_val (insn)
+            do_range (bitfld, insn, arglst)
+	       make_bit_mask (end, start)
+            do_set (bitfld, insn, arglst)
+	       make_bit_mask (end, start)
+
+         do_final_expansion (insn)
+            build_list_of_opcodes (insn, l, bf, res, rec)
+               get_opcode (l)
+               make_comment_str (insn, other)
+               get_argnum_str (r, arg)
+               get_argnum_val (r, arg)
+               get_reg_gname (regno)
+               get_reg_name (regno)
+               get_specific_reg_names (regno)
+               get_numeric_value (strval, numval)
+               get_ancillary_register_insn_args (insn, l, bf)
+            final_expanded_insns (fe)
+            print_results (ei)
+
+---
+
+def check_and_create_if_necessary(the_dir):
+def system_setup():
+def get_mask_of_length (masklen):
+
+def set_bit (bitno, toReset):
+def make_bit_mask (end, start):
+
+def get_freg_name (regno):
+def get_coproc_reg_name (regno):
+def get_as_reg_name (regno):
+def get_reg_name (regno, regtype):
+def get_reg_gname (regno):
+
+
+
+def neat_print (l):
+
