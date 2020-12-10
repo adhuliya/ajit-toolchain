@@ -185,15 +185,12 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 		uint32_t operand2_1, uint32_t operand2_0,
 		uint32_t *result_h,  uint32_t *result_l, 
 		uint8_t* ft,
-		uint8_t *flags,
-		uint8_t half_precision_exponent_width);
+		uint8_t *flags);
 
 void execute64FpHalfAddReduce(Opcode op, uint32_t operand1_1, uint32_t operand1_0,
-		uint32_t* result_l, uint8_t* ft, uint8_t* flags,
-		uint8_t half_precision_exponent_width);
+		uint32_t* result_l, uint8_t* ft, uint8_t* flags);
 
 void execute64FpHalfConvert(Opcode op, uint32_t operand1_0,
-		uint32_t* result_l, uint8_t* ft, uint8_t* flags,
-		uint8_t half_precision_exponent_width);
+		uint32_t* result_l, uint8_t* ft, uint8_t* flags);
 //
 #endif /* EXECUTE_H_ */

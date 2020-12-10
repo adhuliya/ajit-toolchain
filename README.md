@@ -13,7 +13,6 @@ To build stay in this directory and execute:
 
   ./src/setup.sh
 
-
 To restart the build always clean the current directory first:
 
   ./src/clean.sh;./src/setup.sh;

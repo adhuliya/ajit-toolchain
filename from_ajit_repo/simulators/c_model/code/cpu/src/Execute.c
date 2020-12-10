@@ -2160,7 +2160,7 @@ uint32_t executeInstruction(
 						status_reg, &(s->reg_update_flags), 
 						flags);
 	else if(is_halfword_reduce)
-		execute64BitReduce8 (opcode, 
+		execute64BitReduce16 (opcode, 
 						operand1_0, operand1_1, 
 						operand2, 
 						result_l, 
@@ -2862,11 +2862,6 @@ uint32_t executeFPInstruction( ProcessorState* s, Opcode opcode,
 					uint32_t trap_vector, uint8_t *flags, 
 					uint8_t *ft, StatusRegisters *ptr)
 {
-	//
-	// ASR[28] keeps the exponent width for the half precision FP format.
-	//
-	uint8_t half_precision_exponent_width = s->status_reg.asr[28];
-
 	uint8_t is_itof = ((opcode >= _FiTOs_) && (opcode <= _FiTOq_));
 	uint8_t is_ftoi = ((opcode >= _FsTOi_) && (opcode <= _FqTOi_));
 	uint8_t is_ftof = ((opcode >= _FsTOd_) && (opcode <= _FqTOd_));
@@ -2903,17 +2898,14 @@ uint32_t executeFPInstruction( ProcessorState* s, Opcode opcode,
 	else if(is_fcmp)	tv = executeFloatCompare( opcode, operand2_3, operand2_2, operand2_1, operand2_0, operand1_3, operand1_2,	operand1_1, operand1_0, trap_vector, ft, &(ptr->fsr));
 	else if(is_vf)
 		execute64FloatVf (opcode, operand1_1, operand1_0, operand2_1, operand2_0,
-					result_l2, result_l1, ft, flags, 
-					half_precision_exponent_width);
+					result_l2, result_l1, ft, flags);
 	else if(is_f_half_reduce)
 	{
-		execute64FpHalfAddReduce(opcode, operand1_1, operand1_0, result_l1,ft,flags,
-						half_precision_exponent_width);
+		execute64FpHalfAddReduce(opcode, operand1_1, operand1_0, result_l1,ft,flags);
 	}
 	else if(is_f_half_convert)
 	{
-		execute64FpHalfConvert(opcode, operand1_0, result_l1,ft,flags,
-						half_precision_exponent_width);
+		execute64FpHalfConvert(opcode, operand1_0, result_l1,ft,flags);
 	}
 	return tv;
 }
