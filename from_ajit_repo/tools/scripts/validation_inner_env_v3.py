@@ -86,7 +86,7 @@ def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace
 	# call compileTosparc.py
 	command1 = "compileToSparc.ForValidation.py  " + " -E " + fileName + ".elf" + " -V " + fileName + ".vars"
 	command2 = " -H " + fileName + ".hex" + " -M " + fileName + ".mmap" + " -O " + fileName + ".objdump" + test_file_string + include_string + define_string
-        linker_opt = " -L " + ajit_project_home + "/tools/linker/validationLinkerScript.lnk"
+        linker_opt = " -L " + ajit_project_home + "/linker/validationLinkerScript.lnk"
 	command = command1 + command2 + linker_opt
 	
 	# execute compileTosparc.py
@@ -140,8 +140,8 @@ def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace
 		    	print  "Note: executing " + proc_exec + " -d -m -u 64 " + mem_map_file + " -r " + result_file + " -l " + log_file + " " + trace_option + " " + trace_file + " -w " + C_reg_write_trace + " "
 		    	return_val = subprocess.call ([proc_exec, "-d", "-u", "64", "-m", mem_map_file, "-r", result_file, "-l", log_file, trace_option, trace_file, "-w", C_reg_write_trace])
         	else:
-		    	print  "Note: executing " + proc_exec + " -d -m " + mem_map_file + " -r " + result_file + " -l " + log_file + " " 
-		    	return_val = subprocess.call ([proc_exec, "-d", "-m", mem_map_file, "-r", result_file, "-l", log_file])
+		    	print  "Note: executing " + proc_exec + " -d -m " + mem_map_file + " -r " + result_file + " -l " + log_file + " -u 64 " 
+                        return_val = subprocess.call ([proc_exec, "-d", "-m", mem_map_file, "-r", result_file, "-l", log_file, "-u 64"])
 
 
 	if return_val != 0:

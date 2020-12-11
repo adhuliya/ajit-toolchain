@@ -97,7 +97,7 @@ def setGlobals(work_dir):
    search_file = '.vprj'
 
    # path of validation_parallel2.py
-   path_validation_inner = ajit_project_home + "/tools/scripts/validation_inner_env_v3.py"
+   path_validation_inner = ajit_project_home + "/scripts/validation_inner_env_v3.py"
  
    # path joblogfile
    path_joblogfile_Aa = work_dir + "/validation.job.Aa.log.txt"
