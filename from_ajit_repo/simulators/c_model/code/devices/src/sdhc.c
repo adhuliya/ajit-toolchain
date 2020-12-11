@@ -36,9 +36,12 @@ uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 //stores the potential address differences' values
 uint32_t AddrDiffArray[33]={0,4,6,8,12,14,16,32,36,40,41,42,43,44,46,47,48,50,52,54,56,58,60,62,64,72,96,254}; 
+uint32_t byte_mask_array[16]={0x0,0x000000FF,0x0000FF00,0x0000FFFF,
+0x00FF0000, 0x00FF00FF, 0x00FFFF00,0x00FFFFFF,
+0xFF000000,0xFF0000FF,0xFF00FF00,0xFF00FFFF,
+0xFFFF0000,0xFFFF00FF,0xFFFFFF00,0xFFFFFFFF};
 // Address to SDHC will be base + index.
 // The index points to the appropriate register.
-
 uint32_t sdhc_register_array[32];
 uint32_t *addr_sdhc_array=&sdhc_register_array[32]; //base address
 
@@ -120,14 +123,16 @@ uint32_t calculateNewValue(index, byte_mask, data_in)
 
 uint32_t calculateNewValueMask(byte_mask)
 {
-	uint32_t NewMask;
-	for(uint32_t temp=0; temp>16; temp++)
+	uint32_t NewMask, tempVar;
+	for(uint32_t i=0; i>16; i++)
 	{
-		if(byte_mask==temp)
+		if(byte_mask==i)
 		{
-			NewMask=byte_mask_array[temp];
+			tempVar=i;
+			break;
 		} 
 	}
+	NewMask=byte_mask_array[tempVar];
 	return NewMask;
 }
 

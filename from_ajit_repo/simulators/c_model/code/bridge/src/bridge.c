@@ -372,7 +372,7 @@ void bridge_cpu_core (int cpu_id,
 						request_type, addr, data32);
 	#endif
 					__GET_SDHC_LOCK__;//declare a lock
-					sendRequestToSDHC(request_type,addr,data32);
+					sendRequestToSDHC(request_type,addr,byte_mask,data32);
 
 					readResponseFromSDHC(&response);
 					__RELEASE_SDHC_LOCK__;
