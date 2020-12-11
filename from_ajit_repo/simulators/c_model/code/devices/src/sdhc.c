@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 8 Dec 2020 
+last modified: 10 Dec 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -14,6 +14,7 @@ Device Registers:
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #ifdef SW
 #include <stdio.h>
 #include <unistd.h>
@@ -33,8 +34,9 @@ Device Registers:
 
 uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
-
-uint32_t numarray[33]={0,4,6,8,12,14,16,32,36,40,41,42,43,44,46,47,48,50,52,54,56,58,60,62,64,72,96,254}; // Address to SDHC will be base + index.
+//stores the potential address differences' values
+uint32_t AddrDiffArray[33]={0,4,6,8,12,14,16,32,36,40,41,42,43,44,46,47,48,50,52,54,56,58,60,62,64,72,96,254}; 
+// Address to SDHC will be base + index.
 // The index points to the appropriate register.
 
 uint32_t sdhc_register_array[32];
@@ -65,7 +67,7 @@ void register_sdhc_pipes()
 	register_pipe("BUS_to_SDHC_request_type", depth, 8, 0);
 	register_pipe("BUS_to_SDHC_addr", depth, 32, 0);  
 	register_pipe("BUS_to_SDHC_data",depth,32,0);	
-	register_pipe("BUS_to_SDHC_byte_mask",depth,8,0); // you will need a byte mask.	
+	register_pipe("BUS_to_SDHC_byte_mask",depth,8,0); // you will need a byte mask.
 	register_pipe("SDHC_to_BUS_data", depth, 32, 0);	
 	
 	set_pipe_is_read_from("BUS_to_SDHC_request_type");
@@ -95,7 +97,7 @@ uint32_t mapAddrDiffToSDHCRegArrayIndex(uint32_t AddrDiffFromUpdateRegFunction)
 	uint32_t comp=0;
 	for(uint32_t i=0;i<33;i++)
         {
-		uint32_t cmp_var = numarray[i];
+		uint32_t cmp_var = AddrDiffArray[i];
             	if(cmp_var==AddrDiffFromUpdateRegFunction)
         	{
 			comp=i;
@@ -110,10 +112,10 @@ uint32_t mapAddrDiffToSDHCRegArrayIndex(uint32_t AddrDiffFromUpdateRegFunction)
 }
 
 uint32_t calculateNewValue(index, byte_mask, data_in)
-{ //index => 0 to 126
-	uint32_t out_data;
-	out_data = (data_in & byte_mask);
-	return out_data;
+{ 
+	uint32_t return_data=sdhc_register_array[index];
+	return_data = data_in & byte_mask; 
+	return return_data;
 }
 
 uint32_t calculateNewValueMask(byte_mask)
@@ -122,27 +124,30 @@ uint32_t calculateNewValueMask(byte_mask)
 }
 
 // Bridge will generate the request.. called in the bridge.
-void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32)
+void sendRequestToSDHC(uint8_t request_type, uint32_t addr, uint32_t byte_mask, uint32_t data32)
 {
 	write_uint8 ("BUS_to_SDHC_request_type", request_type);
-	// byte mask?
-	// write_uint8 ("BUS_to_SDHC_request_type", request_type);
-
+	write_uint8 ("BUS_to_SDHC_byte_mask", byte_mask);
 	write_uint32("BUS_to_SDHC_addr",addr);
 	write_uint32 ("BUS_to_SDHC_data",data32); 
 }
-
-
 
 void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in)
 {	
 	index=mapAddrDiffToSDHCRegArrayIndex(index);
 		// calculate the new value of register at index index.
 	uint32_t updated_value = calculateNewValue(index, byte_mask, data_in);
-	uint32_t updated_mask  = calculateNewValueMask(byte_mask);
+	uint32_t updated_mask  = calculateNewValueMask(byte_mask);//?
 	sdhc_register_array[index] = (sdhc_register_array[index] & (~byte_mask)) | (updated_value & updated_mask);
+	sdhc_tx_buffer = sdhc_register_array[index];//load the updated value in a pipe
 }
 
+void readFromRegisterArray(uint32_t index,uint8_t byte_mask)
+{
+	uint32_t readValue = sdhc_register_array[index];
+	readValue = readValue & byte_mask;
+	sdhc_rx_buffer = readValue;
+}
 
 // called in the bridge.
 void readResponseFromSDHC(uint32_t* data)
@@ -163,16 +168,11 @@ void SDHC_Control()
 while(1)
 {
 		//wait for a request from processor-side
-	request_type	= read_uint8("BUS_to_SDHC_request_type");
-	byte_mask	= read_uint8("BUS_to_SDHC_byte_mask");
-  	addr = read_uint32("BUS_to_SDHC_addr");
+	request_type = read_uint8("BUS_to_SDHC_request_type");
+	byte_mask = read_uint8("BUS_to_SDHC_byte_mask");
+	addr = read_uint32("BUS_to_SDHC_addr");
 	data_in	= read_uint32("BUS_to_SDHC_data");
-
-//	uint32_t index = addr - (uint32_t)addr_sdhc_array[0];
-// 				 index = 0xFFFF400C -  0xFFFF4000 = 0x0C = 1100b i.e index = 12decimal //
-					// 0xAA=10101010 to write inside 0xFFFF400C 
-					// byte_mask  00000011
-					// sdhc_regsiter_array[5] = 0xFFFF400C	   
+	
 	uint32_t index = addr - BASE_ADDR; //calculate address of the array element in sdhc_register_array
 	if(request_type==REQUEST_TYPE_WRITE)
 	{
@@ -184,33 +184,19 @@ while(1)
 
 		// calculate the action to be performed and potentially
 		// update the register.
-		updateRegister(index, byte_mask, data_in);
-		pthread_mutex_unlock(&Sdhc_lock);
-		write_uint32("BUS_to_SDHC_data",sdhc_tx_buffer);
+	updateRegister(index, byte_mask, data_in);
+	pthread_mutex_unlock(&Sdhc_lock);
+	write_uint32("BUS_to_SDHC_data",sdhc_tx_buffer);
 	}
-	else if(request_type==REQUEST_TYPE_READ)/*In progress*/
+	else if(request_type==REQUEST_TYPE_READ)
 	{
-				{
-			//***lock the state variables***//
+	//***lock the state variables***//
 	pthread_mutex_lock(&Sdhc_lock);
-		switch (addr)
-		{
-		case ADDR_SDHC_ARG_1:
-		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 31,0,(uint32_t)data_out);
-		break;
-		case ADDR_SDHC_TRANSFER_MODE:
-		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 15,0,(uint32_t)data_out);
-		break;
-		case ADDR_SDHC_REGISTER_COMMAND:
-		sdhc_rx_buffer = setSlice32(sdhc_rx_buffer, 15,0,(uint32_t)data_out);
-		default:
-		break;	
-		}
-		pthread_mutex_unlock(&Sdhc_lock);
-			write_uint32("SDHC_to_BUS_data", sdhc_rx_buffer);
+	sdhc_rx_buffer=0;
+	readFromRegisterArray(index, byte_mask);
+	pthread_mutex_unlock(&Sdhc_lock);
+	write_uint32("SDHC_to_BUS_data", sdhc_rx_buffer);
 	}
-
-}
 }
 
 
