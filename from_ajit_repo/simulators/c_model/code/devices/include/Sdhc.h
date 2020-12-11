@@ -130,72 +130,57 @@
 //register pipes/signals used by the SDHC
 void register_sdhc_pipes();
 void sdhc_initialize();
-//start SDHC thread
 void start_sdhc_threads();
 
-// 2 threads for sdhc, one for monitoring
-//sdhc ops, another for read/write transactions
-void SDHC_Control();
-void SDHC_Read_Write();
+//Functions for register value manipulations
+uint32_t calculateNewValue();
+uint32_t calculateNewValueMask();
+void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in);//addr, bytemask, data
 
-void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint32_t data32);
+uint32_t byte_mask_array[16]={0x0,0x000000FF,0x0000FF00,0x0000FFFF,
+0x00FF0000, 0x00FF00FF, 0x00FFFF00,0x00FFFFFF,
+0xFF000000,0xFF0000FF,0xFF00FF00,0xFF00FFFF,
+0xFFFF0000,0xFFFF00FF,0xFFFFFF00,0xFFFFFFFF};
+
+// Thread for SDHC control
+void SDHC_Control();
+
+//Following functions are called from the Bridge
+void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint8_t byte_mask, uint32_t data32);
 void readResponseFromSDHC(uint32_t* data);
 
-
-
-
-
-
-
-
-
-
-
-// data structures //
-
-/* sdhc */
-typedef struct SdhcState__ {
-	// registers of SDHC
-	uint32_t argument2; //addr-offset 0x00
-	uint16_t blk_size; // 0x4
-	uint16_t blk_count; //0x6
-	uint32_t argument; //0x8
-	uint16_t tx_mode; //0xC
-	uint16_t command_reg; //0xE
-	uint32_t response0; //0x10
-	uint32_t response2; //0x14
-	uint32_t response4; //0x18
-	uint32_t response6; //0x1c
-	uint32_t buffer_data_port; //0x20
-	uint32_t present_state; //0x24
-	uint8_t host_ctrl; //ox28
-	uint8_t pwr_ctrl;//0x29
-	uint8_t blk_gap_ctrl; //0x2A 
-	uint8_t wakeup_ctrl; //0x2B
-	uint16_t clk_ctrl; //0x2C
-	uint8_t timeout_ctrl; //0x2E
-	uint8_t sw_reset; //0x2F
-	uint16_t normal_intr_status; //0x30
-	uint16_t error_intr_status; //0x32
-	uint16_t normal_intr_status_enable; //0x34
-	uint16_t error_intr_status_enable; //0x36
-	uint16_t normal_intr_signal_enable; //0x38
-	uint16_t error_intr_signal_enable; //0x3A
-	uint16_t autoCMD_error_status; //0x3C
-	uint16_t host_ctrl2; //0x3E
-	uint32_t capabilities; //0x40
-	uint16_t host_controller_version; //0xFE
-} SdhcState;
-/*Function prototypes for SDHC
-int card_insert_remove();
-void SD_detection(); 
-int buspower();
-int sdhc_sd_clk_supply();
-int sdhc_clk_stop();
-int sdhc_timeout();
-int sdhc_init_identify();*/
-void SDHC_Commands(uint8_t cmd_num);
-
+struct ArrayIndexMap
+{
+	uint32_t argument2; //SDMA Addr reg index[0]
+	uint16_t blk_size; // 0x4 				  index[1]
+	uint16_t blk_count; //0x6 		index[2]
+	uint32_t argument; //0x8 			index[3]
+	uint16_t tx_mode; //0xC 			index[4]
+	uint16_t command_reg; //0xE		index[5]
+	uint32_t response0; //0x10		index[6]
+	uint32_t response2; //0x14 		index[7]
+	uint32_t response4; //0x18 		index[8]
+	uint32_t response6; //0x1c 		index[9]
+	uint32_t buffer_data_port; //0x20 	index[10]
+	uint32_t present_state; //0x24 			index[11]
+	uint8_t host_ctrl; //ox28 		index[12]
+	uint8_t pwr_ctrl;//0x29 			index[13]
+	uint8_t blk_gap_ctrl; //0x2A 	index[14]
+	uint8_t wakeup_ctrl; //0x2B 	index[15]
+	uint16_t clk_ctrl; //0x2C 		index[16]
+	uint8_t timeout_ctrl; //0x2E 	index[17]
+	uint8_t sw_reset; //0x2F 			index[18]
+	uint16_t normal_intr_status; //0x30 index[19]
+	uint16_t error_intr_status; //0x32 	index[20]
+	uint16_t normal_intr_status_enable; //0x34 	index[21]
+	uint16_t error_intr_status_enable; //0x36 	index[22]
+	uint16_t normal_intr_signal_enable; //0x38 	index[23]
+	uint16_t error_intr_signal_enable; //0x3A 	index[24]
+	uint16_t autoCMD_error_status; //0x3C 			index[25]
+	uint16_t host_ctrl2; //0x3E 								index[26]
+	uint32_t capabilities; //0x40 							index[27]
+	uint16_t host_controller_version; //0xFE 		index[28]
+};
 
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);

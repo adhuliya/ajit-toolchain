@@ -120,11 +120,19 @@ uint32_t calculateNewValue(index, byte_mask, data_in)
 
 uint32_t calculateNewValueMask(byte_mask)
 {
-
+	uint32_t NewMask;
+	for(uint32_t temp=0; temp>16; temp++)
+	{
+		if(byte_mask==temp)
+		{
+			NewMask=byte_mask_array[temp];
+		} 
+	}
+	return NewMask;
 }
 
 // Bridge will generate the request.. called in the bridge.
-void sendRequestToSDHC(uint8_t request_type, uint32_t addr, uint32_t byte_mask, uint32_t data32)
+void sendRequestToSDHC(uint8_t request_type, uint32_t addr, uint8_t byte_mask, uint32_t data32)
 {
 	write_uint8 ("BUS_to_SDHC_request_type", request_type);
 	write_uint8 ("BUS_to_SDHC_byte_mask", byte_mask);
