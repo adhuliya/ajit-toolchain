@@ -1,12 +1,17 @@
+! Test for checking "or instruction"
+! Author : Aniket Deshmukh
+! 18 August 2015
+!
 ! NOTE : register g1 is reserved for storing the trap number.
 ! On normal exit a test should end in trap 0, so g1=0x80.
 ! Upon exit with an error condition during testing, g1=0xBAD
 
 
-.text
+
 .global main
 main:
-start:
+_start:
+
 	! Initialize PSR, enable traps.
 	! set PSR with ET=1 PS=1 S=1, all other fields=0
 	mov 0xE0, %l0	
@@ -14,85 +19,52 @@ start:
 	nop	! insert nops here because
 	nop	! writes to psr may be delayed 
 	nop	
-	
-	
+
 	!store base of trap table in TBR register
 	set	trap_table_base, %l0
 	wr	%l0, 0x0, %tbr
 	nop	! insert nops here because
 	nop	! writes to tbr may be delayed
 	nop
-	
+
 	!Initialize g1. Upon a trap, g1 should be 
 	!overwritten by the trap number
 	mov 0xBAD, %g1
 
-
 	!======================================
-	! Perform instruction test and store
+	! Instruction test
+	!
+	! instruction = OR
 
-	!=========ARITHMETIC===================
+	! OR complementary bits
+	set 0xAAAAAAAA,%g2
+	set 0xAAAAAAAA,%g3
+	set 0x55555555,%g6
+	set 0x55555555,%g7
+	rd %psr, %i0
+	ord %g2,%g6,%g4
+	rd %psr, %i1 
 
-	mov 3,%g2
-        mov 3,%g3
-        mov 5,%g4
-        mov 5,%g5
-        adddcc %g2,%g4,%o2	!o2=o3=8
- 	rd %psr, %o0		!o0=0xe0
-        addd %g3,%g5,%o4	!04=05=8
-
-        mov 5,%g2
-        mov 5,%g3
-        mov 3,%g4
-        mov 3,%g5
-        subdcc %g2,%g4,%o6	!o6=o7=2
-	rd %psr, %o1		!o1=0xe0
-        subd %g3,%g5,%l0	!l0=l1=2
-
+	! OR same bits
+	set 0xAAAAAAAA,%l0
+	set 0xAAAAAAAA,%l1
+	ord %l0,%l0,%l2 
+	rd %psr, %i2	
 
 
-	!=======SHIFT=========================	
-
-        mov 2,%g2		!shift count
-        mov 1,%g7
-        mov 1,%g6 		!Value to be shifted, put in register pair
-        mov 1,%g5
-        mov 1,%g4 		!value to be shifted by immediate input
-        slld %g7,1,%l2    	!after this, output will be l2 =2 and l3 =2
-        slld %g5,%g2,%l4  	!after this, output will be l4 =4 and l5 =4 
-
-
-        mov 2,%g2 		!shift count
-        mov 4,%g7
-        mov 4,%g6 		!Value to be shifted, put in register pair
-        mov 16,%g5
-        mov 16,%g4 		!value to be shifted by immediate input
-        srld %g7,1,%l6    	!after this, output will be l6 =2 and l7 =2
-        srld %g5,%g2,%i0  	!after this, output will be i0 =4 and i1 =4 
-
-
-        mov 2,%g2 		!shift count
-        set 0x80000001,%g7
-        set 0x80000001,%g6 	!Value to be shifted, put in register pair
-        mov 1,%g5
-        mov 1,%g4 		!value to be shifted by immediate input
-        srad %g7,1,%i2    	!after this, output will be i2 =0xc0000000 and i3 =0xc0000000
-        srad %g5,%g2,%i4  	!after this, output will be i4 =0 and i5 =0x80000000 
-
-
-        ta 0
-        nop
-	nop           	
-
-	
-	!======================================
-	!control should NOT reach here
-not_reached:
-	set 0xDEAD, %g1
 	ta 0
 	nop
 	nop
 
+	! End of test
+	!======================================
+
+	!control should NOT reach here
+	not_reached:
+	set 0xDEAD, %g1
+	ta 0
+	nop
+	nop
 
 
 

@@ -1,12 +1,16 @@
+! Test for checking "andn instruction"
+! Author : Aniket Deshmukh
+! 18 August 2015
+!
 ! NOTE : register g1 is reserved for storing the trap number.
 ! On normal exit a test should end in trap 0, so g1=0x80.
 ! Upon exit with an error condition during testing, g1=0xBAD
 
 
-.text
 .global main
 main:
-start:
+_start:
+
 	! Initialize PSR, enable traps.
 	! set PSR with ET=1 PS=1 S=1, all other fields=0
 	mov 0xE0, %l0	
@@ -14,74 +18,53 @@ start:
 	nop	! insert nops here because
 	nop	! writes to psr may be delayed 
 	nop	
-	
-	
+
 	!store base of trap table in TBR register
 	set	trap_table_base, %l0
 	wr	%l0, 0x0, %tbr
 	nop	! insert nops here because
 	nop	! writes to tbr may be delayed
 	nop
-	
+
 	!Initialize g1. Upon a trap, g1 should be 
 	!overwritten by the trap number
 	mov 0xBAD, %g1
 
-
 	!======================================
-	! Perform instruction test and store
+	! Instruction test
+	!
+	! instruction = ANDN
 
-        mov 3,%g2
-        mov 3,%g3
-        mov 5,%g4
-        mov 5,%g5
-        anddcc %g2,%g4,%g6
-	rd %psr, %o0
-        mov 2,%g2
-        mov 2,%g3
-        anddncc %g2,%g4,%o2
-	rd %psr, %o1
-	anddn %g6,%g2,%o4
-        andd  %g6,%g4,%o6
-
-
-        mov 1,%g2
-        mov 1,%g3
-        mov 5,%g4
-        mov 5,%g5
-        ordcc %g2,%g4,%g6
-        rd %psr,%l0
-        ordncc %g2,%g4,%l2
-	rd %psr, %l1
-	ordn %g6,%g2,%l4
-        ord  %g6,%g4,%l6
-
-        mov 3,%g2
-        mov 3,%g3
-        mov 5,%g4
-        mov 5,%g5
-        xordcc %g2,%g4,%g6
+	! ANDN complementary bits
+	set 0xAAAAAAAA,%g2
+	set   0xAAAAAAAA,%g3
+	set 0x55555555,%g6
+	set  0x55555555,%g7
 	rd %psr, %i0
-       	xnordcc %g2,%g4,%i2
-	rd %psr, %i1
-        xnord %g6,%g2,%i4
-	xord %g6,%g4,%i6
+	anddn %g2,%g6,%g4
+	rd %psr, %i1 
 
-   
 
-        ta 0
-        nop
-	nop           	
+	! ANDN same bits
+	set 0xAAAAAAAA,%l0
+	set 0xAAAAAAAA,%l1	
+	anddn %l0,%l0,%l2 
+	rd %psr, %i2
 
-	
-	!======================================
-	!control should NOT reach here
-not_reached:
-	set 0xDEAD, %g1
+
 	ta 0
 	nop
 	nop
 
+	! End of test
+	!======================================
+
+	!control should NOT reach here
+	not_reached:
+	set 0xDEAD, %g1
+	ta 0
+	nop
+	nop
 
 
 
@@ -362,4 +345,7 @@ SW_trap_0xfe: mov 0xfe, %g1; restore; ta 0; nop
 
 nop
 nop
+
+
+
 
