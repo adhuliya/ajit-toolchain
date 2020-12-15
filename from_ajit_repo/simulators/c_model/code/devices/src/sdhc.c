@@ -117,7 +117,7 @@ uint32_t mapAddrDiffToSDHCRegArrayIndex(uint32_t AddrDiffFromUpdateRegFunction)
 uint32_t calculateNewValue(index, byte_mask, data_in)
 { 
 	uint32_t return_data=sdhc_register_array[index];
-	return_data = data_in & byte_mask; 
+	return_data = data_in & byte_mask; //8 bit byte-mask
 	return return_data;
 }
 
@@ -146,7 +146,7 @@ void sendRequestToSDHC(uint8_t request_type, uint32_t addr, uint8_t byte_mask, u
 }
 
 void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in)
-{	
+{
 	index=mapAddrDiffToSDHCRegArrayIndex(index);
 		// calculate the new value of register at index index.
 	uint32_t updated_value = calculateNewValue(index, byte_mask, data_in);
@@ -155,10 +155,10 @@ void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in)
 	sdhc_tx_buffer = sdhc_register_array[index];//load the updated value in a pipe
 }
 
-void readFromRegisterArray(uint32_t index,uint8_t byte_mask)
+void readFromRegisterArray(uint32_t index,uint32_t updatedByteMask)
 {
 	uint32_t readValue = sdhc_register_array[index];
-	readValue = readValue & byte_mask;
+	readValue = readValue & updatedByteMask;
 	sdhc_rx_buffer = readValue;
 }
 
@@ -206,7 +206,8 @@ while(1)
 	//***lock the state variables***//
 	pthread_mutex_lock(&Sdhc_lock);
 	sdhc_rx_buffer=0;
-	readFromRegisterArray(index, byte_mask);
+	uint32_t updatedByteMask = calculateNewValueMask(byte_mask);
+	readFromRegisterArray(index, updatedByteMask);//when bridge wants to read data from sdhc
 	pthread_mutex_unlock(&Sdhc_lock);
 	write_uint32("SDHC_to_BUS_data", sdhc_rx_buffer);
 	}
