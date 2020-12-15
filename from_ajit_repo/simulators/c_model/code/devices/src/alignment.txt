@@ -59,3 +59,149 @@ Notes on alignment
 	So you read a 16-bit value from your register
 	and put it in the bottom half of the return 32-bit
 	value.
+
+
+
+
+From the driver's perspective, you have the following
+instructions available
+
+Store instructions available..
+	stub
+	stsb
+	stuh
+	stsh
+	st
+	std
+
+Load instructions available
+
+	ldub
+	ldsb
+	lduh
+	ldsh
+	ld
+	ldd
+
+
+In your C code (of the driver),
+
+	*((uint8_t*) ptr) = a;
+		this will generate an stub instruction
+		and ptr can be any value.
+
+	*((int8_t*) ptr) = a;
+		this will generate an stsb instruction
+		and ptr can be any value.
+
+	*((uint16_t*) ptr) = a;
+		this will generate an stuh instruction
+		and ptr must be even.
+
+	*((int16_t*) ptr) = a;
+		this will generate an stsh instruction
+		and ptr must be even.
+
+	*((uint32_t*) ptr) = a;
+		this will generate an st instruction
+		and ptr must be a multiple of 4.
+
+	*((int32_t*) ptr) = a;
+		this will generate an st instruction
+		and ptr must be a multiple of 4.
+
+	*((uint64_t*) ptr) = a;
+		this will generate an std instruction
+		and ptr must be a multiple of 8.
+
+	*((int64_t*) ptr) = a;
+		this will generate an std instruction
+		and ptr must be a multiple of 8.
+
+
+	Similarly for loads
+
+		uint8_t a = *((uint8_t*) ptr);
+			etc..
+
+
+Most natural data structure for your model??
+
+
+	Various registers
+	of different sizes       <-->  registers which are multiples of bytes
+
+	CPU view
+
+	typedef struct __sdhcRegistersFromPovOfCpu {
+		uint8_t A[8];
+		uint8_t B[6];
+		uint8_t C;
+		uint8_t D[16];
+		....
+
+	} sdhcRegistersFromPovOfCpu;
+
+	This will generate a memory layout as follows
+
+	addr.              content
+	0		   A[0]
+	1		   A[1]
+	2		   A[2]
+	3		   A[3]
+	..
+        7		   A[7]
+	8		   B[0]
+	9 		   B[1]
+	..
+	13		   B[5]
+	14		   C
+	15		   D[0]
+	16		   D[1]
+	...
+        30		   D[16]
+
+	Then you can use memcpy in the driver..
+
+	you want to write 48 bytes from some command array in the
+	driver  into register W which is in the sdhc controller.
+
+	memcpy((void*) aW, (void*) cmd_array, 48);
+
+
+
+	Your view coud be 
+	typedef struct __sdhcInternalViewOfRegisters {
+
+		uint64_t A;	 // cpu address from 0 to  7
+		uint64_t D0;	 // 15 to 22
+		uint64_t D1;	 // 23 to 30
+
+		uint32_t B0;	 // from 8-11
+		uint16_t B1;	 // 12-13
+		uint8_t C;	 // 14
+
+	} sdhcInternalViewOfRegisters;
+
+
+	It is seeing loads and stores
+
+
+
+
+
+	in your model
+
+		you see a cpu store to your registers
+		from the cpu address you figure out which part of which register
+		you update your register
+		if special action is indicated take it
+
+
+
+		you a cpu load from one of your registers
+		from the cpu address you figure out which part of which register
+		you extract the value from your register and send it to the cpu
+		if special action is indicated, take it.
+
+		
