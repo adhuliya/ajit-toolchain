@@ -74,6 +74,8 @@ Store instructions available..
 	st
 	std
 
+	they are all physically 8-byte stores with an 8-bit bytemask.
+
 Load instructions available
 
 	ldub
