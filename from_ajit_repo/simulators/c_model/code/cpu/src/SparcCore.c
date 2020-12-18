@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 #include "SparcCore.h"
 #include "Opcodes.h"
@@ -60,7 +61,7 @@ void  	printCpuStatistics (ProcessorState* s)
 {
 	fprintf(stderr,"\nStatistics for CPU %d:\n", s->cpu_id);
 
-	fprintf(stderr,"    number-of-instructions-executed = %llu\n", 
+	fprintf(stderr,"    number-of-instructions-executed = %" PRIu64 "\n", 
 						s->num_instructions_executed);
 	fprintf(stderr,"    number-of-traps  = %u\n", 
 						s->num_traps);

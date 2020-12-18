@@ -8,6 +8,7 @@
 #include "Flags.h"
 #include "Traps.h"
 #include "Ancillary.h"
+#include "Decode.h"
 #include "Execute.h"
 #include "CpuInterface.h"
 #include "ImplementationDependent.h"
@@ -133,15 +134,16 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 	uint64_t data64;
 	if(!is_trap1)	
 	{
+		uint8_t byte_mask = calculateReadByteMask(op, address);
 		if(lock_flag)
 		{
 			lockAndReadData64(state->mmu_state, state->dcache, 
-					addr_space, address, &mae1, &data64);
+					addr_space, byte_mask,  address, &mae1, &data64);
 		}
 		else
 		{
 			readData64(state->mmu_state, state->dcache, 
-					addr_space, address, &mae1, &data64);
+					addr_space, byte_mask, address, &mae1, &data64);
 		}
 
 		if (getBit32(address,2)==1) data= data64; else data = (data64)>>32;
@@ -470,8 +472,17 @@ uint32_t executeLdstub(Opcode op,
 	if(!is_privileged)
 		testAndSetBlockLdstFlags(state, 1, 0);
 	uint8_t mae1=0;
+
+	uint8_t byte_mask = 0;
+
+	uint8_t address_10 = getSlice32(address, 1, 0);
+	if(address_10 == 0) byte_mask = 0x8 ;
+	if(address_10 == 1) byte_mask = 0x4 ;
+	if(address_10 == 2) byte_mask = 0x2 ;
+	if(address_10 == 3) byte_mask = 0x1 ;
+
 	if(!is_privileged)
-		lockAndReadData(state->mmu_state, state->dcache, addr_space, address, &mae1,&data);
+		lockAndReadData(state->mmu_state, state->dcache, addr_space, byte_mask, address, &mae1,&data);
 
 	if(mae1)
 	{
@@ -479,17 +490,8 @@ uint32_t executeLdstub(Opcode op,
 		tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
 	}
 
-	uint8_t byte_mask = 0;
 	uint8_t is_trap = getBit32(tv, _TRAP_);
-	uint8_t address_10 = getSlice32(address, 1, 0);
-	if(!is_trap)
-	{
-		
-	 	if(address_10 == 0) byte_mask = 0x8 ;
-	 	if(address_10 == 1) byte_mask = 0x4 ;
-	 	if(address_10 == 2) byte_mask = 0x2 ;
-	 	if(address_10 == 3) byte_mask = 0x1 ;
-	}
+
 
 	uint8_t mae2 = 0;
 	if(!is_trap)
@@ -603,7 +605,8 @@ uint32_t executeSwap( Opcode op,
 	{
 		// wait until BlockLdstByte and BlockLdstWord are both 0
 		testAndSetBlockLdstFlags(state, 0, 1);
-		lockAndReadData(state->mmu_state,  state->dcache, addr_space, address, &mae1, &word);
+		uint8_t load_byte_mask = ((address & 0x4) == 0) ? 0xf0 : 0x0f;
+		lockAndReadData(state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
 		if(mae1)
 		{
 			tv = setBit32(tv, _TRAP_, 1) ;
@@ -713,10 +716,10 @@ uint32_t executeCswap( Opcode op,
 	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
 	{
 		uint32_t read_data;
-
 		lockAndReadData(state->mmu_state,  
 					state->dcache, 
 					addr_space, 
+					0xF,
 					address,
 					&mae, 	
 					&read_data);
