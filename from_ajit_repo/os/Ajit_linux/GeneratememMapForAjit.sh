@@ -80,6 +80,10 @@ echo "  Combining the bootloader executable and the kernel image "
 echo "  into a single memory-map"
 echo "================================================="
 
+if [[ ! -d Generated_memory_map ]]
+then
+  mkdir Generated_memory_map
+fi
 cp Ajit_bootloader/output/AjitBootloader.elf ./Generated_memory_map/
 cp Ajit_bootloader/output/AjitBootloader_*.txt ./Generated_memory_map/
 cp buildroot-2014.08/output/images/vmlinux ./Generated_memory_map/

@@ -1,11 +1,19 @@
 import os
 
 env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIB=AHIR_RELEASE+"/lib"
+
+
 COMPILATION_FLAGS = ' -g '
 
-env.Append(CPPPATH = './src/:./include:')
+env.Append(CPPPATH = './src/:./include:./aa2clib/include:')
+env.Append(CPPPATH = AHIR_INCLUDE)
+
 env.Library('./lib/libHalfPrecisionFloat', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
 
-LIBS=[ 'HalfPrecisionFloat']
-LIBPATH=[ './lib' ]
+LIBS=[ 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors', 'SockPipes',  'PipeHandler', 'pthread']
+LIBPATH=[ './lib', './aa2clib/lib', AHIR_LIB ]
 env.Program('./bin/test_half', './util/test_half.c', CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);

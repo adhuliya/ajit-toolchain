@@ -24,3 +24,5 @@ export PYTHONPATH=$ROOTDIR/tools/scripts:$PYTHONPATH
 # $pwd/tools/cross-compiler/buildroot_cross_compiler/usr/bin/sparc-linux-readelf
 # $pwd/tools/cross-compiler/buildroot_cross_compiler/usr/bin/sparc-linux-as
 
+# not yet defined.
+export AJIT_AA_VALIDATION_EXECUTABLE_LOCATION=UNDEFINED

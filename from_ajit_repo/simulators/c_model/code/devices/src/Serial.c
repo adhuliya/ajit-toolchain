@@ -113,6 +113,7 @@
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"
 #include "Ancillary.h"
+#include "Device_utils.h"
 
 
 
@@ -178,7 +179,7 @@ void initialize_serial()
 	Rx_full=0;
 	Rx_interrupt_enable=0;
   
-	Rx_buffer=0;
+	Rx_buffer=0x0;
 	Tx_buffer=0;
   	Rx_STATE=RX_DISABLED;
 	Tx_STATE=TX_DISABLED;
@@ -210,25 +211,11 @@ void register_serial_pipes()
 	set_pipe_is_read_from("CONSOLE_to_SERIAL_RX");
 
 	depth=1;
-	//pipes between memoryAccess thread and the Serial device
-	register_pipe("BUS_to_SERIAL_request_type", depth, 8, 0);
-  	register_pipe("BUS_to_SERIAL_addr", depth, 32, 0);
-	register_pipe("BUS_to_SERIAL_data", depth, 32, 0);
-	register_pipe("SERIAL_to_BUS_data", depth, 32, 0);
-	
-	set_pipe_is_read_from("BUS_to_SERIAL_request_type");
-  	set_pipe_is_read_from("BUS_to_SERIAL_addr");
-	set_pipe_is_read_from("BUS_to_SERIAL_data");
-	
-	//the memory access thread writes to these pipes
-	set_pipe_is_written_into("BUS_to_SERIAL_request_type");
-  	set_pipe_is_written_into("BUS_to_SERIAL_addr");
-	set_pipe_is_written_into("BUS_to_SERIAL_data");
-	
-	register_pipe("SERIAL_to_BUS_data", depth, 32, 0);
-	set_pipe_is_written_into("SERIAL_to_BUS_data");
-	//the memory thread reads from this pipe 
-	set_pipe_is_read_from("SERIAL_to_BUS_data");
+	register_pipe("peripheral_bridge_to_serial_request", depth,  64, 0);
+	register_pipe("serial_to_peripheral_bridge_response", depth, 32, 0);
+
+	set_pipe_is_read_from("peripheral_bridge_to_serial_request");
+	set_pipe_is_written_into("serial_to_peripheral_bridge_response");
 }
 
 void start_serial_threads()
@@ -248,33 +235,30 @@ void start_serial_threads()
 //Control thread. Handles CPU requests
 void Serial_Control()
 {
-	uint8_t  request_type;
-	uint32_t addr;
-	uint32_t data_in=0;
-	uint32_t data_out=0;
-
 
 	while(1)
 	{
 		//wait for a request from processor-side
-		request_type	= read_uint8("BUS_to_SERIAL_request_type");
-    		addr		= read_uint32("BUS_to_SERIAL_addr");
-		data_in		= read_uint32("BUS_to_SERIAL_data");
+		uint8_t rwbar, byte_mask;
+		uint32_t addr, data_in;
+		getPeripheralAccessCommand("peripheral_bridge_to_serial_request",
+							&rwbar, &byte_mask, &addr, &data_in);
 		
-	
-		
-		if(request_type==REQUEST_TYPE_WRITE)
+		uint32_t data_out=0;
+		if(!rwbar)
 		{
 			
 			//***lock the state variables***
 			pthread_mutex_lock(&Serial_lock);
 			
-			if(addr==ADDR_SERIAL_CONTROL_REGISTER)
+			if(addr==(0xffffff & ADDR_SERIAL_CONTROL_REGISTER))
 			{
+				uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
+
 				//Cpu has written a new control word
-				Tx_enable = getBit32(data_in, 0);	
-        			Rx_enable = getBit32(data_in, 1);
-        			Rx_interrupt_enable = getBit32(data_in, 2);
+				Tx_enable = getBit32(data_in_masked, 0);	
+        			Rx_enable = getBit32(data_in_masked, 1);
+        			Rx_interrupt_enable = getBit32(data_in_masked, 2);
 
               			//Tx_ full and Rx_full are read only bits, 
 				//and are updated upon reads/writes to Tx and Rx registers
@@ -285,7 +269,7 @@ void Serial_Control()
 				{
 					Tx_STATE = TX_ENABLED;
 					#ifdef SERIAL_DEBUG
-					printf("\nSERIAL TX: Changing state to TX_ENABLED\n");
+					fprintf(stderr, "\nSERIAL TX: Changing state to TX_ENABLED\n");
 					#endif
 				}
 				else if(Tx_STATE==TX_ENABLED  && Tx_enable==0) 
@@ -293,7 +277,7 @@ void Serial_Control()
 					Tx_STATE = TX_DISABLED;
 					Tx_full=0;
 					#ifdef SERIAL_DEBUG
-					printf("\nSERIAL TX: Changing state to TX_DISABLED\n");
+					fprintf(stderr, "\nSERIAL TX: Changing state to TX_DISABLED\n");
 					#endif
 				}
 				
@@ -303,7 +287,7 @@ void Serial_Control()
 					Rx_STATE = RX_ENABLED;
 					Rx_full=0;
 					#ifdef SERIAL_DEBUG
-					printf("\nSERIAL RX: Changing state to RX_ENABLED\n");
+					fprintf(stderr,"\nSERIAL RX: Changing state to RX_ENABLED\n");
 					#endif
 				}
 				else if(Rx_STATE==RX_DATA_RECEIVED && Rx_enable==0) 
@@ -316,29 +300,31 @@ void Serial_Control()
 					write_uint8("SERIAL_to_IRC_INT", SERIAL_INT_OUT);
 					
 					#ifdef SERIAL_DEBUG
-					printf("\nSERIAL RX: Changing state to RX_DISABLED\n");
+					fprintf(stderr, "\nSERIAL RX: Changing state to RX_DISABLED\n");
 					#endif
 				}
 			}
-			else if(addr==ADDR_SERIAL_TX_REGISTER)
+			else if(addr== (0xffffff & ADDR_SERIAL_TX_REGISTER))
 			{
+
 				if(Tx_STATE==TX_ENABLED)
 				{				
-					//write to Tx register
-					//Choose a byte from the 32b data line based on the address
-					//of the Tx register
-					switch(ADDR_SERIAL_TX_REGISTER %4)
+					//
+					//  write to Tx register: The address is word aligned, but
+					//  Tx register is a byte.
+					//
+					switch(byte_mask)
 					{
-						case 0 : {Tx_buffer  = getSlice32(data_in, 31, 24); break;}
-						case 1 : {Tx_buffer  = getSlice32(data_in, 23, 16); break;}
-						case 2 : {Tx_buffer  = getSlice32(data_in, 15, 8 ); break;}						 
-						case 3 : {Tx_buffer  = getSlice32(data_in,  7, 0 ); break;}
+						case 8 : {Tx_buffer  = getSlice32(data_in, 31, 24); break;}
+						default:
+							fprintf(stderr,"Error: write to serial tx must be to a word-aligned byte\n");
+							break;
 					}
 					Tx_full = 1;
 					Tx_STATE = TX_TRANSMITTING;
 
 					#ifdef SERIAL_DEBUG
-					printf("\nSERIAL: data 0x%x written to Tx register\n",Tx_buffer);
+					fprintf(stderr, "\nSERIAL: data 0x%x written to Tx register\n",Tx_buffer);
 					#endif
 
 				}
@@ -348,33 +334,30 @@ void Serial_Control()
 			//***unlock the state variables***
 			pthread_mutex_unlock(&Serial_lock);
 			
-			//Ignore writes to Rx register.
 			//Send ack to the cpu
       			data_out = 0;
-			write_uint32("SERIAL_to_BUS_data", data_out);
 		}
-		else if(request_type==REQUEST_TYPE_READ)
+		else 
 		{
       			
 			//***lock the state variables***
 			pthread_mutex_lock(&Serial_lock);
 			
-			if(addr==ADDR_SERIAL_CONTROL_REGISTER)
+			if(addr== (0xffffff & ADDR_SERIAL_CONTROL_REGISTER))
 			{
 				//Send the contents of control word to cpu
 				data_out = ((uint32_t)Rx_full<<4 ) | ( (uint32_t)Tx_full<<3) | ((uint32_t)Rx_interrupt_enable<<2) | ((uint32_t)Rx_enable<<1) | (uint32_t)Tx_enable;
 			
 			}
-			else if(addr==ADDR_SERIAL_RX_REGISTER)
+			else if(addr==(0xffffff & ADDR_SERIAL_RX_REGISTER))
 			{				
-				//choose a byte in the 32b data line
-				//to place Rx contents, depending on its address
-				switch(ADDR_SERIAL_RX_REGISTER%4)
+				// The address is always assumed to be word aligned.  So the 
+				// Rx buffer is placed at the most significant byte.
+				switch(byte_mask)
 				{
-					case 0 : {data_out = setSlice32(0, 31,24,(uint32_t)Rx_buffer); break;}
-					case 1 : {data_out = setSlice32(0, 23,16,(uint32_t)Rx_buffer); break;}
-					case 2 : {data_out = setSlice32(0, 15, 8,(uint32_t)Rx_buffer); break;}
-					case 3 : {data_out = setSlice32(0,  7, 0,(uint32_t)Rx_buffer); break;}
+					case 8 : {data_out = setSlice32(0, 31,24,(uint32_t)Rx_buffer); break;}
+					default:
+						fprintf(stderr,"Error: read is not a word-aligned byte for serial rx register\n");
 				}
 				if(Rx_STATE==RX_DATA_RECEIVED) 
 				{
@@ -385,12 +368,12 @@ void Serial_Control()
 					write_uint8("SERIAL_to_IRC_INT", SERIAL_INT_OUT);
 				}
 				#ifdef SERIAL_DEBUG
-				printf("\nSERIAL: data=0x%x received from Rx register\n",data_out);
+				fprintf(stderr,"\nSERIAL: data=0x%x received from Rx register\n",data_out);
 				#endif
 
 			
 			}
-      			else if(addr==ADDR_SERIAL_TX_REGISTER)
+      			else if(addr==(0xffffff & ADDR_SERIAL_TX_REGISTER))
 			{		
         			//choose a byte in the 32b data line
 				//to place Tx contents, depending on its address
@@ -407,16 +390,18 @@ void Serial_Control()
 			//***unlock the state variables***
 			pthread_mutex_unlock(&Serial_lock);
 		
-			//send response to the cpu
-			write_uint32("SERIAL_to_BUS_data", data_out);
 
 		}
-		#ifdef SERIAL_DEBUG	
-		printf("\nSERIAL_CONTROL: Received request_type= ");
-		if(request_type==0x1) printf("READ"); else printf("WRITE");
-		printf(", addr=0x%x, data_in=0x%x, data_out=0x%x", addr,data_in,data_out);
-		#endif
+#ifdef SERIAL_DEBUG	
+		fprintf(stderr, "\nSERIAL_CONTROL: Received request_type= ");
 
+		if(request_type==0x1) fprintf(stderr, "READ"); else fprintf(stderr, "WRITE");
+
+		fprintf(stderr, ", addr=0x%x, data_in=0x%x, data_out=0x%x", addr,data_in,data_out);
+#endif
+
+		//send response to the cpu
+		sendPeripheralResponse("serial_to_peripheral_bridge_response", data_out);
 	}	
 }
 
@@ -436,13 +421,13 @@ void Serial_Tx()
 		tx_state  =Tx_STATE;
 		//***unlock the state variables***
 		pthread_mutex_unlock(&Serial_lock);
-		
-		
+
+
 		if(tx_state==TX_TRANSMITTING)
 		{
 			//transmit a byte
 			write_uint8("SERIAL_TX_to_CONSOLE", Tx_buffer);
-			
+
 
 			//***lock the state variables***
 			pthread_mutex_lock(&Serial_lock);
@@ -482,24 +467,24 @@ void Serial_Rx()
 
 		if(rx_state==RX_ENABLED)
 		{
-			
+
 			//wait for data on the Rx pipe
 			rx_data = read_uint8("CONSOLE_to_SERIAL_RX");
-			#ifdef SERIAL_DEBUG
-			printf("\nSERIAL RX: character read on serial Rx line =%c\n",rx_data);
-			#endif
-		
+#ifdef SERIAL_DEBUG
+			fprintf(stderr,"\nSERIAL RX: character read on serial Rx line =%c\n",rx_data);
+#endif
+
 			//***lock state variables***
 			pthread_mutex_lock(&Serial_lock);
 
-			#ifdef SERIAL_DEBUG
-			printf("\nSERIAL : Changing state to RX_DATA_RECEIVED\n");
-			#endif
+#ifdef SERIAL_DEBUG
+			fprintf(stderr,"\nSERIAL : Changing state to RX_DATA_RECEIVED\n");
+#endif
 			Rx_STATE = RX_DATA_RECEIVED;
 			Rx_full=1;
 			Rx_buffer=rx_data;
 
-			
+
 			//If Rx_interrupt_enable=1, we interrupt the cpu.
 			if(rx_interrupt_enable)
 			{

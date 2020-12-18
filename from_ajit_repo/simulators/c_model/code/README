@@ -1,11 +1,9 @@
-WARNING:  this document is obsolete..  will be updated.
-
-
 This folder contains C models of components in the AJIT processor,
 and testbenches for them.
 
 
 CONTENTS:
+	documentation	: documentation of component interfaces
 	cpu		: sources and library for cpu model
 	cache		: sources and library for cache model
 	mmu		: memory management unit 

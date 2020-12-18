@@ -8,6 +8,7 @@
 #include "Flags.h"
 #include "Traps.h"
 #include "Ancillary.h"
+#include "Decode.h"
 #include "Execute.h"
 #include "CpuInterface.h"
 #include "ImplementationDependent.h"
@@ -133,15 +134,16 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 	uint64_t data64;
 	if(!is_trap1)	
 	{
+		uint8_t byte_mask = calculateReadByteMask(op, address);
 		if(lock_flag)
 		{
 			lockAndReadData64(state->mmu_state, state->dcache, 
-					addr_space, address, &mae1, &data64);
+					addr_space, byte_mask,  address, &mae1, &data64);
 		}
 		else
 		{
 			readData64(state->mmu_state, state->dcache, 
-					addr_space, address, &mae1, &data64);
+					addr_space, byte_mask, address, &mae1, &data64);
 		}
 
 		if (getBit32(address,2)==1) data= data64; else data = (data64)>>32;
@@ -470,8 +472,17 @@ uint32_t executeLdstub(Opcode op,
 	if(!is_privileged)
 		testAndSetBlockLdstFlags(state, 1, 0);
 	uint8_t mae1=0;
+
+	uint8_t byte_mask = 0;
+
+	uint8_t address_10 = getSlice32(address, 1, 0);
+	if(address_10 == 0) byte_mask = 0x8 ;
+	if(address_10 == 1) byte_mask = 0x4 ;
+	if(address_10 == 2) byte_mask = 0x2 ;
+	if(address_10 == 3) byte_mask = 0x1 ;
+
 	if(!is_privileged)
-		lockAndReadData(state->mmu_state, state->dcache, addr_space, address, &mae1,&data);
+		lockAndReadData(state->mmu_state, state->dcache, addr_space, byte_mask, address, &mae1,&data);
 
 	if(mae1)
 	{
@@ -479,17 +490,8 @@ uint32_t executeLdstub(Opcode op,
 		tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
 	}
 
-	uint8_t byte_mask = 0;
 	uint8_t is_trap = getBit32(tv, _TRAP_);
-	uint8_t address_10 = getSlice32(address, 1, 0);
-	if(!is_trap)
-	{
-		
-	 	if(address_10 == 0) byte_mask = 0x8 ;
-	 	if(address_10 == 1) byte_mask = 0x4 ;
-	 	if(address_10 == 2) byte_mask = 0x2 ;
-	 	if(address_10 == 3) byte_mask = 0x1 ;
-	}
+
 
 	uint8_t mae2 = 0;
 	if(!is_trap)
@@ -603,7 +605,8 @@ uint32_t executeSwap( Opcode op,
 	{
 		// wait until BlockLdstByte and BlockLdstWord are both 0
 		testAndSetBlockLdstFlags(state, 0, 1);
-		lockAndReadData(state->mmu_state,  state->dcache, addr_space, address, &mae1, &word);
+		uint8_t load_byte_mask = ((address & 0x4) == 0) ? 0xf0 : 0x0f;
+		lockAndReadData(state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
 		if(mae1)
 		{
 			tv = setBit32(tv, _TRAP_, 1) ;
@@ -713,10 +716,10 @@ uint32_t executeCswap( Opcode op,
 	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
 	{
 		uint32_t read_data;
-
 		lockAndReadData(state->mmu_state,  
 					state->dcache, 
 					addr_space, 
+					0xF,
 					address,
 					&mae, 	
 					&read_data);
@@ -2160,7 +2163,7 @@ uint32_t executeInstruction(
 						status_reg, &(s->reg_update_flags), 
 						flags);
 	else if(is_halfword_reduce)
-		execute64BitReduce8 (opcode, 
+		execute64BitReduce16 (opcode, 
 						operand1_0, operand1_1, 
 						operand2, 
 						result_l, 
@@ -2862,11 +2865,6 @@ uint32_t executeFPInstruction( ProcessorState* s, Opcode opcode,
 					uint32_t trap_vector, uint8_t *flags, 
 					uint8_t *ft, StatusRegisters *ptr)
 {
-	//
-	// ASR[28] keeps the exponent width for the half precision FP format.
-	//
-	uint8_t half_precision_exponent_width = s->status_reg.asr[28];
-
 	uint8_t is_itof = ((opcode >= _FiTOs_) && (opcode <= _FiTOq_));
 	uint8_t is_ftoi = ((opcode >= _FsTOi_) && (opcode <= _FqTOi_));
 	uint8_t is_ftof = ((opcode >= _FsTOd_) && (opcode <= _FqTOd_));
@@ -2903,17 +2901,14 @@ uint32_t executeFPInstruction( ProcessorState* s, Opcode opcode,
 	else if(is_fcmp)	tv = executeFloatCompare( opcode, operand2_3, operand2_2, operand2_1, operand2_0, operand1_3, operand1_2,	operand1_1, operand1_0, trap_vector, ft, &(ptr->fsr));
 	else if(is_vf)
 		execute64FloatVf (opcode, operand1_1, operand1_0, operand2_1, operand2_0,
-					result_l2, result_l1, ft, flags, 
-					half_precision_exponent_width);
+					result_l2, result_l1, ft, flags);
 	else if(is_f_half_reduce)
 	{
-		execute64FpHalfAddReduce(opcode, operand1_1, operand1_0, result_l1,ft,flags,
-						half_precision_exponent_width);
+		execute64FpHalfAddReduce(opcode, operand1_1, operand1_0, result_l1,ft,flags);
 	}
 	else if(is_f_half_convert)
 	{
-		execute64FpHalfConvert(opcode, operand1_0, result_l1,ft,flags,
-						half_precision_exponent_width);
+		execute64FpHalfConvert(opcode, operand1_0, result_l1,ft,flags);
 	}
 	return tv;
 }
