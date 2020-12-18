@@ -1,0 +1,35 @@
+
+// helpers
+void sendCommandToSdhc(addr, data etc)
+void receiveResponseFromSdhc(*data, *flags....)
+
+
+
+
+// tests..
+int run_test_1(...)
+{
+	// send command to sdhc
+	
+	// get response from sdhc
+
+	// check for other things
+	// for e.g. interrupt
+	// or some register contents.
+}
+
+
+// test algorithm
+void tester()
+{
+	int err = 0;
+	err = run_test_1(...) || err;
+	err = run_test_2(...) || err;
+	....
+	err = run_test_n(...) || err;
+
+	if(err)
+		fprintf(stderr,"FAILURE\n");
+	else
+		fprintf(stderr,"SUCCESS\n");
+}
