@@ -117,10 +117,10 @@ void SDHC_CPU_Control()
 		if(!rwbar)
 		{
 		
-		//***lock the state variables***
-		pthread_mutex_lock(&Sdhc_lock);	
-		
-		if((addr<=0xff3300)&&(addr>=0xff33ff))
+			//***lock the state variables***
+			pthread_mutex_lock(&Sdhc_lock);	
+			
+			if((addr<=0xff3300)&&(addr>=0xff33ff))
 			{
 				updateRegister(data_in,addr,byte_mask);
 			}
@@ -134,7 +134,7 @@ void SDHC_Internal()
 {
 	void action_arg2()
 	{
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+
 	}
 	void action_blksize()
 	{
