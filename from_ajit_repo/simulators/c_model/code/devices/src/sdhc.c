@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 21 Dec 2020 
+last modified: 22 Dec 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -32,7 +32,7 @@ Device Registers:
 uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 uint8_t SDHC_INT_OUT;
-CPUViewOfSDHCRegArray *cpu_reg_view;
+
 // **** Thread declarations ******//
 void SDHC_CPU_Control();
 DEFINE_THREAD(SDHC_CPU_Control);
@@ -82,12 +82,21 @@ void start_sdhc_threads()
 
 void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask)
 {
+	CPUViewOfSDHCRegArray cpu_reg_view;
+
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
-	if(addr == (0xffffff & 0xff330C))
-		{
-			uint16_t temp = getSlice32(data_in_masked,7,0);
-			cpu_reg_view.tx_mode = temp; 
-		}
+	if (addr== (0xffffff & 0xff3300))
+	{
+	
+	}
+
+	else if(addr == (0xffffff & 0xff330C))
+	{
+	uint8_t temp1 = getSlice32(data_in_masked,7,0);
+	cpu_reg_view.tx_mode[0] = temp1;
+	uint8_t temp2 = getSlice32(data_in_masked,15,8);
+	cpu_reg_view.tx_mode[1] = temp2;
+	}
 //to be used soon:	sdhc_tx_buffer = 1;//load the updated value in a pipe
 }
 
@@ -99,20 +108,18 @@ void SDHC_CPU_Control()
 	uint32_t addr, data_in;
 	
 	getPeripheralAccessCommand("peripheral_bridge_to_serial_request",
-		&rwbar, &byte_mask, &addr, &data_in);
+	&rwbar, &byte_mask, &addr, &data_in);
 	uint32_t data_out=0;
 	
-	if(!rwbar)
-	{
-	//***lock the state variables***
-	pthread_mutex_lock(&Sdhc_lock);	
-	if((addr<=0xff3300)&&(addr>=0xff33ff))
-	{
-		updateRegister(data_in,addr,byte_mask);
-	}
-
-	}
-
+		if(!rwbar)
+		{
+		//***lock the state variables***
+		pthread_mutex_lock(&Sdhc_lock);	
+		if((addr<=0xff3300)&&(addr>=0xff33ff))
+			{
+				updateRegister(data_in,addr,byte_mask);
+			}
+		}
 	}
 }
 
