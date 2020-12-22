@@ -17,7 +17,7 @@
 #include "InterruptController.h"
 #include "bridge.h"
 #include "memory.h"
-
+#include "Sdhc.h"
 extern int global_verbose_flag;
 
 bridgeTargets bridge_targets;

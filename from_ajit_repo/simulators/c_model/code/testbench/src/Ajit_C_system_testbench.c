@@ -365,7 +365,8 @@ int main(int argc, char **argv)
 		addPeripheral("irc", 0xFFFF3000, 0xFFFF3008);	 // interrupt controller.
 		addPeripheral("timer", 0xFFFF3100, 0xFFFF3108);	 // timer
 		addPeripheral("serial", 0xFFFF3200, 0xFFFF32FF); // serial
-		addMem ("uppermem", 0x3, 0xFFFF3300, 0xFFFFFFFF);// upper mem (for stack).	
+		addPeripheral("sdhc", 0xFFFF3300, 0xFFFF33FF); //sdhc
+		addMem ("uppermem", 0x3, 0xFFFF3400, 0xFFFFFFFF);// upper mem (for stack).	
 	}
 
 

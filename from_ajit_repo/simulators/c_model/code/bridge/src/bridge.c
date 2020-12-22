@@ -17,6 +17,7 @@
 #include "InterruptController.h"
 #include "bridge.h"
 #include "memory.h"
+#include "Sdhc.h"
 				
 char *biu_to_rlut_pipe_names[] = {"BIU_to_RLUT_0", "BIU_to_RLUT_1", "BIU_to_RLUT_2", "BIU_to_RLUT_3"};
 
