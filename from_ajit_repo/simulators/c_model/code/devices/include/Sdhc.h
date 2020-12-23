@@ -139,8 +139,8 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask);
 // Threads for SDHC control
 void SDHC_CPU_Control(); //monitors data going to and
 	//coming from CPU via bridge, 
-	//values stored in CPUViewOfSDHCRegArray
-void SDHC_Internal(); //copies data from CPUViewOfSDHCRegArray into
+	//values stored in CPUViewOfSDHCRegs
+void SDHC_Internal(); //copies data from CPUViewOfSDHCRegs into
 	//internal registers, takes actions accordingly,
 	//values stored in SDHCInternalMap
 	//syncs the two structs
@@ -191,7 +191,7 @@ typedef struct SDHCInternalMap
  	uint16_t host_controller_version; 	//0xFE 
 }SDHCInternalMap;
 
-typedef struct CPUViewOfSDHCRegArray
+typedef struct CPUViewOfSDHCRegs
 {
 	uint8_t argument2[4];   		//0x0  	
 	uint8_t blk_size[2];    		//0x4 		
@@ -235,7 +235,7 @@ typedef struct CPUViewOfSDHCRegArray
 	uint8_t shared_bus_control[2];		//0xE0
 	uint8_t slot_interrupt_status[2];	//0xFC
  	uint8_t host_controller_version[2]; 	//0xFE 
-}CPUViewOfSDHCRegArray;
+}CPUViewOfSDHCRegs;
 
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);

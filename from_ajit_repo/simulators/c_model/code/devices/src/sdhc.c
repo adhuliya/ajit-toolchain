@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 22 Dec 2020 
+last modified: 23 Dec 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -85,12 +85,47 @@ void start_sdhc_threads()
 
 void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask)
 {
-	CPUViewOfSDHCRegArray cpu_reg_view;
+	CPUViewOfSDHCRegs cpu_reg_view;
 
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
 	if (addr== (0xffffff & 0xff3300))
 	{
-	
+	uint8_t temp1 = getSlice32(data_in_masked,7,0);
+	cpu_reg_view.argument2[0] = temp1;
+	uint8_t temp2 = getSlice32(data_in_masked,15,8);
+	cpu_reg_view.argument2[1] = temp2;
+	uint8_t temp3 = getSlice32(data_in_masked,23,16);
+	cpu_reg_view.argument2[2] = temp3;
+	uint8_t temp4 = getSlice32(data_in_masked,31,24);
+	cpu_reg_view.argument2[3] = temp4;
+	}
+
+	else if (addr== (0xffffff & 0xff3304))
+	{
+	uint8_t temp1 = getSlice32(data_in_masked,7,0);
+	cpu_reg_view.blk_size[0] = temp1;
+	uint8_t temp2 = getSlice32(data_in_masked,15,8);
+	cpu_reg_view.blk_size[1] = temp2;
+	}
+
+	else if (addr== (0xffffff & 0xff3306))
+	{
+	uint8_t temp1 = getSlice32(data_in_masked,7,0);
+	cpu_reg_view.blk_count[0] = temp1;
+	uint8_t temp2 = getSlice32(data_in_masked,15,8);
+	cpu_reg_view.blk_count[1] = temp2;
+	}
+
+	else 	if (addr== (0xffffff & 0xff3308))
+	{
+	uint8_t temp1 = getSlice32(data_in_masked,7,0);
+	cpu_reg_view.argument1[0] = temp1;
+	uint8_t temp2 = getSlice32(data_in_masked,15,8);
+	cpu_reg_view.argument1[1] = temp2;
+	uint8_t temp3 = getSlice32(data_in_masked,23,16);
+	cpu_reg_view.argument1[2] = temp3;
+	uint8_t temp4 = getSlice32(data_in_masked,31,24);
+	cpu_reg_view.argument1[3] = temp4;
 	}
 
 	else if(addr == (0xffffff & 0xff330C))
