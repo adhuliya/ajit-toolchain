@@ -1,10 +1,5 @@
-commit 3883a786dd31e9a8e5e465d9e9985f188af97f4f
-Author: madhav <madhav@localhost.localdomain>
-Date:   Wed Jul 8 09:38:53 2020 +0000
+commit 730186d1be0071027d0b3c12d31f8054fdf72787
+Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
+Date:   Thu Nov 26 18:28:52 2020 +0530
 
-    Bug fix:  zero delay path in phi was being erroneously reported in
-              non-pipelined case
-    
-    _aa_barrier__ function call in llvm2aa is translated to $barrier.
-    
-    Added volatilization of functions to AaOpt -C option.
+    Get rid of cfree, calloc.
