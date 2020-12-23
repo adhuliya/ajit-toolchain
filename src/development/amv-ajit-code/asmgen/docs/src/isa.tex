@@ -1,6 +1,7 @@
 %\documentclass{article}
 \documentclass{book}
 
+\usepackage{epsf}
 \usepackage{pstricks}
 \usepackage{enumitem}
 % \usepackage[cm]{fullpage}
@@ -24,7 +25,9 @@
 \hypersetup{hyperfigures=true}
 \hypersetup{hyperfootnotes=true}
 \hypersetup{hyperindex=true}
-%\hypersetup{pdfauthor=Abhijat Vichare}
+% \hypersetup{pdfauthor=Abhijat Vichare}
+
+\newrgbcolor  {darkgreen}    {0     .3     0}
 
 %% Define a new floating environment for algorithms. See the LaTeX
 %% wikibook.
@@ -217,7 +220,6 @@ This has been superseded by version 2 as below.
 \label{sec:isa:v2}
 
 \input{../src/isa-v2-details}
-
 
 \newpage
 \input{../src/binutils}

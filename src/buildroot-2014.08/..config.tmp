@@ -1375,20 +1375,20 @@ deps_config := \
 	arch/Config.in \
 	Config.in
 
-/home/codeman/.itsoflife/mydata/local/packages-live/OPEN_ME_TO_README/buildroot-2014.08/output/build/buildroot-config/auto.conf: \
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/buildroot-config/auto.conf: \
 	$(deps_config)
 
 ifneq "$(BR2_DEFCONFIG)" ""
-/home/codeman/.itsoflife/mydata/local/packages-live/OPEN_ME_TO_README/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
 endif
 ifneq "$(BR2_EXTERNAL)" "support/dummy-external"
-/home/codeman/.itsoflife/mydata/local/packages-live/OPEN_ME_TO_README/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
 endif
 ifneq "$(HOSTARCH)" "x86_64"
-/home/codeman/.itsoflife/mydata/local/packages-live/OPEN_ME_TO_README/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
 endif
-ifneq "$(BR2_VERSION_FULL)" "2014.08"
-/home/codeman/.itsoflife/mydata/local/packages-live/OPEN_ME_TO_README/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
+ifneq "$(BR2_VERSION_FULL)" "2014.08-g05184cb13-dirty"
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/buildroot-config/auto.conf: FORCE
 endif
 
 $(deps_config): ;

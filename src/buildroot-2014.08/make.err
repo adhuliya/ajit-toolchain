@@ -1,0 +1,15 @@
+fseeko.c: In function 'rpl_fseeko':
+fseeko.c:109:4: error: #error "Please port gnulib fseeko.c to your platform! Look at the code in fseeko.c, then report this to bug-gnulib."
+  109 |   #error "Please port gnulib fseeko.c to your platform! Look at the code in fseeko.c, then report this to bug-gnulib."
+      |    ^~~~~
+make[4]: *** [Makefile:1837: fseeko.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+freadahead.c: In function 'freadahead':
+freadahead.c:91:3: error: #error "Please port gnulib freadahead.c to your platform! Look at the definition of fflush, fread, ungetc on your system, then report this to bug-gnulib."
+   91 |  #error "Please port gnulib freadahead.c to your platform! Look at the definition of fflush, fread, ungetc on your system, then report this to bug-gnulib."
+      |   ^~~~~
+make[4]: *** [Makefile:1837: freadahead.o] Error 1
+make[3]: *** [Makefile:1602: all] Error 2
+make[2]: *** [Makefile:1506: all-recursive] Error 1
+make[1]: *** [Makefile:1461: all] Error 2
+make: *** [package/pkg-generic.mk:180: /lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/buildroot-2014.08/output/build/host-m4-1.4.17/.stamp_built] Error 2

@@ -6,7 +6,8 @@
     "../src/shift-insn-extns"
     "../src/mul-div-insn-extns"
     "../src/64-bit-logical-insn-extns"
-    "../src/int-unit-extns-summary")
+    "../src/int-unit-extns-summary"
+    "../src/simd-1-insn-extns")
    (LaTeX-add-labels
     "chap:amv:work"
     "sec:binutils:support"

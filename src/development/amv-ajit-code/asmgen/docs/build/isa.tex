@@ -1,11 +1,42 @@
 %\documentclass{article}
 \documentclass{book}
 
+\usepackage{epsf}
+\usepackage{pstricks}
 \usepackage{enumitem}
-%\usepackage[cm]{fullpage}
+% \usepackage[cm]{fullpage}
 \usepackage{fullpage}
-%\usepackage{hyperref}
-\usepackage[colorlinks=true,citecolor=brown,pagebackref=true,backref=true,hyperfigures=true,hyperfootnotes=true,hyperindex=true]{hyperref}
+% \usepackage{hyperref}
+% \usepackage[colorlinks=true,citecolor=brown,pagebackref=true,backref=true,hyperfigures=true,hyperfootnotes=true,hyperindex=true]{hyperref}
+
+\usepackage{hyperref}
+% \usepackage{minitoc}
+% \usepackage{float}
+% \usepackage[algo2e,boxruled,vlined]{algorithm2e}
+%\usepackage[algo2e,boxruled,vlined,linesnumbered]{algorithm2e}
+%\usepackage[algo2e,algoruled,linesnumbered]{algorithm2e}
+%\usepackage[algo2e,tworuled,linesnumbered]{algorithm2e}
+
+\hypersetup{colorlinks=true}
+\hypersetup{citecolor=red}
+\hypersetup{urlcolor=blue}
+\hypersetup{pagebackref=true}
+\hypersetup{backref=true}
+\hypersetup{hyperfigures=true}
+\hypersetup{hyperfootnotes=true}
+\hypersetup{hyperindex=true}
+% \hypersetup{pdfauthor=Abhijat Vichare}
+
+\newrgbcolor  {darkgreen}    {0     .3     0}
+
+%% Define a new floating environment for algorithms. See the LaTeX
+%% wikibook.
+%% March, 2020.
+% \floatstyle{ruled}
+% \restylefloat{table}
+% \restylefloat{figure}
+% \newfloat{algo}{tbph}{alg}
+% \floatname{algo}{Algorithm}
 
 \parindent 0in
 \parskip 0.1in
@@ -22,6 +53,23 @@
 %     #1%    
 %   \end{minipage}
 % }
+
+\def\note#1{%
+  \framebox[\linewidth]{%
+    \begin{minipage}[h]{0.95\linewidth}
+      {\red \textbf{Note:}}\\%
+      {\blue {#1}}
+    \end{minipage}
+  }
+}
+\def\attention#1#2{%
+  \framebox[\linewidth]{%
+    \begin{minipage}[h]{0.95\linewidth}
+      {\red \textbf{#1}}\ %\\%
+      {\blue {#2}}
+    \end{minipage}
+  }
+}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -41,6 +89,18 @@
 \chapter{The ISA Specification from IITB}
 \label{chap:from:mpd:at:iitb}
 
+\begin{center}
+  \begin{tabular}[h]{|l|l|}
+    \hline
+    {\blue \textbf{ISA Version}}&{\red 2}\\
+    %{\blue \textbf{Section below}}&{\red \ref{sec:isa:v2}}\\
+    {\blue \textbf{Section below}}&{\red \ref{sec:isa:extns}}\\
+    {\blue \textbf{ISA Version Date}}&{\red September 2020.}\\
+    {\blue \textbf{Updated on}}&{\red December 17, 2020.}\\
+    \hline
+  \end{tabular}
+\end{center}
+
 \section{Overview}
 \label{sec:Overview}
 
@@ -49,15 +109,103 @@ this ISA to provide support for a native 64-bit integer datatype.  The
 proposed  extensions use  the  existing instruction  encodings to  the
 maximum extent possible.
 
-All proposed extensions are:
+All  proposed  extensions  are:   {\blue  Register  $\times$  Register
+  $\rightarrow$  Register,Condition-codes}   type  instructions.   The
+load/store instructions are not modified.
 
-\centerline{Register $\times$ Register $\rightarrow$ Register,Condition-codes}
+% All proposed extensions are:
 
-type instructions.  The load/store instructions are not modified.
+% \centerline{Register $\times$ Register $\rightarrow$ Register,Condition-codes}
+
+% type instructions.  The load/store instructions are not modified.
 
 We list  the additional instructions  in the subsequent  sections.  In
 each  case,  only the  differences  in  the  encoding relative  to  an
 existing Sparc-V8 instruction are provided.
+
+\attention{Note}{This  section records  the ISA  version 2  updates as
+  received on September 2020.}
+
+\subsection{Changes relative to Version 1}
+\label{sec:changes:wrt:v1}
+
+There has been some rationalization  of the instructions.  Further the
+ASR register mappings have been updated.
+
+Notes on instruction naming: V*  means a vector SIMD instruction
+
+\subsubsection{Instruction Modifications}
+\label{sec:insn:modified}
+
+\begin{itemize}
+\item Some instructions have been removed.
+
+  \texttt{VFDIV VFSQRT}
+
+\item Some instructions have been renamed.
+
+  \begin{itemize}
+  \item   \texttt{ADDDBYTER}    replaced   with   \texttt{ADDDREDUCE8}
+    instruction encoding modified as shown later.
+
+    Given [a1 a2 a3 ... a8] calculate (a1+a2+...+a8)
+  \item    \texttt{ORDBYTER}    replaced   with    \texttt{ORDREDUCE8}
+    instruction encoding modified as shown later.
+  \item   \texttt{ANDDBYTER}    replaced   with   \texttt{ANDDREDUCE8}
+    instruction encoding modified as shown later.
+  \item   \texttt{XORDBYTER}    replaced   with   \texttt{XORDREDUCE8}
+    instruction encoding modified as shown later.
+  \item \texttt{VFADD} replaced with \texttt{VFADD32} opcode modified.
+
+    Given  [x1  x2], [y1  y2]  of  single-precision numbers  calculate
+    [(x1+y1) (x2+y2)] this becomes \texttt{VFADD32}
+
+    Added  half-precision [x1  x2  x3  x4], [y1  y2  y3 y4]  calculate
+    [(x1+y1) (x2+y2) ... (x4 + y4)] this becomes \texttt{VFADD16}
+   \item \texttt{VFSUB} replaced with \texttt{VFSUB32} opcode modified.
+   \item \texttt{VFMUL} replaced with \texttt{VFMUL32} opcode modified.
+  \end{itemize}
+
+\item Some instructions have been added.  Opcodes have been assigned (see
+  below).
+
+  \begin{tabular}[h]{p{.25\linewidth}p{.25\linewidth}p{.25\linewidth}p{.25\linewidth}}
+  \texttt{ADDDREDUCE16}&\texttt{ORDREDUCE16}&\texttt{ANDDREDUCE16}&
+  \texttt{XORDREDUCE16}\\
+  \texttt{VFADD16}&\texttt{VFSUB16}&\texttt{VFMUL16}&~\\
+  \texttt{FADDREDUCE16}&~&~&~\\
+  \texttt{FSTOH}&\texttt{FHTOS}&~&~\\
+  \texttt{VFHTOI16}&\texttt{VFI16TOH}&~&~
+  \end{tabular}
+  Instruction behaviour is described below.
+\end{itemize}
+
+\subsubsection{ASR mappings}
+\label{sec:asr:mappings}
+
+
+\texttt{ASR[31]} and \texttt{ASR[30]}  provide a free-running 64-bit counter
+running on the processor clock (same as in AJIT32).
+
+\texttt{ASR[29]} is intialized to processor ID field (writes to this
+register are ignored).
+
+The ancillary  state register \texttt{ASR[28]}  is interpreted
+as a floating point configuration  register.  The bits of this
+register are interpreted as follows:
+\begin{tabbing}
+  ~~~~~~~~\=~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \kill
+  31:8 \> unused \\
+  7:0  \>  half-precision exponent width
+\end{tabbing}
+This register is intialized to a value of 5 by default (as
+per the IEEE half-precision format).  Valid values of the
+exponent width are between 5 and 14.
+
+IEEE half precision = 1 sign + 5 exp + 10 mantissa bits
+would like\\ 		
+\centerline{1 sign 08 exp 7 mantissa}
+\centerline{1 sign 12 exp 3 mantissa}
 
 \newpage
 \section{ISA Extensions}
@@ -65,553 +213,14 @@ existing Sparc-V8 instruction are provided.
 
 The extensions to SPArc V8 for AJIT are described in this section.
 
-\subsection{Integer-Unit Extensions: Arithmetic-Logic Instructions}
-\label{sec:integer-unit-extns:arith-logic-insns}
+% \input{../src/isa-v1-details}
+This has been superseded by version 2 as below.
 
-These  instructions provide  64-bit  arithmetic/logic  support in  the
-integer unit.  The instructions work  on 64-bit register pairs in most
-cases.  Register-pairs are  identified by a 5-bit  even number (lowest
-bit     must     be     0).      See     Tables~\ref{tab:arith:insns},
-\ref{tab:shift:insns},            \ref{tab:muldiv:insns}           and
-\ref{tab:64bit:logical:insns}.
+\section{ISA Version 2}
+\label{sec:isa:v2}
 
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|l|l|}
-    \hline
-\multicolumn{2}{|l|}{	\textbf{ADDD}			} \\ 
-\hline
- 		  same as ADD, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) + rs2(pair)\\
-\hline
-\hline
-\multicolumn{2}{|l|}{	\textbf{ADDDCC}} \\ 
-\hline
- 		  same as ADDCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) + rs2(pair), set Z,N\\
-\hline
-\hline
-\multicolumn{2}{|l|}{	\textbf{SUBD}} \\ 
-\hline
- 		  same as SUB, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) - rs2(pair)\\
-\hline
-\hline
-\multicolumn{2}{|l|}{	\textbf{SUBDCC}} \\ 
-\hline
- 		  same as SUBCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) - rs2(pair), set Z,N\\
-\hline
-  \end{tabular}
-  \caption{Addition and Subtraction Instructions}
-  \label{tab:arith:insns}
-\end{table}
+\input{../src/isa-v2-details}
 
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{	\textbf{SLLD}} \\ 
- \hline 
-    same as SLL, but with Instr[6:5]=2.
-    if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
-    else shift-amount is the lowest 5 bits of rs2. Note that rs2
-    is a 32-bit register. & 
-    rd(pair) $\leftarrow$  rs1(pair) $<<$ shift-amount\\
-\hline
-\hline
-\multicolumn{2}{|l|}{	\textbf{SRLD}} \\ 
- \hline 
-    same as SRL, but with Instr[6:5]=2.
-    if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
-    else shift-amount is the lowest 5 bits of rs2. Note that rs2
-    is a 32-bit register. & 
-    rd(pair) $\leftarrow$  rs1(pair) $>>$ shift-amount\\
-\hline
-\hline
-\multicolumn{2}{|l|}{	\textbf{SRAD}} \\ 
- \hline 
-    same as SRA, but with Instr[6:5]=2.
-    if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
-    else shift-amount is the lowest 5 bits of rs2. Note that rs2
-    is a 32-bit register. & 
-    rd(pair) $\leftarrow$  rs1(pair) $>>$ shift-amount (with sign extension).\\
-\hline
-  \end{tabular}
-  \caption{Shift instructions}
-  \label{tab:shift:insns}
-\end{table}
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{\textbf{	UMULD}} \\ 
- \hline 
- 		  same as UMUL, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair)\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	UMULDCC}} \\ 
- \hline 
- 		  same as UMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair), sets Z,\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	SMULD}} \\ 
- \hline 
- 		  same as SMULD, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair) (signed)\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	SMULDCC}} \\ 
- \hline 
- 		  same as SMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) *
-                  rs2(pair) (signed)\\	sets condition codes Z,N,Ovflow}\\ 
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	UDIVD}} \\ 
- \hline 
- 		  same as UDIV, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
-                 rs2(pair)\\
-    \textbf{Note:} can generate div-by-zero trap.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	UDIVDCC}} \\ 
- \hline 
- 		  same as UDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
-                 rs2(pair),\\ sets condition codes Z,Ovflow \\ \textbf{Note:} can generate div-by-zero trap.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	SDIVD}} \\ 
- \hline 
- 		  same as SDIV, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		rd(pair) $\leftarrow$ rs1(pair) / rs2(pair) (signed)\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	SDIVDCC}} \\ 
- \hline 
- 		  same as SDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
- 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
-                  rs2(pair) (signed),\\ sets condition codes
-                  Z,N,Ovflow,\\ \textbf{Note:} can generate
-                  div-by-zero trap.}\\ 
-\hline
-  \end{tabular}
-  \caption{Multiplication and Division Instructions}
-  \label{tab:muldiv:insns}
-\end{table}
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{\textbf{	ORD}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as OR, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ rs2(pair)}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ORDCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ rs2(pair),\\ sets Z.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ORDN}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ORN, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ ($\sim$rs2(pair))}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ORDNCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ORNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ ($\sim$rs2(pair)),\\ sets Z                 sets Z.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	XORDCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as XORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair), \\sets Z		sets Z.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	XNORD}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as XNOR, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair)}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	XNORDCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as XNORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair),\\ sets Z}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ANDD}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as AND, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . rs2(pair)}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ANDDCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ANDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . rs2(pair),\\ sets Z}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ANDDN}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ANDN, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . ($\sim$rs2(pair))}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	ANDDNCC}} \\ 
- \hline 
- \parbox{\linewidth}{		  same as ANDNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
- \parbox{\linewidth}{		rd $\leftarrow$ rs1 . ($\sim$rs2),\\ sets Z}\\
-\hline
-  \end{tabular}
-  \caption{64 bit Logical Instructions}
-  \label{tab:64bit:logical:insns}
-\end{table}
-
-% \subsection{Opcode Bit Patterns}
-% \label{sec:opc:bits}
-
-% \textbf{A. M. Vichare}
-
-% Original SPArc V8 ADD is:  (See: SPArc v8 architecture manual, pg. 108
-% (pg. 130 in PDF sequence)).
-
-% Bit format: 32 bits in total
-
-% \begin{tabular}[p]{|c|c|l|l|l|}
-% \hline
-%   \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} &
-%   \textbf{New Meaning}\\
-% \hline
-% 0 & 4 & 32 & Source register 2, rs2 & No change \\
-% 5 & 12 & -- & \textbf{unused} & \textbf{Set bit 5 to ``1''} \\
-% 13 & 13 & 0,1 & The \textbf{i} bit & \textbf{Set i to ``0''} \\
-% 14 & 18 & 32 & Source register 1, rs1 & No change \\
-% 19 & 24 & 000000 & ``\textbf{op3}'' & No change \\
-% 25 & 29 & 32 & Destination register, rd & No change \\
-% 30 & 31 & 4 & Always ``10'' & No change \\
-% \hline
-% \end{tabular}
-
-% New addition:
-% \textbf{ADDD}: same as ADD, but with Instr[13]=0 (i=0), and Instr[5]=1.
-%  		rd(pair) $\leftarrow$ rs1(pair) + rs2(pair).\\
-% \textbf{Syntax}: ``\texttt{addd  SrcReg1, SrcReg2, DestReg}''.
-
-% Bits layout to determine the ``match'' etc. bit masks.
-
-% Bit offset: 31          23          15           7       0 \newline
-% Bit layout:  0000 0000   0000 0000   0000 0000   0000 0000 \newline
-% Bits match:  10      0   0000 0        0           1       \newline
-% Bit tomask:  1100 0001   1111 1000   0010 0000   0010 0000 \newline
-% The bitmas:  C0   01     FF   80     02   00     02   00
-
-% Final match: C001 FF80 0200 0200
-
-% % \begin{tabular}[p]{|c|c|l|l|}
-% % \hline
-% %   \textbf{Start} & \textbf{End} & \textbf{Range} & \textbf{Meaning} \\
-% % \hline
-% % 0 & 4 & 32 & Source register 2, rs2 \\
-% % 5 & 12 & -- & \textbf{unused} \textbf{-- Set bit 5 to ``1''}\\
-% % 13 & 13 & 0,1 & The \textbf{i} bit \textbf{-- Set to ``0'' }\\
-% % 14 & 18 & 32 & Source register 1, rs1 \\
-% % 19 & 24 & 000000 & ``\textbf{op3}'' \\
-% % 25 & 29 & 32 & Destination register, rd \\
-% % 30 & 31 & 4 & Always ``10'' \\
-% % \hline
-% % \end{tabular}
-
-% % \newpage
-\subsection{Integer-Unit Extensions: SIMD Instructions}
-\label{sec:integer-unit-extns:simd-instructions}
-
-These instructions  are vector instructions  which work on  two source
-registers (each a  64 bit register pair), and produce  a 64-bit vector
-result.   The   vector  elements  can  be   8-bit/16-bit/32-bit.   See
-Table~\ref{tab:simd:insns}.
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{\textbf{	VADDD8, VADDD16, VADDD32}} \\ 
- \hline 
- \parbox{\linewidth}{        Same as ADDD, but with Instr[13]=0 (i=0),
-    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
-    the data type \\
-\begin{tabular}[p]{|l|l|l|}
-\hline
-  001  &   byte			 & (VADDD8)\\
-  010  &   half-word (16-bits)	 & (VADDD16)\\
-  100  &   word (32-bits) 		 & (VADDD32)\\
-\hline
-\end{tabular}\\
-} & 
- \parbox{\linewidth}{        Performs a vector operation by considering the 64-bit operands as a vector of objects with specified data-type.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	VSUBD8, VSUBD16, VSUBD32}} \\ 
- \hline 
- \parbox{\linewidth}{        Same as ADDD, but with Instr[13]=0 (i=0),
-    and Instr[6:5]=2.  Bits Instr[9:7] are a 3-bit field, which
-    specify the data type\\
-\begin{tabular}[p]{|l|l|l|}
-\hline
-  001  &   byte 			 & (VSUBD8)\\
-  010  &   half-word (16-bits)	 & (VSUBD16)\\
-  100  &   word (32-bits) 		 & (VSUBD32)\\
-\hline
-\end{tabular}\\
-} & 
- \parbox{\linewidth}{        Performs a vector operation by considering the 64-bit operands as a vector of objects with specified data-type.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	VUMULD8, VUMULD16, VUMULD32}} \\ 
- \hline 
- \parbox{\linewidth}{        Same as ADDD, but with Instr[13]=0 (i=0),
-    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
-    the data type\\
-\begin{tabular}[p]{|l|l|l|}
-\hline
-  001  &   byte			 & (VMULD8)\\
-  010  &   half-word (16-bits)	 & (VMULD16)\\
-  100  &   word (32-bits) 		 & (VMULD32)\\
-\hline
-\end{tabular}\\
-} & 
- \parbox{\linewidth}{	Performs a vector operation by considering the 64-bit operands as a vector of objects with specified data-type.}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{	VSMULD8, VSUMLD16, VSMULD32}} \\ 
- \hline 
- \parbox{\linewidth}{        Same as ADDD, but with Instr[13]=0 (i=0),
-    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
-    the data type\\
-\begin{tabular}[p]{|l|l|l|}
-\hline
-  001  &   byte			 & (VSMULD8)\\
-  010  &   half-word (16-bits)	 & (VSMULD16)\\
-  100  &   word (32-bits) 		 & (VSMULD32)\\
-\hline
-\end{tabular}\\
-} & 
- \parbox{\linewidth}{	Performs a vector operation by considering the 64-bit operands as a vector of objects with specified data-type.}\\
-\hline
-  \end{tabular}
-  \caption{SIMD Instructions}
-  \label{tab:simd:insns}
-\end{table}
-
-% \newpage
-\subsection{Integer-Unit Extensions: SIMD Instructions II}
-\label{sec:integer-unit-extns:simd-instructions:2}
-
-These  instructions  are vector  instructions  which  reduce a  source
-register to a byte result.  See Table~\ref{tab:simd:2:insns}.
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{\textbf{ORDBYTER} (Byte-Reduce OR)} \\ 
- \hline 
- \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[7:0]
-    of rs2 specify a mask.\\
-
-    Instr[31:30] (op) = 0x2\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111010\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 0 (ignored)\\
-    Instr[12:5]   (zero)\\
-    Instr[4:0]   (rs2)   32-bit register is read.\\
-} & 
- \parbox{\linewidth}{rd $\leftarrow$ (rs1\_7.m7 $\vert$ rs1\_6.m6 $\vert$ rs1\_5.m5 ... $\vert$ rs1\_0.m0)}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{ANDDBYTER} (Byte-Reduce AND)} \\ 
- \hline 
- \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0]
-    of rs2 specify a mask.\\
-
-    Instr[31:30] (op) = 0x2\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111110\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 0 (ignored)\\
-    Instr[12:5]   (zero)\\
-    Instr[4:0]   (rs2)   32-bit register is read.\\
-} & 
- \parbox{\linewidth}{rd $\leftarrow$ ( (m7 ? rs1\_7 : 0xff) . (m6 ? rs1\_6 : 0xff) \ldots (m0 ? rs1\_0 : 0xff))}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{XORDBYTER} (Byte-Reduce XOR)} \\ 
- \hline 
- \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
-    of rs2 specify a mask.\\
-
-    Instr[31:30] (op) = 0x2\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111011\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 0 (ignored)\\
-    Instr[12:5]   (zero)\\
-    Instr[4:0]   (rs2)   32-bit register is read.\\
-} & 
- \parbox{\linewidth}{rd $\leftarrow$ (rs1\_7.m7 $\hat{}$ rs1\_6.m6 $\hat{}$ rs1\_5.m5 ... $\hat{}$ rs1\_0.m0)}\\
-\hline
-\hline
-\multicolumn{2}{|l|}{\textbf{ZBYTEDPOS} (Positions-of-Zero-Bytes in D-Word)} \\ 
- \hline 
- \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0]
-    of rs2/imm-value specify a mask.\\
-
-    Instr[31:30] (op) = 0x2\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111011\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  =  if 0, use rs2, else Instr[7:0]\\
-    Instr[12:5]  = 0  (ignored if i=0)\\
-    Instr[4:0]   (rs2, if i=0) 32-bit register is read.\\
-} & 
- \parbox{\linewidth}{rd $\leftarrow$ [b7\_zero b6\_zero b5\_zero b4\_zero \ldots b0\_zero] (if mask-bit is zero then b$\star$\_zero is zero)}\\
-\hline
-  \end{tabular}
-  \caption{SIMD Instructions II}
-  \label{tab:simd:2:insns}
-\end{table}
-
-% \newpage
-\subsection{Vector Floating Point Instructions}
-\label{sec:vector-floating-point-instructions}
-
-These are vector  float operations which work on  two single precision
-operand  pairs   to  produce   two  single  precision   results.   See
-Table~\ref{tab:simd:float:ops}.
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|l|l|}
-    \hline
-    \textbf{VFADD} & {op=2, op3=0x34, opf=0x142} \\
-    \hline
-    \textbf{VFSUB} & {op=2, op3=0x34, opf=0x146} \\
-    \hline
-    \textbf{VFMUL} & {op=2, op3=0x34, opf=0x14a} \\
-    \hline
-    \textbf{VFDIV} & {op=2, op3=0x34, opf=0x14e} \\
-    \hline
-    \textbf{VFSQRT} & {op=2, op3=0x34, opf=0x12a} \\
-    \hline      
-  \end{tabular}
-  \caption[SIMD Floating Point Operations]{SIMD Floating Point
-    Operations.  NaN propagated, but no traps. For each of these,
-    rs1,rs2,rd are considered even numbers pointing to.
-  }
-  \label{tab:simd:float:ops}
-\end{table}
-
-\subsection{CSWAP instructions}
-\label{sec:cswap-instructions}
-
-The Sparc-V8 ISA does not include a compare-and-swap (CAS) instruction
-which is very  useful in achieving consensus  among distributed agents
-when the number of agents is $>$ 2.  See Table~\ref{tab:cswap:insns}.
-
-We introduce a CSWAP instruction in two flavours:
-		% CSWAP64     rs1, rs2-pair/immediate, rd-pair
-		% 	op=3
-		% 	op3= 10 1111
-		% 		(rest of instruction similar to SWAP)
-			
-		% CSWAP64A    rs1, rs2-pair/immediate, rd-pair, asi
-		% 	op=3
-		% 	op3= 11 1111
-                %         (rest of instruction similar to SWAPA)
-
-                %         // CSWAP64 has no explicit ASI, while CSWAP64A
-                %         // does! Any ambiguity issues?
-
-\begin{table}[p]
-  \centering
-  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
-    \hline
-\multicolumn{2}{|l|}{\textbf{CSWAP64} (effective address in registers
-    rs1 and rs2)} \\ 
- \hline 
- \parbox{\linewidth}{op=3, op3=10 1111, i=0.\\
-
-    Instr[31:30] (op) = 0x3\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 101111\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 0 (registers based effective address)\\
-    Instr[12:5]  (asi) = Address Space Identifier (See: Appendix G of V8)\\
-    Instr[4:0]   (rs2)   32-bit register is read.\\
-} & 
- \parbox{\linewidth}{~}\\
-\hline
-    \hline
-\multicolumn{2}{|l|}{\textbf{CSWAP64} (immediate effective address)} \\ 
- \hline 
- \parbox{\linewidth}{op=3, op3=10 1111, i=1.\\
-
-    Instr[31:30] (op) = 0x3\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 101111\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 1 (immediate effective address)\\
-    Instr[12:0]  (simm13) 13-bit immediate address.\\
-} & 
- \parbox{\linewidth}{~}\\
-\hline
-    \hline
-\multicolumn{2}{|l|}{\textbf{CSWAP64A} (effective address in registers
-    rs1 and rs2)} \\ 
- \hline 
- \parbox{\linewidth}{op=3, op3=10 1111, i=0.\\
-
-    Instr[31:30] (op) = 0x3\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111111\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 0 (registers based effective address)\\
-    Instr[12:5]  (asi) = Address Space Identifier (See: Appendix G of V8)\\
-    Instr[4:0]   (rs2)   32-bit register is read.\\
-} & 
- \parbox{\linewidth}{~}\\
-\hline
-    \hline
-\multicolumn{2}{|l|}{\textbf{CSWAP64A} (immediate effective address)} \\ 
- \hline 
- \parbox{\linewidth}{op=3, op3=10 1111, i=1.\\
-
-    Instr[31:30] (op) = 0x3\\
-    Instr[29:25] (rd)    lowest bit assumed 0.\\
-    Instr[24:19] (op3) = 111111\\
-    Instr[18:14] (rs1)   lowest bit assumed 0.\\
-    Instr[13]    (i)  = 1 (immediate effective address)\\
-    Instr[12:0]  (simm13) 13-bit immediate address.\\
-} & 
- \parbox{\linewidth}{~}\\
-\hline
-  \end{tabular}
-  \caption{CSWAP Instructions}
-  \label{tab:cswap:insns}
-\end{table}
-  
 \newpage
 \input{../src/binutils}
 \input{../src/sisad}

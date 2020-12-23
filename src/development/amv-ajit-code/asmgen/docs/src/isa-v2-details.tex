@@ -333,7 +333,224 @@ Table~\ref{tab:simd:insns}.
 
 These  instructions are  vector  instructions which  reduce  a 64  bit
 source register to a destination  using an associative operation.  See
-Table~\ref{tab:simd:2:insns}.
+%Table~\ref{tab:simd:2:insns}.
+Tables~\ref{tab:simd:2:insns:1},\ref{tab:simd:2:insns:2},\ref{tab:simd:2:insns:3}.
+
+% \begin{table}[p]
+%   \centering
+%   \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+%     \hline
+% \multicolumn{2}{|l|}{\textbf{ADDDREDUCE8}} \\ 
+%     \hline
+%     \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    32-bit register.\\
+%     Instr[24:19] (op3) = 101101\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) + (m6 ? rs1\_6
+%     : 0x0) + (m5 ? rs1\_5:0)  \ldots + (m0 ? rs1\_0 : 0x0)
+%     \vskip \parskip
+%     \texttt{adddreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% %    
+% \multicolumn{2}{|l|}{\textbf{ADDDREDUCE16}} \\ 
+%  \hline 
+%     \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    32-bit register.\\
+%     Instr[24:19] (op3) = 101101\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]   = 2 for half word reduce
+%     contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_hw\_3 : 0x0) + (m2 ? rs1\_hw\_2 : 0x0) 
+%     + (m1 ? rs1\_hw\_1: 0x0) + (m0 ? rs1\_hw\_0 : 0x0)
+%     \vskip \parskip
+%     \texttt{adddreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% %    
+% %    
+% \multicolumn{2}{|l|}{\textbf{ORDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{ordreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{ORDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{ordreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+
+% \multicolumn{2}{|l|}{\textbf{ANDDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{anddreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{ANDDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{anddreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+
+
+% \multicolumn{2}{|l|}{\textbf{XORDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 111110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{xordreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{XORDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 111110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{xordreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+    
+% \multicolumn{2}{|l|}{\textbf{ZBYTEDPOS} (Positions-of-Zero-Bytes in D-Word)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0]
+%     of rs2/imm-value specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32 bit register\\
+%     Instr[24:19] (op3) = 111111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  =  if 0, use rs2, else Instr[7:0]\\
+%     Instr[12:5]  = 0  (ignored if i=0)\\
+%     Instr[4:0]   (rs2, if i=0) 32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ [b7\_zero b6\_zero b5\_zero
+%     b4\_zero \ldots b0\_zero] (if mask-bit is zero then b$\star$\_zero
+%     is zero)
+%     \vskip \parskip
+%     \texttt{zbytedpos \%rs1, \%rs2/imm, \%rd}
+%     }\\
+% \hline
+%   \end{tabular}
+%   \caption{SIMD Instructions II}
+%   \label{tab:simd:2:insns}
+% \end{table}
 
 \begin{table}[p]
   \centering
@@ -408,6 +625,15 @@ Table~\ref{tab:simd:2:insns}.
     }\\
 \hline
 \hline
+  \end{tabular}
+  \caption{SIMD Instructions II - Part 1 of 3}
+  \label{tab:simd:2:insns:1}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+\hline
 \multicolumn{2}{|l|}{\textbf{ORDREDUCE16} (Half Word-Reduce OR)} \\ 
  \hline 
  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[3:0]
@@ -476,9 +702,15 @@ Table~\ref{tab:simd:2:insns}.
     \texttt{anddreduce16 \%rs1, \%rs2,  \%rd}
     }\\
 \hline
-\hline
+  \end{tabular}
+  \caption{SIMD Instructions II -- Part 2 of 3}
+  \label{tab:simd:2:insns:2}
+\end{table}
 
-
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
 \multicolumn{2}{|l|}{\textbf{XORDREDUCE8} (Byte-Reduce OR)} \\ 
  \hline 
  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
@@ -526,40 +758,6 @@ Table~\ref{tab:simd:2:insns}.
 \hline
 \hline
     
-    
-% %%% V Previous    
-% \multicolumn{2}{|l|}{\textbf{ANDDBYTER} (Byte-Reduce AND)} \\ 
-%  \hline 
-%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0]
-%     of rs2 specify a mask.\\
-
-%     Instr[31:30] (op) = 0x2\\
-%     Instr[29:25] (rd)    lowest bit assumed 0.\\
-%     Instr[24:19] (op3) = 111110\\
-%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
-%     Instr[13]    (i)  = 0 (ignored)\\
-%     Instr[12:5]   (zero)\\
-%     Instr[4:0]   (rs2)   32-bit register is read.\\
-% } & 
-%  \parbox{\linewidth}{rd $\leftarrow$ ( (m7 ? rs1\_7 : 0xff) . (m6 ? rs1\_6 : 0xff) \ldots (m0 ? rs1\_0 : 0xff))}\\
-% \hline
-% \hline
-% \multicolumn{2}{|l|}{\textbf{XORDBYTER} (Byte-Reduce XOR)} \\ 
-%  \hline 
-%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
-%     of rs2 specify a mask.\\
-
-%     Instr[31:30] (op) = 0x2\\
-%     Instr[29:25] (rd)    lowest bit assumed 0.\\
-%     Instr[24:19] (op3) = 111011\\
-%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
-%     Instr[13]    (i)  = 0 (ignored)\\
-%     Instr[12:5]   (zero)\\
-%     Instr[4:0]   (rs2)   32-bit register is read.\\
-% } & 
-%  \parbox{\linewidth}{rd $\leftarrow$ (rs1\_7.m7 $\hat{}$ rs1\_6.m6 $\hat{}$ rs1\_5.m5 ... $\hat{}$ rs1\_0.m0)}\\
-% \hline
-% \hline
 \multicolumn{2}{|l|}{\textbf{ZBYTEDPOS} (Positions-of-Zero-Bytes in D-Word)} \\ 
  \hline 
  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0]
@@ -581,9 +779,12 @@ Table~\ref{tab:simd:2:insns}.
     }\\
 \hline
   \end{tabular}
-  \caption{SIMD Instructions II}
-  \label{tab:simd:2:insns}
+  \caption{SIMD Instructions II -- Part 3 of 3}
+  \label{tab:simd:2:insns:3}
 \end{table}
+
+
+
 
 % \newpage
 \subsection{Vector Floating Point Instructions}
