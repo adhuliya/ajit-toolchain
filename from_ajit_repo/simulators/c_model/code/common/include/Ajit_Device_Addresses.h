@@ -25,7 +25,6 @@
 
 //sdhc registers
 
-#define ADDR_SDHC_BASE_REGISTER                 0xFFFF3300
 
 #define ADDR_SDHC_ARG_2                         0xFFFF3300      // 4 BYTES WIDE
 #define ADDR_SDHC_BLOCK_SIZE                    0xFFFF3304      // 2 BYTES WIDE
