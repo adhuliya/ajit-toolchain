@@ -9425,7 +9425,7 @@ begin  -- XilinxBramInfer
 
 
 	tied_high <= '1';
-	tied_low  <= '1';
+	tied_low  <= '0';
 
 	-- default model.. use a dual port mem.
 	-- for ASIC, need a different one.

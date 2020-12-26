@@ -285,6 +285,7 @@ Definition of parser AaParser, which is a subclass of LLkParser.
 		|	( <a href="AaParser.html#aA_Reduce_Expression">aA_Reduce_Expression</a> ) 
 		|	( <a href="AaParser.html#aA_VectorConcatenate_Expression">aA_VectorConcatenate_Expression</a> ) 
 		|	( <a href="AaParser.html#aA_FunctionCall_Expression">aA_FunctionCall_Expression</a> ) 
+		|	( <a href="AaParser.html#aA_One_Or_Zero_Expression">aA_One_Or_Zero_Expression</a> ) 
 		) 
 	;
 
@@ -573,6 +574,14 @@ Definition of parser AaParser, which is a subclass of LLkParser.
 		|	
 		) 
 		RPAREN 
+	;
+
+
+<a name="aA_One_Or_Zero_Expression">aA_One_Or_Zero_Expression</a>
+	:	(	CONSTZERO 
+		|	CONSTONE 
+		) 
+		LESS UINTEGER GREATER 
 	;
 
 
