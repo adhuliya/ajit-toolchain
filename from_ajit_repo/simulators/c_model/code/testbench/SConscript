@@ -50,7 +50,7 @@ env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_
 
 
 #ajit_C_system_model executable
-LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'Rlut', 'Mmu', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors']
+LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'Rlut', 'Mmu', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'Devices', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors']
 
 LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../rlut/lib ../mmu/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH + PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH + " " + HALFPREC_AA_LIBPATH)
 

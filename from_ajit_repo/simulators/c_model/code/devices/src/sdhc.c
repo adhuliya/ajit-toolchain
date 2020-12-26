@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 23 Dec 2020 
+last modified: 26 Dec 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -14,6 +14,7 @@ Device Registers:
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 #ifdef SW
 #include <stdio.h>
 #include <unistd.h>
@@ -39,11 +40,10 @@ uint8_t SDHC_INT_OUT;
 void SDHC_CPU_Control();
 DEFINE_THREAD(SDHC_CPU_Control);
 
-void SDHC_Internal();
-DEFINE_THREAD(SDHC_Internal);
-
 //Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
+
+
 
 void sdhc_initialize()
 {
@@ -78,68 +78,86 @@ void start_sdhc_threads()
 
 	PTHREAD_DECL(SDHC_CPU_Control);
 	PTHREAD_CREATE(SDHC_CPU_Control);
-
-	PTHREAD_DECL(SDHC_Internal);
-	PTHREAD_CREATE(SDHC_Internal);
 }
 
-void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask)
+void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
+ struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
-	CPUViewOfSDHCRegs cpu_reg_view;
-
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
-	if (addr== (0xffffff & 0xff3300))
+	if (addr== (0xffffff & ADDR_SDHC_ARG_2))
 	{
 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	cpu_reg_view.argument2[0] = temp1;
+	str->argument2[0] = temp1;
 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	cpu_reg_view.argument2[1] = temp2;
+	str->argument2[1] = temp2;
 	uint8_t temp3 = getSlice32(data_in_masked,23,16);
-	cpu_reg_view.argument2[2] = temp3;
+	str->argument2[2] = temp3;
 	uint8_t temp4 = getSlice32(data_in_masked,31,24);
-	cpu_reg_view.argument2[3] = temp4;
+	str->argument2[3] = temp4;
+	uint8_t size=4;
+	void *dest = &(int_str->argument2);
+	void *source = &(str->argument2);
+	memcpy(dest,source,size);
 	}
 
-	else if (addr== (0xffffff & 0xff3304))
+	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_SIZE))
 	{
 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	cpu_reg_view.blk_size[0] = temp1;
+	str->blk_size[0] = temp1;
 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	cpu_reg_view.blk_size[1] = temp2;
+	str->blk_size[1] = temp2;
+	uint8_t size=2;
+	void *dest = &(int_str->blk_size);
+	void *source = &(str->blk_size);
+	memcpy(dest,source,size);
 	}
 
-	else if (addr== (0xffffff & 0xff3306))
+	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_COUNT))
 	{
 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	cpu_reg_view.blk_count[0] = temp1;
+	str->blk_count[0] = temp1;
 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	cpu_reg_view.blk_count[1] = temp2;
+	str->blk_count[1] = temp2;
+	uint8_t size=2;
+	void *dest = &(int_str->blk_count);
+	void *source = &(str->blk_count);
+	memcpy(dest,source,size);
 	}
 
-	else 	if (addr== (0xffffff & 0xff3308))
+	else 	if (addr== (0xffffff & ADDR_SDHC_ARG_1))
 	{
 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	cpu_reg_view.argument1[0] = temp1;
+	str->argument1[0] = temp1;
 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	cpu_reg_view.argument1[1] = temp2;
+	str->argument1[1] = temp2;
 	uint8_t temp3 = getSlice32(data_in_masked,23,16);
-	cpu_reg_view.argument1[2] = temp3;
+	str->argument1[2] = temp3;
 	uint8_t temp4 = getSlice32(data_in_masked,31,24);
-	cpu_reg_view.argument1[3] = temp4;
+	str->argument1[3] = temp4;
+	uint8_t size=4;
+	void *dest = &(int_str->argument1);
+	void *source = &(str->argument1);
+	memcpy(dest,source,size);
 	}
 
-	else if(addr == (0xffffff & 0xff330C))
+	else if(addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
 	{
 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	cpu_reg_view.tx_mode[0] = temp1;
+	str->tx_mode[0] = temp1;
 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	cpu_reg_view.tx_mode[1] = temp2;
+	str->tx_mode[1] = temp2;
+	uint8_t size=2;
+	void *dest = &(int_str->tx_mode);
+	void *source = &(str->tx_mode);
+	memcpy(dest,source,size);
 	}
 //to be used soon:	sdhc_tx_buffer = 1;//load the updated value in a pipe
 }
 
 void SDHC_CPU_Control()
 {
+struct CPUViewOfSDHCRegs cpu_reg_view;
+struct SDHCInternalMap internal_map;
 	while(1)
 	{
 		uint8_t rwbar, byte_mask;
@@ -151,29 +169,26 @@ void SDHC_CPU_Control()
 
 		if(!rwbar)
 		{
-		
 			//***lock the state variables***
-			pthread_mutex_lock(&Sdhc_lock);	
+		pthread_mutex_lock(&Sdhc_lock);	
 			
-			if((addr<=0xff3300)&&(addr>=0xff33ff))
+			if((addr<=ADDR_SDHC_ARG_2)&&(addr>=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 			{
-				updateRegister(data_in,addr,byte_mask);
+				updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 			}
-
+		pthread_mutex_unlock(&Sdhc_lock);	
 		}
-
+		else
+		{
+		pthread_mutex_lock(&Sdhc_lock);
+			if((addr<=ADDR_SDHC_ARG_2)&&(addr>=ADDR_SDHC_HOST_CONTROLLER_VERSION))
+			{
+//function for reading register values
+			}
+		pthread_mutex_unlock(&Sdhc_lock);	
+		}
+		
 	}
 }
 
-void SDHC_Internal()
-{
-	void action_arg2()
-	{
 
-	}
-	void action_blksize()
-	{
-
-	}
-	//  ..etc
-}

@@ -132,35 +132,29 @@ void register_sdhc_pipes();
 void sdhc_initialize();
 void start_sdhc_threads();
 
-//Functions for register value manipulations
-void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask);
-
-
 // Threads for SDHC control
-void SDHC_CPU_Control(); //monitors data going to and
-	//coming from CPU via bridge, 
-	//values stored in CPUViewOfSDHCRegs
-void SDHC_Internal(); //copies data from CPUViewOfSDHCRegs into
-	//internal registers, takes actions accordingly,
-	//values stored in SDHCInternalMap
-	//syncs the two structs
+void SDHC_CPU_Control(); 
+	//1.monitors data going to and coming from CPU via bridge 
+	//2. values are stored in CPUViewOfSDHCRegs struct 
+	//3. Copies the values of CPUViewOfSDHCRegs inside
+	//	SDHCInternalMap struct using updateRegister function
 
 typedef struct SDHCInternalMap
 {
 	uint32_t argument2; 			//0x0
-	uint16_t blk_size; 			//0x4 		
+	uint16_t blk_size; 			//0x4 	
 	uint16_t blk_count; 			//0x6 		
 	uint32_t argument1;			//0x8		
 	uint16_t tx_mode; 			//0xC 		
 	uint16_t command_reg; 			//0xE		
 	uint16_t response0; 			//0x10		
-	uint16_t response1; 			//0x10		
+	uint16_t response1; 			//0x12		
 	uint16_t response2; 			//0x14 		
-	uint16_t response3; 			//0x18 		
-	uint16_t response4; 			//0x1c 		
-	uint16_t response5; 			//0x10		
-	uint16_t response6; 			//0x14 		
-	uint16_t response7; 			//0x18 		
+	uint16_t response3; 			//0x16 		
+	uint16_t response4; 			//0x18 		
+	uint16_t response5; 			//0x1A		
+	uint16_t response6; 			//0x1C 		
+	uint16_t response7; 			//0x1E	
 	uint32_t buffer_data_port; 		//0x20 
 	uint32_t present_state; 		//0x24 		
 	uint8_t  pwr_ctrl;			//0x28
@@ -200,13 +194,13 @@ typedef struct CPUViewOfSDHCRegs
 	uint8_t tx_mode[2]; 			//0xC 
 	uint8_t command_reg[2]; 		//0xE	
 	uint8_t response0[2]; 			//0x10	
-	uint8_t response1[2]; 			//0x10	
+	uint8_t response1[2]; 			//0x12	
 	uint8_t response2[2]; 			//0x14 	
-	uint8_t response3[2]; 			//0x18 	
-	uint8_t response4[2]; 			//0x1c 	
-	uint8_t response5[2]; 			//0x10
-	uint8_t response6[2]; 			//0x14 
-	uint8_t response7[2]; 			//0x18
+	uint8_t response3[2]; 			//0x16 	
+	uint8_t response4[2]; 			//0x18 	
+	uint8_t response5[2]; 			//0x1A
+	uint8_t response6[2]; 			//0x1C 
+	uint8_t response7[2]; 			//0x1E
 	uint8_t buffer_data_port[4]; 		//0x20
 	uint8_t present_state[4];    		//0x24
 	uint8_t pwr_ctrl;     			//0x28
@@ -237,6 +231,9 @@ typedef struct CPUViewOfSDHCRegs
  	uint8_t host_controller_version[2]; 	//0xFE 
 }CPUViewOfSDHCRegs;
 
+//Functions for register value manipulations
+void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
+struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);
 
