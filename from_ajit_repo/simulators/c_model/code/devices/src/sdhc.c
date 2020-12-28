@@ -201,12 +201,12 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		void *source = &(str->tx_mode);
 		memcpy(dest,source,size);
 	}
-	/* We can replace the switch ladder with the following switch-case format.
+	/* We can replace the if-else ladder with the following switch-case format.
 	 NOTE: I modified the address defines in ajit_device_addresses for easy processing.
 	 uint32_t addr_in = addr;
 	 switch (addr_in)
 	 {
-	 case ADDR_SDHC_ARG_2:
+	 case (0xffffff & ADDR_SDHC_ARG_2):
 	 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
 	 	str->argument2[0] = temp1;
 	 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
@@ -246,6 +246,181 @@ void SDHC_CPU_Control()
 			
 			if((addr<=ADDR_SDHC_ARG_2)&&(addr>=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 			{
+				switch (addr)
+				{
+					case (0xFFFFFF & ADDR_SDHC_ARG_2):
+						// RW
+						// used with Auto CMD23 to set a 32-bit blk count value
+
+					break;
+
+					case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
+						// Rsvd & RW
+						// one portion or sdma
+						// blk size of data ttrnafers for cmd17, cmd18, cmd24, cmd25 and cmd53
+
+					break;
+
+					case (0xffffff & ADDR_SDHC_BLOCK_COUNT):
+						// RW
+						// enabled when 'block count enable' in 'transfer mode' is set to 1
+						// valid for the case, values/states wont change
+						// writes a only multiple block transfers
+						// host driver set this value and host controller decrements the value
+						// according to the tranfered blocks; stops when reaches zero
+						// can be accessed onlywhen no transactions is executing; during data transfer
+						// ignore write and read will be incorrect
+
+					break;
+
+					case (0xFFFFFF & ADDR_SDHC_ARG_1):
+						// RW
+
+					break;
+					
+					case (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE):
+						// Rsvd & RW
+						// used to control the operation of data transfer
+						// to prevent data loss host controller shall implement write protection during
+						// data transfers; writes to this reg sahll be ignroes when 'comand inhibit (DAT)'
+						// in 'present state reg' is 1
+
+					break;
+
+					case (0xffffff & ADDR_SDHC_REGISTER_COMMAND):
+						// Rsvd & RW
+						// host driver shall check the 'command inhibit (DAT)' and 'vommand inhibit (CMD)'
+						// bits in 'present state' reg beforewriting to thid reg
+						// writing to the upper byte triggersSD command generation
+						// host controller doesn't protect for writing when 'command inhibit(CMD)' is set
+					break;
+
+					case (0xffffff & ADDR_SDHC_RESPONSE0):
+					case (0xffffff & ADDR_SDHC_RESPONSE1):
+					case (0xffffff & ADDR_SDHC_RESPONSE2):
+					case (0xffffff & ADDR_SDHC_RESPONSE3):
+					case (0xffffff & ADDR_SDHC_RESPONSE4):
+					case (0xffffff & ADDR_SDHC_RESPONSE5):
+					case (0xffffff & ADDR_SDHC_RESPONSE6):
+					case (0xffffff & ADDR_SDHC_RESPONSE7):
+						// ROC
+						// host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
+						// bits in 'present state' reg before writing to this reg
+						// writing to the upper byte triggers SD command generation
+						// host controller doesn't protect for writing when 'command inhibit(CMD)' is set
+					
+					break;
+					
+					case (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT):
+						// RW
+						// for accessing host controller buffer
+					break;
+
+					case (0xffffff & ADDR_SDHC_PRESENT_STATE):
+						// Rsvd, RO & ROC
+						// host driver can get the status of the host controller
+						// from this 32-bit read-only reg
+					break;
+
+					case (0xffffff & ADDR_SDHC_HOST_CONTROL_1):
+						// RW
+					case (0xffffff & ADDR_SDHC_POWER_CONTROL):
+						// Rsvd & RW
+					case (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL):
+						// Rsvd, RW & RWAC
+					case (0xffffff & ADDR_SDHC_WAKEUP_CONTROL):
+						// Rsvd & RW
+					case (0xffffff & ADDR_SDHC_CLOCK_CONTROL):
+						// RW & ROC
+					case (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL):
+						// Rsvd & RW
+
+					break;
+
+					case (0xffffff & ADDR_SDHC_SOFTWARE_RESET):
+						// Rsvd & RWAC
+						// write 1 to all the unrsvd bits for resetting
+						// after completing reset clear all bits
+						// 
+						// affects the following regs
+						// 	buffer data port reg
+						// 	Present state reg
+						// 	blk gap ctrl reg
+						// 	normal intr status reg
+					break;
+
+					case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS):
+						// Rsvd, ROC & RW1C 
+					case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
+						// Rsvd & RW1C
+					case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):
+						// Rsvd, RW & RO
+					case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS_EN):
+						// Rsvd & RW
+					case (0xffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN):
+						// Rsvd, RW & RO
+					case (0xffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN):
+						// Rsvd & RW
+					case (0xffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS):
+						// Rsvd & ROC
+					case (0xffff & ADDR_SDHC_HOST_CONTROL_2):
+						// Rsvd, RW & RWAC
+
+					break;
+
+					case (0xffffff & ADDR_SDHC_CAPS):
+						// Rsvd & HwInit
+						// whatever the case, values/states wont change
+						// writes are ignored
+					break;
+
+					case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS):
+					case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS_RES):
+						// Rsvd & HwInit
+						// whatever the case, values/states wont change
+						// writes are ignored
+					break;
+					
+					case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT):
+						// Rsvd & WO
+					case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT_R):
+						// Rsvd & WO
+					
+					break;
+
+					case (0xffffff & ADDR_SDHC_ADMA_ERR_STAT):
+						// Rsvd & ROC
+						// DMA not present
+					case (0xffffff & ADDR_SDHC_ADMA_SYSTEM_ADDR):
+						// RW
+						// DMA not present
+					break;
+					
+					case (0xffffff & ADDR_SDHC_HOST_PRESET_VALUES):
+						// Rsvd & HwInit
+
+					break;
+
+					case (0xffffff & ADDR_SDHC_SHARED_BUS_CTRL):
+						// Rsvd, RW & HwInit
+						// optional
+						// relavent when shared bus is used
+					break;
+
+					case (0xffffff & ADDR_SDHC_SLOT_INTR_STATUS):
+						// Rsvd & ROC
+						// writes are ignored
+						// relavent only when there are slots
+					break;
+
+					case (0xffffff & ADDR_SDHC_HOST_CONTROLLER_VERSION):
+						// HwInit
+						// whatever the case, values/states wont change
+						// writes are ignored
+					break;								
+				default:
+					break;
+				}
 				updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 			}
 			pthread_mutex_unlock(&Sdhc_lock);	
@@ -261,136 +436,6 @@ void SDHC_CPU_Control()
 		}
 		
 	}
-}
-
-int action_reg_arg2()
-{
-	// RW
-	// used with Auto CMD23 to set a 32-bit blk count value
-}
-int action_reg_blksize()
-{
-	// Rsvd and RW
-	// one portion or sdma
-	// blk size of data ttrnafers for cmd17, cmd18, cmd24, cmd25 and cmd53
-}
-int action_reg_blkcount()
-{
-	// RW
-	// enabled when 'block count enable' in 'transfer mode' is set to 1
-	// valid for only multiple block transfers
-	// host driver set this value and host controller decrements the value
-	// according to the tranfered blocks; stops when reaches zero
-	// can be accessed onlywhen no transactions is executing; during data transfer
-	// ignore write and read will be incorrect
-}
-int action_reg_arg1()
-{
-	// RW
-}
-int action_reg_txmode()
-{
-	// Rsvd and RW
-	// used to control the operation of data transfer
-	// to prevent data loss host controller shall implement write protection during
-	// data transfers; writes to this reg sahll be ignroes when 'comand inhibit (DAT)'
-	// in 'present state reg' is 1
-}
-int action_reg_cmd()
-{
-	// host driver shall check the 'command inhibit (DAT)' and 'vommand inhibit (CMD)'
-	// bits in 'present state' reg beforewriting to thid reg
-	// writing to the upper byte triggersSD command generation
-	// host controller doesn't protect for writing when 'command inhibit(CMD)' is set
-}
-int action_reg_rsp0();
-int action_reg_rsp1();
-int action_reg_rsp2();
-int action_reg_rsp3();
-int action_reg_rsp4();
-int action_reg_rsp5();
-int action_reg_rsp6();
-int action_reg_rsp7();
-int action_reg_buffr_data_port()
-{
-	// RW
-	// foraccessing host controller buffer
-}
-int action_reg_psr()
-{
-	// Rsvvd, RO and ROC
-	// host driver can get the status of the host controller
-	// from this 32-bit read-only reg
-}
-int action_reg_pwr_ctrl();
-int action_reg_host_ctrl();
-int action_reg_wakeup_ctrl();
-int action_reg_blk_gap_ctrl();
-int action_reg_clk_ctrl();
-int action_reg_sw_rst()
-{
-	// write 1 to all the unrsvd bits for resetting
-	// after completing reset clear all bits
-	// 
-	// affects the following regs
-	// 	buffer data port reg
-	// 	Present state reg
-	// 	blk gap ctrl reg
-	// 	normal intr status reg
-	// 	
-}
-int action_reg_timeout_ctrl();
-int action_reg_nrml_itr_status();
-int action_reg_err_itr_status();
-int action_reg_nrml_itr_status_en();
-int action_reg_err_itr_status_en();
-int action_reg_nrml_itr_signal_en();
-int action_reg_err_itr_signal_en();
-int action_reg_acmd_err_status();
-int action_reg_host_ctrl2();
-int action_reg_cap()
-{
-	// whatever the case, values/states wont change
-	// writes are ignored
-	return -1;
-}
-int action_reg_max_current_cap()
-{
-	// whatever the case, values/states wont change
-	// writes are ignored
-	return -1;
-}
-int action_reg_force_event_autoCMD_err_stat();
-int action_reg_force_event_autoCMD_err_interrupt_stat();
-int action_reg_adma_err_status()
-{
-	// DMA not present
-	return -1;
-}
-int action_reg_adma_sys_addr()
-{
-	// DMA not present
-	return -1;
-}
-int action_reg_preset_value();
-int action_reg_shared_bus_ctrl()
-{
-	// optional
-	// relavent when shared bus is used
-	return -1;
-}
-int action_reg_slot_itr()
-{
-	// ROC
-	// writes are ignored
-	// relavent nly when there are slots
-	return 0;
-}
-int action_reg_host_controller_version()
-{
-	// whatever the case, values/states wont change
-	// writes are ignored
-	return -1;	
 }
 
 void reg_set(uint32_t addr)
