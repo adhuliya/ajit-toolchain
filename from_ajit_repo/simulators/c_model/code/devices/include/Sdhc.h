@@ -234,6 +234,10 @@ typedef struct CPUViewOfSDHCRegs
 //Functions for register value manipulations
 void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
+
+void readRegister(uint32_t data_out, uint32_t addr,  
+struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
+
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);
 
