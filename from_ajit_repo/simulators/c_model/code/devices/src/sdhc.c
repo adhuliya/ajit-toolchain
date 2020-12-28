@@ -244,7 +244,7 @@ void SDHC_CPU_Control()
 			//***lock the state variables***
 			pthread_mutex_lock(&Sdhc_lock);	
 			
-			if((addr<=ADDR_SDHC_ARG_2)&&(addr>=ADDR_SDHC_HOST_CONTROLLER_VERSION))
+			if((addr>=ADDR_SDHC_ARG_2)&&(addr<=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 			{
 				switch (addr)
 				{
