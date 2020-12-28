@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 26 Dec 2020 
+last modified: 28 Dec 2020 
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -108,6 +108,22 @@ void readRegister(uint32_t data_out, uint32_t addr,
 		void *source = &(int_str->blk_count);
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->blk_count;
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_ARG_1))
+	{
+		uint8_t size=4;
+		void *dest = &(str->argument1);//cpu side regs are destination here
+		void *source = &(int_str->argument1);
+		memcpy(dest,source,size);
+		data_out = (uint32_t)str->argument1;	
+	}
+		else if (addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
+	{
+		uint8_t size=2;
+		void *dest = &(str->tx_mode);//cpu side regs are destination here
+		void *source = &(int_str->tx_mode);
+		memcpy(dest,source,size);
+		data_out = (uint32_t)str->tx_mode;
 	}
 	
 	sendPeripheralResponse("SDHC_to_peripheral_bridge_response", data_out);
