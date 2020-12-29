@@ -73,6 +73,9 @@ cd'ing into the folder that corresponds to the image
 you are using. For example, for `ajit_build_dev`,
 do `cd ./ajit_build_dev` then use the following reference.
 
+* The environment variables in effect in the system can
+  be found in `./ajit_build/ajit_env`;
+
 * **Attach a working shell**:
   Attach a working shell to the container using the following
   script,
