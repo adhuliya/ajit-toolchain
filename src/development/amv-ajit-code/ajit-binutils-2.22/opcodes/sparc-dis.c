@@ -445,114 +445,114 @@ build_hash_table (const sparc_opcode **opcode_table,
 #endif
 }
 
-int        print_all_sparc_opcodes (disassemble_info *, unsigned long);
-/* 
- * AMV Function:
- */
-int
-print_all_sparc_opcodes (disassemble_info *info, unsigned long insn)
-{
-#define NAMEFMT       " %-18s %c"
-#define HEXFMT        " 0x%016X %c"
-#define LONGHEXFMT    " 0x%016X %c"
-#define STRFMT        " %18s %c"
-#define INTFMT        " %18d %c"
+/* int        print_all_sparc_opcodes (disassemble_info *, unsigned long); */
+/* /\*  */
+/*  * AMV Function: */
+/*  *\/ */
+/* int */
+/* print_all_sparc_opcodes (disassemble_info *info, unsigned long insn) */
+/* { */
+/* #define NAMEFMT       " %-18s %c" */
+/* #define HEXFMT        " 0x%016X %c" */
+/* #define LONGHEXFMT    " 0x%016X %c" */
+/* #define STRFMT        " %18s %c" */
+/* #define INTFMT        " %18d %c" */
 
-#define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+/* #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char) */
 
-  /* AMV additions to trace disassembly. */
-  FILE *amv_trace;
-  static int trace_hdr_done = 0;
+/*   /\* AMV additions to trace disassembly. *\/ */
+/*   FILE *amv_trace; */
+/*   static int trace_hdr_done = 0; */
 
-  char amv_sep_char = '|';
-  int amv_i;
-  int i, ok = 0;
-  int amv_0 = 0;
+/*   char amv_sep_char = '|'; */
+/*   int amv_i; */
+/*   int i, ok = 0; */
+/*   int amv_0 = 0; */
 
-  char *amv_tracefile = "/tmp/sparc-opcodes-trace.txt";
+/*   char *amv_tracefile = "/tmp/sparc-opcodes-trace.txt"; */
 
-  sparc_opcode_hash *op;
+/*   sparc_opcode_hash *op; */
 
-  amv_trace = fopen (amv_tracefile, "w");
-  if (amv_trace == NULL) {
-    fprintf (stderr, "File %s open error with error number %d.\n", amv_tracefile, errno);
-    return -1;                  /* arbit number to signal failure! */
-  } else {
-    ok = fseek (amv_trace, 0, SEEK_END);
-  }
+/*   amv_trace = fopen (amv_tracefile, "w"); */
+/*   if (amv_trace == NULL) { */
+/*     fprintf (stderr, "File %s open error with error number %d.\n", amv_tracefile, errno); */
+/*     return -1;                  /\* arbit number to signal failure! *\/ */
+/*   } else { */
+/*     ok = fseek (amv_trace, 0, SEEK_END); */
+/*   } */
 
-  if (trace_hdr_done == 0) {
-    print_field("Name",        STRFMT, "%10s%c");
-    print_field("INSN",        STRFMT, "%18s%c");
-    print_field("Match",       STRFMT, "%18s%c");
-    print_field("Lose",        STRFMT, "%18s%c");
-    /* print_field("Args",        STRFMT, "%18s%c"); */
-    /* print_field("Flags",       STRFMT, "%18s%c"); */
-    /* print_field("Arch",        STRFMT, "%18s%c"); */
-    print_field ("Supported?", STRFMT, "%18s%c");
-    print_field ("Match&INSN", STRFMT, "%18s%c");
-    print_field ("Match?",     STRFMT, "%18s%c");
-    print_field ("M&I - M?",   STRFMT, "%18s%c");
-    print_field ("Lose&INSN",  STRFMT, "%18s%c");
-    print_field ("Lose?",      STRFMT, "%18s%c");
-    /* print_field ("RS1",        STRFMT, "%18s%c"); */
-    /* print_field ("RS2",        STRFMT, "%18s%c"); */
-    /* print_field ("RD",         STRFMT, "%18s%c"); */
-    /* print_field ("rs1|imm?",   STRFMT, "%18s%c"); */
-    /* print_field ("rs1+imm?",   STRFMT, "%18s%c"); */
-    /* print_field ("rs1==rd?",   STRFMT, "%18s%c"); */
-    /* print_field ("rs2==rd?",   STRFMT, "%18s%c"); */
+/*   if (trace_hdr_done == 0) { */
+/*     print_field("Name",        STRFMT, "%10s%c"); */
+/*     print_field("INSN",        STRFMT, "%18s%c"); */
+/*     print_field("Match",       STRFMT, "%18s%c"); */
+/*     print_field("Lose",        STRFMT, "%18s%c"); */
+/*     /\* print_field("Args",        STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field("Flags",       STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field("Arch",        STRFMT, "%18s%c"); *\/ */
+/*     print_field ("Supported?", STRFMT, "%18s%c"); */
+/*     print_field ("Match&INSN", STRFMT, "%18s%c"); */
+/*     print_field ("Match?",     STRFMT, "%18s%c"); */
+/*     print_field ("M&I - M?",   STRFMT, "%18s%c"); */
+/*     print_field ("Lose&INSN",  STRFMT, "%18s%c"); */
+/*     print_field ("Lose?",      STRFMT, "%18s%c"); */
+/*     /\* print_field ("RS1",        STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("RS2",        STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("RD",         STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("rs1|imm?",   STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("rs1+imm?",   STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("rs1==rd?",   STRFMT, "%18s%c"); *\/ */
+/*     /\* print_field ("rs2==rd?",   STRFMT, "%18s%c"); *\/ */
     
-    fprintf (amv_trace, "\n");
-    fflush (amv_trace);
+/*     fprintf (amv_trace, "\n"); */
+/*     fflush (amv_trace); */
     
-    trace_hdr_done = 1;
-  }
+/*     trace_hdr_done = 1; */
+/*   } */
 
-  for (i = 0; i < sparc_num_opcodes; ++i) {
-    const sparc_opcode *opcode = sorted_opcodes[i];
+/*   for (i = 0; i < sparc_num_opcodes; ++i) { */
+/*     const sparc_opcode *opcode = sorted_opcodes[i]; */
 
-    print_field (opcode->name,           STRFMT,     "%-10s%c");
-    print_field (insn,                   HEXLONGFMT, "0x%08X%c");
-    print_field (opcode->match,          HEXLONGFMT, "0x%08X%c");
-    print_field (opcode->lose,           HEXLONGFMT, "0x%08X%c");
-    /* print_field (opcode->args,         STRFMT,     "%10s%c"); */
-    /* print_field (opcode->flags,        HEXINTFMT,  "0x%08X%c"); */
-    /* print_field (opcode->architecture, HEXINTFMT,  "0x%08X%c"); */
+/*     print_field (opcode->name,           STRFMT,     "%-10s%c"); */
+/*     print_field (insn,                   HEXLONGFMT, "0x%08X%c"); */
+/*     print_field (opcode->match,          HEXLONGFMT, "0x%08X%c"); */
+/*     print_field (opcode->lose,           HEXLONGFMT, "0x%08X%c"); */
+/*     /\* print_field (opcode->args,         STRFMT,     "%10s%c"); *\/ */
+/*     /\* print_field (opcode->flags,        HEXINTFMT,  "0x%08X%c"); *\/ */
+/*     /\* print_field (opcode->architecture, HEXINTFMT,  "0x%08X%c"); *\/ */
   
-    print_field ((opcode->architecture & current_arch_mask) ? "Yes" :"No", STRFMT,     "%10s%c");
+/*     print_field ((opcode->architecture & current_arch_mask) ? "Yes" :"No", STRFMT,     "%10s%c"); */
 
-    print_field ((opcode->match & insn),                                   HEXLONGFMT, "0x%08X%c");
-    print_field (((opcode->match & insn) == opcode->match) ? "Yes" :"No",  STRFMT,     "%10s%c");
-    print_field (((opcode->match & insn) - opcode->match),                 INTFMT,     "%10s%c");
-    print_field ((opcode->lose & insn),                                    HEXLONGFMT, "0x%08X%c");
-    print_field (((opcode->lose  & insn) == 0)             ? "Yes" :"No",  STRFMT,     "%10s%c");
-    /* print_field ("Match?",     STRFMT, "%10s%c"); */
-    /* print_field ("Lose?",      STRFMT, "%10s%c"); */
+/*     print_field ((opcode->match & insn),                                   HEXLONGFMT, "0x%08X%c"); */
+/*     print_field (((opcode->match & insn) == opcode->match) ? "Yes" :"No",  STRFMT,     "%10s%c"); */
+/*     print_field (((opcode->match & insn) - opcode->match),                 INTFMT,     "%10s%c"); */
+/*     print_field ((opcode->lose & insn),                                    HEXLONGFMT, "0x%08X%c"); */
+/*     print_field (((opcode->lose  & insn) == 0)             ? "Yes" :"No",  STRFMT,     "%10s%c"); */
+/*     /\* print_field ("Match?",     STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("Lose?",      STRFMT, "%10s%c"); *\/ */
 
-    /* print_field (reg_names [X_RS1(insn)],  REGFMT, "%10s%c"); */
-    /* print_field (reg_names [X_RS2(insn)],  REGFMT, "%10s%c"); */
-    /* print_field (reg_names [X_RD(insn)],   REGFMT, "%10s%c"); */
-    /* print_field ((X_RS1 (insn) == X_RD(insn))  ? "Yes" :"No", STRFMT, "%10s%c"); */
-    /* print_field ((X_RS2 (insn) == X_RD(insn))  ? "Yes" :"No", STRFMT, "%10s%c"); */
+/*     /\* print_field (reg_names [X_RS1(insn)],  REGFMT, "%10s%c"); *\/ */
+/*     /\* print_field (reg_names [X_RS2(insn)],  REGFMT, "%10s%c"); *\/ */
+/*     /\* print_field (reg_names [X_RD(insn)],   REGFMT, "%10s%c"); *\/ */
+/*     /\* print_field ((X_RS1 (insn) == X_RD(insn))  ? "Yes" :"No", STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ((X_RS2 (insn) == X_RD(insn))  ? "Yes" :"No", STRFMT, "%10s%c"); *\/ */
 
-    /* print_field ("RS1",        STRFMT, "%10s%c"); */
-    /* print_field ("RS2",        STRFMT, "%10s%c"); */
-    /* print_field ("RD",         STRFMT, "%10s%c"); */
-    /* print_field ("rs1|imm?",   STRFMT, "%10s%c"); */
-    /* print_field ("rs1+imm?",   STRFMT, "%10s%c"); */
-    /* print_field ("rs1==rd?",   STRFMT, "%10s%c"); */
-    /* print_field ("rs2==rd?",   STRFMT, "%10s%c"); */
+/*     /\* print_field ("RS1",        STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("RS2",        STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("RD",         STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("rs1|imm?",   STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("rs1+imm?",   STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("rs1==rd?",   STRFMT, "%10s%c"); *\/ */
+/*     /\* print_field ("rs2==rd?",   STRFMT, "%10s%c"); *\/ */
 
-    fprintf (amv_trace, "\n");
-  }
+/*     fprintf (amv_trace, "\n"); */
+/*   } */
 
-  fflush (amv_trace);
-  fclose (amv_trace);
-  /* fprintf (stderr,  "### ;;; AMV: CLOSED trace file %s ...\n", amv_tracefile); */
+/*   fflush (amv_trace); */
+/*   fclose (amv_trace); */
+/*   /\* fprintf (stderr,  "### ;;; AMV: CLOSED trace file %s ...\n", amv_tracefile); *\/ */
 
-  return amv_0;
-}
+/*   return amv_0; */
+/* } */
 
 /* Print one instruction from MEMADDR on INFO->STREAM.
 
@@ -578,74 +578,74 @@ print_insn_sparc (bfd_vma memaddr, disassemble_info *info)
   /*
    * AMV ADDITION #1 
    */
-#define NAMEFMT       " %-10s %c"
-#define HEXFMT        " 0x%016lX %c"
-#define HEXLONGFMT    " 0x%016lX %c"
-#define STRFMT        " %18s %c"
-#define INTFMT        " %18d %c"
+/* #define NAMEFMT       " %-10s %c" */
+/* #define HEXFMT        " 0x%016lX %c" */
+/* #define HEXLONGFMT    " 0x%016lX %c" */
+/* #define STRFMT        " %18s %c" */
+/* #define INTFMT        " %18d %c" */
 
-#define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+/* #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char) */
 
-  int amv_0 = 0;
-  /* FILE *stream = info->stream; */
+/*   int amv_0 = 0; */
+/*   /\* FILE *stream = info->stream; *\/ */
 
-  /* AMV additions to trace disassembly. */
-  FILE *amv_trace;
-  static int trace_hdr_done = 0;
-  char *amv_tracefile = "/tmp/objdump-trace.txt";
+/*   /\* AMV additions to trace disassembly. *\/ */
+/*   FILE *amv_trace; */
+/*   static int trace_hdr_done = 0; */
+/*   char *amv_tracefile = "/tmp/objdump-trace.txt"; */
 
-  /* char amv_str[AMV_STR_LEN]; */
-  char amv_sep_char = '|';
-  int amv_i;
-  int i, ok = 0;
+/*   /\* char amv_str[AMV_STR_LEN]; *\/ */
+/*   char amv_sep_char = '|'; */
+/*   int amv_i; */
+/*   int i, ok = 0; */
 
-  if (trace_hdr_done == 0) {
-    amv_trace = fopen (amv_tracefile, "w");
-  } else {
-    amv_trace = fopen (amv_tracefile, "a");
-  }
+/*   if (trace_hdr_done == 0) { */
+/*     amv_trace = fopen (amv_tracefile, "w"); */
+/*   } else { */
+/*     amv_trace = fopen (amv_tracefile, "a"); */
+/*   } */
 
-  if (amv_trace == NULL) {
-    fprintf (stderr, "File %s open error with error number %d.\n", amv_tracefile, errno);
-    return -1;                  /* arbit number to signal failure! */
-  } else {
-    /* fprintf (stderr,  "### ;;; AMV: SUCCEEDED in opening trace file %s ... ", amv_tracefile); */
-    ok = fseek (amv_trace, 0, SEEK_END);
-    /* if (ok == 0)  */
-    /*   fprintf (stderr,  "and reached its end too ...\n"); */
-    /* else */
-    /*   fprintf (stderr,  "but FAILED to reach its end ...\n"); */
-  }
+/*   if (amv_trace == NULL) { */
+/*     fprintf (stderr, "File %s open error with error number %d.\n", amv_tracefile, errno); */
+/*     return -1;                  /\* arbit number to signal failure! *\/ */
+/*   } else { */
+/*     /\* fprintf (stderr,  "### ;;; AMV: SUCCEEDED in opening trace file %s ... ", amv_tracefile); *\/ */
+/*     ok = fseek (amv_trace, 0, SEEK_END); */
+/*     /\* if (ok == 0)  *\/ */
+/*     /\*   fprintf (stderr,  "and reached its end too ...\n"); *\/ */
+/*     /\* else *\/ */
+/*     /\*   fprintf (stderr,  "but FAILED to reach its end ...\n"); *\/ */
+/*   } */
 
-  if (trace_hdr_done == 0) {
-    print_field("Name",        STRFMT, " %-10s %c");
-    print_field("INSN",        STRFMT, " %18s %c");
-    print_field("Match",       STRFMT, " %18s %c");
-    print_field("Lose",        STRFMT, " %18s %c");
-    /* print_field("Args",        STRFMT, " %18s %c"); */
-    /* print_field("Flags",       STRFMT, " %18s %c"); */
-    /* print_field("Arch",        STRFMT, " %18s %c"); */
-    print_field ("Supported?", STRFMT, " %18s %c");
-    print_field ("Match&INSN", STRFMT, " %18s %c");
-    print_field ("M&I - M?",   STRFMT, " %18s %c");
-    print_field ("Match?",     STRFMT, " %18s %c");
-    print_field ("Lose&INSN",  STRFMT, " %18s %c");
-    print_field ("Lose?",      STRFMT, " %18s %c");
-    print_field ("Disasm?",    STRFMT, " %18s %c");
-    /* print_field ("RS1",        STRFMT, " %18s %c"); */
-    /* print_field ("RS2",        STRFMT, " %18s %c"); */
-    /* print_field ("RD",         STRFMT, " %18s %c"); */
-    /* /\* print_field ("rs1|imm?",   STRFMT, " %18s %c"); *\/ */
-    /* /\* print_field ("rs1+imm?",   STRFMT, " %18s %c"); *\/ */
-    /* print_field ("rs1==rd?",   STRFMT, " %18s %c"); */
-    /* print_field ("rs2==rd?",   STRFMT, " %18s %c"); */
+/*   if (trace_hdr_done == 0) { */
+/*     print_field("Name",        STRFMT, " %-10s %c"); */
+/*     print_field("INSN",        STRFMT, " %18s %c"); */
+/*     print_field("Match",       STRFMT, " %18s %c"); */
+/*     print_field("Lose",        STRFMT, " %18s %c"); */
+/*     /\* print_field("Args",        STRFMT, " %18s %c"); *\/ */
+/*     /\* print_field("Flags",       STRFMT, " %18s %c"); *\/ */
+/*     /\* print_field("Arch",        STRFMT, " %18s %c"); *\/ */
+/*     print_field ("Supported?", STRFMT, " %18s %c"); */
+/*     print_field ("Match&INSN", STRFMT, " %18s %c"); */
+/*     print_field ("M&I - M?",   STRFMT, " %18s %c"); */
+/*     print_field ("Match?",     STRFMT, " %18s %c"); */
+/*     print_field ("Lose&INSN",  STRFMT, " %18s %c"); */
+/*     print_field ("Lose?",      STRFMT, " %18s %c"); */
+/*     print_field ("Disasm?",    STRFMT, " %18s %c"); */
+/*     /\* print_field ("RS1",        STRFMT, " %18s %c"); *\/ */
+/*     /\* print_field ("RS2",        STRFMT, " %18s %c"); *\/ */
+/*     /\* print_field ("RD",         STRFMT, " %18s %c"); *\/ */
+/*     /\* /\\* print_field ("rs1|imm?",   STRFMT, " %18s %c"); *\\/ *\/ */
+/*     /\* /\\* print_field ("rs1+imm?",   STRFMT, " %18s %c"); *\\/ *\/ */
+/*     /\* print_field ("rs1==rd?",   STRFMT, " %18s %c"); *\/ */
+/*     /\* print_field ("rs2==rd?",   STRFMT, " %18s %c"); *\/ */
     
-    fprintf (amv_trace, "\n");
-    fflush (amv_trace);
-    /* fclose (amv_trace); */
+/*     fprintf (amv_trace, "\n"); */
+/*     fflush (amv_trace); */
+/*     /\* fclose (amv_trace); *\/ */
     
-    trace_hdr_done = 1;
-  }
+/*     trace_hdr_done = 1; */
+/*   } */
 
   /*
    * END AMV ADDITION #1 
@@ -713,48 +713,48 @@ print_insn_sparc (bfd_vma memaddr, disassemble_info *info)
   /*
    * AMV ADDITION #2
    */
-      fprintf (amv_trace, NAMEFMT, opcode->name, '#');
-      fprintf (amv_trace, HEXLONGFMT, insn, ':');
-      fprintf (amv_trace, HEXLONGFMT, opcode->match, ':');
-      fprintf (amv_trace, HEXLONGFMT, opcode->lose, ':');
-      /* fprintf (amv_trace, STRFMT, opcode->args, '/'); */
-      /* fprintf (amv_trace, HEXLONGFMT, opcode->flags, '/'); */
-      /* fprintf (amv_trace, HEXLONGFMT, opcode->architecture, '/'); */
+      /* fprintf (amv_trace, NAMEFMT, opcode->name, '#'); */
+      /* fprintf (amv_trace, HEXLONGFMT, insn, ':'); */
+      /* fprintf (amv_trace, HEXLONGFMT, opcode->match, ':'); */
+      /* fprintf (amv_trace, HEXLONGFMT, opcode->lose, ':'); */
+      /* /\* fprintf (amv_trace, STRFMT, opcode->args, '/'); *\/ */
+      /* /\* fprintf (amv_trace, HEXLONGFMT, opcode->flags, '/'); *\/ */
+      /* /\* fprintf (amv_trace, HEXLONGFMT, opcode->architecture, '/'); *\/ */
 
-      /* If the insn isn't supported by the current architecture, skip it.  */
-      /* if (! (opcode->architecture & current_arch_mask)) { */
-      /*   continue; */
-      /* } */
-      fprintf (amv_trace, 
-	       STRFMT, 
-	       (opcode->architecture & current_arch_mask) ? "Yes" :" No",
-	       '#');
+      /* /\* If the insn isn't supported by the current architecture, skip it.  *\/ */
+      /* /\* if (! (opcode->architecture & current_arch_mask)) { *\/ */
+      /* /\*   continue; *\/ */
+      /* /\* } *\/ */
+      /* fprintf (amv_trace,  */
+      /* 	       STRFMT,  */
+      /* 	       (opcode->architecture & current_arch_mask) ? "Yes" :" No", */
+      /* 	       '#'); */
 
-      fprintf (amv_trace, HEXFMT, (opcode->match & insn), ':');
-      fprintf (amv_trace, 
-	       HEXLONGFMT, 
-	       ((opcode->match & insn) - opcode->match),
-	       ':');
-      fprintf (amv_trace, 
-	       STRFMT, 
-	       ((opcode->match & insn) == opcode->match) ? "Yes" :" No",
-	       '#');
+      /* fprintf (amv_trace, HEXFMT, (opcode->match & insn), ':'); */
+      /* fprintf (amv_trace,  */
+      /* 	       HEXLONGFMT,  */
+      /* 	       ((opcode->match & insn) - opcode->match), */
+      /* 	       ':'); */
+      /* fprintf (amv_trace,  */
+      /* 	       STRFMT,  */
+      /* 	       ((opcode->match & insn) == opcode->match) ? "Yes" :" No", */
+      /* 	       '#'); */
 
-      fprintf (amv_trace, HEXLONGFMT, (opcode->lose & insn), ':');
+      /* fprintf (amv_trace, HEXLONGFMT, (opcode->lose & insn), ':'); */
 
-      fprintf (amv_trace, 
-	       STRFMT, 
-	       ((opcode->lose & insn) == 0)? "Yes" :" No",
-	       '#');
+      /* fprintf (amv_trace,  */
+      /* 	       STRFMT,  */
+      /* 	       ((opcode->lose & insn) == 0)? "Yes" :" No", */
+      /* 	       '#'); */
 
-      fprintf (amv_trace, 
-	       STRFMT, 
-	       (((opcode->match & insn) == opcode->match) && 
-		((opcode->lose & insn) == 0))? "Yes" :" No",
-	       '#');
+      /* fprintf (amv_trace,  */
+      /* 	       STRFMT,  */
+      /* 	       (((opcode->match & insn) == opcode->match) &&  */
+      /* 		((opcode->lose & insn) == 0))? "Yes" :" No", */
+      /* 	       '#'); */
 
-      fprintf (amv_trace, "\n");
-      fflush (amv_trace);
+      /* fprintf (amv_trace, "\n"); */
+      /* fflush (amv_trace); */
   /*
    * END AMV ADDITION #2
    */
@@ -1270,8 +1270,8 @@ print_insn_sparc (bfd_vma memaddr, disassemble_info *info)
   /*
    * AMV ADDITION #3
    */
-  fflush (amv_trace);
-  fclose (amv_trace);
+  /* fflush (amv_trace); */
+  /* fclose (amv_trace); */
   /*
    * END AMV ADDITION #4
    */
