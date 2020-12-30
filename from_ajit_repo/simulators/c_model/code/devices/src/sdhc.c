@@ -39,8 +39,8 @@ struct CPUViewOfSDHCRegs cpu_reg_view;
 struct SDHCInternalMap internal_map;
 
 // **** Thread declarations ******//
-void SDHC_CPU_Control();
-DEFINE_THREAD(SDHC_CPU_Control);
+void SDHC_Control();
+DEFINE_THREAD(SDHC_Control);
 
 //Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -66,11 +66,11 @@ void register_sdhc_pipes()
 	//pipes between system bus and SDHC device
 	int depth=1;
 
-	register_pipe("peripheral_bridge_to_SDHC_request", depth, 64, 0);
-	register_pipe("SDHC_to_peripheral_bridge_response", depth, 32, 0);	
+	register_pipe("peripheral_bridge_to_sdhc_request", depth, 64, 0);
+	register_pipe("sdhc_to_peripheral_bridge_response", depth, 32, 0);	
 	
-	set_pipe_is_read_from("peripheral_bridge_to_SDHC_request");
-	set_pipe_is_written_into("SDHC_to_peripheral_bridge_response");
+	set_pipe_is_read_from("peripheral_bridge_to_sdhc_request");
+	set_pipe_is_written_into("sdhc_to_peripheral_bridge_response");
 }
 
 void start_sdhc_threads()
@@ -78,11 +78,11 @@ void start_sdhc_threads()
 	register_sdhc_pipes();
 	sdhc_initialize();
 
-	PTHREAD_DECL(SDHC_CPU_Control);
-	PTHREAD_CREATE(SDHC_CPU_Control);
+	PTHREAD_DECL(SDHC_Control);
+	PTHREAD_CREATE(SDHC_Control);
 }
 
-void readRegister(uint32_t data_out, uint32_t addr,
+void readSDHCRegister(uint32_t data_out, uint32_t addr,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
 	if (addr == (0xffffff & ADDR_SDHC_ARG_2))
@@ -125,13 +125,12 @@ void readRegister(uint32_t data_out, uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->tx_mode;
 	}
-	
-	sendPeripheralResponse("SDHC_to_peripheral_bridge_response", data_out);
+	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 }
 
 void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
-{
+{	
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
 
 	if (addr== (0xffffff & ADDR_SDHC_ARG_2))
@@ -174,7 +173,7 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		memcpy(dest,source,size);
 	}
 
-	else 	if (addr== (0xffffff & ADDR_SDHC_ARG_1))
+	else if (addr== (0xffffff & ADDR_SDHC_ARG_1))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->argument1[0] = temp1;
@@ -227,15 +226,15 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 //to be used soon:	sdhc_tx_buffer = 1;//load the updated value in a pipe
 }
 
-void SDHC_CPU_Control()
+void SDHC_Control()
 {
-	
+	register_sdhc_pipes();
 	while(1)
 	{
 		uint8_t rwbar, byte_mask;
 		uint32_t addr, data_in;
 
-		getPeripheralAccessCommand("peripheral_bridge_to_SDHC_request",
+		getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
 			&rwbar, &byte_mask, &addr, &data_in);
 		uint32_t data_out=0;
 
@@ -246,7 +245,7 @@ void SDHC_CPU_Control()
 			
 			if((addr>=ADDR_SDHC_ARG_2)&&(addr<=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 			{
-				switch (addr)
+			/*	switch (addr)
 				{
 					case (0xFFFFFF & ADDR_SDHC_ARG_2):
 						// RW
@@ -420,17 +419,18 @@ void SDHC_CPU_Control()
 					break;								
 				default:
 					break;
-				}
+				}*/
 				updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 			}
 			pthread_mutex_unlock(&Sdhc_lock);	
+			data_out=0;
 		}
 		else
 		{
 			pthread_mutex_lock(&Sdhc_lock);
 			if((addr<=ADDR_SDHC_ARG_2)&&(addr>=ADDR_SDHC_HOST_CONTROLLER_VERSION))
 			{
-				readRegister(data_out, addr, &cpu_reg_view, &internal_map);
+				readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
 			}
 			pthread_mutex_unlock(&Sdhc_lock);	
 		}

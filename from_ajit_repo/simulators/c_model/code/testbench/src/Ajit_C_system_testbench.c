@@ -9,6 +9,7 @@
 // 		Timer
 // 		Serial
 // 		Interrupt controller
+//		 SDHC
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,6 +36,7 @@
 #include "InterruptController.h"
 #include "Serial.h"
 #include "console.h"
+#include "Sdhc.h"
 
 #include "StartCpuThreads.h"
 
@@ -470,6 +472,7 @@ int main(int argc, char **argv)
 	//peripherals
 	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IRC_threads();
 	if(USE_TIMER_MODEL)  start_timer_threads();
+	if(USE_SDHC_MODEL) start_sdhc_threads();
 	if(USE_SERIAL_MODEL) 
 	{
 		start_serial_threads();
@@ -481,7 +484,6 @@ int main(int argc, char **argv)
 		}
 		startConsoleThreads();
 	}
-
 	//bridge between the MMU and memory:
 	register_bridge_pipes (NCPUs);
 	start_bridge_daemons  (NCPUs);

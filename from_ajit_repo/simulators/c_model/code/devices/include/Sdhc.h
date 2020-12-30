@@ -131,9 +131,8 @@
 void register_sdhc_pipes();
 void sdhc_initialize();
 void start_sdhc_threads();
-
+void SDHC_Control();
 // Threads for SDHC control
-void SDHC_CPU_Control(); 
 	//1.monitors data going to and coming from CPU via bridge 
 	//2. values are stored in CPUViewOfSDHCRegs struct 
 	//3. Copies the values of CPUViewOfSDHCRegs inside
@@ -235,7 +234,7 @@ typedef struct CPUViewOfSDHCRegs
 void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
-void readRegister(uint32_t data_out, uint32_t addr,  
+void readSDHCRegister(uint32_t data_out, uint32_t addr,  
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
 char readDataFromSDCard();
