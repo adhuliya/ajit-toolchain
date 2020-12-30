@@ -23,7 +23,8 @@ echo "Good. Docker is installed!";
 sleep 1;
 
 if [[ -z $AJIT_HOME ]]; then
-  echo "Please set the env variable \$AJIT_HOME";
+  echo "ERROR: Please set the env variable \$AJIT_HOME";
+  echo "USE COMMAND: source ./set_ajit_home";
   exit 1;
 fi
 
