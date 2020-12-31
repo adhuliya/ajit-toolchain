@@ -23,16 +23,16 @@ popd &> /dev/null;
 export PATH=$BUILDROOT_BIN_DIR:$PATH;
 # for: compileToSparc.py, pt_load_sections.py, ...
 export PATH=$TOOLS_DIR/scripts:$PATH;
+#for: makeLinkerScript.py..
+export PATH=$TOOLS_DIR/linker:$PATH;
 # for: generateMemoryMap_Byte
-export PATH=$TOOLS_DIR/misc/bin:$PATH;
+export PATH=$TOOLS_DIR/misc/bin:$PATH;                                          
 # for: remapMemmap
 export PATH=$TOOLS_DIR/genVmapAsm/bin:$PATH;
 # for: ajit_C_system_model
 export PATH=$CMODEL_DIR/bin:$PATH;
-# for: TODO: Saurabh please comment here.
-PATH=$TOOLS_DIR/linker:$PATH;
 
-# set library paths 
+# set library paths                                                             
 export BUILDROOT_LIB_DIR="$BUILDROOT_HOST_DIR/usr/lib";
 # UCLIBC_LIB="$UCLIBC_DIR/lib";
 export UCLIBC_LIB_DIR="$UCLIBC_DIR/sysroot/usr/lib";
@@ -91,10 +91,8 @@ export AJIT_C_REF_RELEASE=$AJIT_TOOLS_RELEASE/c_reference_model
 
 export AJIT_UCLIBC_INSTALL_DIR=$UCLIBC_LIB_DIR/..;
 export AJIT_LIBGCC_INSTALL_DIR=$BUILDROOT_HOST_DIR/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4;
-
 export AJIT_UCLIBC_HEADERS=$BUILDROOT_DIR/output/build/host-binutils-2.22/include;
-#export AJIT_LIBGCC_INSTALL_DIR=$BUILDROOT_DIR/output/build/host-gcc-final-4.7.4/gcc;
+export AJIT_LIBGCC_INSTALL_DIR=$BUILDROOT_DIR/output/build/host-gcc-final-4.7.4/gcc;
 export AJIT_ACCESS_ROUTINES=$TOOLS_DIR/ajit_access_routines;
 export AJIT_MINIMAL_PRINTF_TIMER=$TOOLS_DIR/minimal_printf_timer; 
-
 
