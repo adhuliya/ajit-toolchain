@@ -3,18 +3,10 @@
 #include <string.h>
 #include <math.h>
 #include "half_precision_float.h"
+#include "fpunit_exec_exec_aa_c_model.h"
 
 int main(int argc, char* argv[])
 {
-
-	if(argc < 2)
-	{
-		fprintf(stderr,"Usage: %s <exp-width> \n", argv[0]);
-		return(1);
-	}
-
-	int exp_width = atoi(argv[1]);
-	fprintf(stderr,"Exp-width=%d\n", exp_width);
 
 	float step = 0.1;
 
@@ -23,70 +15,68 @@ int main(int argc, char* argv[])
 	float ymin = - step* 50;
 
 	float two = 2.0;
-	half htwo;
-	initHalf(&htwo, exp_width,0);
-	floatToHalf(two, &htwo);
+	half htwo  = floatToHalf(two);
 
 	float onebytwo = 0.5;
-	half honebytwo;
-	initHalf(&honebytwo, exp_width,0);
-	floatToHalf(onebytwo, &honebytwo);
+	half honebytwo = floatToHalf(onebytwo);
 
 	float bigpowx = 1.0;
-	half  hbigpowx;
-	initHalf (&hbigpowx, exp_width,0);
-	floatToHalf(bigpowx, &hbigpowx);
+	half  hbigpowx =  floatToHalf(bigpowx);
 
 	float smallpowx = 1.0;
-	half  hsmallpowx;
-	initHalf (&hsmallpowx, exp_width,0);
-	floatToHalf(smallpowx, &hsmallpowx);
+	half  hsmallpowx = floatToHalf(smallpowx);
 
 	
 
 	half hx;
-	initHalf(&hx, exp_width, 0);
-
 	half hy;
-	initHalf(&hy, exp_width, 0);
+	half hsum = 0;
+	half hdiff;
+	half hprod = 1;
 
-	half hsum, hdiff, hprod;
-	initHalf(&hsum, exp_width, 0);
-	initHalf(&hdiff, exp_width, 0);
-	initHalf(&hprod, exp_width, 0);
-
+		
+	float max_error = 0;
 	for(I=0; I < 100; I++)
 	{
-		mulHalf(&hbigpowx, &htwo, &hbigpowx);
-		fprintf(stdout,"(2.0**%d) = %e\n", I+1, halfToFloat(&hbigpowx));
+		hbigpowx = mulHalf(hbigpowx, htwo);
+		fprintf(stdout,"(2.0**%d) = %e\n", I+1, halfToFloat(hbigpowx));
 
-		mulHalf(&hsmallpowx, &honebytwo, &hsmallpowx);
-		fprintf(stdout,"(0.5**%d) = %e\n", I+1, halfToFloat(&hsmallpowx));
+		hsmallpowx = mulHalf(hsmallpowx, honebytwo);
+		fprintf(stdout,"(0.5**%d) = %e\n", I+1, halfToFloat(hsmallpowx));
 
 		float x = xmin + I*step;
-		floatToHalf(x,&hx);
-		fprintf(stdout,"(float) (half) %f = %f\n", x, halfToFloat(&hx));
+		hx = floatToHalf(x);
+		fprintf(stdout,"(float) (half) %f = %f\n", x, halfToFloat(hx));
+
+
 		for(J = 0; J < 100; J++)
 		{
 			float y = ymin + J*step;
-			floatToHalf(y,&hy);
+			hy = floatToHalf(y);
 
-			addHalf(&hx,&hy,&hsum);
-			subHalf(&hx,&hy,&hdiff);
-			mulHalf(&hx,&hy,&hprod);
+			hsum  = addHalf(hx,hy);
+			hdiff = subHalf(hx,hy);
+			hprod = mulHalf(hx,hy);
 
+			float esum = (x + y) - halfToFloat(hsum);
 			fprintf(stdout,"%f + %f = %f (error=%f)\n",
-					halfToFloat(&hx), halfToFloat(&hy), halfToFloat(&hsum),
-					(x + y) - halfToFloat(&hsum));
+					halfToFloat(hx), halfToFloat(hy), halfToFloat(hsum),esum);
+		
+			max_error = ((fabs(esum) > max_error) ? fabs(esum) : max_error);	
+					
+			float ediff = (x - y) - halfToFloat(hdiff);
 			fprintf(stdout,"%f - %f = %f (error=%f)\n",
-					halfToFloat(&hx), halfToFloat(&hy), halfToFloat(&hdiff),
-					(x - y) - halfToFloat(&hdiff));
+					halfToFloat(hx), halfToFloat(hy), halfToFloat(hdiff), ediff);
+			max_error = ((fabs(ediff) > max_error) ? fabs(ediff) : max_error);	
+					
+			float emul = (x * y) - halfToFloat(hprod);
 			fprintf(stdout,"%f * %f = %f (error=%f)\n",
-					halfToFloat(&hx), halfToFloat(&hy), halfToFloat(&hprod),
-					(x * y) - halfToFloat(&hprod));
+					halfToFloat(hx), halfToFloat(hy), halfToFloat(hprod), emul);
+			max_error = ((fabs(emul) > max_error) ? fabs(emul) : max_error);	
 		}
 	}
 
+	fprintf(stderr,"MAX ERROR = %f\n", max_error);
 	return(0);
 }
 

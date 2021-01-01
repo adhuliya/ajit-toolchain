@@ -9,6 +9,7 @@
 // 		Timer
 // 		Serial
 // 		Interrupt controller
+//		 SDHC
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,6 +36,7 @@
 #include "InterruptController.h"
 #include "Serial.h"
 #include "console.h"
+#include "Sdhc.h"
 
 #include "StartCpuThreads.h"
 
@@ -96,6 +98,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]\n");
 	fprintf(stderr, "   -m <mmap-file>     : required, specifies memory-map of processor for this test.\n");
 	fprintf(stderr, "   -b <bp-size>, optional,  branch predictor table size (default=16)\n");
+	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	fprintf(stderr, "   -g, optional, to run the CPU in debug mode.\n");
 	fprintf(stderr, "   -q <number-of-address-bits>, optional, size of memory is 2**<number-of-address-bits>, default is 32.\n");
 	fprintf(stderr, "   -p <gdb-port-number>, required with -g, to specify remote debug port.\n");
@@ -200,6 +203,7 @@ FILE* long_reg_write_file;
 char* logger_server_ip_address;
 int   logger_server_port_number;
 int   global_verbose_flag = 0;
+char* bridge_targets_file = NULL;
 
 
 int main(int argc, char **argv)
@@ -247,7 +251,7 @@ int main(int argc, char **argv)
 
 	uint32_t init_pc = 0;
 
-	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -339,6 +343,10 @@ int main(int argc, char **argv)
 				srand(randomization_seed);
 				setRandomizeFlag(1);
 				break;
+			case 'B':
+				bridge_targets_file = strdup(optarg);
+				fprintf(stderr,"Info: bridge targets file is %s\n", bridge_targets_file);
+				break;
 			default: 
 				fprintf(stderr,"Error: unknown option %c\n", opt);
 				break;
@@ -346,6 +354,22 @@ int main(int argc, char **argv)
 	}
 
 	fprintf(stderr,"Info: branch-predictor table size=%d.\n", bp_table_size);
+
+	initBridgeTargets();
+	if(bridge_targets_file != NULL)
+	{
+		setupBridgeTargetsAndPeripherals(bridge_targets_file);
+	}
+	else
+	{
+		// defaults.
+		addMem ("lowermem", 0x3, 0x0, 0xFFFF2FFF);	 // lower mem program + data.
+		addPeripheral("irc", 0xFFFF3000, 0xFFFF3008);	 // interrupt controller.
+		addPeripheral("timer", 0xFFFF3100, 0xFFFF3108);	 // timer
+		addPeripheral("serial", 0xFFFF3200, 0xFFFF32FF); // serial
+		addPeripheral("sdhc", 0xFFFF3300, 0xFFFF33FF); //sdhc
+		addMem ("uppermem", 0x3, 0xFFFF3400, 0xFFFFFFFF);// upper mem (for stack).	
+	}
 
 
 
@@ -448,6 +472,7 @@ int main(int argc, char **argv)
 	//peripherals
 	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IRC_threads();
 	if(USE_TIMER_MODEL)  start_timer_threads();
+	if(USE_SDHC_MODEL) start_sdhc_threads();
 	if(USE_SERIAL_MODEL) 
 	{
 		start_serial_threads();
@@ -459,7 +484,6 @@ int main(int argc, char **argv)
 		}
 		startConsoleThreads();
 	}
-
 	//bridge between the MMU and memory:
 	register_bridge_pipes (NCPUs);
 	start_bridge_daemons  (NCPUs);

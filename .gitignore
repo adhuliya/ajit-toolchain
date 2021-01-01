@@ -56,5 +56,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
-
+# scons ignores
+.sconsign.dblite
+# When configure fails, SCons outputs these
+config.log
+.sconf_temp

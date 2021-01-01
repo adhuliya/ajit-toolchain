@@ -2,7 +2,7 @@
 //1. Prof. Madhav Desai
 //2. Saurabh Bansode
 //3. Vishnu Easwaran E
-//Last updated: 27 Nov '20
+//Last updated: 21 Dec '20
 
 #ifndef _SDHC_H
 #define _SDHC_H
@@ -131,53 +131,111 @@
 void register_sdhc_pipes();
 void sdhc_initialize();
 void start_sdhc_threads();
+void SDHC_Control();
+// Threads for SDHC control
+	//1.monitors data going to and coming from CPU via bridge 
+	//2. values are stored in CPUViewOfSDHCRegs struct 
+	//3. Copies the values of CPUViewOfSDHCRegs inside
+	//	SDHCInternalMap struct using updateRegister function
+
+typedef struct SDHCInternalMap
+{
+	uint32_t argument2; 			//0x0
+	uint16_t blk_size; 			//0x4 	
+	uint16_t blk_count; 			//0x6 		
+	uint32_t argument1;			//0x8		
+	uint16_t tx_mode; 			//0xC 		
+	uint16_t command_reg; 			//0xE		
+	uint16_t response0; 			//0x10		
+	uint16_t response1; 			//0x12		
+	uint16_t response2; 			//0x14 		
+	uint16_t response3; 			//0x16 		
+	uint16_t response4; 			//0x18 		
+	uint16_t response5; 			//0x1A		
+	uint16_t response6; 			//0x1C 		
+	uint16_t response7; 			//0x1E	
+	uint32_t buffer_data_port; 		//0x20 
+	uint32_t present_state; 		//0x24 		
+	uint8_t  pwr_ctrl;			//0x28
+	uint8_t  host_ctrl1; 			//0x29 		
+	uint8_t  wakeup_ctrl; 			//0x2A 		
+	uint8_t  blk_gap_ctrl; 			//0x2B
+	uint16_t clk_ctrl; 			//0x2C 		 	
+	uint8_t  sw_reset; 			//0x2E
+	uint8_t  timeout_ctrl; 			//0x2F
+	uint16_t normal_intr_status; 		//0x30 
+	uint16_t error_intr_status; 		//0x32 	
+	uint16_t normal_intr_status_enable; 	//0x34 
+	uint16_t error_intr_status_enable; 	//0x36 
+	uint16_t normal_intr_signal_enable; 	//0x38
+	uint16_t error_intr_signal_enable; 	//0x3A 	
+	uint16_t autoCMD_error_status; 		//0x3C 		
+	uint16_t host_ctrl2; 			//0x3E 			
+	uint64_t capabilities; 			//0x40
+	uint32_t max_current_cap; 		//0x48
+	uint32_t res_max_current_cap; 		//0x4C
+	uint16_t force_event_autoCMD_err_stat;	//0x50
+	uint16_t force_event_autoCMD_err_interrupt_stat;	//0x52
+	uint8_t  ADMA_err_status;		//0x55
+	uint64_t ADMA_system_address; 		//0x58
+	__uint128_t preset_value ; 		//0x60
+	uint16_t shared_bus_control;		//0xE0
+	uint16_t slot_interrupt_status;		//0xFC
+ 	uint16_t host_controller_version; 	//0xFE 
+}SDHCInternalMap;
+
+typedef struct CPUViewOfSDHCRegs
+{
+	uint8_t argument2[4];   		//0x0  	
+	uint8_t blk_size[2];    		//0x4 		
+	uint8_t blk_count[2];   		//0x6 		
+	uint8_t argument1[4];   		//0x8 		
+	uint8_t tx_mode[2]; 			//0xC 
+	uint8_t command_reg[2]; 		//0xE	
+	uint8_t response0[2]; 			//0x10	
+	uint8_t response1[2]; 			//0x12	
+	uint8_t response2[2]; 			//0x14 	
+	uint8_t response3[2]; 			//0x16 	
+	uint8_t response4[2]; 			//0x18 	
+	uint8_t response5[2]; 			//0x1A
+	uint8_t response6[2]; 			//0x1C 
+	uint8_t response7[2]; 			//0x1E
+	uint8_t buffer_data_port[4]; 		//0x20
+	uint8_t present_state[4];    		//0x24
+	uint8_t pwr_ctrl;     			//0x28
+	uint8_t host_ctrl1;   			//0x29 		
+	uint8_t wakeup_ctrl;  			//0x2A 		
+	uint8_t blk_gap_ctrl; 			//0x2B
+	uint8_t clk_ctrl[2];  			//0x2C 		 	
+	uint8_t sw_reset;     			//0x2E
+	uint8_t timeout_ctrl; 			//0x2F
+	uint8_t normal_intr_status[2]; 		//0x30 
+	uint8_t error_intr_status[2]; 		//0x32 
+	uint8_t normal_intr_status_enable[2]; 	//0x34 	
+	uint8_t error_intr_status_enable[2]; 	//0x36 	
+	uint8_t normal_intr_signal_enable[2]; 	//0x38 	
+	uint8_t error_intr_signal_enable[2]; 	//0x3A 	
+	uint8_t autoCMD_error_status[2]; 	//0x3C 		
+	uint8_t host_ctrl2[2]; 			//0x3E 			
+	uint8_t capabilities[8]; 		//0x40
+	uint8_t max_current_cap[4]; 		//0x48
+	uint8_t res_max_current_cap[4]; 	//0x4C
+	uint8_t force_event_autoCMD_err_stat[2];//0x50
+	uint8_t force_event_autoCMD_err_interrupt_stat[2];	//0x52
+	uint8_t ADMA_err_status;		//0x55
+	uint8_t ADMA_system_address[8]; 	//0x58
+	uint8_t preset_value[16] ; 		//0x60
+	uint8_t shared_bus_control[2];		//0xE0
+	uint8_t slot_interrupt_status[2];	//0xFC
+ 	uint8_t host_controller_version[2]; 	//0xFE 
+}CPUViewOfSDHCRegs;
 
 //Functions for register value manipulations
-uint32_t calculateNewValue();
-uint32_t calculateNewValueMask();
-void updateRegister(uint32_t index, uint8_t byte_mask, uint32_t data_in);//addr, bytemask, data
+void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
+struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
-
-
-// Thread for SDHC control
-void SDHC_Control();
-
-//Following functions are called from the Bridge
-void sendRequestToSDHC(uint8_t request_type, uint32_t addr,uint8_t byte_mask, uint32_t data32);
-void readResponseFromSDHC(uint32_t* data);
-
-struct ArrayIndexMap
-{
-	uint32_t argument2; //SDMA Addr reg index[0]
-	uint16_t blk_size; // 0x4 				  index[1]
-	uint16_t blk_count; //0x6 		index[2]
-	uint32_t argument; //0x8 			index[3]
-	uint16_t tx_mode; //0xC 			index[4]
-	uint16_t command_reg; //0xE		index[5]
-	uint32_t response0; //0x10		index[6]
-	uint32_t response2; //0x14 		index[7]
-	uint32_t response4; //0x18 		index[8]
-	uint32_t response6; //0x1c 		index[9]
-	uint32_t buffer_data_port; //0x20 	index[10]
-	uint32_t present_state; //0x24 			index[11]
-	uint8_t host_ctrl; //ox28 		index[12]
-	uint8_t pwr_ctrl;//0x29 			index[13]
-	uint8_t blk_gap_ctrl; //0x2A 	index[14]
-	uint8_t wakeup_ctrl; //0x2B 	index[15]
-	uint16_t clk_ctrl; //0x2C 		index[16]
-	uint8_t timeout_ctrl; //0x2E 	index[17]
-	uint8_t sw_reset; //0x2F 			index[18]
-	uint16_t normal_intr_status; //0x30 index[19]
-	uint16_t error_intr_status; //0x32 	index[20]
-	uint16_t normal_intr_status_enable; //0x34 	index[21]
-	uint16_t error_intr_status_enable; //0x36 	index[22]
-	uint16_t normal_intr_signal_enable; //0x38 	index[23]
-	uint16_t error_intr_signal_enable; //0x3A 	index[24]
-	uint16_t autoCMD_error_status; //0x3C 			index[25]
-	uint16_t host_ctrl2; //0x3E 								index[26]
-	uint32_t capabilities; //0x40 							index[27]
-	uint16_t host_controller_version; //0xFE 		index[28]
-};
+void readSDHCRegister(uint32_t data_out, uint32_t addr,  
+struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);

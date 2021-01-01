@@ -8,3 +8,15 @@ In the code/ directory and type
    scons
 
 This should build the C model binary in testbench/bin.
+
+OR 
+
+" source build-C-model.sh "
+   to build the C model with a single step.
+
+If any libraries are missing or aren't linking,
+go to that module's directory and run "scons"
+
+for ex. if it complains about missing -lConsole ,
+change directory to code/console and run "scons"
+and back to code/ directory and run scons once more.
