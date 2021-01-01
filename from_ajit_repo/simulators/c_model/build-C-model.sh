@@ -25,3 +25,4 @@ cd $SIM_DIR/code/char_client_server;            scons;
 echo "Building code";               sleep 1;
 cd $SIM_DIR/code;                               scons;
 cd $SIM_DIR;
+cd $SIM_DIR/code/testbench/bin;
