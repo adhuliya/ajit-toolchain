@@ -40,6 +40,9 @@ main:
 	## umuldajcc %g1, %g2, %g0
 	## smuldaj %g1, %g2, %g0
 	## smuldajcc %g1, %g2, %g0
+	smul    %g1, %g2, %g0
+	smuld   %g1, %g2, %g0
+	umul    %g1, %g2, %g0
 	umuld   %g1, %g2, %g0
 	umuldcc %g1, %g2, %g0
 	smuld   %g1, %g2, %g0

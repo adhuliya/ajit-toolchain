@@ -35,12 +35,16 @@ lst_len:
 # value of 255 that fits into the 8 bits (0:7).
 main:
 	save	%sp, -120, %sp
-        addbyter  %g2, %g1, %g4
-        ordbyter  %g2, %g1, %g4
-        anddbyter %g2, %g1, %g4
-        xordbyter %g2, %g1, %g4
-        zbytedpos %g2, %g1, %g4
-        zbytedpos %g2, 255, %g4
+        adddreduce8  %g2, %g1, %g4
+        ordreduce8   %g2, %g1, %g4
+        anddreduce8  %g2, %g1, %g4
+        xordreduce8  %g2, %g1, %g4
+        zbytedpos    %g2, %g1, %g4
+        zbytedpos    %g2, 255, %g4
+        adddreduce16 %g2, %g1, %g4
+        ordreduce16  %g2, %g1, %g4
+        anddreduce16 %g2, %g1, %g4
+        xordreduce16 %g2, %g1, %g4
 	adddcc  %g1, %g2, %g1
 	subd    %g1, %g2, %g1
 	subdcc  %g1, %g2, %g1
