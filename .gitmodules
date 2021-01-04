@@ -1,0 +1,3 @@
+[submodule "from_ajit_repo/simulators/c_model/code/AjitPeripherals"]
+	path = from_ajit_repo/simulators/c_model/code/AjitPeripherals
+	url = git@github.com:Priyankar1996/AjitPeripherals.git
