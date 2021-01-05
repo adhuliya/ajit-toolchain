@@ -130,8 +130,7 @@ void update_reg_CPU();
 
 void sdhc_initialize()
 {
-	sdhc_tx_buffer=0;
-	sdhc_rx_buffer=0;
+
 	//interrupt output signal
 	SDHC_INT_OUT = 0;
 	write_uint8("SDHC_to_IRC_INT", SDHC_INT_OUT);
@@ -153,9 +152,11 @@ void register_sdhc_pipes()
 
 	register_pipe("peripheral_bridge_to_sdhc_request", depth, 64, 0);
 	register_pipe("sdhc_to_peripheral_bridge_response", depth, 32, 0);
-
+	register_pipe("sdhc_to_sdcard_request",depth,64,0);
+	
 	set_pipe_is_read_from("peripheral_bridge_to_sdhc_request");
 	set_pipe_is_written_into("sdhc_to_peripheral_bridge_response");
+	set_pipe_is_written_into("sdhc_to_sdcard_request");
 }
 
 void start_sdhc_threads()
@@ -165,6 +166,22 @@ void start_sdhc_threads()
 
 	PTHREAD_DECL(SDHC_Control);
 	PTHREAD_CREATE(SDHC_Control);
+}
+
+void generateCommandForSDCard(struct SDHCInternalMap *int_str)
+{
+//extracting command index value to be inserted in bits 40:45
+	uint8_t cmd_index = getSlice16(int_str->command_reg,13,8);
+	uint8_t crc7=7;//dummy value for now, will be updated with crc7 function's
+							//return value later
+	uint64_t frame_data=0;
+	frame_data|=0<<47;//start bit
+	frame_data|=1<<46;//tx bit
+	frame_data|=cmd_index<<40;
+	frame_data|=int_str->argument1<<8;
+	frame_data|=crc7<<1;
+	frame_data|=0<<0;
+	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
 void readSDHCRegister(uint32_t data_out, uint32_t addr,
@@ -285,30 +302,7 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		void *source = &(str->tx_mode);
 		memcpy(dest,source,size);
 	}
-	/* We can replace the if-else ladder with the following switch-case format.
-	 NOTE: I modified the address defines in ajit_device_addresses for easy processing.
-	 uint32_t addr_in = addr;
-	 switch (addr_in)
-	 {
-	 case (0xffffff & ADDR_SDHC_ARG_2):
-	 	uint8_t temp1 = getSlice32(data_in_masked,7,0);
-	 	str->argument2[0] = temp1;
-	 	uint8_t temp2 = getSlice32(data_in_masked,15,8);
-	 	str->argument2[1] = temp2;
-	 	uint8_t temp3 = getSlice32(data_in_masked,23,16);
-	 	str->argument2[2] = temp3;
-	 	uint8_t temp4 = getSlice32(data_in_masked,31,24);
-	 	str->argument2[3] = temp4;
-	 	uint8_t size=4;
-	 	void *dest = &(int_str->argument2);
-	 	void *source = &(str->argument2);
-	 	memcpy(dest,source,size);
-	 	break;
-	 default:
-	 	break;
-	 }	*/
 
-//to be used soon:	sdhc_tx_buffer = 1;//load the updated value in a pipe
 }
 
 void SDHC_Control()
@@ -388,7 +382,7 @@ void SDHC_Control()
 						break;
 
 					case READ:
-						readRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
 						break;
 
 					default:
@@ -717,7 +711,7 @@ void SDHC_Control()
 						// write protected
 						break;
 					case READ:
-						readRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
 						break;
 					default:
 						break;

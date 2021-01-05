@@ -237,6 +237,10 @@ struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 void readSDHCRegister(uint32_t data_out, uint32_t addr,  
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
+//Accumulates the parameters to be inserted in the 48 bit frame
+// and places them in the required manner
+void generateCommandForSDCard(struct SDHCInternalMap *int_str);
+
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);
 
