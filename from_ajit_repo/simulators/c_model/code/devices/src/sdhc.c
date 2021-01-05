@@ -153,10 +153,12 @@ void register_sdhc_pipes()
 	register_pipe("peripheral_bridge_to_sdhc_request", depth, 64, 0);
 	register_pipe("sdhc_to_peripheral_bridge_response", depth, 32, 0);
 	register_pipe("sdhc_to_sdcard_request",depth,64,0);
+	register_pipe("sdcard_to_sdhc_response",depth,64,0);
 	
 	set_pipe_is_read_from("peripheral_bridge_to_sdhc_request");
 	set_pipe_is_written_into("sdhc_to_peripheral_bridge_response");
 	set_pipe_is_written_into("sdhc_to_sdcard_request");
+	set_pipe_is_read_from("sdcard_to_sdhc_response");
 }
 
 void start_sdhc_threads()
@@ -166,143 +168,6 @@ void start_sdhc_threads()
 
 	PTHREAD_DECL(SDHC_Control);
 	PTHREAD_CREATE(SDHC_Control);
-}
-
-void generateCommandForSDCard(struct SDHCInternalMap *int_str)
-{
-//extracting command index value to be inserted in bits 40:45
-	uint8_t cmd_index = getSlice16(int_str->command_reg,13,8);
-	uint8_t crc7=7;//dummy value for now, will be updated with crc7 function's
-							//return value later
-	uint64_t frame_data=0;
-	frame_data|=0<<47;//start bit
-	frame_data|=1<<46;//tx bit
-	frame_data|=cmd_index<<40;
-	frame_data|=int_str->argument1<<8;
-	frame_data|=crc7<<1;
-	frame_data|=0<<0;
-	write_uint64("sdhc_to_sdcard_request",frame_data);
-}
-
-void readSDHCRegister(uint32_t data_out, uint32_t addr,
- struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
-{
-	if (addr == (0xffffff & ADDR_SDHC_ARG_2))
-	{
-		uint8_t size=4;
-		void *dest = &(str->argument2);//cpu side regs are destination here
-		void *source = &(int_str->argument2);
-		memcpy(dest,source,size);
-		data_out = (uint32_t)str->argument2;
-	}
-	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_SIZE))
-	{
-		uint8_t size=2;
-		void *dest = &(str->blk_size);//cpu side regs are destination here
-		void *source = &(int_str->blk_size);
-		memcpy(dest,source,size);
-		data_out = (uint32_t)str->blk_size;
-	}
-	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_COUNT))
-	{
-		uint8_t size=2;
-		void *dest = &(str->blk_count);//cpu side regs are destination here
-		void *source = &(int_str->blk_count);
-		memcpy(dest,source,size);
-		data_out = (uint32_t)str->blk_count;
-	}
-	else if (addr == (0xffffff & ADDR_SDHC_ARG_1))
-	{
-		uint8_t size=4;
-		void *dest = &(str->argument1);//cpu side regs are destination here
-		void *source = &(int_str->argument1);
-		memcpy(dest,source,size);
-		data_out = (uint32_t)str->argument1;
-	}
-		else if (addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
-	{
-		uint8_t size=2;
-		void *dest = &(str->tx_mode);//cpu side regs are destination here
-		void *source = &(int_str->tx_mode);
-		memcpy(dest,source,size);
-		data_out = (uint32_t)str->tx_mode;
-	}
-	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
-}
-
-void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
- struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
-{
-	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
-
-	if (addr== (0xffffff & ADDR_SDHC_ARG_2))
-	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->argument2[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->argument2[1] = temp2;
-		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->argument2[2] = temp3;
-		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->argument2[3] = temp4;
-		uint8_t size=4;
-		void *dest = &(int_str->argument2);//internal regs are destionation here
-		void *source = &(str->argument2);
-		memcpy(dest,source,size);
-	}
-
-	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_SIZE))
-	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->blk_size[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->blk_size[1] = temp2;
-		uint8_t size=2;
-		void *dest = &(int_str->blk_size);
-		void *source = &(str->blk_size);
-		memcpy(dest,source,size);
-	}
-
-	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_COUNT))
-	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->blk_count[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->blk_count[1] = temp2;
-		uint8_t size=2;
-		void *dest = &(int_str->blk_count);
-		void *source = &(str->blk_count);
-		memcpy(dest,source,size);
-	}
-
-	else if (addr== (0xffffff & ADDR_SDHC_ARG_1))
-	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->argument1[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->argument1[1] = temp2;
-		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->argument1[2] = temp3;
-		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->argument1[3] = temp4;
-		uint8_t size=4;
-		void *dest = &(int_str->argument1);
-		void *source = &(str->argument1);
-		memcpy(dest,source,size);
-	}
-
-	else if(addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
-	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->tx_mode[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->tx_mode[1] = temp2;
-		uint8_t size=2;
-		void *dest = &(int_str->tx_mode);
-		void *source = &(str->tx_mode);
-		memcpy(dest,source,size);
-	}
-
 }
 
 void SDHC_Control()
