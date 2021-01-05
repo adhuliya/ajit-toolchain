@@ -35,10 +35,11 @@ lst_len:
 # rs1 and rd; 0x1FFF = 13 bit immediate.
 main:
 	save	%sp, -120, %sp
-        cswapd   [%g2 + %g1   ] 0x08, %g4
-        cswapd   [%g2 + 0x0fff]     , %g4
-        cswapda  [%g2 + %g1   ] 0x0A, %g4
-        cswapda  [%g2 + 0x0fff]     , %g4
+        cswap   [%g2 + %g1   ] 0x08, %g4
+        cswap   [%g2 + 0x0fff]     , %g4
+        cswapa  [%g2 + %g1   ] 0x0A, %g4
+        cswapa  [%g2 + 0x0fff]     , %g4
+	cswap   [%fp + -8]         , %g4
 	adddcc  %g1, %g2, %g1
 	subd    %g1, %g2, %g1
 	subdcc  %g1, %g2, %g1
