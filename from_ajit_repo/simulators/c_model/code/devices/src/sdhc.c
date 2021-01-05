@@ -190,7 +190,7 @@ void SDHC_Control()
 			&rwbar, &byte_mask, &addr, &data_in);
 		uint32_t data_out=0;
 
-		//***lock the state variables***
+		//***lock the state variables***//
 		pthread_mutex_lock(&Sdhc_lock);
 
 

@@ -233,7 +233,14 @@ void readSDHCRegister(uint32_t data_out, uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->capabilities;
 		}	
-
+		else if (addr == (0xffffff) & ADDR_SDHC_MAX_CURRENT_CAPS)
+		{
+		uint8_t size=8;
+		void *dest = &(str->max_current_cap);//cpu side regs are destination here
+		void *source = &(int_str->max_current_cap);
+		memcpy(dest,source,size);
+		data_out = (uint32_t)str->max_current_cap;
+		}	
 	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 }
 
@@ -326,4 +333,138 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		generateCommandForSDCard(int_str);//as soon as the upper-byte of the command
 		//register is written to, the SDHC is suppossed to send the command to card
 	}
+	else if (addr == (0xffffff & ADDR_SDHC_RESPONSE0))
+	{
+		/* to be done during sd card modelling as write to 
+		these regs are initiated from there */
+	}
+	
+	else if (addr == (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->buffer_data_port[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,15,8);
+		str->buffer_data_port[1] = temp2;
+		uint8_t temp3 = getSlice32(data_in_masked,23,16);
+		str->buffer_data_port[2] = temp3;
+		uint8_t temp4 = getSlice32(data_in_masked,31,24);
+		str->buffer_data_port[3] = temp4;
+		uint8_t size=4;		
+		void *dest = &(int_str->buffer_data_port);
+		void *source = &(str->buffer_data_port);
+		memcpy(dest,source,size);		
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_PRESENT_STATE))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->present_state[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,15,8);
+		str->present_state[1] = temp2;
+		uint8_t temp3 = getSlice32(data_in_masked,23,16);
+		str->present_state[2] = temp3;
+		uint8_t temp4 = getSlice32(data_in_masked,31,24);
+		str->present_state[3] = temp4;
+		uint8_t size=4;		
+		void *dest = &(int_str->present_state);
+		void *source = &(str->present_state);
+		memcpy(dest,source,size);			
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_1))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->host_ctrl1 = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->host_ctrl1);
+		void *source = &(str->host_ctrl1);
+		memcpy(dest,source,size);			
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_POWER_CONTROL))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->pwr_ctrl = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->pwr_ctrl);
+		void *source = &(str->pwr_ctrl);
+		memcpy(dest,source,size);			
+	}	
+	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->blk_gap_ctrl = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->blk_gap_ctrl);
+		void *source = &(str->blk_gap_ctrl);
+		memcpy(dest,source,size);			
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_WAKEUP_CONTROL))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->wakeup_ctrl = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->wakeup_ctrl);
+		void *source = &(str->wakeup_ctrl);
+		memcpy(dest,source,size);			
+	}
+	else if (addr == (0xffffff & ADDR_SDHC_CLOCK_CONTROL))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->clk_ctrl[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		str->clk_ctrl[1] = temp2;		
+		uint8_t size=2;		
+		void *dest = &(int_str->wakeup_ctrl);
+		void *source = &(str->wakeup_ctrl);
+		memcpy(dest,source,size);			
+	}	
+	else if (addr == (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->timeout_ctrl = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->timeout_ctrl);
+		void *source = &(str->timeout_ctrl);
+		memcpy(dest,source,size);			
+	}	
+	else if (addr == (0xffffff & ADDR_SDHC_SOFTWARE_RESET))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->sw_reset = temp1;
+		uint8_t size=1;		
+		void *dest = &(int_str->sw_reset);
+		void *source = &(str->sw_reset);
+		memcpy(dest,source,size);			
+	}	
+	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->normal_intr_status[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		str->normal_intr_status[1] = temp2;
+		uint8_t size=2;		
+		void *dest = &(int_str->normal_intr_status);
+		void *source = &(str->normal_intr_status);
+		memcpy(dest,source,size);			
+	}			
+	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->error_intr_status[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		str->error_intr_status[1] = temp2;
+		uint8_t size=2;		
+		void *dest = &(int_str->error_intr_status);
+		void *source = &(str->error_intr_status);
+		memcpy(dest,source,size);			
+	}			
+	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		str->normal_intr_status_enable[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		str->normal_intr_status_enable[1] = temp2;
+		uint8_t size=2;		
+		void *dest = &(int_str->normal_intr_status_enable);
+		void *source = &(str->normal_intr_status_enable);
+		memcpy(dest,source,size);			
+	}	
 }
