@@ -359,6 +359,7 @@ void execute64BitReduce8  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -404,6 +405,7 @@ void execute64BitReduce16  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -434,6 +436,7 @@ void execute64BitZBytePos  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -618,7 +621,7 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 	}
 	else if(cvt)
 	{
-		uint64_t cvt_op = splice_words ( operand1_1, operand1_0);
+		uint64_t cvt_op = splice_words ( operand2_1, operand2_0);
 		uint64_t cvt_result = 0;
 		switch(op) 
 		{
@@ -642,24 +645,25 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 }
 
 // source is a 64-bit operand, result is in 32-bit register.
-void execute64FpHalfAddReduce(Opcode op, uint32_t operand1_1, uint32_t operand1_0,
+void execute64FpHalfAddReduce(Opcode op, uint32_t operand2_1, uint32_t operand2_0,
 		uint32_t* result_l, uint8_t* ft, uint8_t* flags)
 {
 	assert(op == _FADDREDUCE16_);
 
 	uint8_t f = *flags;
-	uint64_t cvt_op = splice_words ( operand1_1, operand1_0);
+	uint64_t cvt_op = splice_words ( operand2_1, operand2_0);
 	uint32_t cvt_result = vectorHalfAddReduce(cvt_op);
 
 	*result_l = cvt_result;
 
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*ft = setBit8(*ft, 0, 1); // set c = 1 to indicate completion.
 	*flags = f;
 }
 
 // source and destination are 32-bit registers.
-void execute64FpHalfConvert(Opcode op, uint32_t operand1_0,
+void execute64FpHalfConvert(Opcode op, uint32_t operand2_0,
 		uint32_t* result_l, uint8_t* ft, uint8_t* flags)
 {
 	uint32_t cvt_result;
@@ -667,15 +671,16 @@ void execute64FpHalfConvert(Opcode op, uint32_t operand1_0,
 
 	if(op == _FHTOS_)
 	{
-		cvt_result = halfToFloatInU32Form(operand1_0);
+		cvt_result = halfToFloatInU32Form(operand2_0);
 	}
 	else
 	{
-		cvt_result  = floatToHalfInU32Form(operand1_0);
+		cvt_result  = floatToHalfInU32Form(operand2_0);
 	}
 
 	*result_l = cvt_result;
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
+	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*ft = setBit8(*ft, 0, 1); // set c = 1 to indicate completion.
 	*flags = f;
 }

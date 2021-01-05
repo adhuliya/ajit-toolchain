@@ -2904,11 +2904,11 @@ uint32_t executeFPInstruction( ProcessorState* s, Opcode opcode,
 					result_l2, result_l1, ft, flags);
 	else if(is_f_half_reduce)
 	{
-		execute64FpHalfAddReduce(opcode, operand1_1, operand1_0, result_l1,ft,flags);
+		execute64FpHalfAddReduce(opcode, operand2_1, operand2_0, result_l1,ft,flags);
 	}
 	else if(is_f_half_convert)
 	{
-		execute64FpHalfConvert(opcode, operand1_0, result_l1,ft,flags);
+		execute64FpHalfConvert(opcode, operand2_0, result_l1,ft,flags);
 	}
 	return tv;
 }

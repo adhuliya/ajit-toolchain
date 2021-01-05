@@ -187,10 +187,10 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 		uint8_t* ft,
 		uint8_t *flags);
 
-void execute64FpHalfAddReduce(Opcode op, uint32_t operand1_1, uint32_t operand1_0,
+void execute64FpHalfAddReduce(Opcode op, uint32_t operand2_1, uint32_t operand2_0,
 		uint32_t* result_l, uint8_t* ft, uint8_t* flags);
 
-void execute64FpHalfConvert(Opcode op, uint32_t operand1_0,
+void execute64FpHalfConvert(Opcode op, uint32_t operand2_0,
 		uint32_t* result_l, uint8_t* ft, uint8_t* flags);
 //
 #endif /* EXECUTE_H_ */
