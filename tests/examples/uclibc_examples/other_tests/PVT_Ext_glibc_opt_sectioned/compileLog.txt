@@ -1,0 +1,674 @@
+Info: context=0x0, vaddr=0x0, paddr=0x0, level=0x1, cacheable=0x1, acc=0x3
+Info: new pdte: id=0, context=0, level=1, index=0x0, is_ptd=0, ppnr=0x0, cacheable=0x1, acc=0x3
+Info: new pdte: id=1, context=0, level=0, index=0x0, is_ptd=1, ppnr=0x0, cacheable=0x1, acc=0x3
+Info: added child:  0 (level=1)-> 1 (level=0)
+Info: context=0x0, vaddr=0x40000000, paddr=0xb0000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=2, context=0, level=3, index=0x0, is_ptd=0, ppnr=0xb0000, cacheable=0x1, acc=0x3
+Info: new pdte: id=3, context=0, level=1, index=0x40, is_ptd=1, ppnr=0xb0000, cacheable=0x1, acc=0x3
+Info: added sibling: 3 (level 1) to 0 (level 1) 
+Info: new pdte: id=4, context=0, level=2, index=0x0, is_ptd=1, ppnr=0xb0000, cacheable=0x1, acc=0x3
+Info: added child:  4 (level=2)-> 3 (level=1)
+Info: added child:  2 (level=3)-> 4 (level=2)
+Info: context=0x0, vaddr=0x40001000, paddr=0xb1000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=5, context=0, level=3, index=0x1, is_ptd=0, ppnr=0xb1000, cacheable=0x1, acc=0x3
+Info: added sibling: 5 (level 3) to 2 (level 3) 
+Info: context=0x0, vaddr=0x40002000, paddr=0xb2000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=6, context=0, level=3, index=0x2, is_ptd=0, ppnr=0xb2000, cacheable=0x1, acc=0x3
+Info: added sibling: 6 (level 3) to 5 (level 3) 
+Info: context=0x0, vaddr=0x40003000, paddr=0xb3000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=7, context=0, level=3, index=0x3, is_ptd=0, ppnr=0xb3000, cacheable=0x1, acc=0x3
+Info: added sibling: 7 (level 3) to 6 (level 3) 
+Info: context=0x0, vaddr=0x40004000, paddr=0xb4000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=8, context=0, level=3, index=0x4, is_ptd=0, ppnr=0xb4000, cacheable=0x1, acc=0x3
+Info: added sibling: 8 (level 3) to 7 (level 3) 
+Info: context=0x0, vaddr=0x40005000, paddr=0xb5000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=9, context=0, level=3, index=0x5, is_ptd=0, ppnr=0xb5000, cacheable=0x1, acc=0x3
+Info: added sibling: 9 (level 3) to 8 (level 3) 
+Info: context=0x0, vaddr=0x40006000, paddr=0xb6000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=10, context=0, level=3, index=0x6, is_ptd=0, ppnr=0xb6000, cacheable=0x1, acc=0x3
+Info: added sibling: 10 (level 3) to 9 (level 3) 
+Info: context=0x0, vaddr=0x40007000, paddr=0xb7000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=11, context=0, level=3, index=0x7, is_ptd=0, ppnr=0xb7000, cacheable=0x1, acc=0x3
+Info: added sibling: 11 (level 3) to 10 (level 3) 
+Info: context=0x0, vaddr=0x40008000, paddr=0xb8000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=12, context=0, level=3, index=0x8, is_ptd=0, ppnr=0xb8000, cacheable=0x1, acc=0x3
+Info: added sibling: 12 (level 3) to 11 (level 3) 
+Info: context=0x0, vaddr=0x40009000, paddr=0xb9000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=13, context=0, level=3, index=0x9, is_ptd=0, ppnr=0xb9000, cacheable=0x1, acc=0x3
+Info: added sibling: 13 (level 3) to 12 (level 3) 
+Info: context=0x0, vaddr=0x4000a000, paddr=0xba000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=14, context=0, level=3, index=0xa, is_ptd=0, ppnr=0xba000, cacheable=0x1, acc=0x3
+Info: added sibling: 14 (level 3) to 13 (level 3) 
+Info: context=0x0, vaddr=0x4000b000, paddr=0xbb000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=15, context=0, level=3, index=0xb, is_ptd=0, ppnr=0xbb000, cacheable=0x1, acc=0x3
+Info: added sibling: 15 (level 3) to 14 (level 3) 
+Info: context=0x0, vaddr=0x4000c000, paddr=0xbc000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=16, context=0, level=3, index=0xc, is_ptd=0, ppnr=0xbc000, cacheable=0x1, acc=0x3
+Info: added sibling: 16 (level 3) to 15 (level 3) 
+Info: context=0x0, vaddr=0x4000d000, paddr=0xbd000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=17, context=0, level=3, index=0xd, is_ptd=0, ppnr=0xbd000, cacheable=0x1, acc=0x3
+Info: added sibling: 17 (level 3) to 16 (level 3) 
+Info: context=0x0, vaddr=0x4000e000, paddr=0xbe000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=18, context=0, level=3, index=0xe, is_ptd=0, ppnr=0xbe000, cacheable=0x1, acc=0x3
+Info: added sibling: 18 (level 3) to 17 (level 3) 
+Info: context=0x0, vaddr=0x4000f000, paddr=0xbf000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=19, context=0, level=3, index=0xf, is_ptd=0, ppnr=0xbf000, cacheable=0x1, acc=0x3
+Info: added sibling: 19 (level 3) to 18 (level 3) 
+Info: context=0x0, vaddr=0x40010000, paddr=0xc0000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=20, context=0, level=3, index=0x10, is_ptd=0, ppnr=0xc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 20 (level 3) to 19 (level 3) 
+Info: context=0x0, vaddr=0x40011000, paddr=0xc1000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=21, context=0, level=3, index=0x11, is_ptd=0, ppnr=0xc1000, cacheable=0x1, acc=0x3
+Info: added sibling: 21 (level 3) to 20 (level 3) 
+Info: context=0x0, vaddr=0x40012000, paddr=0xc2000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=22, context=0, level=3, index=0x12, is_ptd=0, ppnr=0xc2000, cacheable=0x1, acc=0x3
+Info: added sibling: 22 (level 3) to 21 (level 3) 
+Info: context=0x0, vaddr=0x40013000, paddr=0xc3000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=23, context=0, level=3, index=0x13, is_ptd=0, ppnr=0xc3000, cacheable=0x1, acc=0x3
+Info: added sibling: 23 (level 3) to 22 (level 3) 
+Info: context=0x0, vaddr=0x40014000, paddr=0xc4000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=24, context=0, level=3, index=0x14, is_ptd=0, ppnr=0xc4000, cacheable=0x1, acc=0x3
+Info: added sibling: 24 (level 3) to 23 (level 3) 
+Info: context=0x0, vaddr=0x40015000, paddr=0xc5000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=25, context=0, level=3, index=0x15, is_ptd=0, ppnr=0xc5000, cacheable=0x1, acc=0x3
+Info: added sibling: 25 (level 3) to 24 (level 3) 
+Info: context=0x0, vaddr=0x40016000, paddr=0xc6000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=26, context=0, level=3, index=0x16, is_ptd=0, ppnr=0xc6000, cacheable=0x1, acc=0x3
+Info: added sibling: 26 (level 3) to 25 (level 3) 
+Info: context=0x0, vaddr=0x40017000, paddr=0xc7000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=27, context=0, level=3, index=0x17, is_ptd=0, ppnr=0xc7000, cacheable=0x1, acc=0x3
+Info: added sibling: 27 (level 3) to 26 (level 3) 
+Info: context=0x0, vaddr=0x40018000, paddr=0xc8000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=28, context=0, level=3, index=0x18, is_ptd=0, ppnr=0xc8000, cacheable=0x1, acc=0x3
+Info: added sibling: 28 (level 3) to 27 (level 3) 
+Info: context=0x0, vaddr=0x40019000, paddr=0xc9000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=29, context=0, level=3, index=0x19, is_ptd=0, ppnr=0xc9000, cacheable=0x1, acc=0x3
+Info: added sibling: 29 (level 3) to 28 (level 3) 
+Info: context=0x0, vaddr=0x4001a000, paddr=0xca000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=30, context=0, level=3, index=0x1a, is_ptd=0, ppnr=0xca000, cacheable=0x1, acc=0x3
+Info: added sibling: 30 (level 3) to 29 (level 3) 
+Info: context=0x0, vaddr=0x4001b000, paddr=0xcb000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=31, context=0, level=3, index=0x1b, is_ptd=0, ppnr=0xcb000, cacheable=0x1, acc=0x3
+Info: added sibling: 31 (level 3) to 30 (level 3) 
+Info: context=0x0, vaddr=0x4001c000, paddr=0xcc000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=32, context=0, level=3, index=0x1c, is_ptd=0, ppnr=0xcc000, cacheable=0x1, acc=0x3
+Info: added sibling: 32 (level 3) to 31 (level 3) 
+Info: context=0x0, vaddr=0x4001d000, paddr=0xcd000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=33, context=0, level=3, index=0x1d, is_ptd=0, ppnr=0xcd000, cacheable=0x1, acc=0x3
+Info: added sibling: 33 (level 3) to 32 (level 3) 
+Info: context=0x0, vaddr=0x4001e000, paddr=0xce000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=34, context=0, level=3, index=0x1e, is_ptd=0, ppnr=0xce000, cacheable=0x1, acc=0x3
+Info: added sibling: 34 (level 3) to 33 (level 3) 
+Info: context=0x0, vaddr=0x4001f000, paddr=0xcf000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=35, context=0, level=3, index=0x1f, is_ptd=0, ppnr=0xcf000, cacheable=0x1, acc=0x3
+Info: added sibling: 35 (level 3) to 34 (level 3) 
+Info: context=0x0, vaddr=0x40020000, paddr=0xd0000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=36, context=0, level=3, index=0x20, is_ptd=0, ppnr=0xd0000, cacheable=0x1, acc=0x3
+Info: added sibling: 36 (level 3) to 35 (level 3) 
+Info: context=0x0, vaddr=0x40021000, paddr=0xd1000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=37, context=0, level=3, index=0x21, is_ptd=0, ppnr=0xd1000, cacheable=0x1, acc=0x3
+Info: added sibling: 37 (level 3) to 36 (level 3) 
+Info: context=0x0, vaddr=0x40022000, paddr=0xd2000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=38, context=0, level=3, index=0x22, is_ptd=0, ppnr=0xd2000, cacheable=0x1, acc=0x3
+Info: added sibling: 38 (level 3) to 37 (level 3) 
+Info: context=0x0, vaddr=0x40023000, paddr=0xd3000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=39, context=0, level=3, index=0x23, is_ptd=0, ppnr=0xd3000, cacheable=0x1, acc=0x3
+Info: added sibling: 39 (level 3) to 38 (level 3) 
+Info: context=0x0, vaddr=0x40024000, paddr=0xd4000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=40, context=0, level=3, index=0x24, is_ptd=0, ppnr=0xd4000, cacheable=0x1, acc=0x3
+Info: added sibling: 40 (level 3) to 39 (level 3) 
+Info: context=0x0, vaddr=0x40025000, paddr=0xd5000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=41, context=0, level=3, index=0x25, is_ptd=0, ppnr=0xd5000, cacheable=0x1, acc=0x3
+Info: added sibling: 41 (level 3) to 40 (level 3) 
+Info: context=0x0, vaddr=0x40026000, paddr=0xd6000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=42, context=0, level=3, index=0x26, is_ptd=0, ppnr=0xd6000, cacheable=0x1, acc=0x3
+Info: added sibling: 42 (level 3) to 41 (level 3) 
+Info: context=0x0, vaddr=0x40027000, paddr=0xd7000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=43, context=0, level=3, index=0x27, is_ptd=0, ppnr=0xd7000, cacheable=0x1, acc=0x3
+Info: added sibling: 43 (level 3) to 42 (level 3) 
+Info: context=0x0, vaddr=0x40028000, paddr=0xd8000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=44, context=0, level=3, index=0x28, is_ptd=0, ppnr=0xd8000, cacheable=0x1, acc=0x3
+Info: added sibling: 44 (level 3) to 43 (level 3) 
+Info: context=0x0, vaddr=0x40029000, paddr=0xd9000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=45, context=0, level=3, index=0x29, is_ptd=0, ppnr=0xd9000, cacheable=0x1, acc=0x3
+Info: added sibling: 45 (level 3) to 44 (level 3) 
+Info: context=0x0, vaddr=0x4002a000, paddr=0xda000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=46, context=0, level=3, index=0x2a, is_ptd=0, ppnr=0xda000, cacheable=0x1, acc=0x3
+Info: added sibling: 46 (level 3) to 45 (level 3) 
+Info: context=0x0, vaddr=0x4002b000, paddr=0xdb000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=47, context=0, level=3, index=0x2b, is_ptd=0, ppnr=0xdb000, cacheable=0x1, acc=0x3
+Info: added sibling: 47 (level 3) to 46 (level 3) 
+Info: context=0x0, vaddr=0x4002c000, paddr=0xdc000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=48, context=0, level=3, index=0x2c, is_ptd=0, ppnr=0xdc000, cacheable=0x1, acc=0x3
+Info: added sibling: 48 (level 3) to 47 (level 3) 
+Info: context=0x0, vaddr=0x4002d000, paddr=0xdd000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=49, context=0, level=3, index=0x2d, is_ptd=0, ppnr=0xdd000, cacheable=0x1, acc=0x3
+Info: added sibling: 49 (level 3) to 48 (level 3) 
+Info: context=0x0, vaddr=0x4002e000, paddr=0xde000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=50, context=0, level=3, index=0x2e, is_ptd=0, ppnr=0xde000, cacheable=0x1, acc=0x3
+Info: added sibling: 50 (level 3) to 49 (level 3) 
+Info: context=0x0, vaddr=0x4002f000, paddr=0xdf000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=51, context=0, level=3, index=0x2f, is_ptd=0, ppnr=0xdf000, cacheable=0x1, acc=0x3
+Info: added sibling: 51 (level 3) to 50 (level 3) 
+Info: context=0x0, vaddr=0x40030000, paddr=0xe0000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=52, context=0, level=3, index=0x30, is_ptd=0, ppnr=0xe0000, cacheable=0x1, acc=0x3
+Info: added sibling: 52 (level 3) to 51 (level 3) 
+Info: context=0x0, vaddr=0x40031000, paddr=0xe1000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=53, context=0, level=3, index=0x31, is_ptd=0, ppnr=0xe1000, cacheable=0x1, acc=0x3
+Info: added sibling: 53 (level 3) to 52 (level 3) 
+Info: context=0x0, vaddr=0x40032000, paddr=0xe2000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=54, context=0, level=3, index=0x32, is_ptd=0, ppnr=0xe2000, cacheable=0x1, acc=0x3
+Info: added sibling: 54 (level 3) to 53 (level 3) 
+Info: context=0x0, vaddr=0x40033000, paddr=0xe3000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=55, context=0, level=3, index=0x33, is_ptd=0, ppnr=0xe3000, cacheable=0x1, acc=0x3
+Info: added sibling: 55 (level 3) to 54 (level 3) 
+Info: context=0x0, vaddr=0x40034000, paddr=0xe4000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=56, context=0, level=3, index=0x34, is_ptd=0, ppnr=0xe4000, cacheable=0x1, acc=0x3
+Info: added sibling: 56 (level 3) to 55 (level 3) 
+Info: context=0x0, vaddr=0x40035000, paddr=0xe5000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=57, context=0, level=3, index=0x35, is_ptd=0, ppnr=0xe5000, cacheable=0x1, acc=0x3
+Info: added sibling: 57 (level 3) to 56 (level 3) 
+Info: context=0x0, vaddr=0x40036000, paddr=0xe6000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=58, context=0, level=3, index=0x36, is_ptd=0, ppnr=0xe6000, cacheable=0x1, acc=0x3
+Info: added sibling: 58 (level 3) to 57 (level 3) 
+Info: context=0x0, vaddr=0x40037000, paddr=0xe7000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=59, context=0, level=3, index=0x37, is_ptd=0, ppnr=0xe7000, cacheable=0x1, acc=0x3
+Info: added sibling: 59 (level 3) to 58 (level 3) 
+Info: context=0x0, vaddr=0x40038000, paddr=0xe8000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=60, context=0, level=3, index=0x38, is_ptd=0, ppnr=0xe8000, cacheable=0x1, acc=0x3
+Info: added sibling: 60 (level 3) to 59 (level 3) 
+Info: context=0x0, vaddr=0x40039000, paddr=0xe9000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=61, context=0, level=3, index=0x39, is_ptd=0, ppnr=0xe9000, cacheable=0x1, acc=0x3
+Info: added sibling: 61 (level 3) to 60 (level 3) 
+Info: context=0x0, vaddr=0x4003a000, paddr=0xea000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=62, context=0, level=3, index=0x3a, is_ptd=0, ppnr=0xea000, cacheable=0x1, acc=0x3
+Info: added sibling: 62 (level 3) to 61 (level 3) 
+Info: context=0x0, vaddr=0x4003b000, paddr=0xeb000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=63, context=0, level=3, index=0x3b, is_ptd=0, ppnr=0xeb000, cacheable=0x1, acc=0x3
+Info: added sibling: 63 (level 3) to 62 (level 3) 
+Info: context=0x0, vaddr=0x4003c000, paddr=0xec000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=64, context=0, level=3, index=0x3c, is_ptd=0, ppnr=0xec000, cacheable=0x1, acc=0x3
+Info: added sibling: 64 (level 3) to 63 (level 3) 
+Info: context=0x0, vaddr=0xfffed000, paddr=0xed000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=65, context=0, level=3, index=0x2d, is_ptd=0, ppnr=0xed000, cacheable=0x1, acc=0x3
+Info: new pdte: id=66, context=0, level=1, index=0xff, is_ptd=1, ppnr=0xed000, cacheable=0x1, acc=0x3
+Info: added sibling: 66 (level 1) to 3 (level 1) 
+Info: new pdte: id=67, context=0, level=2, index=0x3f, is_ptd=1, ppnr=0xed000, cacheable=0x1, acc=0x3
+Info: added child:  67 (level=2)-> 66 (level=1)
+Info: added child:  65 (level=3)-> 67 (level=2)
+Info: context=0x0, vaddr=0xfffee000, paddr=0xee000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=68, context=0, level=3, index=0x2e, is_ptd=0, ppnr=0xee000, cacheable=0x1, acc=0x3
+Info: added sibling: 68 (level 3) to 65 (level 3) 
+Info: context=0x0, vaddr=0xfffef000, paddr=0xef000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=69, context=0, level=3, index=0x2f, is_ptd=0, ppnr=0xef000, cacheable=0x1, acc=0x3
+Info: added sibling: 69 (level 3) to 68 (level 3) 
+Info: context=0x0, vaddr=0xffff0000, paddr=0xf0000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=70, context=0, level=3, index=0x30, is_ptd=0, ppnr=0xf0000, cacheable=0x1, acc=0x3
+Info: added sibling: 70 (level 3) to 69 (level 3) 
+Info: context=0x0, vaddr=0xffff1000, paddr=0xf1000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=71, context=0, level=3, index=0x31, is_ptd=0, ppnr=0xf1000, cacheable=0x1, acc=0x3
+Info: added sibling: 71 (level 3) to 70 (level 3) 
+Info: context=0x0, vaddr=0xffff2000, paddr=0xf2000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=72, context=0, level=3, index=0x32, is_ptd=0, ppnr=0xf2000, cacheable=0x1, acc=0x3
+Info: added sibling: 72 (level 3) to 71 (level 3) 
+Info: context=0x0, vaddr=0xffff3000, paddr=0xf3000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=73, context=0, level=3, index=0x33, is_ptd=0, ppnr=0xf3000, cacheable=0x1, acc=0x3
+Info: added sibling: 73 (level 3) to 72 (level 3) 
+Info: context=0x0, vaddr=0xffff4000, paddr=0xf4000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=74, context=0, level=3, index=0x34, is_ptd=0, ppnr=0xf4000, cacheable=0x1, acc=0x3
+Info: added sibling: 74 (level 3) to 73 (level 3) 
+Info: context=0x0, vaddr=0xffff5000, paddr=0xf5000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=75, context=0, level=3, index=0x35, is_ptd=0, ppnr=0xf5000, cacheable=0x1, acc=0x3
+Info: added sibling: 75 (level 3) to 74 (level 3) 
+Info: context=0x0, vaddr=0xffff6000, paddr=0xf6000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=76, context=0, level=3, index=0x36, is_ptd=0, ppnr=0xf6000, cacheable=0x1, acc=0x3
+Info: added sibling: 76 (level 3) to 75 (level 3) 
+Info: context=0x0, vaddr=0xffff7000, paddr=0xf7000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=77, context=0, level=3, index=0x37, is_ptd=0, ppnr=0xf7000, cacheable=0x1, acc=0x3
+Info: added sibling: 77 (level 3) to 76 (level 3) 
+Info: context=0x0, vaddr=0xffff8000, paddr=0xf8000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=78, context=0, level=3, index=0x38, is_ptd=0, ppnr=0xf8000, cacheable=0x1, acc=0x3
+Info: added sibling: 78 (level 3) to 77 (level 3) 
+Info: context=0x0, vaddr=0xffff9000, paddr=0xf9000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=79, context=0, level=3, index=0x39, is_ptd=0, ppnr=0xf9000, cacheable=0x1, acc=0x3
+Info: added sibling: 79 (level 3) to 78 (level 3) 
+Info: context=0x0, vaddr=0xffffa000, paddr=0xfa000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=80, context=0, level=3, index=0x3a, is_ptd=0, ppnr=0xfa000, cacheable=0x1, acc=0x3
+Info: added sibling: 80 (level 3) to 79 (level 3) 
+Info: context=0x0, vaddr=0xffffb000, paddr=0xfb000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=81, context=0, level=3, index=0x3b, is_ptd=0, ppnr=0xfb000, cacheable=0x1, acc=0x3
+Info: added sibling: 81 (level 3) to 80 (level 3) 
+Info: context=0x0, vaddr=0xffffc000, paddr=0xfc000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=82, context=0, level=3, index=0x3c, is_ptd=0, ppnr=0xfc000, cacheable=0x1, acc=0x3
+Info: added sibling: 82 (level 3) to 81 (level 3) 
+Info: context=0x0, vaddr=0xffffd000, paddr=0xfd000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=83, context=0, level=3, index=0x3d, is_ptd=0, ppnr=0xfd000, cacheable=0x1, acc=0x3
+Info: added sibling: 83 (level 3) to 82 (level 3) 
+Info: context=0x0, vaddr=0xffffe000, paddr=0xfe000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=84, context=0, level=3, index=0x3e, is_ptd=0, ppnr=0xfe000, cacheable=0x1, acc=0x3
+Info: added sibling: 84 (level 3) to 83 (level 3) 
+Info: context=0x0, vaddr=0xfffff000, paddr=0xff000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=85, context=0, level=3, index=0x3f, is_ptd=0, ppnr=0xff000, cacheable=0x1, acc=0x3
+Info: added sibling: 85 (level 3) to 84 (level 3) 
+Level-3 page-table starting at offset 0x0
+Level-2 page-table starting at offset 0x100
+Level-3 page-table starting at offset 0x200
+Level-2 page-table starting at offset 0x300
+Level-1 page-table starting at offset 0x400
+Level-0 page-table starting at offset 0x800
+Info: table memory used=0xc00
+ PTD: context=0, index=0, level=0, child_p_addr=0x400, p_addr=0x800
+   PTE: context=0, index=0, level=1,  ppnr=0x0, p_addr=0x400, cacheable=0x1, acc=0x3
+   PTD: context=0, index=64, level=1, child_p_addr=0x100, p_addr=0x500
+     PTD: context=0, index=0, level=2, child_p_addr=0x0, p_addr=0x100
+       PTE: context=0, index=0, level=3,  ppnr=0xb0000, p_addr=0x0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=1, level=3,  ppnr=0xb1000, p_addr=0x4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=2, level=3,  ppnr=0xb2000, p_addr=0x8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=3, level=3,  ppnr=0xb3000, p_addr=0xc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=4, level=3,  ppnr=0xb4000, p_addr=0x10, cacheable=0x1, acc=0x3
+       PTE: context=0, index=5, level=3,  ppnr=0xb5000, p_addr=0x14, cacheable=0x1, acc=0x3
+       PTE: context=0, index=6, level=3,  ppnr=0xb6000, p_addr=0x18, cacheable=0x1, acc=0x3
+       PTE: context=0, index=7, level=3,  ppnr=0xb7000, p_addr=0x1c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=8, level=3,  ppnr=0xb8000, p_addr=0x20, cacheable=0x1, acc=0x3
+       PTE: context=0, index=9, level=3,  ppnr=0xb9000, p_addr=0x24, cacheable=0x1, acc=0x3
+       PTE: context=0, index=10, level=3,  ppnr=0xba000, p_addr=0x28, cacheable=0x1, acc=0x3
+       PTE: context=0, index=11, level=3,  ppnr=0xbb000, p_addr=0x2c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=12, level=3,  ppnr=0xbc000, p_addr=0x30, cacheable=0x1, acc=0x3
+       PTE: context=0, index=13, level=3,  ppnr=0xbd000, p_addr=0x34, cacheable=0x1, acc=0x3
+       PTE: context=0, index=14, level=3,  ppnr=0xbe000, p_addr=0x38, cacheable=0x1, acc=0x3
+       PTE: context=0, index=15, level=3,  ppnr=0xbf000, p_addr=0x3c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=16, level=3,  ppnr=0xc0000, p_addr=0x40, cacheable=0x1, acc=0x3
+       PTE: context=0, index=17, level=3,  ppnr=0xc1000, p_addr=0x44, cacheable=0x1, acc=0x3
+       PTE: context=0, index=18, level=3,  ppnr=0xc2000, p_addr=0x48, cacheable=0x1, acc=0x3
+       PTE: context=0, index=19, level=3,  ppnr=0xc3000, p_addr=0x4c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=20, level=3,  ppnr=0xc4000, p_addr=0x50, cacheable=0x1, acc=0x3
+       PTE: context=0, index=21, level=3,  ppnr=0xc5000, p_addr=0x54, cacheable=0x1, acc=0x3
+       PTE: context=0, index=22, level=3,  ppnr=0xc6000, p_addr=0x58, cacheable=0x1, acc=0x3
+       PTE: context=0, index=23, level=3,  ppnr=0xc7000, p_addr=0x5c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=24, level=3,  ppnr=0xc8000, p_addr=0x60, cacheable=0x1, acc=0x3
+       PTE: context=0, index=25, level=3,  ppnr=0xc9000, p_addr=0x64, cacheable=0x1, acc=0x3
+       PTE: context=0, index=26, level=3,  ppnr=0xca000, p_addr=0x68, cacheable=0x1, acc=0x3
+       PTE: context=0, index=27, level=3,  ppnr=0xcb000, p_addr=0x6c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=28, level=3,  ppnr=0xcc000, p_addr=0x70, cacheable=0x1, acc=0x3
+       PTE: context=0, index=29, level=3,  ppnr=0xcd000, p_addr=0x74, cacheable=0x1, acc=0x3
+       PTE: context=0, index=30, level=3,  ppnr=0xce000, p_addr=0x78, cacheable=0x1, acc=0x3
+       PTE: context=0, index=31, level=3,  ppnr=0xcf000, p_addr=0x7c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=32, level=3,  ppnr=0xd0000, p_addr=0x80, cacheable=0x1, acc=0x3
+       PTE: context=0, index=33, level=3,  ppnr=0xd1000, p_addr=0x84, cacheable=0x1, acc=0x3
+       PTE: context=0, index=34, level=3,  ppnr=0xd2000, p_addr=0x88, cacheable=0x1, acc=0x3
+       PTE: context=0, index=35, level=3,  ppnr=0xd3000, p_addr=0x8c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=36, level=3,  ppnr=0xd4000, p_addr=0x90, cacheable=0x1, acc=0x3
+       PTE: context=0, index=37, level=3,  ppnr=0xd5000, p_addr=0x94, cacheable=0x1, acc=0x3
+       PTE: context=0, index=38, level=3,  ppnr=0xd6000, p_addr=0x98, cacheable=0x1, acc=0x3
+       PTE: context=0, index=39, level=3,  ppnr=0xd7000, p_addr=0x9c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=40, level=3,  ppnr=0xd8000, p_addr=0xa0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=41, level=3,  ppnr=0xd9000, p_addr=0xa4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=42, level=3,  ppnr=0xda000, p_addr=0xa8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=43, level=3,  ppnr=0xdb000, p_addr=0xac, cacheable=0x1, acc=0x3
+       PTE: context=0, index=44, level=3,  ppnr=0xdc000, p_addr=0xb0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=45, level=3,  ppnr=0xdd000, p_addr=0xb4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=46, level=3,  ppnr=0xde000, p_addr=0xb8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=47, level=3,  ppnr=0xdf000, p_addr=0xbc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=48, level=3,  ppnr=0xe0000, p_addr=0xc0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=49, level=3,  ppnr=0xe1000, p_addr=0xc4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=50, level=3,  ppnr=0xe2000, p_addr=0xc8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=51, level=3,  ppnr=0xe3000, p_addr=0xcc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=52, level=3,  ppnr=0xe4000, p_addr=0xd0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=53, level=3,  ppnr=0xe5000, p_addr=0xd4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=54, level=3,  ppnr=0xe6000, p_addr=0xd8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=55, level=3,  ppnr=0xe7000, p_addr=0xdc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=56, level=3,  ppnr=0xe8000, p_addr=0xe0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=57, level=3,  ppnr=0xe9000, p_addr=0xe4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=58, level=3,  ppnr=0xea000, p_addr=0xe8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=59, level=3,  ppnr=0xeb000, p_addr=0xec, cacheable=0x1, acc=0x3
+       PTE: context=0, index=60, level=3,  ppnr=0xec000, p_addr=0xf0, cacheable=0x1, acc=0x3
+   PTD: context=0, index=255, level=1, child_p_addr=0x3fc, p_addr=0x7fc
+     PTD: context=0, index=63, level=2, child_p_addr=0x2b4, p_addr=0x3fc
+       PTE: context=0, index=45, level=3,  ppnr=0xed000, p_addr=0x2b4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=46, level=3,  ppnr=0xee000, p_addr=0x2b8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=47, level=3,  ppnr=0xef000, p_addr=0x2bc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=48, level=3,  ppnr=0xf0000, p_addr=0x2c0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=49, level=3,  ppnr=0xf1000, p_addr=0x2c4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=50, level=3,  ppnr=0xf2000, p_addr=0x2c8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=51, level=3,  ppnr=0xf3000, p_addr=0x2cc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=52, level=3,  ppnr=0xf4000, p_addr=0x2d0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=53, level=3,  ppnr=0xf5000, p_addr=0x2d4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=54, level=3,  ppnr=0xf6000, p_addr=0x2d8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=55, level=3,  ppnr=0xf7000, p_addr=0x2dc, cacheable=0x1, acc=0x3
+       PTE: context=0, index=56, level=3,  ppnr=0xf8000, p_addr=0x2e0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=57, level=3,  ppnr=0xf9000, p_addr=0x2e4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=58, level=3,  ppnr=0xfa000, p_addr=0x2e8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=59, level=3,  ppnr=0xfb000, p_addr=0x2ec, cacheable=0x1, acc=0x3
+       PTE: context=0, index=60, level=3,  ppnr=0xfc000, p_addr=0x2f0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=61, level=3,  ppnr=0xfd000, p_addr=0x2f4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=62, level=3,  ppnr=0xfe000, p_addr=0x2f8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=63, level=3,  ppnr=0xff000, p_addr=0x2fc, cacheable=0x1, acc=0x3
+Info:dump_asm: entering id=1
+Info:dump_asm: entering id=0
+Info:dump_asm: entering id=3
+Info:dump_asm: entering id=4
+Info:dump_asm: entering id=2
+Info:dump_asm: entering id=5
+Info:dump_asm: entering id=6
+Info:dump_asm: entering id=7
+Info:dump_asm: entering id=8
+Info:dump_asm: entering id=9
+Info:dump_asm: entering id=10
+Info:dump_asm: entering id=11
+Info:dump_asm: entering id=12
+Info:dump_asm: entering id=13
+Info:dump_asm: entering id=14
+Info:dump_asm: entering id=15
+Info:dump_asm: entering id=16
+Info:dump_asm: entering id=17
+Info:dump_asm: entering id=18
+Info:dump_asm: entering id=19
+Info:dump_asm: entering id=20
+Info:dump_asm: entering id=21
+Info:dump_asm: entering id=22
+Info:dump_asm: entering id=23
+Info:dump_asm: entering id=24
+Info:dump_asm: entering id=25
+Info:dump_asm: entering id=26
+Info:dump_asm: entering id=27
+Info:dump_asm: entering id=28
+Info:dump_asm: entering id=29
+Info:dump_asm: entering id=30
+Info:dump_asm: entering id=31
+Info:dump_asm: entering id=32
+Info:dump_asm: entering id=33
+Info:dump_asm: entering id=34
+Info:dump_asm: entering id=35
+Info:dump_asm: entering id=36
+Info:dump_asm: entering id=37
+Info:dump_asm: entering id=38
+Info:dump_asm: entering id=39
+Info:dump_asm: entering id=40
+Info:dump_asm: entering id=41
+Info:dump_asm: entering id=42
+Info:dump_asm: entering id=43
+Info:dump_asm: entering id=44
+Info:dump_asm: entering id=45
+Info:dump_asm: entering id=46
+Info:dump_asm: entering id=47
+Info:dump_asm: entering id=48
+Info:dump_asm: entering id=49
+Info:dump_asm: entering id=50
+Info:dump_asm: entering id=51
+Info:dump_asm: entering id=52
+Info:dump_asm: entering id=53
+Info:dump_asm: entering id=54
+Info:dump_asm: entering id=55
+Info:dump_asm: entering id=56
+Info:dump_asm: entering id=57
+Info:dump_asm: entering id=58
+Info:dump_asm: entering id=59
+Info:dump_asm: entering id=60
+Info:dump_asm: entering id=61
+Info:dump_asm: entering id=62
+Info:dump_asm: entering id=63
+Info:dump_asm: entering id=64
+Info:dump_asm: entering id=66
+Info:dump_asm: entering id=67
+Info:dump_asm: entering id=65
+Info:dump_asm: entering id=68
+Info:dump_asm: entering id=69
+Info:dump_asm: entering id=70
+Info:dump_asm: entering id=71
+Info:dump_asm: entering id=72
+Info:dump_asm: entering id=73
+Info:dump_asm: entering id=74
+Info:dump_asm: entering id=75
+Info:dump_asm: entering id=76
+Info:dump_asm: entering id=77
+Info:dump_asm: entering id=78
+Info:dump_asm: entering id=79
+Info:dump_asm: entering id=80
+Info:dump_asm: entering id=81
+Info:dump_asm: entering id=82
+Info:dump_asm: entering id=83
+Info:dump_asm: entering id=84
+Info:dump_asm: entering id=85
+Info: optimization level = 3
+Info: added include-directory = GLIBC/include.
+Info: added include-directory = /usr/include.
+Info: added include-directory = ./.
+Info: added assembly-file = init.s.
+Info: added assembly-file = setup_page_tables.s.
+Info: added assembly-file = /usr/local/ajit_release/tools/ajit_access_routines/asm/trap_handlers.s.
+Info: added include-directory = /usr/local/ajit_release/tools/ajit_access_routines/include.
+Info: added src-directory = /usr/local/ajit_release/tools/ajit_access_routines/src.
+Info: added src-directory = /usr/local/ajit_release/tools/minimal_printf_timer/src.
+Info: added include-directory = /usr/local/ajit_release/tools/minimal_printf_timer/include.
+Info: added src-file = PVT.c.
+Info: added src-file = ExtractData.c.
+Info: added src-file = fpop.c.
+Info: added src-file = math_func.c.
+Info: elf-file to be produced  = sat_pos.elf.
+Info: var-dump-file to be produced  = sat_pos.vars.
+Info: hex-dump-file to be produced  = sat_pos.hex.
+Info: memory-map-file to be produced  = sat_pos.mmap.
+Info: object-dump-file to be produced  = sat_pos.objdump.
+Info: linker_script_file  = LinkerScript.lnk.
+Info: added define_string = AJIT.
+Info: added define_string = HAS_FLOAT.
+Info: glibc_version to be used  = 2.21_sectioned.
+Info: added define_string = NO_MEMCPY.
+Info: Executing:
+	rm -rf .//sparc-assembly
+Info: Executing:
+	mkdir .//sparc-assembly
+Info: Executing:
+	rm -rf .//sparc-obj
+Info: Executing:
+	mkdir .//sparc-obj
+Info: Executing:
+	sparc-linux-as   -Av8  init.s -o .//sparc-obj/init.o
+Info: Executing:
+	sparc-linux-as   -Av8  setup_page_tables.s -o .//sparc-obj/setup_page_tables.o
+Info: Executing:
+	sparc-linux-as   -Av8  /usr/local/ajit_release/tools/ajit_access_routines/asm/trap_handlers.s -o .//sparc-obj/trap_handlers.o
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  PVT.c -o .//sparc-assembly/PVT.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  ExtractData.c -o .//sparc-assembly/ExtractData.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  fpop.c -o .//sparc-assembly/fpop.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  math_func.c -o .//sparc-assembly/math_func.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  /usr/local/ajit_release/tools/ajit_access_routines/src/ajit_access_routines.c -o .//sparc-assembly/ajit_access_routines.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  /usr/local/ajit_release/tools/minimal_printf_timer/src/ee_printf.c -o .//sparc-Segmentation fault (core dumped)
+assembly/ee_printf.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  /usr/local/ajit_release/tools/minimal_printf_timer/src/core_portme.c -o .//sparc-assembly/core_portme.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O3  -ffreestanding     -I GLIBC/include  -I /usr/include  -I ./  -I /usr/local/ajit_release/tools/ajit_access_routines/include  -I /usr/local/ajit_release/tools/minimal_printf_timer/include  -D AJIT  -D HAS_FLOAT  -D NO_MEMCPY  /usr/local/ajit_release/tools/minimal_printf_timer/src/cvt.c -o .//sparc-assembly/cvt.s
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cvt.s  -o .//sparc-obj/cvt.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ExtractData.s  -o .//sparc-obj/ExtractData.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ee_printf.s  -o .//sparc-obj/ee_printf.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/core_portme.s  -o .//sparc-obj/core_portme.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/math_func.s  -o .//sparc-obj/math_func.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_access_routines.s  -o .//sparc-obj/ajit_access_routines.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/fpop.s  -o .//sparc-obj/fpop.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/PVT.s  -o .//sparc-obj/PVT.o
+Info: Executing:
+	sparc-linux-ld  -L/usr/local/ajit_release/tools/cross-compiler/buildroot_cross_compiler/usr/sparc-buildroot-linux-uclibc/lib/ -e main -T LinkerScript.lnk .//sparc-obj/init.o  .//sparc-obj/setup_page_tables.o  .//sparc-obj/trap_handlers.o  .//sparc-obj/cvt.o  .//sparc-obj/ExtractData.o  .//sparc-obj/ee_printf.o  .//sparc-obj/core_portme.o  .//sparc-obj/math_func.o  .//sparc-obj/ajit_access_routines.o  .//sparc-obj/fpop.o  .//sparc-obj/PVT.o   -o .//sat_pos.elf -L/usr/local/ajit_release/tools/glibc/2.21_sectioned/lib -L/usr/local/ajit_release/tools/glibc  -static -lm -lc  -lgcc  --gc-sections
+Error: in building elf sat_pos.elf
+Error: sparc-executable build failed.
+
+READELF
+
+readelf: Error: sat_pos.elf: Failed to read file's magic number
+Info:remap: vpn=0x0, ppn=00, level=0x1
+Info: new RemapStruct: level=0x1, vpn=0x0, ppn=0x0
+Info:remap: vpn=0x40000000, ppn=0b0000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40000000, ppn=0xb0000
+Info:remap: vpn=0x40001000, ppn=0b1000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40001000, ppn=0xb1000
+Info:remap: vpn=0x40002000, ppn=0b2000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40002000, ppn=0xb2000
+Info:remap: vpn=0x40003000, ppn=0b3000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40003000, ppn=0xb3000
+Info:remap: vpn=0x40004000, ppn=0b4000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40004000, ppn=0xb4000
+Info:remap: vpn=0x40005000, ppn=0b5000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40005000, ppn=0xb5000
+Info:remap: vpn=0x40006000, ppn=0b6000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40006000, ppn=0xb6000
+Info:remap: vpn=0x40007000, ppn=0b7000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40007000, ppn=0xb7000
+Info:remap: vpn=0x40008000, ppn=0b8000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40008000, ppn=0xb8000
+Info:remap: vpn=0x40009000, ppn=0b9000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40009000, ppn=0xb9000
+Info:remap: vpn=0x4000a000, ppn=0ba000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000a000, ppn=0xba000
+Info:remap: vpn=0x4000b000, ppn=0bb000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000b000, ppn=0xbb000
+Info:remap: vpn=0x4000c000, ppn=0bc000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000c000, ppn=0xbc000
+Info:remap: vpn=0x4000d000, ppn=0bd000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000d000, ppn=0xbd000
+Info:remap: vpn=0x4000e000, ppn=0be000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000e000, ppn=0xbe000
+Info:remap: vpn=0x4000f000, ppn=0bf000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4000f000, ppn=0xbf000
+Info:remap: vpn=0x40010000, ppn=0c0000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40010000, ppn=0xc0000
+Info:remap: vpn=0x40011000, ppn=0c1000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40011000, ppn=0xc1000
+Info:remap: vpn=0x40012000, ppn=0c2000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40012000, ppn=0xc2000
+Info:remap: vpn=0x40013000, ppn=0c3000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40013000, ppn=0xc3000
+Info:remap: vpn=0x40014000, ppn=0c4000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40014000, ppn=0xc4000
+Info:remap: vpn=0x40015000, ppn=0c5000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40015000, ppn=0xc5000
+Info:remap: vpn=0x40016000, ppn=0c6000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40016000, ppn=0xc6000
+Info:remap: vpn=0x40017000, ppn=0c7000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40017000, ppn=0xc7000
+Info:remap: vpn=0x40018000, ppn=0c8000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40018000, ppn=0xc8000
+Info:remap: vpn=0x40019000, ppn=0c9000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40019000, ppn=0xc9000
+Info:remap: vpn=0x4001a000, ppn=0ca000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001a000, ppn=0xca000
+Info:remap: vpn=0x4001b000, ppn=0cb000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001b000, ppn=0xcb000
+Info:remap: vpn=0x4001c000, ppn=0cc000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001c000, ppn=0xcc000
+Info:remap: vpn=0x4001d000, ppn=0cd000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001d000, ppn=0xcd000
+Info:remap: vpn=0x4001e000, ppn=0ce000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001e000, ppn=0xce000
+Info:remap: vpn=0x4001f000, ppn=0cf000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4001f000, ppn=0xcf000
+Info:remap: vpn=0x40020000, ppn=0d0000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40020000, ppn=0xd0000
+Info:remap: vpn=0x40021000, ppn=0d1000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40021000, ppn=0xd1000
+Info:remap: vpn=0x40022000, ppn=0d2000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40022000, ppn=0xd2000
+Info:remap: vpn=0x40023000, ppn=0d3000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40023000, ppn=0xd3000
+Info:remap: vpn=0x40024000, ppn=0d4000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40024000, ppn=0xd4000
+Info:remap: vpn=0x40025000, ppn=0d5000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40025000, ppn=0xd5000
+Info:remap: vpn=0x40026000, ppn=0d6000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40026000, ppn=0xd6000
+Info:remap: vpn=0x40027000, ppn=0d7000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40027000, ppn=0xd7000
+Info:remap: vpn=0x40028000, ppn=0d8000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40028000, ppn=0xd8000
+Info:remap: vpn=0x40029000, ppn=0d9000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40029000, ppn=0xd9000
+Info:remap: vpn=0x4002a000, ppn=0da000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002a000, ppn=0xda000
+Info:remap: vpn=0x4002b000, ppn=0db000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002b000, ppn=0xdb000
+Info:remap: vpn=0x4002c000, ppn=0dc000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002c000, ppn=0xdc000
+Info:remap: vpn=0x4002d000, ppn=0dd000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002d000, ppn=0xdd000
+Info:remap: vpn=0x4002e000, ppn=0de000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002e000, ppn=0xde000
+Info:remap: vpn=0x4002f000, ppn=0df000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4002f000, ppn=0xdf000
+Info:remap: vpn=0x40030000, ppn=0e0000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40030000, ppn=0xe0000
+Info:remap: vpn=0x40031000, ppn=0e1000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40031000, ppn=0xe1000
+Info:remap: vpn=0x40032000, ppn=0e2000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40032000, ppn=0xe2000
+Info:remap: vpn=0x40033000, ppn=0e3000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40033000, ppn=0xe3000
+Info:remap: vpn=0x40034000, ppn=0e4000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40034000, ppn=0xe4000
+Info:remap: vpn=0x40035000, ppn=0e5000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40035000, ppn=0xe5000
+Info:remap: vpn=0x40036000, ppn=0e6000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40036000, ppn=0xe6000
+Info:remap: vpn=0x40037000, ppn=0e7000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40037000, ppn=0xe7000
+Info:remap: vpn=0x40038000, ppn=0e8000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40038000, ppn=0xe8000
+Info:remap: vpn=0x40039000, ppn=0e9000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x40039000, ppn=0xe9000
+Info:remap: vpn=0x4003a000, ppn=0ea000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4003a000, ppn=0xea000
+Info:remap: vpn=0x4003b000, ppn=0eb000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4003b000, ppn=0xeb000
+Info:remap: vpn=0x4003c000, ppn=0ec000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0x4003c000, ppn=0xec000
+Info:remap: vpn=0xfffed000, ppn=0ed000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xfffed000, ppn=0xed000
+Info:remap: vpn=0xfffee000, ppn=0ee000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xfffee000, ppn=0xee000
+Info:remap: vpn=0xfffef000, ppn=0ef000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xfffef000, ppn=0xef000
+Info:remap: vpn=0xffff0000, ppn=0f0000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff0000, ppn=0xf0000
+Info:remap: vpn=0xffff1000, ppn=0f1000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff1000, ppn=0xf1000
+Info:remap: vpn=0xffff2000, ppn=0f2000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff2000, ppn=0xf2000
+Info:remap: vpn=0xffff3000, ppn=0f3000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff3000, ppn=0xf3000
+Info:remap: vpn=0xffff4000, ppn=0f4000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff4000, ppn=0xf4000
+Info:remap: vpn=0xffff5000, ppn=0f5000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff5000, ppn=0xf5000
+Info:remap: vpn=0xffff6000, ppn=0f6000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff6000, ppn=0xf6000
+Info:remap: vpn=0xffff7000, ppn=0f7000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff7000, ppn=0xf7000
+Info:remap: vpn=0xffff8000, ppn=0f8000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff8000, ppn=0xf8000
+Info:remap: vpn=0xffff9000, ppn=0f9000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffff9000, ppn=0xf9000
+Info:remap: vpn=0xffffa000, ppn=0fa000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffffa000, ppn=0xfa000
+Info:remap: vpn=0xffffb000, ppn=0fb000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffffb000, ppn=0xfb000
+Info:remap: vpn=0xffffc000, ppn=0fc000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffffc000, ppn=0xfc000
+Info:remap: vpn=0xffffd000, ppn=0fd000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffffd000, ppn=0xfd000
+Info:remap: vpn=0xffffe000, ppn=0fe000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xffffe000, ppn=0xfe000
+Info:remap: vpn=0xfffff000, ppn=0ff000, level=0x3
+Info: new RemapStruct: level=0x3, vpn=0xfffff000, ppn=0xff000
+Info:remap: re-mapped 0 bytes

@@ -1,0 +1,8 @@
+SOURCES = serial_rx_check.s
+
+
+RESULTS = 
+g3=0xa000000
+g5=0xffff3220
+g6=0x0
+o0=0xa000000

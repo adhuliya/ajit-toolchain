@@ -113,22 +113,29 @@ To setup the environment to start using Ajit Toolchain,
     source ./ajit_home_env;
     source ./ajit_env;
 
+`./ajit_env` contains all the truth about the global
+environment variables needed for Ajit development and use.
+
 
 ## Test the setup (using examples)
 
-To run and test a sample example,
+To run and test a sample examples,
 
-    cd ./examples/sin;
+    cd ./tests/examples/uclibc_examples/math_tests/sin;
     ./build.sh;
-    ./run.sh;
+    ./run_cmodel.sh;
 
-The output of `./run.sh` should have a line `Tests Successful`.
+    cd ./tests/examples/uclibc_examples/math_tests/sqrt;
+    ./build.sh;
+    ./run_cmodel.sh;
+
+The output of `./run_cmodel.sh` should have a line `Tests Successful`.
 If so, the system is ready to use.
 
 
 ## Important Files and Directories
 
-* `examples/` folder contains examples that demonstrate the
+* `tests/examples/` folder contains examples that demonstrate the
   use of many of the tools in this repo.
 
 

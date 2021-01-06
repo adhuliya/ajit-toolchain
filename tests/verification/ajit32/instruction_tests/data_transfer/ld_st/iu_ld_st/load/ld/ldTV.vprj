@@ -1,0 +1,9 @@
+SOURCES = ldTV.s
+
+
+
+RESULTS = 
+g1=0x00000080
+o0=0x7c
+o1=0x80
+g2=0x0000004

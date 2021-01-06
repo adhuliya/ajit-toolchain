@@ -1,0 +1,9 @@
+SOURCES = Page_table_walk.c
+
+INCLUDES = 
+
+RESULTS =
+
+g4=0x12
+g6=0x11
+g7=0x0C

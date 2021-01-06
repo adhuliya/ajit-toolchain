@@ -1,0 +1,1 @@
+compileToSparc.py -g -s init.s -c serial_io.c -C $AJIT_TOOLS_RELEASE/tools/ajit_access_routines/src -I $AJIT_TOOLS_RELEASE/tools/ajit_access_routines/include -E serial_io.elf -V serial_io.vars -H serial_io.hex -M serial_io.mmap -O serial_io.objdump -D AJIT -L LinkerScript.lnk

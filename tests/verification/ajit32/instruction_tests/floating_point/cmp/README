@@ -1,0 +1,18 @@
+Floating point Compare Instructions
+===================================
+fcmps	=>	compare Single
+fcmpd	=>	compare Double
+fcmpq	=>	compare Quad
+fcmpes	=>	compare Single and Exception if Unordered
+fcmped	=>	Compare Double and Exception if Unordered
+fcmpeq	=> 	Compare Quad and Exception if Unordered
+
+Compare operation will set FP condition condes(fcc) on FSR[bits 11:10]
+===========================================================
+
+fcc	Relation
+****	********
+0	frs1 = frs2
+1	frs1 < frs2
+2	frs1 > frs2
+3	frs1 ? frs2 (Unorderd)

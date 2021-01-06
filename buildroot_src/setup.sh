@@ -29,12 +29,12 @@ $SRC/start_build.sh;
 source $SRC/pathsetup.sh
 
 
-# STEP 3: add $DEVELOPMENT work.
-echo -e "\n\nAdding new assembler instructions. `date`\n" |& tee -a $BUILD_OUTFILE;
-sleep 3;
-cp -r $SRC/$DEVELOPMENT $BUILD_DIR/$DEVELOPMENT;
-export AJITTOPHOME=$BUILD_DIR;
-$SRC/update-all-ajit-code-and-run-tests.sh |& tee -a $BUILD_OUTFILE;
+# # STEP 3: add $DEVELOPMENT work.
+# echo -e "\n\nAdding new assembler instructions. `date`\n" |& tee -a $BUILD_OUTFILE;
+# sleep 3;
+# cp -r $SRC/$DEVELOPMENT $BUILD_DIR/$DEVELOPMENT;
+# export AJITTOPHOME=$BUILD_DIR;
+# $SRC/update-all-ajit-code-and-run-tests.sh |& tee -a $BUILD_OUTFILE;
 
 
 

@@ -1,0 +1,31 @@
+
+	1. PVT,Ext code is running successfully with glibc 
+	cross compiled sparc for linux and Ext code with
+	our implementation i.e. xx__pow_opt, to get better
+	timing results. This will be used as final implementation.
+
+	2. Time taken, 
+
+			glibc+Ext_code(xx__pow_opt)		glibc only		our math_func(xx__***functions)
+
+PVT(Every 1sec) :		8.13msec			10.1msec			6.79msec		
+{1frame/satellite, 
+6 such satellites}
+	
+Ext(Every 12sec) :		8.15msec			32.6msec			8.26msec
+{4frame/satellite, 
+6 such satellites}
+		
+
+	****{Our implemented math_func have less accuracy.}
+	
+	3. glibc+Ext_code(xx__pow_opt) is final choice of implementation.
+-----------------------------------------------------------------------------
+feb2019_outputs_oldcode :
+
+Output with feb 2019 ajit release. Old code.
+In the new code few minor redundancy removed. 
+-----------------------------------------------------------------------------
+
+  
+		

@@ -1,0 +1,103 @@
+Mismatch:
+ reference-trace-line:	0. PC=00000000, Reg-Log=e0610efe Store-log= 00000000
+ compare-trace-line:	0. PC=00000000, Reg-Log=e0610e36 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8305. PC=000005d0, Reg-Log=60410101 Store-log= 00000000
+ compare-trace-line:	8305. PC=000005d0, Reg-Log=60410100 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8306. PC=000005d4, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8306. PC=000005d4, Reg-Log=6041019d Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8309. PC=000005e0, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8309. PC=000005e0, Reg-Log=6041019d Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8310. PC=000005e4, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8310. PC=000005e4, Reg-Log=60410162 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8311. PC=000005e8, Reg-Log=e0410000 Store-log= 00000000
+ compare-trace-line:	8311. PC=000005e8, Reg-Log=e04100a4 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8314. PC=00000600, Reg-Log=00000000 Store-log= 8b0f8b00
+ compare-trace-line:	8314. PC=000005f4, Reg-Log=60410100 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8315. PC=00000604, Reg-Log=00000000 Store-log= 00000000
+ compare-trace-line:	8315. PC=000005f8, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8316. PC=00000608, Reg-Log=00000000 Store-log= 00000000
+ compare-trace-line:	8316. PC=000005fc, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8317. PC=00000660, Reg-Log=60410100 Store-log= 00000000
+ compare-trace-line:	8317. PC=000006ac, Reg-Log=60411800 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8318. PC=00000664, Reg-Log=60410201 Store-log= 00000000
+ compare-trace-line:	8318. PC=000006b0, Reg-Log=e0510000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8319. PC=00000668, Reg-Log=60410101 Store-log= 00000000
+ compare-trace-line:	8319. PC=000006b4, Reg-Log=605100b2 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8320. PC=0000066c, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8320. PC=000006b8, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8321. PC=00000670, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8321. PC=00000338, Reg-Log=60510100 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8322. PC=00000674, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8322. PC=0000033c, Reg-Log=e0510000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8323. PC=00000678, Reg-Log=e0410041 Store-log= 00000000
+ compare-trace-line:	8323. PC=00000340, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8324. PC=0000067c, Reg-Log=00000000 Store-log= 00000000
+ compare-trace-line:	8324. PC=00000344, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8325. PC=00000680, Reg-Log=00000000 Store-log= 00000000
+ compare-trace-line:	8325. PC=00000348, Reg-Log=60510f4b Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8326. PC=00000684, Reg-Log=60410100 Store-log= 00000000
+ compare-trace-line:	8326. PC=0000034c, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8327. PC=00000688, Reg-Log=60410210 Store-log= 00000000
+ compare-trace-line:	8327. PC=000004f0, Reg-Log=e0410ee7 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8328. PC=0000068c, Reg-Log=60410110 Store-log= 00000000
+ compare-trace-line:	8328. PC=000004f4, Reg-Log=604101a6 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8329. PC=00000690, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8329. PC=000004f8, Reg-Log=60410ffc Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8330. PC=00000694, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8330. PC=000004fc, Reg-Log=00000000 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8331. PC=00000698, Reg-Log=60410141 Store-log= 00000000
+ compare-trace-line:	8331. PC=000004b4, Reg-Log=e0310e46 Store-log= 00000000
+
+Mismatch:
+ reference-trace-line:	8332. PC=0000069c, Reg-Log=e0410041 Store-log= 00000000
+ compare-trace-line:	8332. PC=000004b8, Reg-Log=00000000 Store-log= 00000000
+
+Missing line in comparison-trace-file, reference-trace-file has 8333. PC=000006a0, Reg-Log=00000000 Store-log= 00000000
+
+There was/were 26 error/errors

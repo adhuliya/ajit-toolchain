@@ -28,7 +28,8 @@ import subprocess
 
 ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
 validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
-validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
+#AD validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
+validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/bin'
 
 
 # give path of processor executable

@@ -1,0 +1,5 @@
+Instruction : STBA
+Details :
+Stores the lower byte from the register into alternate memory.
+
+stbaTV - test conditions for trap cases

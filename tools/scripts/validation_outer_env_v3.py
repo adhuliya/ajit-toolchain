@@ -82,10 +82,10 @@ def setGlobals(work_dir):
 
    ajit_C_home = os.environ.get('AJIT_C_REF_MODEL')
    if (ajit_C_home == None):
-	reportError("environment variable AJIT_C_REF_MODEL not defined")
-	ret_val = 1
-   validation_C_exec_location = ajit_C_home + '/testbench/bin'
-
+        reportError("environment variable AJIT_C_REF_MODEL not defined")
+        ret_val = 1
+   #AD validation_C_exec_location = ajit_C_home + '/testbench/bin'
+   validation_C_exec_location = ajit_C_home + '/bin'
 
 
    # absolute path of file to store .vprj paths
