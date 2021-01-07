@@ -1,0 +1,6 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+1	:	1610007716.238	     0.121	0	3220	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/and.vprj
+2	:	1610007716.365	     0.151	0	3253	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/zero.vprj
+3	:	1610007716.522	     0.108	0	3187	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/or.vprj
+4	:	1610007716.632	     0.124	0	3220	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/xor.vprj
+5	:	1610007716.760	     0.098	0	3220	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/add.vprj

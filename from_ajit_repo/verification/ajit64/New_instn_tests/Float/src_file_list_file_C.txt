@@ -1,0 +1,5 @@
+/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/faddreduce.vprj
+/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/vfi16toh.vprj
+/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/vfhtoi16.vprj
+/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/fhtos.vprj
+/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/fstoh.vprj

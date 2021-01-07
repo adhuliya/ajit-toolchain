@@ -1,0 +1,3 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+1	:	1610017681.620	     0.058	0	3127	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/cswap/cswap.vprj
+2	:	1610017681.680	     0.075	0	3160	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/cswap/cswapa.vprj

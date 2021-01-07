@@ -1,0 +1,4 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+1	:	1609997539.449	     0.088	0	3221	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SLL.vprj
+2	:	1609997539.539	     0.105	0	3221	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SRA.vprj
+3	:	1609997539.646	     0.106	0	3221	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SRL.vprj
