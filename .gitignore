@@ -28,9 +28,9 @@
 *.lib
 
 # Executables
-*.exe
-*.out
-*.app
+#*.exe
+#*.out
+#*.app
 
 # log files
 *.log
