@@ -54,6 +54,7 @@
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"
 #include "Ancillary.h"
+#include "Device_utils.h"
 
 //Upcomment the following to print debug
 //message in interrupt controller
@@ -119,21 +120,12 @@ void register_IRC_pipes()
 	//pipes between system bus and this device 
 	//to read/write IRQ device registers
 	int depth = 1;
-	register_pipe("BUS_to_IRC_request_type", depth, 8, 0);
-	register_pipe("BUS_to_IRC_addr", depth, 32, 0);
-	register_pipe("BUS_to_IRC_data", depth, 32, 0);
-	
-	set_pipe_is_read_from("BUS_to_IRC_request_type");
-	set_pipe_is_read_from("BUS_to_IRC_addr");
-	set_pipe_is_read_from("BUS_to_IRC_data");
-	//memory access thread writes to these pipes
-	set_pipe_is_written_into("BUS_to_IRC_request_type");
-	set_pipe_is_written_into("BUS_to_IRC_addr");
-	set_pipe_is_written_into("BUS_to_IRC_data");
-	
-	register_pipe("IRC_to_BUS_data", depth, 32, 0);
-	set_pipe_is_written_into("IRC_to_BUS_data");
-	set_pipe_is_read_from("IRC_to_BUS_data");
+
+	register_pipe("peripheral_bridge_to_irc_request", depth,  64, 0);
+	register_pipe("irc_to_peripheral_bridge_response", depth, 32, 0);
+
+	set_pipe_is_read_from("peripheral_bridge_to_irc_request");
+	set_pipe_is_written_into("irc_to_peripheral_bridge_response");
 }
 
 void start_IRC_threads()
@@ -153,37 +145,37 @@ void start_IRC_threads()
 //requests from cpu-side
 void IRC_Control()
 {
-	uint8_t  request_type;
-	uint32_t addr;
-	uint32_t data_in=0;
 	uint32_t data_out=0;
 	
 	while(1)
 	{
 		//wait for a request from processor-side
-		request_type	= read_uint8 ("BUS_to_IRC_request_type");
-		addr		= read_uint32("BUS_to_IRC_addr");
-		data_in		= read_uint32("BUS_to_IRC_data");
+		uint8_t rwbar, byte_mask;
+		uint32_t addr, data_in;
+		getPeripheralAccessCommand("peripheral_bridge_to_irc_request",
+							&rwbar, &byte_mask, &addr, &data_in);
 
 		//lock the state variables
 		pthread_mutex_lock(&IRC_lock);
 		
-		if(request_type==REQUEST_TYPE_READ)
+		if(rwbar)
 		{
 			//this is a register-read.
 			//send response to cpu
 			data_out = IRC_Control_Register;
-			write_uint32("IRC_to_BUS_data",data_out);
 		}
-		else if (request_type==REQUEST_TYPE_WRITE)
+		else 
 		{
 			
-			if(addr==ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER)
+			// bottom 24 bits of address are checked.
+			if(addr== (0xffffff & ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER))
 			{
 				//Cpu wants to update the control register
-				IRC_Control_Register = data_in;
+				IRC_Control_Register = insertUsingByteMask(IRC_Control_Register, data_in, byte_mask);
+
 				#ifdef IRC_DEBUG
-				printf("\nINTERRUPT CONTROLLER: Control word 0x%x written. ",data_in);
+				printf("\nINTERRUPT CONTROLLER: Control word 0x%x bmask 0x%x written. ",data_in,
+						byte_mask);
 				#endif
 
 				if(getBit32(data_in,0)==0)
@@ -218,13 +210,12 @@ void IRC_Control()
 					#endif
 	
 				}
-
-
 			}
 			//send ack to cpu
 			data_out = 0;
-			write_uint32("IRC_to_BUS_data",data_out);
 		}
+
+		sendPeripheralResponse("irc_to_peripheral_bridge_response",data_out);
 
 		//unlock state variables
 		pthread_mutex_unlock(&IRC_lock);

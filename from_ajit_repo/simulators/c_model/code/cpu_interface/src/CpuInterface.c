@@ -75,7 +75,8 @@ void flushIcacheLine(MmuState* ms, WriteThroughAllocateCache* icache, uint8_t as
 
 //Read a doubleword from Dcache
 void readData64Base(MmuState* ms, WriteThroughAllocateCache* dcache,
-			uint8_t debug_flag, uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *data64)
+			uint8_t debug_flag, uint8_t asi, uint8_t byte_mask, 
+				uint32_t addr, uint8_t* mae, uint64_t *data64)
 {
 
 	uint8_t  request_type = (debug_flag ? REQUEST_TYPE_CCU_CACHE_READ : (REQUEST_TYPE_READ | IS_NEW_THREAD));
@@ -91,17 +92,20 @@ void readData64Base(MmuState* ms, WriteThroughAllocateCache* dcache,
 	//clear the last 3 bits.
 	addr=addr&(0xFFFFFFF8);
 
-	cpuDcacheAccess (ms, dcache, asi, addr, request_type, 0xff, 0x0, mae, data64);
+	cpuDcacheAccess (ms, dcache, asi, addr, request_type, byte_mask, 0x0, mae, data64);
 	*mae 	= (*mae & 0x1);
 }
 
 //read a word from DCACHE.
 void readDataBase(MmuState* ms, WriteThroughAllocateCache* dcache,
-			uint8_t debug_flag, uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data)
+			uint8_t debug_flag, uint8_t asi, uint8_t byte_mask,
+			 uint32_t addr, uint8_t* mae, uint32_t *data)
 {
 
 	uint64_t data64;
-	readData64Base(ms, dcache, debug_flag, asi, addr, mae, &data64);
+	uint8_t byte_mask_64 = (addr & 0x4) ? byte_mask : (byte_mask << 4);
+
+	readData64Base(ms, dcache, debug_flag, asi, byte_mask, addr, mae, &data64);
 	if(getBit32(addr,2)) 
 		*data = data64;
 	else
@@ -109,37 +113,40 @@ void readDataBase(MmuState* ms, WriteThroughAllocateCache* dcache,
 }
 
 void readData(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data)
+			 uint8_t asi,  uint8_t byte_mask,
+		  	   uint32_t addr, uint8_t* mae, uint32_t *data)
 {
-	readDataBase(ms, dcache, 0,asi,addr,mae,data);
+	readDataBase(ms, dcache, 0,asi,byte_mask,addr,mae,data);
 	#ifdef DEBUG
-	printf("\nCPU : DCACHE READ WORD addr=0x%x, asi=0x%x, WORD read = 0x%x, MAE = 0x%x",addr, asi, *data, *mae);
+	printf("\nCPU : DCACHE READ WORD addr=0x%x, asi=0x%x, byte_mask=0x%x, WORD read = 0x%x, MAE = 0x%x",addr, asi,  byte_mask, *data, *mae);
 	#endif
 
 }
 
 void readDataToDebug(MmuState* ms, WriteThroughAllocateCache* dcache,
-				uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data)
+				uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data)
 {
-	readDataBase(ms,dcache,1,asi,addr,mae,data);
+	readDataBase(ms,dcache,1,asi,byte_mask, addr,mae,data);
 	#ifdef DEBUG
-	printf("\nCPU : DCACHE CCU READ WORD addr=0x%x, asi=0x%x, WORD read = 0x%x, MAE = 0x%x",addr, asi, *data, *mae);
+	printf("\nCPU : DCACHE CCU READ WORD addr=0x%x, asi=0x%x, byte-mask=0x%x, WORD read = 0x%x, MAE = 0x%x",addr, asi, byte_mask, *data, *mae);
 	#endif
 }
 void readData64(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *data)
+			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint64_t *data)
 {
-	readData64Base(ms, dcache, 0,asi,addr,mae,data);
+	readData64Base(ms, dcache, 0,asi,byte_mask,addr,mae,data);
 	#ifdef DEBUG
 	printf("\nCPU : DCACHE READ DWORD addr=0x%x, asi=0x%x, DWORD read = 0x%lx, MAE = 0x%x",addr, asi, *data, *mae);
 	#endif
 }
 
 void lockAndReadData(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data)
+			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data)
 {
 	uint64_t data64;
-	lockAndReadData64(ms, dcache, asi, addr, mae, &data64);
+
+	uint8_t byte_mask_64 = (addr & 0x4) ? byte_mask : (byte_mask << 4);
+	lockAndReadData64(ms, dcache, asi, byte_mask_64, addr, mae, &data64);
 	if(getBit32(addr,2)) 
 		*data = data64;
 	else
@@ -147,7 +154,7 @@ void lockAndReadData(MmuState* ms, WriteThroughAllocateCache* dcache,
 }
 
 void lockAndReadData64(MmuState* ms, WriteThroughAllocateCache* dcache,
-			uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *data)
+			uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint64_t *data)
 {
 	uint8_t  request_type = (REQUEST_TYPE_READ | IS_NEW_THREAD | SET_LOCK_FLAG);
 	if(asi==0)
@@ -161,7 +168,7 @@ void lockAndReadData64(MmuState* ms, WriteThroughAllocateCache* dcache,
 	//clear the last 3 bits.
 	addr=addr&(0xFFFFFFF8);
 
-	cpuDcacheAccess (ms, dcache, asi, addr, request_type, 0xff, 0x0, mae, data);
+	cpuDcacheAccess (ms, dcache, asi, addr, request_type, byte_mask, 0x0, mae, data);
 	*mae 	= (*mae & 0x1);
 }
 

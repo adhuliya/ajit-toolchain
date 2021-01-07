@@ -21,23 +21,23 @@ void flushIcacheLine(MmuState* ms,  WriteThroughAllocateCache* icache,
 
 
 //read a word from DCACHE.
-//This routine fetches an aligned  doubleword, 
-//and returns one word from the double-word
-//to the cpu.
+//  This routine fetches an aligned  doubleword, 
+//  and returns one word from the double-word
+//  to the cpu.
 void readData(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data);
+			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
 // starts the read and locks the bus.
 void lockAndReadData(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data);
+			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
 void readData64(MmuState* ms, WriteThroughAllocateCache* dcache,
-			uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *data);
+			uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint64_t *data);
 void lockAndReadData64(MmuState* ms, WriteThroughAllocateCache* dcache,
-			uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *data);
+			uint8_t asi,  uint8_t byte_mask,  uint32_t addr, uint8_t* mae, uint64_t *data);
 // same as above, but to Debug.  Ignores trap information in caches.
 void readDataToDebug(MmuState* ms, WriteThroughAllocateCache* dcache,
-			 uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *data);
+			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
 
 // write MMU FSR, FAR through DCACHE.

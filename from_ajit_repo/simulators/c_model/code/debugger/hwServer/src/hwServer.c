@@ -695,6 +695,7 @@ int execute_spi(ProcessorState *ajit_state, hwServerState* hs, spi_cmd *cmd_exe)
 	else if (cmd_exe->opcode == 6)	{		// Read memory content
 		readDataToDebug(ajit_state->mmu_state,  ajit_state->dcache,
 				(uint8_t)getSlice32(cmd_exe->command, 7, 0), 
+				0xFF, // byte-mask..
 				cmd_exe->address, &read_mae, &mem_data);	// Populate mem_data with memory content
 
 		rsp_out.rsp = 'C';
