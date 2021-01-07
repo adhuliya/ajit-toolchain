@@ -1,5 +1,0 @@
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/and.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/zero.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/or.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/xor.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/SIMD2/add.vprj

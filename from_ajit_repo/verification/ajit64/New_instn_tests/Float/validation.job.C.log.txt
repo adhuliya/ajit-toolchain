@@ -1,6 +1,0 @@
-Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
-1	:	1610020619.503	     0.069	0	3294	1	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/faddreduce.vprj
-2	:	1610020619.576	     0.084	0	3228	1	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/vfi16toh.vprj
-3	:	1610020619.663	     0.079	0	3228	1	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/vfhtoi16.vprj
-4	:	1610020619.746	     0.079	0	3129	1	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/fhtos.vprj
-5	:	1610020619.828	     0.080	0	3129	1	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/Float/fstoh.vprj

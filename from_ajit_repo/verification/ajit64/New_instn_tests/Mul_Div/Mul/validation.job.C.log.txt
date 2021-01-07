@@ -1,5 +1,0 @@
-Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
-1	:	1608710545.392	     0.088	0	3380	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/UMULCC.vprj
-2	:	1608710545.483	     0.111	0	3314	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/UMUL.vprj
-3	:	1608710545.596	     0.098	0	3380	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/SMULCC.vprj
-4	:	1608710545.698	     0.105	0	3314	0	0	python /home/gauri/ajit-toolchain/from_ajit_repo/tools//scripts/validation_inner_env_v3.py -C /home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/SMUL.vprj

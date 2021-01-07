@@ -1,0 +1,15 @@
+SOURCES = vfadd.s
+
+
+RESULTS = 
+
+f0 = 0x3f8ccccc 
+f1 = 0x3f8ccccc 
+f2 = 0x3f8ccccc 
+f3 = 0x3f8ccccc 
+f4 = 0x40664066
+f5 = 0x40664066
+f6 = 0x400ccccc
+f7 = 0x400ccccc
+
+                                                                                                                                     
