@@ -1,4 +1,0 @@
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/UMULCC.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/UMUL.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/SMULCC.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Mul_Div/Mul/SMUL.vprj

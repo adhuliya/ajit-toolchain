@@ -1,2 +1,0 @@
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/cswap/cswap.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/cswap/cswapa.vprj

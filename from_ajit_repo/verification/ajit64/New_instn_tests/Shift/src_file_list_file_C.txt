@@ -1,3 +1,0 @@
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SLL.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SRA.vprj
-/home/gauri/NEW/ajit-toolchain/from_ajit_repo/verification/ajit64/New_instn_tests/Shift/SRL.vprj
