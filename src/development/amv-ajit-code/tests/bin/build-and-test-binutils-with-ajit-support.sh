@@ -23,7 +23,7 @@
 # Set the three variables below to the correct directories.  
 # See USAGE.txt.
 # --------------------------------------------------------------------
-##AJITTOPHOME=/lindata/My-work/Professional/iitb
+AJITTOPHOME=/lindata/My-work/Professional/iitb
 
 ###
 # Variables common to all the ajit development and testing scripts.

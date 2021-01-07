@@ -1,5 +1,5 @@
 
-/home/gauri/isav2/ajit-toolchain//development/amv-ajit-code/tests/obj/add-arith-insns.o:     file format elf32-sparc
+/lindata/My-work/Professional/iitb/tests/obj/add-arith-insns.o:     file format elf32-sparc
 
 
 Disassembly of section .text:

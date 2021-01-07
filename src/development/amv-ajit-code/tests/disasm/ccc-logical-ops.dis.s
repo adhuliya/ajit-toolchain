@@ -1,5 +1,5 @@
 
-/home/gauri/isav2/ajit-toolchain//development/amv-ajit-code/tests/obj/ccc-logical-ops.o:     file format elf32-sparc
+/lindata/My-work/Professional/iitb/tests/obj/ccc-logical-ops.o:     file format elf32-sparc
 
 
 Disassembly of section .text:
@@ -7,10 +7,10 @@ Disassembly of section .text:
 00000000 <main>:
    0:	9d e3 bf 88 	save  %sp, -120, %sp
    4:	82 10 40 22 	ord  %g1, %g2, %g1
-   8:	82 90 40 22 	ordcc  %g1, %g2, %g1
-   c:	82 30 40 22 	ordn  %g1, %g2, %g1
-  10:	82 b0 40 22 	ordncc  %g1, %g2, %g1
-  14:	82 18 40 22 	xord  %g1, %g2, %g1
+   8:	82 18 40 22 	xord  %g1, %g2, %g1
+   c:	82 90 40 22 	ordcc  %g1, %g2, %g1
+  10:	82 30 40 22 	ordn  %g1, %g2, %g1
+  14:	82 b0 40 22 	ordncc  %g1, %g2, %g1
   18:	82 98 40 22 	xordcc  %g1, %g2, %g1
   1c:	82 38 40 22 	xnord  %g1, %g2, %g1
   20:	82 b8 40 22 	xnordcc  %g1, %g2, %g1

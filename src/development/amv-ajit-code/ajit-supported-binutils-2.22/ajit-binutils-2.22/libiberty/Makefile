@@ -24,7 +24,7 @@
 libiberty_topdir = ./..
 srcdir = .
 
-prefix = /home/gauri/ajit-toolchain/src/development/amv-ajit-code/ajit-supported-binutils-2.22/bin
+prefix = /lindata/My-work/Professional/iitb/development/git-repo/ajit-toolchain/src/development/amv-ajit-code/trial-install/ajit-install
 
 exec_prefix = ${prefix}
 bindir = ${exec_prefix}/bin

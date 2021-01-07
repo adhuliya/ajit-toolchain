@@ -26,7 +26,7 @@ SHELL = /bin/bash
 srcdir = .
 
 
-prefix = /home/gauri/ajit-toolchain/src/development/amv-ajit-code/ajit-supported-binutils-2.22/bin
+prefix = /lindata/My-work/Professional/iitb/development/git-repo/ajit-toolchain/src/development/amv-ajit-code/trial-install/ajit-install
 exec_prefix = ${prefix}
 transform = s&^&ajit-buildroot-linux-gnu-&
 libdir = ${exec_prefix}/lib
@@ -42,7 +42,7 @@ AUTOCONF = autoconf
 AUTOHEADER = autoheader
 CC = gcc
 RANLIB = ranlib
-YACC = : -y -d
+YACC = bison -y -d
 YFLAGS = --name-prefix=__gettext
 CPPFLAGS = 
 CFLAGS = -g -O2
