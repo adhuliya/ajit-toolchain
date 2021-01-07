@@ -12,7 +12,7 @@ Reference:
 		link: https://www.sdcard.org/downloads/pls/archive/index.html
 */
 
- /* FUNCTIONAL DETAIL
+/* FUNCTIONAL DETAIL
 
  THREADS:
 	SDHC controller consists of 1 thread
@@ -81,7 +81,7 @@ Reference:
 
 SDHC_Control:
 	Polls CPU commands and do corresponding register updates.
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -115,6 +115,10 @@ uint8_t SDHC_INT_OUT;
 struct CPUViewOfSDHCRegs cpu_reg_view;
 struct SDHCInternalMap internal_map;
 
+// **** events **** //
+
+bool event_card_inserted; // TRUE for inserted; FALSE for removed
+
 // **** Thread declarations **** //
 
 // thread that monitors data written and read from the SDHC registers
@@ -123,10 +127,6 @@ DEFINE_THREAD(SDHC_Control);
 
 //Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
-
-// **** Function declarations **** //
-
-void update_reg_CPU();
 
 void sdhc_initialize()
 {
@@ -205,22 +205,20 @@ void SDHC_Control()
 					// used with Auto CMD23 to set a 32-bit blk count value
 					switch (rwbar)
 					{
-						case WRITE:
-						{
-							#ifdef SDHC_DEBUG
-							fprintf(stderr, "\nInside case arg2 and rwbar = %d\n", rwbar);
-							#endif
-							updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						}
+					case WRITE:
+					{
+						#ifdef SDHC_DEBUG
+						fprintf(stderr, "\nInside case arg2 and rwbar = %d\n", rwbar);
+						#endif
+						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					}
 						break;
-
-						case READ:
-						{
-							readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						}
+					case READ:
+					{
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
+					}
 						break;
-
-						default:
+					default:
 						break;
 					}
 				
@@ -334,15 +332,17 @@ void SDHC_Control()
 					// 			 to upper byte of 'command reg'
 					// 				1 DMA data tx
 					// 				0 no data tx or non-DMA data tx
-					// used to control the operation of data transfer
-					// to prevent data loss host controller shall implement write protection during
-					// data transfers; writes to this reg sahll be ignroes when 'comand inhibit (DAT)'
-					// in 'present state reg' is 1
+					// Used to control the operation of data transfer;host driver shall set this reg before issuing 
+					// cmd which transfers data or before issuing a Resume command
+					// To prevent data loss host controller shall implement write protection during
+					// data transfers; writes to this reg sahll be ignroed when 'comand inhibit (DAT)'[1]
+					// in 'present state reg'[31:0] is 1
 
 					switch (rwbar)
 					{
 					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						if (!(getBit32(internal_map.present_state, 1)))
+							updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 						break;
 					
 					case READ:
@@ -359,7 +359,7 @@ void SDHC_Control()
 					// 15-14	Rsvd
 					// 13-08	RW	command index
 					// 			 bits shall be set to comd number (CMD0-63, ACMD0-63) that
-					// 			 is specified in bits 45-40 of the command format int 
+					// 			 is specified in bits 45-40 of the command format in 
 					// 			 the physical layer spec
 					// 07-06	RW	command type
 					// 			 there are 3 special commands
@@ -379,10 +379,10 @@ void SDHC_Control()
 					// 03		RW	command CRC check enable
 					// 02		RW	Rsvd
 					// 01-00	RW	response type
-					// host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
-					// bits in 'present state' reg before writing to this reg
-					// writing to the upper byte triggers SD command generation
-					// host controller doesn't protect for writing when 'command inhibit(CMD)' is set
+					// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
+					// bits in 'present state' reg before writing to this reg.
+					// Writing to the upper byte triggers SD command generation.
+					// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set
 
 					switch (rwbar)
 					{
@@ -409,17 +409,50 @@ void SDHC_Control()
 				case (0xffffff & ADDR_SDHC_RESPONSE7):
 					// *bits*
 					// 127-00	ROC command response
-					// host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
-					// bits in 'present state' reg before writing to this reg
-					// writing to the upper byte triggers SD command generation
-					// host controller doesn't protect for writing when 'command inhibit(CMD)' is set
+					// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
+					// bits in 'present state' reg before writing to this reg.
+					// Writing to the upper byte triggers SD command generation.
+					// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set.
+
+					switch (rwbar)
+					{
+					case WRITE:
+						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						break;
+					
+					case READ:
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						break;
+
+					default:
+						break;
+					}
 				
 					break;
 
 				case (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT):
 					// *bits*
-					// 31-00	buffer data
+					// 31-00	RW	buffer data 
+					// 			 SDHC buffer can be accessed 
+					// 			 through this 32b 'Data Port' reg.
 					// for accessing host controller buffer
+
+					// TODO impliment Buffer control: Page 5
+					switch (rwbar)
+					{
+					case WRITE:
+						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						// TODO copy to sdhc_tx_buffer
+						break;
+					
+					case READ:
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						// TODO copy from sdhc_rx_buffer
+						break;
+
+					default:
+						break;
+					}
 				break;
 
 				case (0xffffff & ADDR_SDHC_PRESENT_STATE):
@@ -441,8 +474,24 @@ void SDHC_Control()
 					// 02		ROC	DAT line active
 					// 01		ROC	command inhibit(DAT)
 					// 00		ROC	command inhibit(CMD)
-					// host driver can get the status of the host controller
+					// Host driver can get the status of the host controller
 					// from this 32-bit read-only reg
+					// Members are updated as per the states of SDHC.
+                                  
+					// TODO 
+					switch (rwbar)
+					{
+					case WRITE:
+						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						break;
+					
+					case READ:
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						break;
+
+					default:
+						break;
+					}
 				break;
 
 				case (0xffffff & ADDR_SDHC_HOST_CONTROL_1):
@@ -461,8 +510,35 @@ void SDHC_Control()
 					// *bits*
 					// 07-04	Rsvd
 					// 03-01	RW	SD bus voltage select
+					// 			 The HD selects the voltage level for the sd card by setting these.
+					// 			 Before setting this reg, HD shall check 'Voltage Support'
+					// 			 bits in 'Caps reg'. If an unsupported voltage is selected
+					// 			 the Host System shall not supply SD Bus voltage.
+					// 			 	111b	 3.3v
+					// 				110b	 3.0v
+					// 				101b	 1.8v
+					// 				100-000b Rsvd	
 					// 00		RW	SD bus power
+					// 			 Before setting this bit, HD shall set 'SD Bus Voltage Select'
+					// 			 If the HC detect no-card state, this bit shall be cleared.
+					// 			 If this bit is cleared, HC immediately stor driving CMD and DAT[3:0]
+					// 			 and drive SDCLK to low level
+					// 				1	Power on
+					// 				0	Power off
 
+					switch (rwbar)
+					{
+					case WRITE:
+						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						break;
+					
+					case READ:
+						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
+						break;
+
+					default:
+						break;
+					}
 				break;
 				
 				case (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL):
@@ -647,25 +723,16 @@ void SDHC_Control()
 	}
 }
 
-
-// for monitoring C
-/* to set all bits to 0 in a register */
-void reg_clear(uint32_t addr)
+void SDHC_internal_ops()
 {
-	uint32_t data_in = 0;
-	uint8_t byte_mask = 0b1111;
-	updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-	// return 0;
-}
-/* to set all bits to 1 in a register */
-void reg_set(uint32_t addr)
-{
-	uint32_t data_in = 0xffff;
-	uint8_t byte_mask = 0b1111;
-	updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-}
-
-bool reg_check(uint32_t bit)
-{
-	return true;
+	if (event_card_inserted)
+	{
+		// TODO
+	}
+	else if(!event_card_inserted)
+	{
+		// TODO
+		// - clear 'SD Bus Power'
+		// - clear D Clock Enable
+	}
 }

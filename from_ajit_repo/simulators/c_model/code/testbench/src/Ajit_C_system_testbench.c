@@ -9,7 +9,7 @@
 // 		Timer
 // 		Serial
 // 		Interrupt controller
-//		 SDHC
+//		SDHC
 
 #include <stdlib.h>
 #include <stdint.h>
