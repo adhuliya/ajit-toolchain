@@ -48,7 +48,6 @@ typedef struct csd{
 	uint8_t  nsac;
 	uint8_t  tran_speed;
 	uint16_t ccc;
-	//uint8_t  spec_vers;
 	uint8_t  read_bl_len;
 	uint8_t  read_bl_partial;
 	uint8_t  write_blk_misalign;
@@ -68,24 +67,6 @@ typedef struct csd{
 	uint8_t  tmp_write_protect;
 	uint8_t  file_format;
 	uint8_t crc;
-	/*uint8_t  vdd_r_curr_min;
-	uint8_t  vdd_r_curr_max;
-	uint8_t  vdd_w_curr_min;
-	uint8_t  vdd_w_curr_max;
-	uint8_t  c_size_mult;
-	union {
-		struct { // MMC system specification version 3.1 
-			uint8_t  erase_grp_size;
-			uint8_t  erase_grp_mult;
-		} v31;
-		struct { // MMC system specification version 2.2 
-			uint8_t  erase_grp_size;
-		} v22;
-	} erase;
-
-	uint8_t  default_ecc;
-
-	uint8_t  ecc;*/
 }csd;
 
 uint16_t RCA;
@@ -109,6 +90,17 @@ void SDCard_Control();
 void initialize_sdcard();
 void register_sdcard_pipes();
 void start_sdcard_threads();
+
+//takes data from the incoming cmd pipe and extracts the 48 bit frame 
+//contents
+void extractCommandFromSDHC(const char* req_pipe, uint8_t *start_bit, 
+uint8_t *tx_bit, uint8_t *cmd_index, uint32_t *argument, uint8_t *crc7, uint8_t *end_bit);
+
+//initiates actions to be performed based on received frame
+void actionForReceivedCommandIndex(uint8_t cmd_index);
+
+//sends CID as response R2
+void sendCID();
 
 //functions that read commands from the SDHC
 //and send responses
