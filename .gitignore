@@ -61,3 +61,6 @@ __pycache__/
 # When configure fails, SCons outputs these
 config.log
 .sconf_temp
+
+# IDE
+**/.vscode
