@@ -16,5 +16,4 @@ export PATH=$PATH:$CURRDIR/from_ajit_repo/tools/ajit_access_routines/src
 export PATH=$PATH:$CURRDIR/from_ajit_repo/simulators/c_model/code/testbench/bin:$PATH
 export AJIT_C_REF_MODEL=$CURRDIR/from_ajit_repo/simulators/c_model/code/
 export AJIT_AA_VALIDATION_EXECUTABLE_LOCATION=$CURRDIR
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURRDIR/from_ajit_repo/simulators/c_model/code/debugger/doval/antlr3Cruntime/build/lib/
-~     
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CURRDIR/from_ajit_repo/simulators/c_model/code/debugger/doval/antlr3Cruntime/build/lib/ 
