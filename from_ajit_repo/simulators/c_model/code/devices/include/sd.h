@@ -14,20 +14,6 @@ been taken from the Physical layer specifications V 3.01 document
 #include<stdbool.h>
 #include"Sdhc.h"
 /* Register decalarations	*/
-uint32_t OCR;
-/*  OCR Register bit masks    */
-#define card_pwrup_stat 0x80000000
-#define card_cap_stat   0x40000000
-#define switch_1_8_V    0x01000000
-#define v3_5to6         0x00800000
-#define v3_4to5         0x00400000
-#define v3_3to4         0x00200000          
-#define v3_2to3         0x00100000
-#define v3_1to2         0x00080000
-#define v3_0to1         0x00040000
-#define v2_9to3         0x00020000
-#define v2_8to9         0x00010000
-#define v2_7to8         0x00008000
 
 typedef struct cid_reg
 {
@@ -71,9 +57,6 @@ typedef struct csd{
 	uint8_t  crc;
 }csd;
 
-uint16_t RCA;
-uint16_t DSR;
-
 typedef struct scr{
 uint8_t SCR_structure;//use only lower 4 bits 63:60
 uint8_t SD_spec;			//use only lower 4 bits 59:56
@@ -112,6 +95,8 @@ typedef struct cardStatus
 	uint8_t ake_seq_err;		//3
 }cardStatus;
 
+//three registers: OCR, RCA, DSR, are directly initialized in "sd.c" 
+
 uint8_t flash_array[1024];//1 block or 1kByte
 
 /*functions declarations and misc initialization*/
@@ -129,15 +114,18 @@ uint8_t *tx_bit, uint8_t *cmd_index, uint32_t *argument, uint8_t *crc7, uint8_t 
 //initiates actions to be performed based on received frame's command index
 void actionForReceivedCommandIndex(uint8_t cmd_index);
 
-//sends CID as response R2//IN PROGRESS
+//sends CID/CSD as response R2
 // Gather values to be put together for R2 response and load them in a pipe
 //TODO: should the response pipe(s) for R2 response be declared as
 //3 pipes of 64, 64 & 8 bits OR should the sdhc take care of this 
 //when CMD3 is sent to SD card and is expecting a 136 bit response
-void sendCID();
+void sendR2_Response();//IN PROGRESS
 
-//Gather values to be put together for R2 response and load them in a pipe
+void sendR3_Response();
+
+//Gather values to be put together for R6 response and load them in a pipe
 void sendR6_Response();
+
 
 //functions that read commands from the SDHC
 //and send responses

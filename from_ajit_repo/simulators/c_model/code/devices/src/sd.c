@@ -1,7 +1,7 @@
 /*	sd.c
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 4 Jan 2021 
+last modified: 8 Jan 2021 
 
 Model that emulates an SD card and raw memory 
 for compliance checks with SDHC version 3.0.
@@ -37,6 +37,9 @@ pthread_mutex_t SDcard_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct cid_reg *CID;
 struct cardStatus *card_stat;
+uint16_t RCA=0x1111;
+uint16_t DSR=0;
+uint32_t OCR=0;
 
 void initialize_sdcard()
 {
@@ -85,7 +88,7 @@ void start_sdcard_threads()
 #endif
 }
 
-void sendCID()//IN PROGRESS
+void sendR2_Response()//IN PROGRESS
 {
     uint64_t cid_upper64=0, cid_lower64=0;
     cid_upper64 |= ((uint64_t)CID->MID >> 56) & 0xff;
@@ -104,6 +107,18 @@ void sendCID()//IN PROGRESS
     write_uint64("sdcard_to_sdhc_cmd_response",cid_lower64);
 }
 
+void R3_Response()
+{   uint64_t frame_data=0;
+    uint8_t res_value1=0x3F;uint8_t res_value2 = 0x7F;
+    frame_data|=0UL<<47;//start bit
+	frame_data|=0UL<<46;//tx bit
+	frame_data|=(uint64_t)res_value1<<40;
+    frame_data|=OCR<<8;
+	frame_data|=res_value2<<1;
+	frame_data|=1UL<<0;
+    write_uint64("sdcard_to_sdhc_cmd_response",frame_data);
+}
+
 void sendR6_Response()
 {
 	uint64_t frame_data=0;
@@ -115,7 +130,7 @@ void sendR6_Response()
     card_stat_bits |= card_stat->ready_for_data << 8;
     card_stat_bits |= card_stat->app_cmd << 5;
     card_stat_bits |= card_stat->ake_seq_err << 3;
-    uint8_t crc7 = 0;  RCA = 0x1111;// temp values, to be updated
+    uint8_t crc7 = 0; // temp values, to be updated
 	
     //we load the paramters for R6 herafter
     frame_data|=0UL<<47;//start bit
@@ -124,21 +139,27 @@ void sendR6_Response()
 	frame_data|=RCA<<24;
     frame_data|=card_stat_bits<<8;
 	frame_data|=crc7<<1;
-	frame_data|=0UL<<0;
+	frame_data|=1UL<<0;
     write_uint64("sdcard_to_sdhc_cmd_response",frame_data);
 }
+
+
 void actionForReceivedCommandIndex(uint8_t cmd_index)
 {
     switch (cmd_index)
     {
+    case 0:
+         initialize_sdcard();   
     case 2: //send CID i.e R2 response
-        sendCID();
+        sendR2_Response();
         break;
     case 3: //
         sendR6_Response();
         break;
     case 4:
-
+        break;
+    case 41:
+        sendR3_Response();
     default:
         break;
     }

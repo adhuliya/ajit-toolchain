@@ -188,7 +188,7 @@ void SDHC_Control()
 		 */
 		getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
 			&rwbar, &byte_mask, &addr, &data_in);
-		uint32_t data_out=0;
+		
 
 		//***lock the state variables***//
 		pthread_mutex_lock(&Sdhc_lock);
@@ -243,14 +243,14 @@ void SDHC_Control()
 					}
 				}
 					break;
-				case READ				break;
+				case READ:				break;
 				default:
 					setSlice32(internal_map.blk_size, 14, 12, 0);
 					memcpy(&cpu_reg_view.blk_size, &internal_map.blk_size, 4);
 					break;
 				}
 				
-				break;
+				break;	
 			case (0xffffff & ADDR_SDHC_BLOCK_COUNT):
 				// bits
 				// 15-0		RW
@@ -287,7 +287,7 @@ void SDHC_Control()
 				case WRITE:
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
-				case READ				break;
+				case READ:				break;
 				default:
 					break;
 				}
@@ -330,7 +330,7 @@ void SDHC_Control()
 						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
-				case READ				break;
+				case READ:				break;
 				default:
 					break;
 				}
@@ -370,7 +370,7 @@ void SDHC_Control()
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
-				case READ				break;
+				case READ	:			break;
 				default:
 					break;
 				}
@@ -395,7 +395,7 @@ void SDHC_Control()
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
-				case READ				break;
+				case READ	:			break;
 				default:
 					break;
 				}
@@ -415,7 +415,7 @@ void SDHC_Control()
 					// TODO copy to sdhc_tx_buffer
 					break;
 				
-				case READ				// TODO copy from sdhc_rx_buffer
+				case READ	:			// TODO copy from sdhc_rx_buffer
 					break;
 				default:
 					break;
@@ -451,7 +451,7 @@ void SDHC_Control()
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
-				case READ				break;
+				case READ	:			break;
 				default:
 					break;
 				}
@@ -491,7 +491,7 @@ void SDHC_Control()
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
-				case READ				break;
+				case READ	:			break;
 				default:
 					break;
 				}
@@ -596,7 +596,7 @@ void SDHC_Control()
 				case WRITE:
 					// write protected
 					break;
-				case READ				break;
+				case READ	:			break;
 				default:
 					break;
 				}
