@@ -35,9 +35,12 @@ DEFINE_THREAD(SDCard_Control);
 
 pthread_mutex_t SDcard_lock = PTHREAD_MUTEX_INITIALIZER;
 
+struct cid_reg *CID;
+struct cardStatus *card_stat;
+
 void initialize_sdcard()
 {
-    
+    //some initialization routines
 }
 
 void register_sdcard_pipes()
@@ -82,34 +85,60 @@ void start_sdcard_threads()
 #endif
 }
 
-void sendCID()
+void sendCID()//IN PROGRESS
 {
-    struct cid_reg *CID;
-    uint64_t cid_upper64, cid_lower64;
-    cid_upper64 |= CID->MID >> 120 & 0xff;
-    cid_upper64 |= CID->OID >> 104 & 0xffff;
-    cid_upper64 |= CID->PNM[0] >> 64 & 0xff;
-    cid_upper64 |= CID->PNM[1] >> 72 & 0xff;
-    cid_upper64 |= CID->PNM[2] >> 80 & 0xff;
-    cid_upper64 |= CID->PNM[3] >> 88 & 0xff;
-    cid_upper64 |= CID->PNM[4] >> 96 & 0xff;
+    uint64_t cid_upper64=0, cid_lower64=0;
+    cid_upper64 |= ((uint64_t)CID->MID >> 56) & 0xff;
+    cid_upper64 |= ((uint64_t)CID->OID >> 40) & 0xffff;
+    cid_upper64 |= ((uint64_t)CID->PNM[0] >> 32) & 0xff;
+    cid_upper64 |= ((uint64_t)CID->PNM[1] >> 24) & 0xff;
+    cid_upper64 |= ((uint64_t)CID->PNM[2] >> 16) & 0xff;
+    cid_upper64 |= ((uint64_t)CID->PNM[3] >>  8) & 0xff;
+    cid_upper64 |= ((uint64_t)CID->PNM[4] >>  0) & 0xff;
     write_uint64("sdcard_to_sdhc_cmd_response",cid_upper64);
-    cid_lower64 |= CID->PRV >> 56 & 0xff;
-    cid_lower64 |= CID->PSN >> 24 & 0xffffffff;
-    cid_lower64 |= CID->MDT_y >> 12 & 0xff;
-    cid_lower64 |= CID->MDT_m >> 8 & 0xf;
-    cid_lower64 |= CID->crc >> 1 & 0x7f;
+    cid_lower64 |= ((uint64_t)CID->PRV >> 56) & 0xff;
+    cid_lower64 |= ((uint64_t)CID->PSN >> 24) & 0xffffffff;
+    cid_lower64 |= ((uint64_t)CID->MDT_y >> 12) & 0xff;
+    cid_lower64 |= ((uint64_t)CID->MDT_m >> 8) & 0xf;
+    cid_lower64 |= ((uint64_t)CID->crc >> 1)& 0x7f;
     write_uint64("sdcard_to_sdhc_cmd_response",cid_lower64);
 }
 
+void sendR6_Response()
+{
+	uint64_t frame_data=0;
+    uint16_t card_stat_bits=0;//23,22,19,12:9
+    card_stat_bits |= card_stat->com_crc_err << 15;
+    card_stat_bits |= card_stat->illegal_cmd << 14;
+    card_stat_bits |= card_stat->error << 13;
+    card_stat_bits |= card_stat->current_state << 9;
+    card_stat_bits |= card_stat->ready_for_data << 8;
+    card_stat_bits |= card_stat->app_cmd << 5;
+    card_stat_bits |= card_stat->ake_seq_err << 3;
+    uint8_t crc7 = 0;  RCA = 0x1111;// temp values, to be updated
+	
+    //we load the paramters for R6 herafter
+    frame_data|=0UL<<47;//start bit
+	frame_data|=0UL<<46;//tx bit
+	frame_data|=3UL<<40;//cmd_index=3 for CMD3, see page 72 of Phy.Layer.Spec
+	frame_data|=RCA<<24;
+    frame_data|=card_stat_bits<<8;
+	frame_data|=crc7<<1;
+	frame_data|=0UL<<0;
+    write_uint64("sdcard_to_sdhc_cmd_response",frame_data);
+}
 void actionForReceivedCommandIndex(uint8_t cmd_index)
 {
     switch (cmd_index)
     {
-    case 2: //send CID
+    case 2: //send CID i.e R2 response
         sendCID();
         break;
-    
+    case 3: //
+        sendR6_Response();
+        break;
+    case 4:
+
     default:
         break;
     }

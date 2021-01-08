@@ -1,6 +1,10 @@
 /*  
 This file holds the declarations of the SD card registers 
 and the function prototypes for emulation the SD card 
+
+Information regarding the variables declared in this file has
+been taken from the Physical layer specifications V 3.01 document
+
 */
 
 #ifndef _SD_H
@@ -9,9 +13,7 @@ and the function prototypes for emulation the SD card
 #include<stdint.h>
 #include<stdbool.h>
 #include"Sdhc.h"
-/* sd card */
-
-//Physical layer specifications v 3.01 page 104
+/* Register decalarations	*/
 uint32_t OCR;
 /*  OCR Register bit masks    */
 #define card_pwrup_stat 0x80000000
@@ -54,7 +56,7 @@ typedef struct csd{
 	uint8_t  read_blk_misalign;
 	uint8_t  dsr_imp;
 	uint32_t c_size;
-	uint8_t erase_blk_en;
+	uint8_t  erase_blk_en;
 	uint8_t  sector_size;
 	uint8_t  wp_grp_size;
 	uint8_t  wp_grp_enable;
@@ -66,7 +68,7 @@ typedef struct csd{
 	uint8_t  perm_write_protect;
 	uint8_t  tmp_write_protect;
 	uint8_t  file_format;
-	uint8_t crc;
+	uint8_t  crc;
 }csd;
 
 uint16_t RCA;
@@ -83,24 +85,59 @@ uint8_t ex_security;	//use only lower 4 bits 46:43
 uint8_t cmd_support;	//use only lower 2 bits 33:32
 }scr;
 
+//page 74 of Physical Layer spec v3.01
+//32-bit card status value is used in R1 and R6 responses
+typedef struct cardStatus 
+{
+	uint8_t out_of_range; 		//31
+	uint8_t addr_error;		//30
+	uint8_t blk_len_err; 		//29
+	uint8_t	erase_seq_err;		//28
+	uint8_t erase_param;		//27
+	uint8_t wp_violation;		//26
+	uint8_t card_is_locked;		//25
+	uint8_t lock_unlock_failed; 	//24
+	uint8_t com_crc_err;		//23
+	uint8_t illegal_cmd;		//22
+	uint8_t card_ecc_failed;	//21
+	uint8_t cc_error;		//20
+	uint8_t error;			//19
+	uint8_t csd_overwrite;		//16
+	uint8_t wp_erase_skip;		//15
+	uint8_t card_ecc_disable;	//14
+	uint8_t erase_reset;		//13
+	uint8_t current_state;		//12:9
+	uint8_t ready_for_data;		//8
+	uint8_t app_cmd;		//5
+	uint8_t ake_seq_err;		//3
+}cardStatus;
+
 uint8_t flash_array[1024];//1 block or 1kByte
 
-//thread declaration and misc initialization
+/*functions declarations and misc initialization*/
 void SDCard_Control();
 void initialize_sdcard();
 void register_sdcard_pipes();
 void start_sdcard_threads();
 
-//takes data from the incoming cmd pipe and extracts the 48 bit frame 
-//contents
-void extractCommandFromSDHC(const char* req_pipe, uint8_t *start_bit, 
+//takes data from the incoming cmd pipe and
+//extracts the 48 bit frame contents
+void extractCommandFromSDHC(const char* req_pipe, uint8_t *start_bit,
 uint8_t *tx_bit, uint8_t *cmd_index, uint32_t *argument, uint8_t *crc7, uint8_t *end_bit);
 
-//initiates actions to be performed based on received frame
+
+//initiates actions to be performed based on received frame's command index
 void actionForReceivedCommandIndex(uint8_t cmd_index);
 
-//sends CID as response R2
+//sends CID as response R2//IN PROGRESS
+// Gather values to be put together for R2 response and load them in a pipe
+//TODO: should the response pipe(s) for R2 response be declared as
+//3 pipes of 64, 64 & 8 bits OR should the sdhc take care of this 
+//when CMD3 is sent to SD card and is expecting a 136 bit response
 void sendCID();
+
+//Gather values to be put together for R2 response and load them in a pipe
+void sendR6_Response();
 
 //functions that read commands from the SDHC
 //and send responses

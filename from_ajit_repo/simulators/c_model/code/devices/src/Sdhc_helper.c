@@ -25,12 +25,12 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	uint8_t crc7=7;//dummy value for now, will be updated with crc7 function's
 							//return value later
 	uint64_t frame_data=0;
-	frame_data|=0<<47;//start bit
-	frame_data|=1<<46;//tx bit
+	frame_data|=0UL<<47;//start bit
+	frame_data|=1UL<<46;//tx bit
 	frame_data|=cmd_index<<40;
 	frame_data|=int_str->argument1<<8;
 	frame_data|=crc7<<1;
-	frame_data|=0<<0;
+	frame_data|=0UL<<0;
 	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
