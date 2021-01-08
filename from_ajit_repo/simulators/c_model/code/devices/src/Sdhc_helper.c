@@ -34,9 +34,11 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
-void readSDHCRegister(uint32_t data_out, uint32_t addr,
+void readSDHCRegister(uint32_t addr,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
+	uint32_t data_out = 0;
+
 	if (addr == (0xffffff & ADDR_SDHC_ARG_2))
 	{
 		uint8_t size=4;

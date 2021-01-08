@@ -125,7 +125,7 @@ bool event_card_inserted; // TRUE for inserted; FALSE for removed
 void SDHC_Control();
 DEFINE_THREAD(SDHC_Control);
 
-//Mutex for locking state variables (only control register in this case)
+// Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
 
 void sdhc_initialize()
@@ -199,512 +199,447 @@ void SDHC_Control()
 
 			switch (addr)
 			{
-				case (0xFFFFFF & ADDR_SDHC_ARG_2):
-					// *bits*
-					// 31-0		RW
-					// used with Auto CMD23 to set a 32-bit blk count value
-					switch (rwbar)
+			case (0xFFFFFF & ADDR_SDHC_ARG_2):
+				// *bits*
+				// 31-0		RW	Used with Auto CMD23 to set a 32-bit blk count value
+				// 			 32b if used with ADMA, otherwise limited by 'blk count' reg
+				// 			 (65535)
+				switch (rwbar)
+				{
+				case WRITE:
+				{
+					#ifdef SDHC_DEBUG
+					fprintf(stderr, "\nInside case arg2 and rwbar = %d\n", rwbar);
+					#endif
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				}
+					break;
+				case READ:
+				{
+					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+				}
+					break;
+				default:
+					break;
+				}
+			
+				break;
+			case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
+				// *bits*
+				//   15		Rsvd	reserved
+				//  14-12	RW	used for SDMA
+				//  11-0	RW	blk size of data transfers for cmd17, cmd18, cmd24,
+				// 			 cmd25 and cmd53; can only be accessed when there is no transaction;
+				// 			  read operations during transfer may return invalid
+				//			  write operations shall be ignored.
+				switch (rwbar)
+				{
+				case WRITE:
+				{
+					// checking for ongoing transactions
+					if ( !( getBit32(internal_map.present_state, 9) || (getBit32(internal_map.present_state, 8))) )
 					{
-					case WRITE:
-					{
-						#ifdef SDHC_DEBUG
-						fprintf(stderr, "\nInside case arg2 and rwbar = %d\n", rwbar);
-						#endif
 						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					}
-						break;
-					case READ:
-					{
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-					}
-						break;
-					default:
-						break;
-					}
+				}
+					break;
+				case READ				break;
+				default:
+					setSlice32(internal_map.blk_size, 14, 12, 0);
+					memcpy(&cpu_reg_view.blk_size, &internal_map.blk_size, 4);
+					break;
+				}
 				
-					break;
-
-				case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
-					// *bits*
-					//   15		Rsvd	reserved
-					//  14-12	RW	used for SDMA
-					//  11-0	RW	blk size of data transfers for cmd17, cmd18, cmd24,
-					// 			 cmd25 and cmd53; can only be accessed when there is no transaction;
-					// 			  read operations during transfer may return invalid
-					//			  write operations shall be ignored.
-					switch (rwbar)
-					{
-					case WRITE:
-					{
-						// checking for ongoing transactions
-						if ( !( getBit32(internal_map.present_state, 9) || (getBit32(internal_map.present_state, 8))) )
-						{
-							updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						}
-					}
-						break;
-
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						setSlice32(internal_map.blk_size, 14, 12, 0);
-						memcpy(&cpu_reg_view.blk_size, &internal_map.blk_size, 4);
-						break;
-					}
-					
-					break;
-
-				case (0xffffff & ADDR_SDHC_BLOCK_COUNT):
-					// bits
-					// 15-0		RW
-					// enabled when 'block count enable' in 'transfer mode' is set to 1
-					// valid for the case, values/states wont change
-					// writes a only multiple block transfers
-					// host driver set this value and host controller decrements the value
-					// according to the tranfered blocks; stops when reaches zero
-					// can be accessed only when no transactions is executing; during data transfer
-					// ignore write and read will be incorrect
-					if( getBit16(internal_map.tx_mode, 1) &&  
-						(!( getBit32(internal_map.present_state, 9) || 
-							(getBit32(internal_map.present_state, 8)))) )
-					{
-						switch (rwbar)
-						{
-						case WRITE:
-							updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-							break;
-						case READ:
-							readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-							break;
-						default:
-							break;
-						}
-					}
-					else
-					
-					break;
-
-				case (0xFFFFFF & ADDR_SDHC_ARG_1):
-					// *bits*
-					//  31-00	RW 	SD command arg is specified as bit 39-8 of Command-Format
-					// 			 in the physical layer spec
+				break;
+			case (0xffffff & ADDR_SDHC_BLOCK_COUNT):
+				// bits
+				// 15-0		RW
+				// enabled when 'block count enable' in 'transfer mode' is set to 1
+				// valid for the case, values/states wont change
+				// writes a only multiple block transfers
+				// host driver set this value and host controller decrements the value
+				// according to the tranfered blocks; stops when reaches zero
+				// can be accessed only when no transactions is executing; during data transfer
+				// ignore write and read will be incorrect
+				if( getBit16(internal_map.tx_mode, 1) &&  
+					(!( getBit32(internal_map.present_state, 9) || 
+						(getBit32(internal_map.present_state, 8)))) )
+				{
 					switch (rwbar)
 					{
 					case WRITE:
 						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 						break;
-
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
+					case READ:					break;
 					default:
 						break;
 					}
-
-					break;
-
-				case (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE):
-					// *bits*
-					// 15-06	Rsvd
-					// 05		RW	multi/single blk select
-					// 			 bit is set when issuing multiple-block tx commands
-					// 			 using DAT line. For any other command this bit willbe 0.
-					// 			 If 0, it is not necessary to se 'blk count' register.
-					// 04		RW	data transfer direction set
-					// 			 bit defines direction of data line transfers.
-					// 			 set to 1 by host driver to tx data from SD to SDHC, 0 for
-					// 			 all other commands.
-					// 			 	1 read(card to host)
-					//  			 	0 write(host to card)
-					// 03-02	Rsvd	auto command enable
-					// 01		RW	blk count enable
-					// 			 only relevant for multiple blk tx.
-					// 			 'blk count' disable if this bit is 0
-					// 				1 enable
-					// 				0 disable
-					// 00		RW	DMA enable
-					// 			 bit enables DMA if indicated in 'caps' reg.
-					// 			 if no DMA, bit is meaningless and aways zero.
-					// 		  	 if this bit is 1, DMA operation starts when host driver write
-					// 			 to upper byte of 'command reg'
-					// 				1 DMA data tx
-					// 				0 no data tx or non-DMA data tx
-					// Used to control the operation of data transfer;host driver shall set this reg before issuing 
-					// cmd which transfers data or before issuing a Resume command
-					// To prevent data loss host controller shall implement write protection during
-					// data transfers; writes to this reg sahll be ignroed when 'comand inhibit (DAT)'[1]
-					// in 'present state reg'[31:0] is 1
-
-					switch (rwbar)
-					{
-					case WRITE:
-						if (!(getBit32(internal_map.present_state, 1)))
-							updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						break;
-					}
-					break;
-
-				case (0xffffff & ADDR_SDHC_REGISTER_COMMAND):
-					// *bits*
-					// 15-14	Rsvd
-					// 13-08	RW	command index
-					// 			 bits shall be set to comd number (CMD0-63, ACMD0-63) that
-					// 			 is specified in bits 45-40 of the command format in 
-					// 			 the physical layer spec
-					// 07-06	RW	command type
-					// 			 there are 3 special commands
-					// 				11b abort
-					// 				10b resume
-					// 				01b suspend
-					// 				00b normal
-					// 05		RW	data present select
-					// 			 set to 1 to indicate that data is present and shall be transfered
-					// 			 using DAT line. It is set to 0 for the following
-					// 			   1 - cmds using only CMD line(ex. CMD52)
-					// 			   2 - cmds with no data tx but using busy signal on DAT[0]
-					//			        line(R1b or R5b ex. CMD38)
-					// 				1 : data present
-					// 				0 : data not present
-					// 04		RW	command index check enable
-					// 03		RW	command CRC check enable
-					// 02		RW	Rsvd
-					// 01-00	RW	response type
-					// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
-					// bits in 'present state' reg before writing to this reg.
-					// Writing to the upper byte triggers SD command generation.
-					// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set
-
-					switch (rwbar)
-					{
-					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						break;
-					}
-					break;
-
-				case (0xffffff & ADDR_SDHC_RESPONSE0):
-				case (0xffffff & ADDR_SDHC_RESPONSE1):
-				case (0xffffff & ADDR_SDHC_RESPONSE2):
-				case (0xffffff & ADDR_SDHC_RESPONSE3):
-				case (0xffffff & ADDR_SDHC_RESPONSE4):
-				case (0xffffff & ADDR_SDHC_RESPONSE5):
-				case (0xffffff & ADDR_SDHC_RESPONSE6):
-				case (0xffffff & ADDR_SDHC_RESPONSE7):
-					// *bits*
-					// 127-00	ROC command response
-					// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
-					// bits in 'present state' reg before writing to this reg.
-					// Writing to the upper byte triggers SD command generation.
-					// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set.
-
-					switch (rwbar)
-					{
-					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						break;
-					}
+				}
+				else
 				
+				break;
+			case (0xFFFFFF & ADDR_SDHC_ARG_1):
+				// *bits*
+				//  31-00	RW 	SD command arg is specified as bit 39-8 of Command-Format
+				// 			 in the physical layer spec
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
-
-				case (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT):
-					// *bits*
-					// 31-00	RW	buffer data 
-					// 			 SDHC buffer can be accessed 
-					// 			 through this 32b 'Data Port' reg.
-					// for accessing host controller buffer
-
-					// TODO impliment Buffer control: Page 5
-					switch (rwbar)
-					{
-					case WRITE:
+				case READ				break;
+				default:
+					break;
+				}
+				break;
+			case (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE):
+				// *bits*
+				// 15-06	Rsvd
+				// 05		RW	multi/single blk select
+				// 			 bit is set when issuing multiple-block tx commands
+				// 			 using DAT line. For any other command this bit willbe 0.
+				// 			 If 0, it is not necessary to se 'blk count' register.
+				// 04		RW	data transfer direction set
+				// 			 bit defines direction of data line transfers.
+				// 			 set to 1 by host driver to tx data from SD to SDHC, 0 for
+				// 			 all other commands.
+				// 			 	1 read(card to host)
+				//  			 	0 write(host to card)
+				// 03-02	Rsvd	auto command enable
+				// 01		RW	blk count enable
+				// 			 only relevant for multiple blk tx.
+				// 			 'blk count' disable if this bit is 0
+				// 				1 enable
+				// 				0 disable
+				// 00		RW	DMA enable
+				// 			 bit enables DMA if indicated in 'caps' reg.
+				// 			 if no DMA, bit is meaningless and aways zero.
+				// 		  	 if this bit is 1, DMA operation starts when host driver write
+				// 			 to upper byte of 'command reg'
+				// 				1 DMA data tx
+				// 				0 no data tx or non-DMA data tx
+				// Used to control the operation of data transfer;host driver shall set this reg before issuing 
+				// cmd which transfers data or before issuing a Resume command
+				// To prevent data loss host controller shall implement write protection during
+				// data transfers; writes to this reg sahll be ignroed when 'comand inhibit (DAT)'[1]
+				// in 'present state reg'[31:0] is 1
+				switch (rwbar)
+				{
+				case WRITE:
+					if (!(getBit32(internal_map.present_state, 1)))
 						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						// TODO copy to sdhc_tx_buffer
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						// TODO copy from sdhc_rx_buffer
-						break;
-
-					default:
-						break;
-					}
-				break;
-
-				case (0xffffff & ADDR_SDHC_PRESENT_STATE):
-					// *bits*
-					// 31-25	Rsvd
-					// 24		RO	CMD line signal level
-					// 23-20	RO	DAT[3:0] line signal level
-					// 19		RO	write protect switch pin level
-					// 18		RO 	card detedt pin level
-					// 17		RO	card state stable
-					// 16		RO	card inserted
-					// 15-12	Rsvd
-					// 11		ROC	buffer read enable
-					// 10		ROC	buffer write enable
-					// 09		ROC	read transfer active
-					// 08		ROC	write transfer active
-					// 07-04	Rsvd
-					// 03		ROC	re-tuning request
-					// 02		ROC	DAT line active
-					// 01		ROC	command inhibit(DAT)
-					// 00		ROC	command inhibit(CMD)
-					// Host driver can get the status of the host controller
-					// from this 32-bit read-only reg
-					// Members are updated as per the states of SDHC.
-                                  
-					// TODO 
-					switch (rwbar)
-					{
-					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						break;
-					}
-				break;
-
-				case (0xffffff & ADDR_SDHC_HOST_CONTROL_1):
-					// *bits*
-					// 07		RW	card detect signal selection
-					// 06		RW	card detect test dsignal
-					// 05		RW	extended date transfer width
-					// 04-03	RW	DMA select
-					// 02		RW	high speed enable
-					// 01		RW	data transfer width
-					// 00		RW	LED control
-
-				break;
-
-				case (0xffffff & ADDR_SDHC_POWER_CONTROL):
-					// *bits*
-					// 07-04	Rsvd
-					// 03-01	RW	SD bus voltage select
-					// 			 The HD selects the voltage level for the sd card by setting these.
-					// 			 Before setting this reg, HD shall check 'Voltage Support'
-					// 			 bits in 'Caps reg'. If an unsupported voltage is selected
-					// 			 the Host System shall not supply SD Bus voltage.
-					// 			 	111b	 3.3v
-					// 				110b	 3.0v
-					// 				101b	 1.8v
-					// 				100-000b Rsvd	
-					// 00		RW	SD bus power
-					// 			 Before setting this bit, HD shall set 'SD Bus Voltage Select'
-					// 			 If the HC detect no-card state, this bit shall be cleared.
-					// 			 If this bit is cleared, HC immediately stor driving CMD and DAT[3:0]
-					// 			 and drive SDCLK to low level
-					// 				1	Power on
-					// 				0	Power off
-
-					switch (rwbar)
-					{
-					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						break;
-					
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-
-					default:
-						break;
-					}
-				break;
+					break;
 				
-				case (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL):
-					// *bits*
-					// 07-04	Rsvd
-					// 03		RW	interrupt at block gap
-					// 02		RW	read wait control
-					// 01		RWAC	continue request
-					// 00		RW	stop at block gap request
-
+				case READ				break;
+				default:
+					break;
+				}
 				break;
-
-				case (0xffffff & ADDR_SDHC_WAKEUP_CONTROL):
-					// *bits*
-					// 07-03	Rsvd
-					// 02		RW	wakeup event enable on SD card removal
-					// 01		RW	wakeup event enable on card intsertion
-					// 00		RW	wakeup event enable on card interrupt
-
+			case (0xffffff & ADDR_SDHC_REGISTER_COMMAND):
+				// *bits*
+				// 15-14	Rsvd
+				// 13-08	RW	command index
+				// 			 bits shall be set to comd number (CMD0-63, ACMD0-63) that
+				// 			 is specified in bits 45-40 of the command format in 
+				// 			 the physical layer spec
+				// 07-06	RW	command type
+				// 			 there are 3 special commands
+				// 				11b abort
+				// 				10b resume
+				// 				01b suspend
+				// 				00b normal
+				// 05		RW	data present select
+				// 			 set to 1 to indicate that data is present and shall be transfered
+				// 			 using DAT line. It is set to 0 for the following
+				// 			   1 - cmds using only CMD line(ex. CMD52)
+				// 			   2 - cmds with no data tx but using busy signal on DAT[0]
+				//			        line(R1b or R5b ex. CMD38)
+				// 				1 : data present
+				// 				0 : data not present
+				// 04		RW	command index check enable
+				// 03		RW	command CRC check enable
+				// 02		RW	Rsvd
+				// 01-00	RW	response type
+				// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
+				// bits in 'present state' reg before writing to this reg.
+				// Writing to the upper byte triggers SD command generation.
+				// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					break;
+				
+				case READ				break;
+				default:
+					break;
+				}
 				break;
-
-				case (0xffffff & ADDR_SDHC_CLOCK_CONTROL):
-					// *bits*
-					// 15-08	RW	SDCLK freq select
-					// 07-06	ROC/RW	upper bits of SDCLK freq select
-					// 05		RW/ROC	clock generator select
-					// 04-03	Rsvd
-					// 02		RW	SD clock enable
-					// 01		ROC	internal clock stable
-					// 00		RW	internal clock enable
-
+			case (0xffffff & ADDR_SDHC_RESPONSE0):
+			case (0xffffff & ADDR_SDHC_RESPONSE1):
+			case (0xffffff & ADDR_SDHC_RESPONSE2):
+			case (0xffffff & ADDR_SDHC_RESPONSE3):
+			case (0xffffff & ADDR_SDHC_RESPONSE4):
+			case (0xffffff & ADDR_SDHC_RESPONSE5):
+			case (0xffffff & ADDR_SDHC_RESPONSE6):
+			case (0xffffff & ADDR_SDHC_RESPONSE7):
+				// *bits*
+				// 127-00	ROC command response
+				// Host driver shall check the 'command inhibit (DAT)' and 'command inhibit (CMD)'
+				// bits in 'present state' reg before writing to this reg.
+				// Writing to the upper byte triggers SD command generation.
+				// Host controller doesn't protect for writing when 'command inhibit(CMD)' is set.
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					break;
+				
+				case READ				break;
+				default:
+					break;
+				}
+			
 				break;
-
-				case (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL):
-					// *bits*
-					// 07-04	Rsvd
-					// 03-00	data timeout counter value
-
+			case (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT):
+				// *bits*
+				// 31-00	RW	buffer data 
+				// 			 SDHC buffer can be accessed 
+				// 			 through this 32b 'Data Port' reg.
+				// for accessing host controller buffer
+				// TODO impliment Buffer control: Page 5
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					// TODO copy to sdhc_tx_buffer
+					break;
+				
+				case READ				// TODO copy from sdhc_rx_buffer
+					break;
+				default:
+					break;
+				}
 				break;
-
-				case (0xffffff & ADDR_SDHC_SOFTWARE_RESET):
-					// *bits*
-					// 07-03	Rsvd
-					// 02		RWAC	software reset for DAT line
-					// 01		RWAC 	software reset for CMD line
-					// 00		RWAC	software reset for all
-					// write 1 to all the unrsvd bits for resetting
-					// after completing reset clear all bits
-					//
-					// affects the following regs
-					// 	buffer data port reg
-					// 	Present state reg
-					// 	blk gap ctrl reg
-					// 	normal intr status reg
-					switch (rwbar)
+			case (0xffffff & ADDR_SDHC_PRESENT_STATE):
+				// *bits*
+				// 31-25	Rsvd
+				// 24		RO	CMD line signal level
+				// 23-20	RO	DAT[3:0] line signal level
+				// 19		RO	write protect switch pin level
+				// 18		RO 	card detedt pin level
+				// 17		RO	card state stable
+				// 16		RO	card inserted
+				// 15-12	Rsvd
+				// 11		ROC	buffer read enable
+				// 10		ROC	buffer write enable
+				// 09		ROC	read transfer active
+				// 08		ROC	write transfer active
+				// 07-04	Rsvd
+				// 03		ROC	re-tuning request
+				// 02		ROC	DAT line active
+				// 01		ROC	command inhibit(DAT)
+				// 00		ROC	command inhibit(CMD)
+				// Host driver can get the status of the host controller
+				// from this 32-bit read-only reg
+				// Members are updated as per the states of SDHC.
+                          
+				// TODO 
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					break;
+				
+				case READ				break;
+				default:
+					break;
+				}
+				break;
+			case (0xffffff & ADDR_SDHC_HOST_CONTROL_1):
+				// *bits*
+				// 07		RW	card detect signal selection
+				// 06		RW	card detect test dsignal
+				// 05		RW	extended date transfer width
+				// 04-03	RW	DMA select
+				// 02		RW	high speed enable
+				// 01		RW	data transfer width
+				// 00		RW	LED control
+				break;
+			case (0xffffff & ADDR_SDHC_POWER_CONTROL):
+				// *bits*
+				// 07-04	Rsvd
+				// 03-01	RW	SD bus voltage select
+				// 			 The HD selects the voltage level for the sd card by setting these.
+				// 			 Before setting this reg, HD shall check 'Voltage Support'
+				// 			 bits in 'Caps reg'. If an unsupported voltage is selected
+				// 			 the Host System shall not supply SD Bus voltage.
+				// 			 	111b	 3.3v
+				// 				110b	 3.0v
+				// 				101b	 1.8v
+				// 				100-000b Rsvd	
+				// 00		RW	SD bus power
+				// 			 Before setting this bit, HD shall set 'SD Bus Voltage Select'
+				// 			 If the HC detect no-card state, this bit shall be cleared.
+				// 			 If this bit is cleared, HC immediately stor driving CMD and DAT[3:0]
+				// 			 and drive SDCLK to low level
+				// 				1	Power on
+				// 				0	Power off
+				switch (rwbar)
+				{
+				case WRITE:
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					break;
+				
+				case READ				break;
+				default:
+					break;
+				}
+				break;
+			
+			case (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL):
+				// *bits*
+				// 07-04	Rsvd
+				// 03		RW	interrupt at block gap
+				// 02		RW	read wait control
+				// 01		RWAC	continue request
+				// 00		RW	stop at block gap request
+				break;
+			case (0xffffff & ADDR_SDHC_WAKEUP_CONTROL):
+				// *bits*
+				// 07-03	Rsvd
+				// 02		RW	wakeup event enable on SD card removal
+				// 01		RW	wakeup event enable on card intsertion
+				// 00		RW	wakeup event enable on card interrupt
+				break;
+			case (0xffffff & ADDR_SDHC_CLOCK_CONTROL):
+				// *bits*
+				// 15-08	RW	SDCLK freq select
+				// 07-06	ROC/RW	upper bits of SDCLK freq select
+				// 05		RW/ROC	clock generator select
+				// 04-03	Rsvd
+				// 02		RW	SD clock enable
+				// 01		ROC	internal clock stable
+				// 00		RW	internal clock enable
+				break;
+			case (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL):
+				// *bits*
+				// 07-04	Rsvd
+				// 03-00	data timeout counter value
+				break;
+			case (0xffffff & ADDR_SDHC_SOFTWARE_RESET):
+				// *bits*
+				// 07-03	Rsvd
+				// 02		RWAC	software reset for DAT line
+				// 01		RWAC 	software reset for CMD line
+				// 00		RWAC	software reset for all
+				// write 1 to all the unrsvd bits for resetting
+				// after completing reset clear all bits
+				//
+				// affects the following regs
+				// 	buffer data port reg
+				// 	Present state reg
+				// 	blk gap ctrl reg
+				// 	normal intr status reg
+				switch (rwbar)
+				{
+				case WRITE:
+					
+					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					
+					if (getBit8(internal_map.sw_reset, 2))
 					{
-					case WRITE:
-						
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-						
-						if (getBit8(internal_map.sw_reset, 2))
-						{
-							setSlice32(internal_map.buffer_data_port, 31, 0, 0);
-							setSlice32(internal_map.present_state, 31, 0, 0);
-							setSlice8(internal_map.blk_gap_ctrl, 7, 0, 0);
-							setSlice16(internal_map.normal_intr_status, 7, 0, 0);
-						}
-						else if(getBit8(internal_map.sw_reset, 1))
-						{
-							setSlice32(internal_map.present_state, 31, 0, 0);
-							setSlice16(internal_map.normal_intr_status, 15, 0, 0);
-						}
-						else if(getBit8(internal_map.sw_reset, 0))// reset everything
-						{
-							sdhc_initialize();
-						}
-						break;
-					case READ:
-						break;
+						setSlice32(internal_map.buffer_data_port, 31, 0, 0);
+						setSlice32(internal_map.present_state, 31, 0, 0);
+						setSlice8(internal_map.blk_gap_ctrl, 7, 0, 0);
+						setSlice16(internal_map.normal_intr_status, 7, 0, 0);
 					}
-					setSlice8(internal_map.sw_reset, 7, 0, 0); // all bits set to 0 after reset
-
-				break;
-
-				case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS):
-					// Rsvd, ROC & RW1C
-				case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
-					// Rsvd & RW1C
-				case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):
-					// Rsvd, RW & RO
-				case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS_EN):
-					// Rsvd & RW
-				case (0xffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN):
-					// Rsvd, RW & RO
-				case (0xffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN):
-					// Rsvd & RW
-				case (0xffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS):
-					// Rsvd & ROC
-				case (0xffff & ADDR_SDHC_HOST_CONTROL_2):
-					// Rsvd, RW & RWAC
-				break;
-
-				case (0xffffff & ADDR_SDHC_CAPS):
-					// Rsvd & HwInit
-					// whatever the case, values/states wont change
-					// writes are ignored
-
-					switch (rwbar)
+					else if(getBit8(internal_map.sw_reset, 1))
 					{
-					case WRITE:
-						// write protected
-						break;
-					case READ:
-						readSDHCRegister(data_out, addr, &cpu_reg_view, &internal_map);
-						break;
-					default:
-						break;
+						setSlice32(internal_map.present_state, 31, 0, 0);
+						setSlice16(internal_map.normal_intr_status, 15, 0, 0);
 					}
+					else if(getBit8(internal_map.sw_reset, 0))
+					{
+						sdhc_initialize();
+					}
+					break;
+				case READ:
+					break;
+				}
+				setSlice8(internal_map.sw_reset, 7, 0, 0); // all bits set to 0 after reset
 				break;
 
-				case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS):
-				case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS_RES):
-					// Rsvd & HwIn
-					// whatever the case, values/states wont change
-					// writes are ignored
+			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS):
+				// Rsvd, ROC & RW1C
+			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
+				// Rsvd & RW1C
+			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):
+				// Rsvd, RW & RO
+			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS_EN):
+				// Rsvd & RW
+			case (0xffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN):
+				// Rsvd, RW & RO
+			case (0xffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN):
+				// Rsvd & RW
+			case (0xffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS):
+				// Rsvd & ROC
+			case (0xffff & ADDR_SDHC_HOST_CONTROL_2):
+				// Rsvd, RW & RWAC
 				break;
-
-				case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT):
-					// Rsvd & WO
-				case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT):
-					// Rsvd & WO
+			case (0xffffff & ADDR_SDHC_CAPS):
+				// Rsvd & HwInit
+				// whatever the case, values/states wont change
+				// writes are ignored
+				switch (rwbar)
+				{
+				case WRITE:
+					// write protected
+					break;
+				case READ				break;
+				default:
+					break;
+				}
 				break;
-
-				case (0xffffff & ADDR_SDHC_ADMA_ERR_STAT):
-					// Rsvd & ROC
-					// DMA not present
-				case (0xffffff & ADDR_SDHC_ADMA_SYSTEM_ADDR):
-					// RW
-					// DMA not present
+			case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS):
+			case (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS_RES):
+				// Rsvd & HwIn
+				// whatever the case, values/states wont change
+				// writes are ignored
+				break;
+			case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT):
+				// Rsvd & WO
+			case (0xffffff & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT):
+				// Rsvd & WO
+				break;
+			case (0xffffff & ADDR_SDHC_ADMA_ERR_STAT):
+				// Rsvd & ROC
+				// DMA not present
+			case (0xffffff & ADDR_SDHC_ADMA_SYSTEM_ADDR):
+				// RW
+				// DMA not present
 				break;/* constant-expression */
-
-				case (0xffffff & ADDR_SDHC_HOST_PRESET_VALUES):
-					// Rsvd & HwInit
+			case (0xffffff & ADDR_SDHC_HOST_PRESET_VALUES):
+				// Rsvd & HwInit
 				break;
-
-				case (0xffffff & ADDR_SDHC_SHARED_BUS_CTRL):
-					// Rsvd, RW & HwInit
-					// optional
-					// relavent when shared bus is used
+			case (0xffffff & ADDR_SDHC_SHARED_BUS_CTRL):
+				// Rsvd, RW & HwInit
+				// optional
+				// relavent when shared bus is used
 				break;
-
-				case (0xffffff & ADDR_SDHC_SLOT_INTR_STATUS):
-					// Rsvd & ROC
-					// writes are ignored
-					// relavent only when there are slots
+			case (0xffffff & ADDR_SDHC_SLOT_INTR_STATUS):
+				// Rsvd & ROC
+				// writes are ignored
+				// relavent only when there are slots
 				break;
-
-				case (0xffffff & ADDR_SDHC_HOST_CONTROLLER_VERSION):
-					// HwInit
-					// whatever the case, values/states wont change
-					// writes are ignored
+			case (0xffffff & ADDR_SDHC_HOST_CONTROLLER_VERSION):
+				// HwInit
+				// whatever the case, values/states wont change
+				// writes are ignored
 				break;
 
 			default:
 				break;
-
 			}
 
 /* 
