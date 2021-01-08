@@ -250,7 +250,7 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
-
+	uint32_t data_out=0;
 	if (addr== (0xffffff & ADDR_SDHC_ARG_2))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
@@ -469,4 +469,9 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		void *source = &(str->normal_intr_status_enable);
 		memcpy(dest,source,size);			
 	}	
+	//acknowledgement MUST be sent to CPU 
+	//read requests will carry the data the read request was supposed to read
+	//write requests will return the value 0 as acknowledgement
+	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 }
+
