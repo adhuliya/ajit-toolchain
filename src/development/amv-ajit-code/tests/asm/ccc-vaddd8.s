@@ -39,6 +39,10 @@ main:
 	adddcc  %g1, %g2, %g1
 	subd    %g1, %g2, %g1
 	subdcc  %g1, %g2, %g1
+	vaddd8 %g2, %g4, %g6
+        vsubd8 %g2, %g4, %g6
+        vumuld8 %g2, %g4, %g6
+        vsmuld8 %g2, %g4, %g6
 	st	%i0, [%fp+68]
 	st	%i1, [%fp+72]
 	st	%g0, [%fp-4]

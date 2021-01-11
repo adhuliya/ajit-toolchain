@@ -34,12 +34,18 @@ main:
 	save	%sp, -120, %sp
 	sdivdcc %g1, %g2, %g1
 # Following shift operations use register indirect and direct operands
-	slld    %g2, %g2, %g1
-	slld    %g1,  32, %g1
-	srld    %g2, %g2, %g1
-	srld    %g1,  32, %g1
-	srad    %g2, %g2, %g1
-	srad    %g1,  32, %g1
+#slld    %g2, %g2, %g1
+#slld    %g1,  32, %g1
+#srld    %g2, %g2, %g1
+#srld    %g1,  32, %g1
+#srad    %g2, %g2, %g1
+#srad    %g1,  32, %g1
+	slld    %g2, %g4, %l2
+	slld    %g2,   2, %l2
+	srld    %g2, %g4, %g6
+	srld    %g2,   2, %g6
+	srad    %g2, %g4, %l0
+	srad    %g2,   2, %l0
 	st	%i0, [%fp+68]
 	st	%i1, [%fp+72]
 	st	%g0, [%fp-4]

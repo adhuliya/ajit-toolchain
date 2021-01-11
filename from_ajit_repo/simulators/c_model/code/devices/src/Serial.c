@@ -313,13 +313,27 @@ void Serial_Control()
 					//  write to Tx register: The address is word aligned, but
 					//  Tx register is a byte.
 					//
-					switch(byte_mask)
+					if(byte_mask & 0x8)
 					{
-						case 8 : {Tx_buffer  = getSlice32(data_in, 31, 24); break;}
-						default:
-							fprintf(stderr,"Error: write to serial tx must be to a word-aligned byte\n");
-							break;
+						Tx_buffer  = getSlice32(data_in, 31, 24);
 					}
+					else if (byte_mask & 0x4)
+					{
+						Tx_buffer  = getSlice32(data_in, 23, 16); 
+					}
+					else if (byte_mask & 0x2)
+					{
+						Tx_buffer  = getSlice32(data_in, 15,8);
+					}
+					else if(byte_mask & 0x1)
+					{
+						Tx_buffer  = getSlice32(data_in, 7,0);
+					}
+					else
+					{
+						fprintf(stderr,"Error: write to serial tx with byte-mask=0?\n");
+					}
+
 					Tx_full = 1;
 					Tx_STATE = TX_TRANSMITTING;
 
@@ -353,12 +367,28 @@ void Serial_Control()
 			{				
 				// The address is always assumed to be word aligned.  So the 
 				// Rx buffer is placed at the most significant byte.
-				switch(byte_mask)
+				if(byte_mask & 0x8)
 				{
-					case 8 : {data_out = setSlice32(0, 31,24,(uint32_t)Rx_buffer); break;}
-					default:
-						fprintf(stderr,"Error: read is not a word-aligned byte for serial rx register\n");
+					data_out = setSlice32(0, 31,24,(uint32_t)Rx_buffer); 
 				}
+				else if(byte_mask & 0x4)
+				{
+					data_out = setSlice32(0, 23,16,(uint32_t)Rx_buffer); 
+				}
+				else if(byte_mask & 0x2)
+				{
+					data_out = setSlice32(0, 15,8,(uint32_t)Rx_buffer); 
+				}
+				else if(byte_mask & 0x1)
+				{
+					data_out = setSlice32(0, 7,0,(uint32_t)Rx_buffer); 
+				}
+				else
+				{
+					fprintf(stderr,"Error: read with byte-mask 0 for serial rx register?\n");
+					data_out = 0x0;
+				}
+
 				if(Rx_STATE==RX_DATA_RECEIVED) 
 				{
 					Rx_STATE = RX_ENABLED;
