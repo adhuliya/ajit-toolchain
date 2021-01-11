@@ -112,10 +112,11 @@ void register_IRC_pipes()
 	//signals coming from devices to the IRC
 	register_port("TIMER_to_IRC_INT",8,1);
 	register_port("SERIAL_to_IRC_INT",8,1);
-	
+	register_port("SDHC_to_IRC_INT",8,1);
+
 	set_pipe_is_read_from("TIMER_to_IRC_INT");
 	set_pipe_is_read_from("SERIAL_to_IRC_INT");
-	
+	set_pipe_is_read_from("SDHC_to_IRC_INT");
 
 	//pipes between system bus and this device 
 	//to read/write IRQ device registers
@@ -247,11 +248,13 @@ void IRC_Output()
 			//examine the interrupt sources
 			uint8_t TIMER_INT    = read_uint8("TIMER_to_IRC_INT");
 			uint8_t SERIAL_INT   = read_uint8("SERIAL_to_IRC_INT");
+			uint8_t SDHC_INT = read_uint8("SDHC_to_IRC_INT");
 			uint8_t EXTERNAL_INT = read_uint8("ENV_to_AJIT_irl");
 
 			//Find out the highest priority interrupt
 			if(TIMER_INT !=0) IRC_INT_OUT = TIMER_IRL;
 			else if(SERIAL_INT !=0) IRC_INT_OUT = SERIAL_IRL;
+			else if(SDHC_INT !=0) IRC_INT_OUT = SDHC_IRL;
 			else if(EXTERNAL_INT !=0) IRC_INT_OUT = EXTERNAL_INT;
 			else IRC_INT_OUT=0;
 
