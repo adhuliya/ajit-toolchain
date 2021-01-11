@@ -27,7 +27,7 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	uint64_t frame_data=0;
 	frame_data|=0UL<<47;//start bit
 	frame_data|=1UL<<46;//tx bit
-	frame_data|=cmd_index<<40;
+	frame_data|=(uint64_t)cmd_index<<40;
 	frame_data|=int_str->argument1<<8;
 	frame_data|=crc7<<1;
 	frame_data|=0UL<<0;
@@ -79,7 +79,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->tx_mode;
 	}
-		else if (addr == 0xffffff & ADDR_SDHC_REGISTER_COMMAND)
+		else if (addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
 		{
 		uint8_t size=4;
 		void *dest = &(str->command_reg);//cpu side regs are destination here
@@ -107,7 +107,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->present_state;			
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_HOST_CONTROL_1)
+		else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_1))
 		{
 		uint8_t size=1;
 		void *dest = &(str->host_ctrl1);//cpu side regs are destination here
@@ -115,7 +115,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->host_ctrl1;			
 		}
-		else if(addr == (0xffffff) & ADDR_SDHC_POWER_CONTROL)
+		else if(addr == (0xffffff & ADDR_SDHC_POWER_CONTROL))
 		{
 		uint8_t size=1;
 		void *dest = &(str->pwr_ctrl);//cpu side regs are destination here
@@ -123,7 +123,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->pwr_ctrl;						
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_BLOCK_GAP_CONTROL)
+		else if (addr == (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL))
 		{
 		uint8_t size=1;
 		void *dest = &(str->blk_gap_ctrl);//cpu side regs are destination here
@@ -131,7 +131,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->blk_gap_ctrl;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_WAKEUP_CONTROL)
+		else if (addr == (0xffffff & ADDR_SDHC_WAKEUP_CONTROL))
 		{
 		uint8_t size=1;
 		void *dest = &(str->wakeup_ctrl);//cpu side regs are destination here
@@ -139,7 +139,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->wakeup_ctrl;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_CLOCK_CONTROL)
+		else if (addr == (0xffffff & ADDR_SDHC_CLOCK_CONTROL))
 		{
 		uint8_t size=2;
 		void *dest = &(str->clk_ctrl);//cpu side regs are destination here
@@ -147,7 +147,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->clk_ctrl;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_TIMEOUT_CONTROL)
+		else if (addr == (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL))
 		{
 		uint8_t size=1;
 		void *dest = &(str->timeout_ctrl);//cpu side regs are destination here
@@ -155,7 +155,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->timeout_ctrl;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_SOFTWARE_RESET)
+		else if (addr == (0xffffff & ADDR_SDHC_SOFTWARE_RESET))
 		{
 		uint8_t size=1;
 		void *dest = &(str->sw_reset);//cpu side regs are destination here
@@ -163,7 +163,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->sw_reset;
 		}		
-		else if (addr == (0xffffff) & ADDR_SDHC_NORMAL_INTR_STATUS)
+		else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS))
 		{
 		uint8_t size=2;
 		void *dest = &(str->timeout_ctrl);//cpu side regs are destination here
@@ -171,7 +171,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->timeout_ctrl;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_ERROR_INTR_STATUS)
+		else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS))
 		{
 		uint8_t size=2;
 		void *dest = &(str->error_intr_status);//cpu side regs are destination here
@@ -179,7 +179,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->error_intr_status;
 		}	
-		else if (addr == (0xffffff) & ADDR_SDHC_NORMAL_INTR_STATUS_EN)
+		else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
 		{
 		uint8_t size=2;
 		void *dest = &(str->normal_intr_status_enable);//cpu side regs are destination here
@@ -187,7 +187,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->normal_intr_status_enable;
 		}	
-		else if (addr == (0xffffff) & ADDR_SDHC_ERROR_INTR_STATUS_EN)
+		else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS_EN))
 		{
 		uint8_t size=2;
 		void *dest = &(str->error_intr_status_enable);//cpu side regs are destination here
@@ -195,7 +195,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->error_intr_status_enable;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN)
+		else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN))
 		{
 		uint8_t size=2;
 		void *dest = &(str->normal_intr_signal_enable);//cpu side regs are destination here
@@ -203,7 +203,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->normal_intr_signal_enable;
 		}
-		else if (addr == (0xffffff) & ADDR_SDHC_ERROR_INTR_SIGNAL_EN)
+		else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN))
 		{
 		uint8_t size=2;
 		void *dest = &(str->error_intr_signal_enable);//cpu side regs are destination here
@@ -211,7 +211,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->error_intr_signal_enable;
 		}		
-		else if (addr == (0xffffff) & ADDR_SDHC_AUTO_CMD_ERROR_STATUS)
+		else if (addr == (0xffffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS))
 		{
 		uint8_t size=2;
 		void *dest = &(str->autoCMD_error_status);//cpu side regs are destination here
@@ -219,7 +219,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->autoCMD_error_status;
 		}		
-		else if (addr == (0xffffff) & ADDR_SDHC_HOST_CONTROL_2)
+		else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_2))
 		{
 		uint8_t size=2;
 		void *dest = &(str->host_ctrl2);//cpu side regs are destination here
@@ -227,7 +227,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->host_ctrl2;
 		}		
-		else if (addr == (0xffffff) & ADDR_SDHC_CAPS)
+		else if (addr == (0xffffff & ADDR_SDHC_CAPS))
 		{
 		uint8_t size=8;
 		void *dest = &(str->capabilities);//cpu side regs are destination here
@@ -235,7 +235,7 @@ void readSDHCRegister(uint32_t addr,
 		memcpy(dest,source,size);
 		data_out = (uint32_t)str->capabilities;
 		}	
-		else if (addr == (0xffffff) & ADDR_SDHC_MAX_CURRENT_CAPS)
+		else if (addr == (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS))
 		{
 		uint8_t size=8;
 		void *dest = &(str->max_current_cap);//cpu side regs are destination here
@@ -320,20 +320,25 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 	}
 	else if(addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
 	{
-		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		//stores cmd_index value before anything is updated
+		uint8_t cmd_index_init=getSlice16(int_str->command_reg,13,8);
+		uint8_t temp1 = getSlice16(data_in_masked,7,0);
 		str->command_reg[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,15,8);
+		uint8_t temp2 = getSlice16(data_in_masked,15,8);
 		str->command_reg[1] = temp2;
-		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->command_reg[2] = temp3;
-		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->command_reg[3] = temp4;
-		uint8_t size=4;		
+		uint8_t size=2;		
 		void *dest = &(int_str->command_reg);
 		void *source = &(str->command_reg);
 		memcpy(dest,source,size);
-		generateCommandForSDCard(int_str);//as soon as the upper-byte of the command
-		//register is written to, the SDHC is suppossed to send the command to card
+		//stores cmd_index value after register is updated
+		uint8_t cmd_index_post=getSlice16(int_str->command_reg,13,8);
+		//compares old cmd_index value i.e cmd_init with the updated one
+		//if there is a change in the upper byte of this register, 
+		//command is to be send to SD card, which happens by generateCommandForSDCard
+		if(cmd_index_init!=cmd_index_post)
+		{
+			generateCommandForSDCard(int_str);
+		}
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_RESPONSE0))
 	{
