@@ -132,6 +132,11 @@ To run and test a sample examples,
 The output of `./run_cmodel.sh` should have a line `Tests Successful`.
 If so, the system is ready to use.
 
+### Running (all) automated tests
+
+    cd ./tests;
+    ./test.sh;
+
 
 ## Important Files and Directories
 
