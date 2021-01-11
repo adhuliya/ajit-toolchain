@@ -112,8 +112,8 @@ uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 uint8_t SDHC_INT_OUT;
 
-struct CPUViewOfSDHCRegs cpu_reg_view;
-struct SDHCInternalMap internal_map;
+CPUViewOfSDHCRegs cpu_reg_view = {0};
+SDHCInternalMap internal_map = {0};
 
 // **** events **** //
 
@@ -137,8 +137,49 @@ void sdhc_initialize()
 
 	/* TODO 
 		- have the internal and external struct set to 0 
+			internal_map = { 0 };
+			cpu_reg_view = { 0 }; these doesn't work!
 		- write appropriate vales in HwInit register fields
 	*/
+	memset(&internal_map, 0, sizeof(internal_map));
+	memset(&cpu_reg_view, 0, sizeof(cpu_reg_view));
+
+	/* 
+	HwInit bits
+
+		- most of capabilities reg
+		- Max curent caps reg; 
+		  - [23-16]
+		  - [15-08]
+		  - [07-00]
+		- preset value regs; IGNORED
+		  - [15-14]
+		  - [10]
+		  - [09-00]
+		- shared bus cntrl reg; IGNORED
+		  - [14-08]
+		  - [05-04]
+		  - [02-00]
+		- host controller version register
+		  - [15-08]
+		  - [07-00] 
+	 */
+
+	setSlice64(internal_map.capabilities, 63, 0, 0x1000A8A); // hard code the reg
+	memcpy(&cpu_reg_view.capabilities, &internal_map.capabilities, 
+			sizeof(internal_map.capabilities));
+
+	setSlice64(internal_map.max_current_cap, 23, 16, 0);
+	setSlice64(internal_map.max_current_cap, 15, 8, 0);
+	setSlice64(internal_map.max_current_cap, 7, 0, 0);
+	memcpy(&cpu_reg_view.max_current_cap, &internal_map.max_current_cap, 
+			sizeof(internal_map.max_current_cap));
+
+	setSlice16(internal_map.host_controller_version, 15, 8, 1);
+	setSlice16(internal_map.host_controller_version, 7, 0, 0x02);  // SD Host specificcation 3.0
+	memcpy(&cpu_reg_view.host_controller_version, &internal_map.host_controller_version, 
+			sizeof(internal_map.host_controller_version));
+
 }
 
 void register_sdhc_pipes()
