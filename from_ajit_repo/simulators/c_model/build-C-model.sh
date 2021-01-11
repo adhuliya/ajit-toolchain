@@ -8,6 +8,10 @@ cd ahir_release;
 AHIR_DIR="$(pwd)";
 source ahir_bashrc;
 
+cd $SIM_DIR/code/half_precision_float/aa2clib;
+./buildClib.sh;
+cd -
+
 cd $SIM_DIR/code;
 
 export LD_LIBRARY_PATH=$SIM_DIR/code/debugger/doval/antlr3Cruntime/build/lib:$LD_LIBRARY_PATH
