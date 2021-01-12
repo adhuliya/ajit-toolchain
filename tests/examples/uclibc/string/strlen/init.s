@@ -1,4 +1,5 @@
 .global _start;
+.section .text.ajitstart
 _start:
 	set -4096, %sp
   set -4096, %fp

@@ -1,3 +1,4 @@
+.section .text.pagetablesetup
 .global page_table_setup
 page_table_setup:
    set PAGE_TABLE_BASE, %g1
