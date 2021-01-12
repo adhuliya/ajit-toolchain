@@ -8,6 +8,7 @@ _TEST_FILE="Ajit.TestCase";
 _TMP_FILE="tmp_test_dirs.out";
 # _TEST_STRING="Tests Successful."; # unused
 
+
 function AND() {
   # Executes the given command. Exits on error.
   # Takes three arguments
@@ -22,20 +23,6 @@ function AND() {
   fi
 }
 
-function OR() {
-  # Executes the given command. Continues on error.
-  # Takes three arguments
-  #  $1 Quoted Command
-  #  $2 Error msg (optional)
-  echo -e "\nOR: START:" "$1" "\n";
-  sh -c "$1";
-  local _EXITCODE=$?;
-  if [[ $_EXITCODE != "0" ]]; then
-    echo -e "OR: ERROR:($_EXITCODE): '$1'\n$2";
-  else
-    echo -e "OR:  DONE: $1";
-  fi
-}
 
 # STEP 1: Discover all the tests.
 AND "find -name $_TEST_FILE" > $_TMP_FILE;
@@ -57,9 +44,12 @@ while read x; do
     _FAILED=$((_FAILED+1));
     echo "FAILURE($_COUNT/$_TOTAL): $_DIR";
   fi
+  ./clean.sh &> /dev/null;
   cd $_CWD;
 done < $_TMP_FILE;
 
+
+# STEP 3: Print the summary.
 echo -e "\nTEST SUMMARY: $((_TOTAL - _FAILED)) passed. $_FAILED failed.\n";
 
 

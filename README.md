@@ -121,16 +121,14 @@ environment variables needed for Ajit development and use.
 
 To run and test a sample examples,
 
-    cd ./tests/examples/uclibc_examples/math_tests/sin;
+    cd ./tests/examples/misc/sin-model-test;
     ./build.sh;
     ./run_cmodel.sh;
-
-    cd ./tests/examples/uclibc_examples/math_tests/sqrt;
-    ./build.sh;
-    ./run_cmodel.sh;
+    ./clean.sh;
 
 The output of `./run_cmodel.sh` should have a line `Tests Successful`.
-If so, the system is ready to use.
+If so, the system is probably ready to use.
+To be on a safer side do run all the automated tests as given below.
 
 ### Running (all) automated tests
 

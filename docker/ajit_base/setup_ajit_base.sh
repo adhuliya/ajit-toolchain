@@ -5,7 +5,8 @@
 
 # Do the needed in one step.
 # REF: https://buildroot.org/downloads/manual/manual.html#requirement-mandatory
-# EXTRA packages: time, 
+# EXTRA packages for Ajit:
+#   For testing: time, parallel,
   apt-get update \
 && \
   apt-get -y install --no-install-recommends \
@@ -33,6 +34,7 @@
     scons \
     openjdk-8-jre-headless \
     time \
+    parallel \
 && \
   apt-get -y autoremove \
 && \

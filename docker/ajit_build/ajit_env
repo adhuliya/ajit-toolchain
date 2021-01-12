@@ -58,6 +58,7 @@ export PATH=$AJIT_CMODEL_BIN_DIR:$PATH;
 # for: TODO: Saurabh please comment here.
 export PATH=$AJIT_TOOLS_DIR/linker:$PATH;
 
+# points to the C system model executable
 export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";
 
 ################################################################

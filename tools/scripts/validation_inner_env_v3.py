@@ -16,6 +16,8 @@
 #	use -l to log the register writes
 # Modified by Madhav Desai
 #	for v3
+# Modified by Anshuman Dhuliya
+#	for v3
 
 
 import os
@@ -28,13 +30,11 @@ import subprocess
 
 ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
 validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
-#AD validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
-validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/bin'
 
 
 # give path of processor executable
 path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
-path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
+path_proc_exec_C = os.environ.get('AJIT_CMODEL')
 path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_vhdl_sim_testbench"
 
 

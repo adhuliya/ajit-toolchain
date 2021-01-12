@@ -17,6 +17,7 @@
 #
 # 
 # Modified by Madhav P. Desai
+# Modified by Anshuman Dhuliya
 
 
 
@@ -36,9 +37,8 @@ def reportError(err_message):
 def setGlobals(work_dir):
 
    global ajit_project_home
-   global ajit_C_home
    global validation_exec_location
-   global validation_C_exec_location
+   global validation_C_exec
 
    # get location of this script
    global script_pathname 
@@ -80,13 +80,11 @@ def setGlobals(work_dir):
 	reportError("environment variable AJIT_PROJECT_HOME not defined")
 	ret_val = 1
 
-   ajit_C_home = os.environ.get('AJIT_C_REF_MODEL')
-   if (ajit_C_home == None):
-        reportError("environment variable AJIT_C_REF_MODEL not defined")
+   validation_C_exec = os.environ.get("AJIT_CMODEL")
+   if (validation_C_exec == None):
+        reportError("environment variable AJIT_CMODEL not defined"
+                " to point to C reference model executable")
         ret_val = 1
-   #AD validation_C_exec_location = ajit_C_home + '/testbench/bin'
-   validation_C_exec_location = ajit_C_home + '/bin'
-
 
    # absolute path of file to store .vprj paths
    path_src_file_list_file_Aa = work_dir + "/src_file_list_file_Aa.txt"
@@ -114,7 +112,7 @@ def setGlobals(work_dir):
   
    # give path of processor executable
    path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
-   path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
+   path_proc_exec_C = validation_C_exec
    path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_simplified_vhdl_sim_testbench"
 
 

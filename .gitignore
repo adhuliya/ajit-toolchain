@@ -65,3 +65,8 @@ __pycache__/
 
 #misc
 /run
+
+# tests folder
+/tests/**/sparc-assembly
+/tests/**/sparc-obj
+
