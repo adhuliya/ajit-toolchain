@@ -112,8 +112,8 @@ uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 uint8_t SDHC_INT_OUT;
 
-CPUViewOfSDHCRegs cpu_reg_view = {0};
-SDHCInternalMap internal_map = {0};
+CPUViewOfSDHCRegs cpu_reg_view;// = {0};
+SDHCInternalMap internal_map;// = {0};
 
 // **** events **** //
 
@@ -498,7 +498,10 @@ void SDHC_Control()
 				// from this 32-bit read-only reg
 				// Members are updated as per the states of SDHC.
                           
-				// TODO 
+				//setting bits 16,17,18 of PSR indicated that card is inserted 
+				//and detected
+				cpu_reg_view.present_state[2]=0x7;
+				internal_map.present_state=0x0700;
 				switch (rwbar)
 				{
 				case WRITE:
@@ -630,6 +633,18 @@ void SDHC_Control()
 
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS):
 				// Rsvd, ROC & RW1C
+				switch (rwbar)
+				{
+				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				//after writing to regs, check if interrupts have to be enabled/disabled
+				checkNormalInterrupts(&internal_map);
+				break;
+				case READ: readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+				break;
+				default:
+					break;
+				}
+				
 			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
 				// Rsvd & RW1C
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):

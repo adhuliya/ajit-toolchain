@@ -237,6 +237,11 @@ struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 void readSDHCRegister(uint32_t addr,  
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
+//functions for checking whether an interrupt has to be generated
+//based on the data received 
+uint32_t checkNormalInterrupts(struct SDHCInternalMap *int_str);
+uint32_t checkErrorInterrupts(struct SDHCInternalMap *int_str);
+
 //Accumulates the parameters to be inserted in the 48 bit frame
 // and places them in the required manner
 void generateCommandForSDCard(struct SDHCInternalMap *int_str);

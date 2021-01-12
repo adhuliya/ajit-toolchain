@@ -16,6 +16,7 @@
 #include "pipeHandler.h"
 #include "Device_utils.h"
 #include "Sdhc.h"
+#include "sdhc.c"
 #include "sd.h"
 
 void generateCommandForSDCard(struct SDHCInternalMap *int_str)
@@ -32,6 +33,22 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	frame_data|=crc7<<1;
 	frame_data|=0UL<<0;
 	write_uint64("sdhc_to_sdcard_request",frame_data);
+}
+
+uint32_t checkNormalInterrupts(struct SDHCInternalMap *int_str)
+{	//checks card insertion interrupt
+	uint8_t intr_flag = (int_str->normal_intr_status >> 6) & 0x1;
+	if (intr_flag)
+	{
+		SDHC_INT_OUT=SDHC_IRL;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+	}
+	else if (intr_flag==0)
+	{
+		//de-asserts the interrupt that may have been generated earlier
+		SDHC_INT_OUT = 0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+	}	
 }
 
 void readSDHCRegister(uint32_t addr,
