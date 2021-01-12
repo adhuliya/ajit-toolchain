@@ -132,8 +132,10 @@ To be on a safer side do run all the automated tests as given below.
 
 ### Running (all) automated tests
 
-    cd ./tests;
-    ./test.sh;
+Run the following as given from the root of the repository,
+
+    cd ./tests; ./test.sh;
+    cd ..; cd ./tests/verfication; ./verify.sh;
 
 
 ## Important Files and Directories

@@ -1,0 +1,7 @@
+control transfer instructions which use the iunit,to figure out branch conditions..
+
+	- branch
+	- call
+	- jump
+	- traps
+	- rett

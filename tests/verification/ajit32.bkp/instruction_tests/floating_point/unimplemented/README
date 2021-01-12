@@ -1,0 +1,23 @@
+Floating point unimplemented quad-precision instructions
+========================================================
+faddq	=>	Add quad
+fcmpeq	=>	Compare quad and exception if unorderd
+fcmpq	=>	Compare quad
+fdivq	=>	Divide quad
+fmulq	=>	Multiply quad
+fdtoq	=>	Convert double to quad
+fdmulq	=>	Multiply double to quad
+fstoq	=>	Convert single to quad
+fitoq	=>	Convert integer to quad
+fqtod	=>	Convert quad to double
+fqtoi	=>	Convert quad to integer
+fqtos	=>	Convert quad to single
+fstoq	=>	Convert single to quad
+fsqrt	=>	Square root quad
+fsubq	=>	Subtract quad
+
+
+The above instructions are not implemented to the Ajit processor currently,
+if these instruction are executed will generate and fp_exception and
+unimplemented_FPop trap(on FSR.ftt).
+

@@ -1,0 +1,3 @@
+psr read/wr is privileged
+when s=0, it causes a privileged instruction trap
+if result(4:0) >=NWINDOWS, it causes an illegal instruction trap

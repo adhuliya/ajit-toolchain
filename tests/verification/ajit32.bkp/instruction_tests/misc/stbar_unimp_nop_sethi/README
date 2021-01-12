@@ -1,0 +1,3 @@
+STBAR works as a NOP.
+STBAR, NOP, SETHI do not cause any traps.
+UNIMP causes an illegal instruction trap

@@ -1,0 +1,8 @@
+SOURCES = RETT4.s
+
+
+RESULTS = 
+g1=0xbad
+g3=0xABC
+g4=0x000
+g5=0x1000

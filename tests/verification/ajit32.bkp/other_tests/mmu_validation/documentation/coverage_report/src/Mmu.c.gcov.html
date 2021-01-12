@@ -1,0 +1,1259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - libbash test coverage - src/Mmu.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - Mmu.c<span style="font-size: 80%;"> (source / <a href="Mmu.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">libbash test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">345</td>
+            <td class="headerCovTableEntry">345</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : //Mmu.c</a>
+<span class="lineNum">       2 </span>            : //
+<span class="lineNum">       3 </span>            : //
+<span class="lineNum">       4 </span>            : //For documentation see MmuBehavior.txt
+<span class="lineNum">       5 </span>            : //and Appendix H in Sparc V8 Reference Manual
+<span class="lineNum">       6 </span>            : //AUTHOR: Neha Karanjkar
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">       9 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      10 </span>            : #include &quot;Ancillary.h&quot;
+<span class="lineNum">      11 </span>            : #include &quot;MmuInterface.h&quot;
+<span class="lineNum">      12 </span>            : #include &quot;ASI_values.h&quot;
+<span class="lineNum">      13 </span>            : #include &quot;RequestTypeValues.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;TLB.h&quot;
+<span class="lineNum">      15 </span>            : #ifdef SW
+<span class="lineNum">      16 </span>            : #include&lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #endif
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : //Comment the following line during coverage analysis,
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : //Mmu Registers
+<span class="lineNum">      24 </span>            : uint32_t MmuControlRegister;
+<span class="lineNum">      25 </span>            : uint32_t MmuContextTablePointerRegister;
+<span class="lineNum">      26 </span>            : uint32_t MmuContextRegister;
+<span class="lineNum">      27 </span>            : uint32_t MmuFaultStatusRegister;
+<span class="lineNum">      28 </span>            : uint32_t MmuFaultAddressRegister;
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : //Helper functions for Mmu
+<span class="lineNum">      34 </span>            : void initializeMmuState();
+<span class="lineNum">      35 </span>            : uint8_t isValidMmuRequest(uint8_t asi);
+<span class="lineNum">      36 </span>            : uint8_t isCacheRelatedRequest(uint8_t asi);
+<span class="lineNum">      37 </span>            : uint8_t MmuEnabled();
+<span class="lineNum">      38 </span>            : uint32_t readMmuRegister(uint32_t addr);
+<span class="lineNum">      39 </span>            : void writeMmuRegister(uint32_t addr, uint8_t byte_mask, uint64_t data64);
+<span class="lineNum">      40 </span>            : uint8_t translateToPhysicalAddress(uint8_t asi, uint32_t virt_addr, uint8_t request_type, uint64_t* physical_addr, uint8_t* cacheable);
+<span class="lineNum">      41 </span>            : uint32_t readPageTableEntryFromMemory(uint64_t physical_addr);
+<span class="lineNum">      42 </span>            : void writePageTableEntryToMemory(uint32_t pte, uint64_t physical_addr);
+<span class="lineNum">      43 </span>            : uint8_t walkPageTables(uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, uint64_t* phy_addr_of_pte);
+<span class="lineNum">      44 </span>            : uint8_t checkPageFaults(uint8_t pte_found, uint32_t pte, uint8_t pte_level, uint8_t asi, uint32_t virt_addr, uint8_t request_type);
+<span class="lineNum">      45 </span>            : uint64_t constructPhysicalAddr(uint32_t pte, uint8_t pte_level, uint32_t virt_addr);
+<span class="lineNum">      46 </span>            : uint8_t isCacheable(uint32_t pte);
+<span class="lineNum">      47 </span>            : uint8_t flushPTEfromTLB(uint32_t TLB_index);
+<span class="lineNum">      48 </span>            : uint32_t getEmptyTLBLocation();
+<span class="lineNum">      49 </span>            : uint8_t  flushEntireTLB();
+<span class="lineNum">      50 </span>            : uint8_t performMmuProbe(uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE);
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : //Variables for keep count of Mmu events
+<span class="lineNum">      53 </span>            : uint32_t Num_Mmu_bypass_accesses;
+<span class="lineNum">      54 </span>            : uint32_t Num_Mmu_probe_requests;
+<span class="lineNum">      55 </span>            : uint32_t Num_Mmu_flush_requests;
+<span class="lineNum">      56 </span>            : uint32_t Num_Mmu_register_reads;
+<span class="lineNum">      57 </span>            : uint32_t Num_Mmu_register_writes;
+<span class="lineNum">      58 </span>            : uint32_t Num_Mmu_translated_accesses;
+<span class="lineNum">      59 </span>            : uint32_t Num_Mmu_TLB_hits;
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : 
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<span class="lineNum">      66 </span>            : //Mmu Behavior
+<span class="lineNum">      67 </span><span class="lineCov">       5050 : void Mmu()</span>
+<span class="lineNum">      68 </span>            : {
+<span class="lineNum">      69 </span>            :     //temporary variables:
+<span class="lineNum">      70 </span>            :     uint8_t asi;
+<span class="lineNum">      71 </span>            :     uint32_t addr;
+<span class="lineNum">      72 </span>            :     uint8_t request_type;
+<span class="lineNum">      73 </span>            :     uint8_t byte_mask;
+<span class="lineNum">      74 </span>            :     uint64_t data;
+<span class="lineNum">      75 </span>            :     uint8_t  mae;
+<span class="lineNum">      76 </span>            :     uint8_t cacheable;
+<span class="lineNum">      77 </span>            :     uint8_t  source; //0=&gt; request is from Icache
+<span class="lineNum">      78 </span>            :              //1=&gt; request is from Dcache
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :     
+<span class="lineNum">      81 </span>            :     //Initialize Mmu state variables
+<span class="lineNum">      82 </span><span class="lineCov">       5050 :     initializeMmuState();</span>
+<span class="lineNum">      83 </span>            :     
+<span class="lineNum">      84 </span>            :     
+<span class="lineNum">      85 </span>            :     //the main loop ..runs forever:
+<span class="lineNum">      86 </span>            :     while(1)
+<span class="lineNum">      87 </span>            :     {
+<span class="lineNum">      88 </span>            :         //reset temporary variables
+<span class="lineNum">      89 </span><span class="lineCov">  121500665 :         asi=0;</span>
+<span class="lineNum">      90 </span><span class="lineCov">  121500665 :         addr=0;</span>
+<span class="lineNum">      91 </span><span class="lineCov">  121500665 :         request_type=0;</span>
+<span class="lineNum">      92 </span><span class="lineCov">  121500665 :         byte_mask=0;</span>
+<span class="lineNum">      93 </span><span class="lineCov">  121500665 :         data=0;</span>
+<span class="lineNum">      94 </span><span class="lineCov">  121500665 :         mae=0;</span>
+<span class="lineNum">      95 </span><span class="lineCov">  121500665 :         cacheable=0;</span>
+<span class="lineNum">      96 </span><span class="lineCov">  121500665 :         source =0;</span>
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span>            :         
+<span class="lineNum">      99 </span>            :         //wait for a request from caches
+<span class="lineNum">     100 </span><span class="lineCov">  121500665 :         readCacheToMmuRequest(&amp;asi, &amp;addr, &amp;request_type, &amp;byte_mask, &amp;data, &amp;source);</span>
+<span class="lineNum">     101 </span>            :                 
+<span class="lineNum">     102 </span>            :         //Check if this is a valid request.
+<span class="lineNum">     103 </span><span class="lineCov">  121495615 :         if(!isValidMmuRequest(asi)) exit(1);</span>
+<span class="lineNum">     104 </span>            :     
+<span class="lineNum">     105 </span>            :         
+<span class="lineNum">     106 </span>            :         //-------------------------------------
+<span class="lineNum">     107 </span>            :         // CASE 1:
+<span class="lineNum">     108 </span>            :         //-------------------------------------
+<span class="lineNum">     109 </span>            :         //Check if this is a cache-related
+<span class="lineNum">     110 </span>            :         //request and should be ignored by the Mmu
+<span class="lineNum">     111 </span>            :         //LCOV_EXCL_START
+<span class="lineNum">     112 </span>            :         
+<span class="lineNum">     113 </span>            :         if(isCacheRelatedRequest(asi))
+<span class="lineNum">     114 </span>            :         {
+<span class="lineNum">     115 </span>            :             //send a dummy response
+<span class="lineNum">     116 </span>            :             mae=0;
+<span class="lineNum">     117 </span>            :             data=0;
+<span class="lineNum">     118 </span>            :             cacheable=0;
+<span class="lineNum">     119 </span>            :             sendMmuToCacheResponse(mae,data,cacheable,source);
+<span class="lineNum">     120 </span>            :         }
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span>            :         //LCOV_EXCL_STOP
+<span class="lineNum">     123 </span>            :     
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :         //-------------------------------------
+<span class="lineNum">     126 </span>            :         // CASE 2:
+<span class="lineNum">     127 </span>            :         //-------------------------------------
+<span class="lineNum">     128 </span>            :         //Check if this request should bypass the Mmu
+<span class="lineNum">     129 </span>            :         //and be forwarded untranslated to the system bus
+<span class="lineNum">     130 </span><span class="lineCov">  121495615 :         if(ASI_MMU_PASS_THROUGH(asi) </span>
+<span class="lineNum">     131 </span><span class="lineCov">  239944100 :             || (!MmuEnabled() &amp;&amp; //Mmu disabled and I/D request</span>
+<span class="lineNum">     132 </span><span class="lineCov">  119415820 :                 (  asi==ASI_USER_INSTRUCTION</span>
+<span class="lineNum">     133 </span><span class="lineCov">  119392342 :                  ||asi==ASI_SUPERVISOR_INSTRUCTION</span>
+<span class="lineNum">     134 </span><span class="lineCov">   34497969 :                  ||asi==ASI_USER_DATA</span>
+<span class="lineNum">     135 </span><span class="lineCov">   34497955 :                  ||asi==ASI_SUPERVISOR_DATA</span>
+<span class="lineNum">     136 </span>            :                  )
+<span class="lineNum">     137 </span>            :             ))
+<span class="lineNum">     138 </span>            :         {
+<span class="lineNum">     139 </span>            :             //forward the request to System bus
+<span class="lineNum">     140 </span><span class="lineCov">  120367597 :             sendMmuToMemoryRequest(request_type, addr, data, byte_mask);</span>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :             //wait for a response from Memory
+<span class="lineNum">     143 </span><span class="lineCov">  120367597 :             readMemoryToMmuResponse(&amp;data);</span>
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span>            :             //send the response back to the cache
+<span class="lineNum">     146 </span>            :             //that created this request
+<span class="lineNum">     147 </span><span class="lineCov">  120367597 :             mae=0;</span>
+<span class="lineNum">     148 </span><span class="lineCov">  120367597 :             cacheable=0;</span>
+<span class="lineNum">     149 </span><span class="lineCov">  120367597 :             sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineCov">  120367597 :             Num_Mmu_bypass_accesses+=1;</span>
+<span class="lineNum">     152 </span>            :         }
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span>            :         //-------------------------------------
+<span class="lineNum">     155 </span>            :         // CASE 3:
+<span class="lineNum">     156 </span>            :         //-------------------------------------
+<span class="lineNum">     157 </span>            :         //Check if this is an Mmu Flush/Probe request
+<span class="lineNum">     158 </span><span class="lineCov">    1128018 :         else if(asi==ASI_MMU_FLUSH_PROBE)</span>
+<span class="lineNum">     159 </span>            :         {
+<span class="lineNum">     160 </span>            :             //Probe operation
+<span class="lineNum">     161 </span><span class="lineCov">        895 :             if(request_type==REQUEST_TYPE_READ)</span>
+<span class="lineNum">     162 </span>            :             {
+<span class="lineNum">     163 </span>            :                 #ifdef DEBUG
+<span class="lineNum">     164 </span>            :                 printf(&quot;\nMMU: Received PROBE request : asi=0x%x, addr=0x%x, request_type=0x%x, byte_mask=0x%x, data=0x%lx, source=0x%x&quot;,asi,addr, request_type, byte_mask,data,source);
+<span class="lineNum">     165 </span>            :                 #endif
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :                 //Only type 4 probe (entire) is supported (Ref Sparc V8 manual pg 250).
+<span class="lineNum">     169 </span>            :                 //On a probe operation, the TLB is first searched to find a 
+<span class="lineNum">     170 </span>            :                 //page table entry (PTE) for a given address. If it is not found in the 
+<span class="lineNum">     171 </span>            :                 //TLB, the page tables in memory are walked until the entry is found
+<span class="lineNum">     172 </span>            :                 //or an error occurs.
+<span class="lineNum">     173 </span>            :                 
+<span class="lineNum">     174 </span>            :                 //If an error occurs :
+<span class="lineNum">     175 </span>            :                 //- the FSR and FAR registers are updated
+<span class="lineNum">     176 </span>            :                 //- a fault is not sent to the cpu, and 
+<span class="lineNum">     177 </span>            :                 //a 0 is returned instead of PTE.
+<span class="lineNum">     178 </span>            :                 //If no error occurs, a PTE is returned.
+<span class="lineNum">     179 </span><span class="lineCov">        395 :                 uint8_t probe_success=0;</span>
+<span class="lineNum">     180 </span><span class="lineCov">        395 :                 uint32_t pte=0;</span>
+<span class="lineNum">     181 </span><span class="lineCov">        395 :                 probe_success = performMmuProbe(addr, asi, request_type, &amp;pte);</span>
+<span class="lineNum">     182 </span><span class="lineCov">        395 :                 if(probe_success)</span>
+<span class="lineNum">     183 </span>            :                 {
+<span class="lineNum">     184 </span><span class="lineCov">        388 :                     mae=0;</span>
+<span class="lineNum">     185 </span><span class="lineCov">        388 :                     cacheable=0;</span>
+<span class="lineNum">     186 </span><span class="lineCov">        388 :                     data=pte;</span>
+<span class="lineNum">     187 </span><span class="lineCov">        388 :                     if(getBit32(addr,2)==0) data = data&lt;&lt;32;</span>
+<span class="lineNum">     188 </span><span class="lineCov">        388 :                     sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     189 </span>            :                 }
+<span class="lineNum">     190 </span>            :                 else
+<span class="lineNum">     191 </span>            :                 {
+<span class="lineNum">     192 </span><span class="lineCov">          7 :                     data=0;</span>
+<span class="lineNum">     193 </span><span class="lineCov">          7 :                     mae=0;</span>
+<span class="lineNum">     194 </span><span class="lineCov">          7 :                     cacheable=0;</span>
+<span class="lineNum">     195 </span><span class="lineCov">          7 :                     sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     196 </span>            :                 }
+<span class="lineNum">     197 </span><span class="lineCov">        395 :                 Num_Mmu_probe_requests+=1;</span>
+<span class="lineNum">     198 </span>            :             }
+<span class="lineNum">     199 </span>            :             
+<span class="lineNum">     200 </span>            :             
+<span class="lineNum">     201 </span>            :             //Flush operation
+<span class="lineNum">     202 </span><span class="lineCov">        500 :             else if(request_type==REQUEST_TYPE_WRITE)</span>
+<span class="lineNum">     203 </span>            :             {
+<span class="lineNum">     204 </span>            :                 //Flush operation is supported only at the
+<span class="lineNum">     205 </span>            :                 //coarest level. The entire TLB is flushed
+<span class="lineNum">     206 </span>            :                 //on any flush request.
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            :                 #ifdef DEBUG
+<span class="lineNum">     209 </span>            :                 printf(&quot;\nMMU: Received FLUSH request : asi=0x%x, addr=0x%x, request_type=0x%x, byte_mask=0x%x, data=0x%lx, source=0x%x&quot;,asi,addr, request_type, byte_mask,data,source);
+<span class="lineNum">     210 </span>            :                 #endif
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span><span class="lineCov">        500 :                 uint8_t success = flushEntireTLB();</span>
+<span class="lineNum">     213 </span><span class="lineCov">        500 :                 if(success) mae =0 ; else mae=1;</span>
+<span class="lineNum">     214 </span>            :                 //send response to cpu
+<span class="lineNum">     215 </span><span class="lineCov">        500 :                 data=0; cacheable=0;</span>
+<span class="lineNum">     216 </span><span class="lineCov">        500 :                 sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     217 </span><span class="lineCov">        500 :                 Num_Mmu_flush_requests+=1;</span>
+<span class="lineNum">     218 </span>            :             }
+<span class="lineNum">     219 </span>            :             //LCOV_EXCL_START
+<span class="lineNum">     220 </span>            :         
+<span class="lineNum">     221 </span>            :             else
+<span class="lineNum">     222 </span>            :             {
+<span class="lineNum">     223 </span>            :                 #ifdef SW
+<span class="lineNum">     224 </span>            :                 fprintf(stderr,&quot;\nMMU: ERROR. asi=0x%x : Mmu flush/probe request\
+<span class="lineNum">     225 </span>            :                         with invalid request type = 0x%x&quot;,asi,request_type);
+<span class="lineNum">     226 </span>            :                 exit(1);
+<span class="lineNum">     227 </span>            :                 #endif
+<span class="lineNum">     228 </span>            :             }
+<span class="lineNum">     229 </span>            :         
+<span class="lineNum">     230 </span>            :             //LCOV_EXCL_STOP
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span>            :         
+<span class="lineNum">     233 </span>            :         }
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :         //-------------------------------------
+<span class="lineNum">     236 </span>            :         // CASE 4:
+<span class="lineNum">     237 </span>            :         //-------------------------------------
+<span class="lineNum">     238 </span>            :         //Check if this is an Mmu Register read/write request
+<span class="lineNum">     239 </span><span class="lineCov">    1127123 :         else if(asi==ASI_MMU_REGISTER)</span>
+<span class="lineNum">     240 </span>            :         {
+<span class="lineNum">     241 </span><span class="lineCov">      27059 :             if(request_type==REQUEST_TYPE_READ)</span>
+<span class="lineNum">     242 </span>            :             {
+<span class="lineNum">     243 </span><span class="lineCov">      10505 :                 data=readMmuRegister(addr);</span>
+<span class="lineNum">     244 </span>            :                 //send the value on bits 63:32 of the 64 bit data-bus
+<span class="lineNum">     245 </span>            :                 //because all mmu-register addresses are even-addresses.
+<span class="lineNum">     246 </span><span class="lineCov">      10505 :                 data=data&lt;&lt;32; </span>
+<span class="lineNum">     247 </span>            :                 //send response to cpu
+<span class="lineNum">     248 </span><span class="lineCov">      10505 :                 mae=0;  cacheable=0;</span>
+<span class="lineNum">     249 </span><span class="lineCov">      10505 :                 sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     250 </span><span class="lineCov">      10505 :                 Num_Mmu_register_reads+=1;</span>
+<span class="lineNum">     251 </span>            :                 
+<span class="lineNum">     252 </span>            :             
+<span class="lineNum">     253 </span>            :             }
+<span class="lineNum">     254 </span><span class="lineCov">      16554 :             else if(request_type==REQUEST_TYPE_WRITE)</span>
+<span class="lineNum">     255 </span>            :             {
+<span class="lineNum">     256 </span><span class="lineCov">      16554 :                 writeMmuRegister(addr,byte_mask,data);</span>
+<span class="lineNum">     257 </span>            :                 //send response to cpu
+<span class="lineNum">     258 </span><span class="lineCov">      16554 :                 mae=0; data=0;  cacheable=0;</span>
+<span class="lineNum">     259 </span><span class="lineCov">      16554 :                 sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     260 </span><span class="lineCov">      16554 :                 Num_Mmu_register_writes+=1;</span>
+<span class="lineNum">     261 </span>            :             }
+<span class="lineNum">     262 </span>            :         }
+<span class="lineNum">     263 </span>            :         
+<span class="lineNum">     264 </span>            :         //-------------------------------------
+<span class="lineNum">     265 </span>            :         // CASE 5:
+<span class="lineNum">     266 </span>            :         //-------------------------------------
+<span class="lineNum">     267 </span>            :         //Check if this is an Mmu Diagnostic request
+<span class="lineNum">     268 </span><span class="lineCov">    1100064 :         else if(  asi==ASI_MMU_DIAGNOSTIC_I</span>
+<span class="lineNum">     269 </span><span class="lineCov">    1100064 :             ||asi==ASI_MMU_DIAGNOSTIC_I_D</span>
+<span class="lineNum">     270 </span><span class="lineCov">    1100064 :             ||asi==ASI_MMU_DIAGNOSTIC_IO)</span>
+<span class="lineNum">     271 </span>            :         {
+<span class="lineNum">     272 </span>            :         //LCOV_EXCL_START
+<span class="lineNum">     273 </span>            :         
+<span class="lineNum">     274 </span>            :         #ifdef SW
+<span class="lineNum">     275 </span>            :         fprintf(stderr,&quot;\nMMU: ERROR MMU-DIAGNOSTIC OPERATIONS with asi=0x%x not implemented YET &quot;,asi);
+<span class="lineNum">     276 </span>            :         exit(1);
+<span class="lineNum">     277 </span>            :         #endif
+<span class="lineNum">     278 </span>            :         
+<span class="lineNum">     279 </span>            :           //LCOV_EXCL_STOP
+<span class="lineNum">     280 </span>            :         }
+<span class="lineNum">     281 </span>            :         else
+<span class="lineNum">     282 </span>            :         //-------------------------------------
+<span class="lineNum">     283 </span>            :         // CASE 6:
+<span class="lineNum">     284 </span>            :         //-------------------------------------
+<span class="lineNum">     285 </span>            :         //This is an instruction/data access.
+<span class="lineNum">     286 </span>            :         //Perform virtual to physical translation!
+<span class="lineNum">     287 </span>            :         {
+<span class="lineNum">     288 </span><span class="lineCov">    1100064 :             uint64_t physical_addr=0;</span>
+<span class="lineNum">     289 </span><span class="lineCov">    1100064 :             uint8_t translation_success=0;</span>
+<span class="lineNum">     290 </span>            :             
+<span class="lineNum">     291 </span>            :             //perform translation of virtual
+<span class="lineNum">     292 </span>            :             //address to physical address.
+<span class="lineNum">     293 </span><span class="lineCov">    1100064 :             translation_success = translateToPhysicalAddress(asi, addr, request_type, &amp;physical_addr, &amp;cacheable);</span>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span>            :             
+<span class="lineNum">     296 </span>            :             //If translation was successful,
+<span class="lineNum">     297 </span>            :             //perform the memory access
+<span class="lineNum">     298 </span>            :             //and send response to cpu
+<span class="lineNum">     299 </span>            :             //If translation was unsuccessful,
+<span class="lineNum">     300 </span>            :             //the FAR and FSR registers have been updated.
+<span class="lineNum">     301 </span>            :             //Send error signal to the cpu.
+<span class="lineNum">     302 </span><span class="lineCov">    1100064 :             if(translation_success)</span>
+<span class="lineNum">     303 </span>            :             {
+<span class="lineNum">     304 </span>            :                 //forward the request to System bus
+<span class="lineNum">     305 </span><span class="lineCov">    1095985 :                 sendMmuToMemoryRequest(request_type, physical_addr, data, byte_mask);</span>
+<span class="lineNum">     306 </span>            :                 //wait for a response from Memory
+<span class="lineNum">     307 </span><span class="lineCov">    1095985 :                 readMemoryToMmuResponse(&amp;data);</span>
+<span class="lineNum">     308 </span>            :                 //send the response back to the cache
+<span class="lineNum">     309 </span>            :                 //that created this request
+<span class="lineNum">     310 </span><span class="lineCov">    1095985 :                 mae=0;</span>
+<span class="lineNum">     311 </span><span class="lineCov">    1095985 :                 sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     312 </span><span class="lineCov">    1095985 :                 Num_Mmu_translated_accesses+=1;</span>
+<span class="lineNum">     313 </span>            :             }
+<span class="lineNum">     314 </span>            :             else
+<span class="lineNum">     315 </span>            :             {
+<span class="lineNum">     316 </span>            :                 //A fault has occured.
+<span class="lineNum">     317 </span>            :                 //The FSR and FAR MMU registers
+<span class="lineNum">     318 </span>            :                 //have been updated by the translation routine.
+<span class="lineNum">     319 </span>            :                 //send error signal to the cpu, depending on the
+<span class="lineNum">     320 </span>            :                 //value of NF (no fault) bit in the Control register
+<span class="lineNum">     321 </span><span class="lineCov">       4079 :                 uint8_t NF = getBit32(MmuControlRegister,1);</span>
+<span class="lineNum">     322 </span>            :                 
+<span class="lineNum">     323 </span><span class="lineCov">       4079 :                 if(NF==0 || asi==0x09)</span>
+<span class="lineNum">     324 </span>            :                 {
+<span class="lineNum">     325 </span>            :                     //send error signal to processor
+<span class="lineNum">     326 </span><span class="lineCov">       3460 :                     mae=1;</span>
+<span class="lineNum">     327 </span><span class="lineCov">       3460 :                     data=0;</span>
+<span class="lineNum">     328 </span><span class="lineCov">       3460 :                     cacheable=0;</span>
+<span class="lineNum">     329 </span><span class="lineCov">       3460 :                     sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     330 </span>            :                     
+<span class="lineNum">     331 </span>            :                     #ifdef DEBUG
+<span class="lineNum">     332 </span>            :                     printf(&quot;\n MMU : Sending mae=1 to the cpu due to translation error for addr=0x%x&quot;,addr);
+<span class="lineNum">     333 </span>            :                     #endif
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :                 }
+<span class="lineNum">     336 </span>            :                 else
+<span class="lineNum">     337 </span>            :                 {
+<span class="lineNum">     338 </span>            :                     #ifdef DEBUG
+<span class="lineNum">     339 </span>            :                     printf(&quot;\n MMU : Not sending mae=1 to the cpu due to translation error for addr=0x%x&quot;,addr);
+<span class="lineNum">     340 </span>            :                     #endif
+<span class="lineNum">     341 </span><span class="lineCov">        619 :                     mae=0;</span>
+<span class="lineNum">     342 </span><span class="lineCov">        619 :                     data=0;</span>
+<span class="lineNum">     343 </span><span class="lineCov">        619 :                     cacheable=0;</span>
+<span class="lineNum">     344 </span><span class="lineCov">        619 :                     sendMmuToCacheResponse(mae,data,cacheable,source);</span>
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span>            :                 }
+<span class="lineNum">     347 </span>            : 
+<span class="lineNum">     348 </span>            :             }
+<span class="lineNum">     349 </span>            : 
+<span class="lineNum">     350 </span>            :         }
+<span class="lineNum">     351 </span><span class="lineCov">  121495615 :     }</span>
+<span class="lineNum">     352 </span>            : }
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span>            : 
+<span class="lineNum">     356 </span>            : //Mmu Probe operation
+<span class="lineNum">     357 </span>            : //Only type 4 probe (entire) is supported (Ref Sparc V8 manual pg 250).
+<span class="lineNum">     358 </span>            : //On a probe operation, the TLB is first searched to find a 
+<span class="lineNum">     359 </span>            : //page table entry (PTE) for a given address and current context. If it is not found in the 
+<span class="lineNum">     360 </span>            : //TLB, the page tables in memory are walked until the entry is found
+<span class="lineNum">     361 </span>            : //or an error occurs.
+<span class="lineNum">     362 </span>            : //If an error occurs :
+<span class="lineNum">     363 </span>            : //- the FSR and FAR registers are updated
+<span class="lineNum">     364 </span>            : //- a fault is *not* sent to the cpu, and 
+<a name="365"><span class="lineNum">     365 </span>            : //a 0 is returned instead of PTE.</a>
+<span class="lineNum">     366 </span>            : //If no error occurs, a PTE is returned.
+<span class="lineNum">     367 </span><span class="lineCov">        395 : uint8_t performMmuProbe(uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE)</span>
+<span class="lineNum">     368 </span>            : {
+<span class="lineNum">     369 </span><span class="lineCov">        395 :     uint8_t    TLB_hit=0;       //whether PTE was found in TLB</span>
+<span class="lineNum">     370 </span>            :     uint32_t   TLB_index;       //If a valid PTE was found in TLB, this variable
+<span class="lineNum">     371 </span>            :                     //stores the index of the TLB entry
+<span class="lineNum">     372 </span><span class="lineCov">        395 :     uint8_t    pte_found=0;     //whether PTE was found after walking page tables in memory</span>
+<span class="lineNum">     373 </span><span class="lineCov">        395 :     uint32_t   pte=0;       //the value of PTE read from TLB or fetched from page tables in memory</span>
+<span class="lineNum">     374 </span><span class="lineCov">        395 :     uint8_t    pte_level=0;     //the level of PTE read from TLB or fetched from memory</span>
+<span class="lineNum">     375 </span><span class="lineCov">        395 :     uint64_t   phy_addr_of_pte=0;   //the physical address where this PTE was found in memory</span>
+<span class="lineNum">     376 </span><span class="lineCov">        395 :     uint32_t   va_tag=getSlice32(virt_addr, 31,12);</span>
+<span class="lineNum">     377 </span>            : 
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span>            :     if(TLB_ENABLED)
+<span class="lineNum">     380 </span>            :     {
+<span class="lineNum">     381 </span>            :         //Check if the access HITS in the TLB,
+<span class="lineNum">     382 </span>            :         //If HIT, get  index of the 
+<span class="lineNum">     383 </span>            :         //corresponding page table entry in TLB
+<span class="lineNum">     384 </span><span class="lineCov">        395 :         TLB_hit = isTLBHit(va_tag, MmuContextRegister, &amp;TLB_index);</span>
+<span class="lineNum">     385 </span><span class="lineCov">        395 :         if(TLB_hit)</span>
+<span class="lineNum">     386 </span>            :         {
+<span class="lineNum">     387 </span>            :             //get the pte
+<span class="lineNum">     388 </span><span class="lineCov">        187 :             pte=TLB_entries[TLB_index].pte;</span>
+<span class="lineNum">     389 </span><span class="lineCov">        187 :             pte_level=TLB_entries[TLB_index].pte_level;</span>
+<span class="lineNum">     390 </span><span class="lineCov">        187 :             pte_found=1;</span>
+<span class="lineNum">     391 </span><span class="lineCov">        187 :             *PTE=pte;</span>
+<span class="lineNum">     392 </span><span class="lineCov">        187 :             return 1;</span>
+<span class="lineNum">     393 </span>            : 
+<span class="lineNum">     394 </span>            :         }
+<span class="lineNum">     395 </span>            :     }
+<span class="lineNum">     396 </span><span class="lineCov">        208 :     if(!TLB_ENABLED || !TLB_hit)</span>
+<span class="lineNum">     397 </span>            :     {
+<span class="lineNum">     398 </span>            :         //a matching PTE was not found.
+<span class="lineNum">     399 </span>            :         //Need to walk the page tables in memory
+<span class="lineNum">     400 </span>            :         //to search for a valid PTE
+<span class="lineNum">     401 </span><span class="lineCov">        208 :         pte_found = walkPageTables(virt_addr, &amp;pte, &amp;pte_level, &amp;phy_addr_of_pte);</span>
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            :         //check if PTE is valid, else update FSR and FAR registers
+<span class="lineNum">     404 </span><span class="lineCov">        208 :         if(!pte_found)</span>
+<span class="lineNum">     405 </span>            :         {
+<span class="lineNum">     406 </span><span class="lineCov">          7 :             checkPageFaults(pte_found, pte, pte_level, asi, virt_addr, request_type); //update the FSR and FAR</span>
+<span class="lineNum">     407 </span><span class="lineCov">          7 :             *PTE=0;</span>
+<span class="lineNum">     408 </span><span class="lineCov">          7 :             return 0;</span>
+<span class="lineNum">     409 </span>            :         }
+<span class="lineNum">     410 </span>            :         else
+<span class="lineNum">     411 </span>            :         {
+<span class="lineNum">     412 </span><span class="lineCov">        201 :             *PTE=pte;</span>
+<span class="lineNum">     413 </span>            :         }
+<span class="lineNum">     414 </span>            : 
+<span class="lineNum">     415 </span>            :     }
+<span class="lineNum">     416 </span><span class="lineCov">        201 :     return 1;</span>
+<span class="lineNum">     417 </span>            : }
+<span class="lineNum">     418 </span>            : 
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span>            : 
+<span class="lineNum">     422 </span>            : 
+<span class="lineNum">     423 </span>            : 
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span>            : //translate a virtual address to physical address
+<span class="lineNum">     426 </span>            : //
+<span class="lineNum">     427 </span>            : //if translation succeeds :
+<span class="lineNum">     428 </span>            : //
+<span class="lineNum">     429 </span>            : //  if the modified/referenced bits for the PTE
+<span class="lineNum">     430 </span>            : //  have to be changed, write the updated PTE back into memory
+<span class="lineNum">     431 </span>            : //  
+<span class="lineNum">     432 </span>            : //  set physical_addr = the translated 64-bit physical address
+<span class="lineNum">     433 </span>            : //  
+<span class="lineNum">     434 </span>            : //  return cacheable = 1 or 0 to the cache 
+<span class="lineNum">     435 </span>            : //  indicating whether this instr/data should be kept in cache
+<span class="lineNum">     436 </span>            : //  depending on the PTE entry for this page.
+<span class="lineNum">     437 </span>            : //
+<span class="lineNum">     438 </span>            : //  return 1
+<span class="lineNum">     439 </span>            : //
+<span class="lineNum">     440 </span>            : //if translation fails (a fault has occured) :
+<a name="441"><span class="lineNum">     441 </span>            : //  update FSR and FAR registers to indicate fault information</a>
+<span class="lineNum">     442 </span>            : //  return 0
+<span class="lineNum">     443 </span><span class="lineCov">    1100064 : uint8_t translateToPhysicalAddress(uint8_t asi, uint32_t virt_addr, uint8_t request_type, uint64_t* physical_addr, uint8_t* cacheable)</span>
+<span class="lineNum">     444 </span>            : {
+<span class="lineNum">     445 </span>            :     
+<span class="lineNum">     446 </span><span class="lineCov">    1100064 :     uint8_t    TLB_hit=0;       //whether PTE was found in TLB</span>
+<span class="lineNum">     447 </span>            :     uint32_t   TLB_index;       //If a valid PTE was found in TLB, this variable
+<span class="lineNum">     448 </span><span class="lineCov">    1100064 :     uint8_t    pte_found=0;     //whether PTE was found after walking page tables in memory</span>
+<span class="lineNum">     449 </span><span class="lineCov">    1100064 :     uint32_t   pte=0;       //the value of PTE read from TLB or fetched from page tables in memory</span>
+<span class="lineNum">     450 </span><span class="lineCov">    1100064 :     uint8_t    pte_level=0;     //the level of PTE read from TLB or fetched from memory</span>
+<span class="lineNum">     451 </span><span class="lineCov">    1100064 :     uint64_t   phy_addr_of_pte=0;   //the physical address where this PTE was found in memory</span>
+<span class="lineNum">     452 </span><span class="lineCov">    1100064 :     uint32_t   va_tag=getSlice32(virt_addr, 31,12); //virtual addr tag</span>
+<span class="lineNum">     453 </span>            :     uint8_t    access_allowed;
+<span class="lineNum">     454 </span>            :     
+<span class="lineNum">     455 </span>            :     if(TLB_ENABLED)
+<span class="lineNum">     456 </span>            :     {
+<span class="lineNum">     457 </span>            :         //Check if the access HITS in the TLB,
+<span class="lineNum">     458 </span>            :         //If HIT, get  index of the 
+<span class="lineNum">     459 </span>            :         //corresponding page table entry in TLB
+<span class="lineNum">     460 </span><span class="lineCov">    1100064 :         TLB_hit = isTLBHit(va_tag, MmuContextRegister, &amp;TLB_index);</span>
+<span class="lineNum">     461 </span><span class="lineCov">    1100064 :         if(TLB_hit)</span>
+<span class="lineNum">     462 </span>            :         {
+<span class="lineNum">     463 </span>            :             //get the pte
+<span class="lineNum">     464 </span><span class="lineCov">    1085415 :             Num_Mmu_TLB_hits+=1;</span>
+<span class="lineNum">     465 </span><span class="lineCov">    1085415 :             pte_found=1;</span>
+<span class="lineNum">     466 </span><span class="lineCov">    1085415 :             pte=TLB_entries[TLB_index].pte;</span>
+<span class="lineNum">     467 </span><span class="lineCov">    1085415 :             pte_level=TLB_entries[TLB_index].pte_level;</span>
+<span class="lineNum">     468 </span>            : 
+<span class="lineNum">     469 </span>            : 
+<span class="lineNum">     470 </span>            :             
+<span class="lineNum">     471 </span>            :             //------------------------------
+<span class="lineNum">     472 </span>            :             //Uncomment the following code
+<span class="lineNum">     473 </span>            :             //for debugging of TLB :
+<span class="lineNum">     474 </span>            :             //Check if the PTE found is same 
+<span class="lineNum">     475 </span>            :             //as the one present in memory
+<span class="lineNum">     476 </span>            :             /*
+<span class="lineNum">     477 </span>            :             #ifdef SW
+<span class="lineNum">     478 </span>            :             //------------------------------
+<span class="lineNum">     479 </span>            :             {
+<span class="lineNum">     480 </span>            :                 uint8_t pte_found_in_mem =0;
+<span class="lineNum">     481 </span>            :                 uint32_t pte_in_mem=0;
+<span class="lineNum">     482 </span>            :                 uint8_t pte_level_in_mem=0;
+<span class="lineNum">     483 </span>            :                 uint64_t phy_addr_of_pte_in_mem=0;
+<span class="lineNum">     484 </span>            :                 pte_found_in_mem = walkPageTables(virt_addr, &amp;pte_in_mem, &amp;pte_level_in_mem, &amp;phy_addr_of_pte_in_mem);
+<span class="lineNum">     485 </span>            :                 if(!pte_found_in_mem)
+<span class="lineNum">     486 </span>            :                     printf(&quot; ERROR : PTE present in TLB but not found in page tables in memory for asi=0x%x, address=0x%x, request_type=0x%x&quot;,asi,virt_addr,request_type);
+<span class="lineNum">     487 </span>            :                 else if(pte!=pte_in_mem)
+<span class="lineNum">     488 </span>            :                 {
+<span class="lineNum">     489 </span>            :                     printf(&quot; ERROR : PTE present in TLB not same as one in memory for asi=0x%x, address=0x%x, request_type=0x%x&quot;,asi,virt_addr,request_type);
+<span class="lineNum">     490 </span>            :                     printf(&quot;         PTE in TLB = 0x%x, PTE in memory = 0x%x&quot;, pte, pte_in_mem);
+<span class="lineNum">     491 </span>            :                 }
+<span class="lineNum">     492 </span>            :             }
+<span class="lineNum">     493 </span>            :             #endif
+<span class="lineNum">     494 </span>            :             */
+<span class="lineNum">     495 </span>            :         }
+<span class="lineNum">     496 </span>            :     }
+<span class="lineNum">     497 </span>            : 
+<span class="lineNum">     498 </span><span class="lineCov">    1100064 :     if(!TLB_ENABLED || !TLB_hit)</span>
+<span class="lineNum">     499 </span>            :     {
+<span class="lineNum">     500 </span>            :     
+<span class="lineNum">     501 </span>            :         //We need to walk the page tables in memory
+<span class="lineNum">     502 </span>            :         //to search for a valid PTE
+<span class="lineNum">     503 </span><span class="lineCov">      14649 :         pte_found = walkPageTables(virt_addr, &amp;pte, &amp;pte_level, &amp;phy_addr_of_pte);</span>
+<span class="lineNum">     504 </span>            :     }
+<span class="lineNum">     505 </span>            : 
+<span class="lineNum">     506 </span>            :     
+<span class="lineNum">     507 </span>            :     //We searched for a PTE.
+<span class="lineNum">     508 </span>            :     //At this point, if a PTE is not found, or PTE is found but 
+<span class="lineNum">     509 </span>            :     //permissions don't match, update FSR, FAR and return early.
+<span class="lineNum">     510 </span><span class="lineCov">    1100064 :     access_allowed = checkPageFaults(pte_found, pte, pte_level, asi, virt_addr, request_type);</span>
+<span class="lineNum">     511 </span><span class="lineCov">    1100064 :     if(!pte_found || !access_allowed) return 0;</span>
+<span class="lineNum">     512 </span>            : 
+<span class="lineNum">     513 </span>            : 
+<span class="lineNum">     514 </span>            :     //OK. a PTE has been found, and we have access permissions.
+<span class="lineNum">     515 </span>            :     //store the PTE in the TLB if required.
+<span class="lineNum">     516 </span><span class="lineCov">    1095985 :     if(TLB_ENABLED &amp;&amp; !TLB_hit)</span>
+<span class="lineNum">     517 </span>            :     {
+<span class="lineNum">     518 </span>            :         
+<span class="lineNum">     519 </span><span class="lineCov">      10570 :         TLB_index = getEmptyTLBLocation();</span>
+<span class="lineNum">     520 </span><span class="lineCov">      10570 :         writeTLBentry(TLB_index, va_tag, MmuContextRegister, pte, pte_level);</span>
+<span class="lineNum">     521 </span><span class="lineCov">      10570 :         TLB_hit=1;</span>
+<span class="lineNum">     522 </span>            : 
+<span class="lineNum">     523 </span>            :     }
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span>            :     //Obtain phy address from virtual address and PTE 
+<span class="lineNum">     526 </span><span class="lineCov">    1095985 :     *physical_addr = constructPhysicalAddr(pte, pte_level, virt_addr);</span>
+<span class="lineNum">     527 </span>            :     //check if this access is cacheable
+<span class="lineNum">     528 </span><span class="lineCov">    1095985 :     *cacheable=isCacheable(pte);</span>
+<span class="lineNum">     529 </span>            : 
+<span class="lineNum">     530 </span>            :     //Update the PTE entry if necessary
+<span class="lineNum">     531 </span><span class="lineCov">    1095985 :     uint32_t updated_pte=pte;</span>
+<span class="lineNum">     532 </span>            :     //set the M (modified) bit if it's a write access
+<span class="lineNum">     533 </span><span class="lineCov">    1095985 :     if(request_type==REQUEST_TYPE_WRITE) updated_pte=setBit32(updated_pte,6,0x1);</span>
+<span class="lineNum">     534 </span>            :     //set the R (read) bit when the page is accessed
+<span class="lineNum">     535 </span><span class="lineCov">    1095985 :     updated_pte=setBit32(updated_pte,5,0x1);</span>
+<span class="lineNum">     536 </span>            :         
+<span class="lineNum">     537 </span><span class="lineCov">    1095985 :     if(!(updated_pte==pte))</span>
+<span class="lineNum">     538 </span>            :     {
+<span class="lineNum">     539 </span>            :         //write the updated pte back to memory.
+<span class="lineNum">     540 </span>            :         {
+<span class="lineNum">     541 </span><span class="lineCov">       9908 :             uint8_t pte_found_in_mem =0;</span>
+<span class="lineNum">     542 </span><span class="lineCov">       9908 :             uint32_t pte_in_mem=0;</span>
+<span class="lineNum">     543 </span><span class="lineCov">       9908 :             uint8_t pte_level_in_mem=0;</span>
+<span class="lineNum">     544 </span><span class="lineCov">       9908 :             uint64_t phy_addr_of_pte_in_mem=0;</span>
+<span class="lineNum">     545 </span><span class="lineCov">       9908 :             pte_found_in_mem = walkPageTables(virt_addr, &amp;pte_in_mem, &amp;pte_level_in_mem, &amp;phy_addr_of_pte_in_mem);</span>
+<span class="lineNum">     546 </span><span class="lineCov">       9908 :             if(!pte_found_in_mem)</span>
+<span class="lineNum">     547 </span>            :             {
+<span class="lineNum">     548 </span>            :                 //LCOV_EXCL_START
+<span class="lineNum">     549 </span>            : 
+<span class="lineNum">     550 </span>            :                 #ifdef SW
+<span class="lineNum">     551 </span>            :                 printf(&quot;\n ERROR : PTE present in TLB but not found in page tables in memory for asi=0x%x, address=0x%x, request_type=0x%x&quot;,asi,virt_addr,request_type);
+<span class="lineNum">     552 </span>            :                 printf(&quot;\n This should be a bug in the MMU.&quot;);
+<span class="lineNum">     553 </span>            :                 printf(&quot;\n Exiting!&quot;);
+<span class="lineNum">     554 </span>            :                 exit(1);
+<span class="lineNum">     555 </span>            :                 #endif
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span>            :                   //LCOV_EXCL_STOP
+<span class="lineNum">     558 </span>            :             }
+<span class="lineNum">     559 </span>            :             else
+<span class="lineNum">     560 </span>            :             {
+<span class="lineNum">     561 </span><span class="lineCov">       9908 :                 phy_addr_of_pte = phy_addr_of_pte_in_mem;</span>
+<span class="lineNum">     562 </span><span class="lineCov">       9908 :                 writePageTableEntryToMemory(updated_pte, phy_addr_of_pte);</span>
+<span class="lineNum">     563 </span>            :             }
+<span class="lineNum">     564 </span>            :         }
+<span class="lineNum">     565 </span>            : 
+<span class="lineNum">     566 </span>            :         //also update the value of PTE in TLB
+<span class="lineNum">     567 </span>            :         if(TLB_ENABLED)
+<span class="lineNum">     568 </span>            :         {
+<span class="lineNum">     569 </span><span class="lineCov">       9908 :             updateTLBentry(TLB_index, updated_pte);</span>
+<span class="lineNum">     570 </span>            :         }
+<span class="lineNum">     571 </span>            :     }
+<span class="lineNum">     572 </span>            : 
+<span class="lineNum">     573 </span>            :     //return success
+<span class="lineNum">     574 </span><span class="lineCov">    1095985 :     return 1;</span>
+<span class="lineNum">     575 </span>            : }
+<span class="lineNum">     576 </span>            : 
+<span class="lineNum">     577 </span>            : 
+<span class="lineNum">     578 </span>            : 
+<span class="lineNum">     579 </span>            : 
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span>            : 
+<a name="582"><span class="lineNum">     582 </span>            : //read a PTE/PTD entry from a given physical address</a>
+<span class="lineNum">     583 </span>            : //in memory
+<span class="lineNum">     584 </span><span class="lineCov">      72411 : uint32_t readPageTableEntryFromMemory(uint64_t physical_addr)</span>
+<span class="lineNum">     585 </span>            : {
+<span class="lineNum">     586 </span>            :     
+<span class="lineNum">     587 </span><span class="lineCov">      72411 :     uint8_t request_type=REQUEST_TYPE_READ;</span>
+<span class="lineNum">     588 </span><span class="lineCov">      72411 :     uint64_t data64=0;</span>
+<span class="lineNum">     589 </span><span class="lineCov">      72411 :     uint8_t byte_mask=0;</span>
+<span class="lineNum">     590 </span><span class="lineCov">      72411 :     uint32_t pte=0;</span>
+<span class="lineNum">     591 </span>            : 
+<span class="lineNum">     592 </span>            :     //send READ request to System bus
+<span class="lineNum">     593 </span><span class="lineCov">      72411 :     sendMmuToMemoryRequest(request_type, physical_addr, data64, byte_mask);</span>
+<span class="lineNum">     594 </span>            :     //wait for a response from Memory
+<span class="lineNum">     595 </span><span class="lineCov">      72411 :     readMemoryToMmuResponse(&amp;data64);</span>
+<span class="lineNum">     596 </span>            : 
+<span class="lineNum">     597 </span>            :     //check if even/odd word from the
+<span class="lineNum">     598 </span>            :     //fetched double word is to be used
+<span class="lineNum">     599 </span><span class="lineCov">      72411 :     if(getBit64(physical_addr,2)==0)</span>
+<span class="lineNum">     600 </span><span class="lineCov">      59385 :         pte=(data64&gt;&gt;32);</span>
+<span class="lineNum">     601 </span>            :     else
+<span class="lineNum">     602 </span><span class="lineCov">      13026 :         pte=data64;</span>
+<span class="lineNum">     603 </span><span class="lineCov">      72411 :     return pte;</span>
+<span class="lineNum">     604 </span>            : }
+<span class="lineNum">     605 </span>            : 
+<a name="606"><span class="lineNum">     606 </span>            : </a>
+<span class="lineNum">     607 </span>            : //write a PTE/PTD entry to memory 
+<span class="lineNum">     608 </span><span class="lineCov">       9908 : void writePageTableEntryToMemory(uint32_t pte, uint64_t physical_addr)</span>
+<span class="lineNum">     609 </span>            : {
+<span class="lineNum">     610 </span>            :     
+<span class="lineNum">     611 </span><span class="lineCov">       9908 :     uint8_t request_type=REQUEST_TYPE_WRITE;</span>
+<span class="lineNum">     612 </span><span class="lineCov">       9908 :     uint64_t data64=pte;</span>
+<span class="lineNum">     613 </span><span class="lineCov">       9908 :     uint8_t byte_mask=0;</span>
+<span class="lineNum">     614 </span>            :     
+<span class="lineNum">     615 </span>            :     //fetched double word is to be used
+<span class="lineNum">     616 </span><span class="lineCov">       9908 :     if(getBit64(physical_addr,2)==0)</span>
+<span class="lineNum">     617 </span>            :     {
+<span class="lineNum">     618 </span><span class="lineCov">       8212 :         data64=(data64&lt;&lt;32);</span>
+<span class="lineNum">     619 </span><span class="lineCov">       8212 :         byte_mask = 0xf0;</span>
+<span class="lineNum">     620 </span>            :     }
+<span class="lineNum">     621 </span>            :     else
+<span class="lineNum">     622 </span>            :     {
+<span class="lineNum">     623 </span><span class="lineCov">       1696 :         data64=pte;</span>
+<span class="lineNum">     624 </span><span class="lineCov">       1696 :         byte_mask=0x0f;</span>
+<span class="lineNum">     625 </span>            :     }
+<span class="lineNum">     626 </span>            : 
+<span class="lineNum">     627 </span>            :     //send WRITE request to System bus
+<span class="lineNum">     628 </span><span class="lineCov">       9908 :     sendMmuToMemoryRequest(request_type, physical_addr, data64, byte_mask);</span>
+<span class="lineNum">     629 </span>            :     //wait for a response from Memory
+<span class="lineNum">     630 </span><span class="lineCov">       9908 :     readMemoryToMmuResponse(&amp;data64);</span>
+<span class="lineNum">     631 </span><span class="lineCov">       9908 : }</span>
+<span class="lineNum">     632 </span>            : 
+<span class="lineNum">     633 </span>            : 
+<span class="lineNum">     634 </span>            : 
+<a name="635"><span class="lineNum">     635 </span>            : //Find out phy addr of an entry in a page table</a>
+<span class="lineNum">     636 </span>            : //from a PTD and an index into the table
+<span class="lineNum">     637 </span><span class="lineCov">      72411 : uint64_t getPhyAddrFromPTD(uint32_t PTD, uint32_t index)</span>
+<span class="lineNum">     638 </span>            : {
+<span class="lineNum">     639 </span>            :     //zero out the last two bits in the PTD
+<span class="lineNum">     640 </span><span class="lineCov">      72411 :     uint64_t phy_addr=setSlice32(PTD,1,0,0);</span>
+<span class="lineNum">     641 </span><span class="lineCov">      72411 :     uint64_t i = index;</span>
+<span class="lineNum">     642 </span><span class="lineCov">      72411 :     phy_addr = phy_addr&lt;&lt;4; //the page number in PTD appears on bits 35:4 on the physical addr bus.</span>
+<span class="lineNum">     643 </span><span class="lineCov">      72411 :     phy_addr = phy_addr | (i&lt;&lt;2); //index into the table</span>
+<span class="lineNum">     644 </span><span class="lineCov">      72411 :     return phy_addr;</span>
+<span class="lineNum">     645 </span>            : }
+<span class="lineNum">     646 </span>            : 
+<a name="647"><span class="lineNum">     647 </span>            : </a>
+<span class="lineNum">     648 </span>            : //walk the page tables in memory to search for a valid PTE
+<span class="lineNum">     649 </span><span class="lineCov">      24765 : uint8_t walkPageTables(uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, uint64_t* phy_addr_of_pte)</span>
+<span class="lineNum">     650 </span>            : {
+<span class="lineNum">     651 </span><span class="lineCov">      24765 :     uint8_t  pte_found=0;</span>
+<span class="lineNum">     652 </span><span class="lineCov">      24765 :     uint32_t PTE=0 ;</span>
+<span class="lineNum">     653 </span><span class="lineCov">      24765 :     uint32_t PTE_LEVEL=0;</span>
+<span class="lineNum">     654 </span>            :     
+<span class="lineNum">     655 </span><span class="lineCov">      24765 :     uint32_t context_table_index=MmuContextRegister;       //Index into context table</span>
+<span class="lineNum">     656 </span><span class="lineCov">      24765 :     uint32_t L1_page_table_index= getSlice32(virt_addr,31,24); //Index into level 1 page table</span>
+<span class="lineNum">     657 </span><span class="lineCov">      24765 :     uint32_t L2_page_table_index= getSlice32(virt_addr,23,18); //Index into level 2 page table</span>
+<span class="lineNum">     658 </span><span class="lineCov">      24765 :     uint32_t L3_page_table_index= getSlice32(virt_addr,17,12); //Index into level 3 page table</span>
+<span class="lineNum">     659 </span>            :     
+<span class="lineNum">     660 </span><span class="lineCov">      24765 :     uint64_t phy_addr=0;</span>
+<span class="lineNum">     661 </span>            :     
+<span class="lineNum">     662 </span>            : 
+<span class="lineNum">     663 </span>            :     //read Level 0 PTD/PTE entry from context table
+<span class="lineNum">     664 </span><span class="lineCov">      24765 :     PTE_LEVEL =0;</span>
+<span class="lineNum">     665 </span><span class="lineCov">      24765 :     phy_addr = getPhyAddrFromPTD(MmuContextTablePointerRegister, context_table_index);</span>
+<span class="lineNum">     666 </span><span class="lineCov">      24765 :     PTE=readPageTableEntryFromMemory(phy_addr);</span>
+<span class="lineNum">     667 </span>            :     
+<span class="lineNum">     668 </span><span class="lineCov">      24765 :     if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level1 Table</span>
+<span class="lineNum">     669 </span>            :     {
+<span class="lineNum">     670 </span><span class="lineCov">      24569 :         PTE_LEVEL=1;</span>
+<span class="lineNum">     671 </span><span class="lineCov">      24569 :         phy_addr = getPhyAddrFromPTD(PTE, L1_page_table_index);</span>
+<span class="lineNum">     672 </span><span class="lineCov">      24569 :         PTE=readPageTableEntryFromMemory(phy_addr);</span>
+<span class="lineNum">     673 </span>            : 
+<span class="lineNum">     674 </span><span class="lineCov">      24569 :         if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level2 Table</span>
+<span class="lineNum">     675 </span>            :         {
+<span class="lineNum">     676 </span><span class="lineCov">      11546 :             PTE_LEVEL=2;</span>
+<span class="lineNum">     677 </span><span class="lineCov">      11546 :             phy_addr = getPhyAddrFromPTD(PTE, L2_page_table_index);</span>
+<span class="lineNum">     678 </span><span class="lineCov">      11546 :             PTE=readPageTableEntryFromMemory(phy_addr);</span>
+<span class="lineNum">     679 </span>            : 
+<span class="lineNum">     680 </span>            : 
+<span class="lineNum">     681 </span><span class="lineCov">      11546 :             if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level3 Table</span>
+<span class="lineNum">     682 </span>            :             {
+<span class="lineNum">     683 </span><span class="lineCov">      11531 :                 PTE_LEVEL=3;</span>
+<span class="lineNum">     684 </span><span class="lineCov">      11531 :                 phy_addr = getPhyAddrFromPTD(PTE, L3_page_table_index);</span>
+<span class="lineNum">     685 </span><span class="lineCov">      11531 :                 PTE=readPageTableEntryFromMemory(phy_addr);</span>
+<span class="lineNum">     686 </span>            :             }
+<span class="lineNum">     687 </span>            :         }
+<span class="lineNum">     688 </span>            :     }
+<span class="lineNum">     689 </span>            :     
+<span class="lineNum">     690 </span>            :     //page walk ended.
+<span class="lineNum">     691 </span>            :     //We have either found a valid PTE or not
+<span class="lineNum">     692 </span>            :     
+<span class="lineNum">     693 </span><span class="lineCov">      24765 :     if( getSlice32(PTE,1,0)==0x02) pte_found=1;//We have found a valid PTE</span>
+<span class="lineNum">     694 </span><span class="lineCov">       1885 :     else    pte_found=0;</span>
+<span class="lineNum">     695 </span>            : 
+<span class="lineNum">     696 </span>            :     
+<span class="lineNum">     697 </span><span class="lineCov">      24765 :     *pte=PTE;</span>
+<span class="lineNum">     698 </span><span class="lineCov">      24765 :     *pte_level=PTE_LEVEL;</span>
+<span class="lineNum">     699 </span><span class="lineCov">      24765 :     *phy_addr_of_pte = phy_addr;</span>
+<span class="lineNum">     700 </span><span class="lineCov">      24765 :     return pte_found;</span>
+<span class="lineNum">     701 </span>            : }
+<span class="lineNum">     702 </span>            : 
+<span class="lineNum">     703 </span>            : 
+<span class="lineNum">     704 </span>            : 
+<span class="lineNum">     705 </span>            : 
+<span class="lineNum">     706 </span>            : 
+<span class="lineNum">     707 </span>            : 
+<span class="lineNum">     708 </span>            : 
+<span class="lineNum">     709 </span>            : //check if a given memory access should be allowed
+<span class="lineNum">     710 </span>            : //to proceed as per the access permissions specified in ACC field in 
+<span class="lineNum">     711 </span>            : //the page table entry.
+<span class="lineNum">     712 </span>            : //
+<span class="lineNum">     713 </span>            : //If access should be allowed : 
+<span class="lineNum">     714 </span>            : //  return 1
+<span class="lineNum">     715 </span>            : //If access causes a page fault/protection fault/privilege fault:
+<span class="lineNum">     716 </span>            : //  update FSR/FAR registers to note the fault
+<span class="lineNum">     717 </span>            : //  return 0
+<a name="718"><span class="lineNum">     718 </span>            : //See ACC field in Appendix H, Sparc v8 manual.</a>
+<span class="lineNum">     719 </span>            : 
+<span class="lineNum">     720 </span><span class="lineCov">    1100071 : uint8_t checkPageFaults(uint8_t pte_found, uint32_t pte, uint8_t pte_level, uint8_t asi, uint32_t virt_addr, uint8_t request_type)</span>
+<span class="lineNum">     721 </span>            : {
+<span class="lineNum">     722 </span>            :     
+<span class="lineNum">     723 </span><span class="lineCov">    1100071 :     uint8_t AT=0;</span>
+<span class="lineNum">     724 </span><span class="lineCov">    1100071 :     uint8_t fault_type=0;</span>
+<span class="lineNum">     725 </span>            : 
+<span class="lineNum">     726 </span>            :     //get fields from pte
+<span class="lineNum">     727 </span><span class="lineCov">    1100071 :     uint32_t ET  = getSlice32(pte,1,0);</span>
+<span class="lineNum">     728 </span><span class="lineCov">    1100071 :     uint32_t ACC = getSlice32(pte,4,2);</span>
+<span class="lineNum">     729 </span>            : 
+<span class="lineNum">     730 </span>            :     //Encode Access Type (ref. Sparc manual appendix H), Table for FT field:
+<span class="lineNum">     731 </span><span class="lineCov">    1100071 :     if  ((request_type==REQUEST_TYPE_READ) &amp;&amp; (asi==ASI_USER_DATA) )        AT = 0; //0       Load from User Data Space</span>
+<span class="lineNum">     732 </span><span class="lineCov">    1098838 :     else if ((request_type==REQUEST_TYPE_READ) &amp;&amp; (asi==ASI_SUPERVISOR_DATA))   AT = 1; //1       Load from Supervisor Data Space</span>
+<span class="lineNum">     733 </span><span class="lineCov">    1076539 :     else if (((request_type==REQUEST_TYPE_READ) || (request_type==REQUEST_TYPE_IFETCH))</span>
+<span class="lineNum">     734 </span><span class="lineCov">    1055906 :             &amp;&amp; (asi==ASI_USER_INSTRUCTION))                 AT = 2; //2       Load/Execute from User Instruction Space</span>
+<span class="lineNum">     735 </span><span class="lineCov">     605774 :     else if (((request_type==REQUEST_TYPE_READ) || (request_type==REQUEST_TYPE_IFETCH))</span>
+<span class="lineNum">     736 </span><span class="lineCov">     585141 :             &amp;&amp; (asi==ASI_SUPERVISOR_INSTRUCTION))               AT = 3; //3       Load/Execute from Supervisor Instruction Space</span>
+<span class="lineNum">     737 </span><span class="lineCov">      20640 :     else if ((request_type==REQUEST_TYPE_WRITE ) &amp;&amp;(asi==ASI_USER_DATA))        AT = 4; //4       Store to User Data Space</span>
+<span class="lineNum">     738 </span><span class="lineCov">      19988 :     else if ((request_type==REQUEST_TYPE_WRITE ) &amp;&amp;(asi==ASI_SUPERVISOR_DATA))  AT = 5; //5       Store to Supervisor Data Space</span>
+<span class="lineNum">     739 </span><span class="lineCov">        844 :     else if ((request_type==REQUEST_TYPE_WRITE ) &amp;&amp;(asi==ASI_USER_INSTRUCTION))     AT = 6; //6       Store to User Instruction Space</span>
+<span class="lineNum">     740 </span><span class="lineCov">        466 :     else if ((request_type==REQUEST_TYPE_WRITE ) &amp;&amp;(asi==ASI_SUPERVISOR_INSTRUCTION))AT = 7; //7       Store to Supervisor Instruction Space</span>
+<span class="lineNum">     741 </span><span class="lineCov">          7 :     else AT=0;</span>
+<span class="lineNum">     742 </span>            :     
+<span class="lineNum">     743 </span>            :     
+<span class="lineNum">     744 </span><span class="lineCov">    1100071 :     if(!pte_found)</span>
+<span class="lineNum">     745 </span>            :     {
+<span class="lineNum">     746 </span><span class="lineCov">       1885 :         if(ET==0) fault_type=1;</span>
+<span class="lineNum">     747 </span><span class="lineCov">         57 :         else if(ET==0x1 || ET==0x3) fault_type=4;</span>
+<span class="lineNum">     748 </span>            :     }
+<span class="lineNum">     749 </span>            :     else
+<span class="lineNum">     750 </span>            :     {
+<span class="lineNum">     751 </span>            :         //pte found. Check permissions
+<span class="lineNum">     752 </span><span class="lineCov">    1098186 :         switch(ACC)</span>
+<span class="lineNum">     753 </span>            :         {
+<span class="lineNum">     754 </span>            :             case 0 : {
+<span class="lineNum">     755 </span><span class="lineCov">        689 :                      switch(AT)</span>
+<span class="lineNum">     756 </span>            :                      {
+<span class="lineNum">     757 </span><span class="lineCov">        537 :                          case 2: case 3: case 4 : case 5 : case 6: case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     758 </span><span class="lineCov">        152 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     759 </span>            :                      }
+<span class="lineNum">     760 </span><span class="lineCov">        689 :                      break;</span>
+<span class="lineNum">     761 </span>            :                  }
+<span class="lineNum">     762 </span>            : 
+<span class="lineNum">     763 </span>            :             case 1 : {
+<span class="lineNum">     764 </span><span class="lineCov">        451 :                      switch(AT)</span>
+<span class="lineNum">     765 </span>            :                      {
+<span class="lineNum">     766 </span><span class="lineCov">        202 :                          case 2: case 3: case 6: case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     767 </span><span class="lineCov">        249 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     768 </span>            :                      }
+<span class="lineNum">     769 </span><span class="lineCov">        451 :                      break;</span>
+<span class="lineNum">     770 </span>            :                  }
+<span class="lineNum">     771 </span>            : 
+<span class="lineNum">     772 </span>            :             case 2 : {
+<span class="lineNum">     773 </span><span class="lineCov">       1051 :                      switch(AT)</span>
+<span class="lineNum">     774 </span>            :                      {
+<span class="lineNum">     775 </span><span class="lineCov">        233 :                          case 4 : case 5 : case 6: case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     776 </span><span class="lineCov">        818 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     777 </span>            :                      }
+<span class="lineNum">     778 </span><span class="lineCov">       1051 :                      break;</span>
+<span class="lineNum">     779 </span>            :                  }
+<span class="lineNum">     780 </span>            : 
+<span class="lineNum">     781 </span>            :             case 3 : {
+<span class="lineNum">     782 </span><span class="lineCov">     956886 :                      {fault_type=0;}</span>
+<span class="lineNum">     783 </span><span class="lineCov">     956886 :                      break;</span>
+<span class="lineNum">     784 </span>            :                  }
+<span class="lineNum">     785 </span>            : 
+<span class="lineNum">     786 </span>            : 
+<span class="lineNum">     787 </span>            :             case 4 : {
+<span class="lineNum">     788 </span><span class="lineCov">       1032 :                      switch(AT)</span>
+<span class="lineNum">     789 </span>            :                      {
+<span class="lineNum">     790 </span><span class="lineCov">        335 :                          case 0 : case 1: case 4 : case 5 : case 6: case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     791 </span><span class="lineCov">        697 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     792 </span>            :                      }
+<span class="lineNum">     793 </span><span class="lineCov">       1032 :                      break;</span>
+<span class="lineNum">     794 </span>            :                  }
+<span class="lineNum">     795 </span>            : 
+<span class="lineNum">     796 </span>            :             case 5 : {
+<span class="lineNum">     797 </span><span class="lineCov">        436 :                      switch(AT)</span>
+<span class="lineNum">     798 </span>            :                      {
+<span class="lineNum">     799 </span><span class="lineCov">        252 :                          case 2: case 3: case 4 : case 6: case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     800 </span><span class="lineCov">        184 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     801 </span>            :                      }
+<span class="lineNum">     802 </span><span class="lineCov">        436 :                      break;</span>
+<span class="lineNum">     803 </span>            :                  }
+<span class="lineNum">     804 </span>            : 
+<span class="lineNum">     805 </span>            :                 
+<span class="lineNum">     806 </span>            :             case 6 : {
+<span class="lineNum">     807 </span><span class="lineCov">     137131 :                      switch(AT)</span>
+<span class="lineNum">     808 </span>            :                      {
+<span class="lineNum">     809 </span><span class="lineCov">        124 :                          case 5 : case 7 : {fault_type = 2; break;} </span>
+<span class="lineNum">     810 </span><span class="lineCov">        255 :                          case 0 : case 2 : case 4 : case 6 : {fault_type=3; break;}                                    </span>
+<span class="lineNum">     811 </span><span class="lineCov">     136752 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     812 </span>            :                      }
+<span class="lineNum">     813 </span><span class="lineCov">     137131 :                      break;</span>
+<span class="lineNum">     814 </span>            :                  }
+<span class="lineNum">     815 </span>            :             case 7 : {
+<span class="lineNum">     816 </span><span class="lineCov">        510 :                      switch(AT)</span>
+<span class="lineNum">     817 </span>            :                      {
+<span class="lineNum">     818 </span><span class="lineCov">        263 :                          case 0 : case 2 : case 4 : case 6 : {fault_type=3; break;}                                    </span>
+<span class="lineNum">     819 </span><span class="lineCov">        247 :                          default : {fault_type=0; break;}</span>
+<span class="lineNum">     820 </span>            :                      }
+<span class="lineNum">     821 </span><span class="lineCov">        510 :                      break;</span>
+<span class="lineNum">     822 </span>            :                  }
+<span class="lineNum">     823 </span>            :                  //LCOV_EXCL_START
+<span class="lineNum">     824 </span>            :              
+<span class="lineNum">     825 </span>            :             default : fault_type = 0;
+<span class="lineNum">     826 </span>            : 
+<span class="lineNum">     827 </span>            :             //LCOV_EXCL_STOP
+<span class="lineNum">     828 </span>            :         }
+<span class="lineNum">     829 </span>            :     }
+<span class="lineNum">     830 </span>            : 
+<span class="lineNum">     831 </span>            :     //we have computed AT and FT.
+<span class="lineNum">     832 </span>            :     
+<span class="lineNum">     833 </span><span class="lineCov">    1100071 :     if(fault_type==0) return 1; //no fault has occured</span>
+<span class="lineNum">     834 </span>            :     else
+<span class="lineNum">     835 </span>            :     {
+<span class="lineNum">     836 </span>            :         //A fault has occured
+<span class="lineNum">     837 </span>            :         //If FSR already contains a fault,
+<span class="lineNum">     838 </span>            :         //we're not allowed to overwrite faults
+<span class="lineNum">     839 </span>            :         //of higher priority
+<span class="lineNum">     840 </span><span class="lineCov">       4086 :         uint8_t existing_fault_type = getSlice32(MmuFaultStatusRegister,4,2);</span>
+<span class="lineNum">     841 </span>            : 
+<span class="lineNum">     842 </span><span class="lineCov">       4086 :         if(existing_fault_type &gt; fault_type)</span>
+<span class="lineNum">     843 </span>            :         {
+<span class="lineNum">     844 </span>            :             //can't overwrite FSR
+<span class="lineNum">     845 </span>            : 
+<span class="lineNum">     846 </span>            :         }
+<span class="lineNum">     847 </span>            :         else
+<span class="lineNum">     848 </span>            :         {
+<span class="lineNum">     849 </span>            :             //update FAR and FSR 
+<span class="lineNum">     850 </span>            : 
+<span class="lineNum">     851 </span>            :             //EBE
+<span class="lineNum">     852 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,17,10, 0x0);</span>
+<span class="lineNum">     853 </span>            : 
+<span class="lineNum">     854 </span>            :             //L (pte level)
+<span class="lineNum">     855 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,9,8, pte_level);</span>
+<span class="lineNum">     856 </span>            : 
+<span class="lineNum">     857 </span>            :             //AT (Access Type) 
+<span class="lineNum">     858 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,7,5, AT);</span>
+<span class="lineNum">     859 </span>            : 
+<span class="lineNum">     860 </span>            :             //FT (Fault type) 
+<span class="lineNum">     861 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,4,2, fault_type);</span>
+<span class="lineNum">     862 </span>            : 
+<span class="lineNum">     863 </span>            :             //FAV (Fault Addr Valid) = 1
+<span class="lineNum">     864 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,1,1, 0x1);</span>
+<span class="lineNum">     865 </span>            : 
+<span class="lineNum">     866 </span>            :             uint8_t OW;
+<span class="lineNum">     867 </span><span class="lineCov">       4086 :             if(existing_fault_type!=0) OW=1; else OW=0;</span>
+<span class="lineNum">     868 </span><span class="lineCov">       4086 :             MmuFaultStatusRegister = setSlice32(MmuFaultStatusRegister,0,0, OW);</span>
+<span class="lineNum">     869 </span>            : 
+<span class="lineNum">     870 </span>            :             //write the virtual address that caused this fault 
+<span class="lineNum">     871 </span>            :             //into fault addr register
+<span class="lineNum">     872 </span><span class="lineCov">       4086 :             MmuFaultAddressRegister = virt_addr;</span>
+<span class="lineNum">     873 </span>            :         }
+<span class="lineNum">     874 </span>            :         #ifdef DEBUG
+<span class="lineNum">     875 </span>            :         printf(&quot; MMU fault occured : ACC = 0x%x, AT=0x%x, fault_type=0x%x, Fault address=0x%x&quot;, ACC, AT, fault_type, virt_addr);
+<span class="lineNum">     876 </span>            :         #endif
+<span class="lineNum">     877 </span>            : 
+<span class="lineNum">     878 </span><span class="lineCov">       4086 :         return 0;</span>
+<span class="lineNum">     879 </span>            :     }
+<span class="lineNum">     880 </span>            : }
+<span class="lineNum">     881 </span>            : 
+<span class="lineNum">     882 </span>            : 
+<span class="lineNum">     883 </span>            : 
+<span class="lineNum">     884 </span>            : 
+<span class="lineNum">     885 </span>            : 
+<span class="lineNum">     886 </span>            : 
+<a name="887"><span class="lineNum">     887 </span>            : </a>
+<span class="lineNum">     888 </span>            : //return value of cacheable bit in a PTE
+<span class="lineNum">     889 </span><span class="lineCov">    1095985 : uint8_t isCacheable(uint32_t pte)</span>
+<span class="lineNum">     890 </span>            : {
+<span class="lineNum">     891 </span><span class="lineCov">    1095985 :     return  getBit32(pte,7);</span>
+<span class="lineNum">     892 </span>            : }
+<span class="lineNum">     893 </span>            : 
+<a name="894"><span class="lineNum">     894 </span>            : //construct physical address</a>
+<span class="lineNum">     895 </span>            : //from pte, virtual address and pte_level
+<span class="lineNum">     896 </span><span class="lineCov">    1095985 : uint64_t constructPhysicalAddr(uint32_t pte, uint8_t pte_level, uint32_t virt_addr)</span>
+<span class="lineNum">     897 </span>            : {
+<span class="lineNum">     898 </span>            :         //get page offset
+<span class="lineNum">     899 </span>            :         uint64_t page_offset;
+<span class="lineNum">     900 </span><span class="lineCov">    1095985 :         if  (pte_level==3) page_offset=getSlice32(virt_addr,11,0);</span>
+<span class="lineNum">     901 </span><span class="lineCov">     694905 :         else if (pte_level==2) page_offset=getSlice32(virt_addr,17,0);</span>
+<span class="lineNum">     902 </span><span class="lineCov">     694902 :         else if (pte_level==1) page_offset=getSlice32(virt_addr,23,0);</span>
+<span class="lineNum">     903 </span><span class="lineCov">        552 :         else                   page_offset=getSlice32(virt_addr,31,0);</span>
+<span class="lineNum">     904 </span>            : 
+<span class="lineNum">     905 </span>            :         //get page number from pte
+<span class="lineNum">     906 </span><span class="lineCov">    1095985 :         uint32_t PPN = getSlice32(pte,31,8);</span>
+<span class="lineNum">     907 </span>            : 
+<span class="lineNum">     908 </span>            :         //construct physical address:
+<span class="lineNum">     909 </span><span class="lineCov">    1095985 :         uint64_t phy_addr=0;</span>
+<span class="lineNum">     910 </span><span class="lineCov">    1095985 :         phy_addr = PPN;</span>
+<span class="lineNum">     911 </span><span class="lineCov">    1095985 :         phy_addr = phy_addr&lt;&lt;12;</span>
+<span class="lineNum">     912 </span><span class="lineCov">    1095985 :         phy_addr = phy_addr | page_offset;</span>
+<span class="lineNum">     913 </span>            : 
+<span class="lineNum">     914 </span><span class="lineCov">    1095985 :         return phy_addr;</span>
+<span class="lineNum">     915 </span>            : }
+<span class="lineNum">     916 </span>            : 
+<span class="lineNum">     917 </span>            : 
+<span class="lineNum">     918 </span>            : 
+<a name="919"><span class="lineNum">     919 </span>            : </a>
+<span class="lineNum">     920 </span>            : //Initialize mmu state
+<span class="lineNum">     921 </span><span class="lineCov">       5050 : void initializeMmuState()</span>
+<span class="lineNum">     922 </span>            : {
+<span class="lineNum">     923 </span><span class="lineCov">       5050 :     MmuControlRegister=0;</span>
+<span class="lineNum">     924 </span><span class="lineCov">       5050 :     MmuContextTablePointerRegister=0;</span>
+<span class="lineNum">     925 </span><span class="lineCov">       5050 :     MmuContextRegister=0;</span>
+<span class="lineNum">     926 </span><span class="lineCov">       5050 :     MmuFaultStatusRegister=0;</span>
+<span class="lineNum">     927 </span><span class="lineCov">       5050 :     MmuFaultAddressRegister=0;</span>
+<span class="lineNum">     928 </span>            : 
+<span class="lineNum">     929 </span><span class="lineCov">       5050 :     Num_Mmu_bypass_accesses=0;</span>
+<span class="lineNum">     930 </span><span class="lineCov">       5050 :     Num_Mmu_probe_requests=0;</span>
+<span class="lineNum">     931 </span><span class="lineCov">       5050 :     Num_Mmu_flush_requests=0;</span>
+<span class="lineNum">     932 </span><span class="lineCov">       5050 :     Num_Mmu_register_reads=0;</span>
+<span class="lineNum">     933 </span><span class="lineCov">       5050 :     Num_Mmu_register_writes=0;</span>
+<span class="lineNum">     934 </span><span class="lineCov">       5050 :     Num_Mmu_translated_accesses=0;</span>
+<span class="lineNum">     935 </span><span class="lineCov">       5050 :     Num_Mmu_TLB_hits=0;</span>
+<span class="lineNum">     936 </span><span class="lineCov">       5050 :     initializeTLB();</span>
+<span class="lineNum">     937 </span><span class="lineCov">       5050 : }</span>
+<span class="lineNum">     938 </span>            : 
+<span class="lineNum">     939 </span>            : //LCOV_EXCL_START
+<span class="lineNum">     940 </span>            : void printMmuStatistics()
+<span class="lineNum">     941 </span>            : {
+<span class="lineNum">     942 </span>            : #ifdef SW
+<span class="lineNum">     943 </span>            :     printf(&quot;\nMmu statistics : MMU ENABLED = %d&quot;,MmuEnabled() );
+<span class="lineNum">     944 </span>            :     printf(&quot;\n TLB size (number of entries) = %d&quot;,TLB_SIZE);
+<span class="lineNum">     945 </span>            :     printf(&quot;\n Accesses with Mmu bypassed or disabled  = %d&quot;,    Num_Mmu_bypass_accesses);
+<span class="lineNum">     946 </span>            :     printf(&quot;\n Mmu_probe_requests      = %d&quot;,     Num_Mmu_probe_requests);
+<span class="lineNum">     947 </span>            :     printf(&quot;\n Mmu_flush_requests      = %d&quot;,     Num_Mmu_flush_requests);
+<span class="lineNum">     948 </span>            :     printf(&quot;\n Mmu_register_reads      = %d&quot;,     Num_Mmu_register_reads);
+<span class="lineNum">     949 </span>            :     printf(&quot;\n Mmu_register_writes     = %d&quot;,    Num_Mmu_register_writes);
+<span class="lineNum">     950 </span>            :     printf(&quot;\n Mmu_translated_accesses = %d&quot;,    Num_Mmu_translated_accesses);
+<span class="lineNum">     951 </span>            :     printf(&quot;\n Mmu_TLB_hits            = %d&quot;,    Num_Mmu_TLB_hits);
+<span class="lineNum">     952 </span>            :     printf(&quot;\n&quot;);
+<span class="lineNum">     953 </span>            :     printf(&quot;\nMmu Register values :&quot;);
+<span class="lineNum">     954 </span>            :     printf(&quot;\n Control register    = 0x%x&quot;,    MmuControlRegister);
+<span class="lineNum">     955 </span>            :     printf(&quot;\n Context table ptr   = 0x%x&quot;,    MmuContextTablePointerRegister);
+<span class="lineNum">     956 </span>            :     printf(&quot;\n Context register    = 0x%x&quot;,    MmuContextRegister);
+<span class="lineNum">     957 </span>            :     printf(&quot;\n FSR         = 0x%x&quot;,    MmuFaultStatusRegister);
+<span class="lineNum">     958 </span>            :     printf(&quot;\n FAR         = 0x%x&quot;,    MmuFaultAddressRegister);
+<span class="lineNum">     959 </span>            :     printf(&quot;\n&quot;);
+<span class="lineNum">     960 </span>            : 
+<span class="lineNum">     961 </span>            : 
+<span class="lineNum">     962 </span>            : #endif
+<span class="lineNum">     963 </span>            : };
+<span class="lineNum">     964 </span>            : //LCOV_EXCL_STOP
+<span class="lineNum">     965 </span>            : 
+<span class="lineNum">     966 </span>            : 
+<span class="lineNum">     967 </span>            : 
+<span class="lineNum">     968 </span>            : //Mmu Register read/write functions
+<span class="lineNum">     969 </span>            : //The addr field is interpreted as follows:
+<span class="lineNum">     970 </span>            : //(see Table H-5 in Sparc V8 Ref. Manual)
+<span class="lineNum">     971 </span>            : //  VA[31:0]            Register
+<span class="lineNum">     972 </span>            : //  ---------------------------------------------
+<span class="lineNum">     973 </span>            : //  0X000000xx          Control Register
+<span class="lineNum">     974 </span>            : //  0X000001xx                      Context Table Pointer Register
+<span class="lineNum">     975 </span>            : //  0X000002xx                      Context Register
+<span class="lineNum">     976 </span>            : //  0X000003xx                      Fault Status Register
+<span class="lineNum">     977 </span>            : //  0X000004xx                      Fault Address Register
+<span class="lineNum">     978 </span>            : //  0X000005xx to 0X00000Fxx        Reserved
+<span class="lineNum">     979 </span>            : //  0X000010xx to 0XFFFFFFxx        Unassigned
+<span class="lineNum">     980 </span>            : 
+<span class="lineNum">     981 </span>            : 
+<a name="982"><span class="lineNum">     982 </span>            : //returns contents of  Mmu register</a>
+<span class="lineNum">     983 </span>            : //reading FSR register should clear it
+<span class="lineNum">     984 </span><span class="lineCov">      10505 : uint32_t readMmuRegister(uint32_t addr)</span>
+<span class="lineNum">     985 </span>            : {
+<span class="lineNum">     986 </span>            :     
+<span class="lineNum">     987 </span>            :     
+<span class="lineNum">     988 </span><span class="lineCov">      10505 :     uint32_t register_id = getSlice32(addr,31,8);</span>
+<span class="lineNum">     989 </span>            :     uint32_t result;
+<span class="lineNum">     990 </span><span class="lineCov">      10505 :     if  (register_id==0) result = MmuControlRegister;</span>
+<span class="lineNum">     991 </span><span class="lineCov">       9976 :     else if (register_id==1) result = MmuContextTablePointerRegister;</span>
+<span class="lineNum">     992 </span><span class="lineCov">       9976 :     else if (register_id==2) result = MmuContextRegister;</span>
+<span class="lineNum">     993 </span><span class="lineCov">       9976 :     else if (register_id==3) </span>
+<span class="lineNum">     994 </span>            :     {
+<span class="lineNum">     995 </span><span class="lineCov">       4988 :         result = MmuFaultStatusRegister;</span>
+<span class="lineNum">     996 </span><span class="lineCov">       4988 :         MmuFaultStatusRegister = 0;</span>
+<span class="lineNum">     997 </span>            :     }
+<span class="lineNum">     998 </span><span class="lineCov">       4988 :     else if (register_id==4) result = MmuFaultAddressRegister;</span>
+<span class="lineNum">     999 </span>            :     else
+<span class="lineNum">    1000 </span>            :     {
+<span class="lineNum">    1001 </span>            :         //LCOV_EXCL_START
+<span class="lineNum">    1002 </span>            : 
+<span class="lineNum">    1003 </span>            :         #ifdef SW
+<span class="lineNum">    1004 </span>            :         fprintf(stderr,&quot;\nMMU: ERROR. In command READ_MMU_REGISTER,\
+<span class="lineNum">    1005 </span>            :         addr = 0x%x does not correspond to a valid register&quot;,addr);
+<span class="lineNum">    1006 </span>            :         #endif
+<span class="lineNum">    1007 </span>            :         result=0;
+<span class="lineNum">    1008 </span>            : 
+<span class="lineNum">    1009 </span>            :         //LCOV_EXCL_STOP
+<span class="lineNum">    1010 </span>            : 
+<span class="lineNum">    1011 </span>            :     }
+<span class="lineNum">    1012 </span>            :     
+<span class="lineNum">    1013 </span>            :     #ifdef DEBUG
+<span class="lineNum">    1014 </span>            :     printf(&quot;\nMMU: Received MMU register READ request to register &quot;);
+<span class="lineNum">    1015 </span>            :     if  (register_id==0) printf(&quot; MmuControlRegister&quot;);
+<span class="lineNum">    1016 </span>            :     else if (register_id==1) printf(&quot; MmuContextTablePointerRegister&quot;);
+<span class="lineNum">    1017 </span>            :     else if (register_id==2) printf(&quot; MmuContextRegister&quot;);
+<span class="lineNum">    1018 </span>            :     else if (register_id==3) printf(&quot; MmuFaultStatusRegister&quot;);
+<span class="lineNum">    1019 </span>            :     else if (register_id==4) printf(&quot; MmuFaultAddressRegister&quot;);
+<span class="lineNum">    1020 </span>            :     printf(&quot;,  addr=0x%x, data read = 0x%x&quot;,addr,result);
+<span class="lineNum">    1021 </span>            :     #endif
+<span class="lineNum">    1022 </span>            : 
+<span class="lineNum">    1023 </span>            :     
+<span class="lineNum">    1024 </span><span class="lineCov">      10505 :     return result;</span>
+<span class="lineNum">    1025 </span>            : }
+<a name="1026"><span class="lineNum">    1026 </span>            : </a>
+<span class="lineNum">    1027 </span>            : //write to Mmu registers
+<span class="lineNum">    1028 </span><span class="lineCov">      16554 : void writeMmuRegister(uint32_t addr, uint8_t byte_mask, uint64_t data64)</span>
+<span class="lineNum">    1029 </span>            : {
+<span class="lineNum">    1030 </span><span class="lineCov">      16554 :     uint32_t register_id = getSlice32(addr,31,8);</span>
+<span class="lineNum">    1031 </span><span class="lineCov">      16554 :     uint32_t data32=data64;</span>
+<span class="lineNum">    1032 </span><span class="lineCov">      16554 :     if     (byte_mask==0x0f) data32=data64;</span>
+<span class="lineNum">    1033 </span><span class="lineCov">      16554 :     else if(byte_mask==0xf0) data32=getSlice64(data64,63,32);</span>
+<span class="lineNum">    1034 </span>            :     if(!(byte_mask==0x0f || byte_mask==0xf0) || register_id &gt;4)
+<span class="lineNum">    1035 </span>            :     {
+<span class="lineNum">    1036 </span>            :         #ifdef DEBUG
+<span class="lineNum">    1037 </span>            :         fprintf(stderr,&quot;\nMMU: ERROR. Invalid WRITE_MMU_REGISTER command,\
+<span class="lineNum">    1038 </span>            :         addr = 0x%x, byte_mask=0x%x, data=0x%lx&quot;, addr, byte_mask, data64);
+<span class="lineNum">    1039 </span>            :         #endif
+<span class="lineNum">    1040 </span>            :     }
+<span class="lineNum">    1041 </span>            : 
+<span class="lineNum">    1042 </span><span class="lineCov">      16554 :     if  (register_id==0)  MmuControlRegister        =data32;</span>
+<span class="lineNum">    1043 </span><span class="lineCov">      10558 :     else if (register_id==1)  MmuContextTablePointerRegister=data32;</span>
+<span class="lineNum">    1044 </span><span class="lineCov">       5508 :     else if (register_id==2)  MmuContextRegister        =data32;</span>
+<span class="lineNum">    1045 </span>            :     
+<span class="lineNum">    1046 </span>            :     #ifdef DEBUG
+<span class="lineNum">    1047 </span>            :     printf(&quot;\nMMU: Written word=0x%x to register &quot;,data32);
+<span class="lineNum">    1048 </span>            :     if  (register_id==0) printf(&quot; MmuControlRegister       &quot;);
+<span class="lineNum">    1049 </span>            :     else if (register_id==1) printf(&quot; MmuContextTablePointerRegister&quot;);
+<span class="lineNum">    1050 </span>            :     else if (register_id==2) printf(&quot; MmuContextRegister       &quot;);
+<span class="lineNum">    1051 </span>            :     printf(&quot;\n&quot;);
+<span class="lineNum">    1052 </span>            :     #endif
+<span class="lineNum">    1053 </span>            : 
+<span class="lineNum">    1054 </span>            :     //writes to FSR and FAR registers should be ignored
+<span class="lineNum">    1055 </span>            :     //else if (register_id==3)  MmuFaultStatusRegister  =data32;
+<span class="lineNum">    1056 </span>            :     //else if (register_id==4)  MmuFaultAddressRegister =data32;
+<span class="lineNum">    1057 </span>            :     
+<span class="lineNum">    1058 </span>            :     //Writes to MmuContextTablePointerRegister 
+<span class="lineNum">    1059 </span>            :     //should flush the entire TLB.
+<span class="lineNum">    1060 </span><span class="lineCov">      16554 :     if (TLB_ENABLED &amp;&amp; register_id==1)</span>
+<span class="lineNum">    1061 </span>            :     {
+<span class="lineNum">    1062 </span><span class="lineCov">       5050 :         flushEntireTLB();</span>
+<span class="lineNum">    1063 </span>            :         
+<span class="lineNum">    1064 </span>            :     }
+<span class="lineNum">    1065 </span>            :     
+<span class="lineNum">    1066 </span><span class="lineCov">      16554 : }</span>
+<span class="lineNum">    1067 </span>            : 
+<span class="lineNum">    1068 </span>            : 
+<span class="lineNum">    1069 </span>            :     
+<span class="lineNum">    1070 </span>            :     
+<a name="1071"><span class="lineNum">    1071 </span>            : //returns true if the </a>
+<span class="lineNum">    1072 </span>            : //Enable bit in the Mmu is set
+<span class="lineNum">    1073 </span><span class="lineCov">  120528280 : uint8_t MmuEnabled()</span>
+<span class="lineNum">    1074 </span>            : {
+<span class="lineNum">    1075 </span><span class="lineCov">  120528280 :     uint8_t Enable_bit = getBit32(MmuControlRegister,0);</span>
+<span class="lineNum">    1076 </span><span class="lineCov">  120528280 :     return Enable_bit;</span>
+<span class="lineNum">    1077 </span>            : }
+<span class="lineNum">    1078 </span>            : 
+<span class="lineNum">    1079 </span>            : //return true if this is a cache-related request
+<span class="lineNum">    1080 </span>            : //(such as cache flush/read cache data/tag)
+<a name="1081"><span class="lineNum">    1081 </span>            : //and should be ignored by the Mmu</a>
+<span class="lineNum">    1082 </span>            : 
+<span class="lineNum">    1083 </span><span class="lineCov">  121495615 : uint8_t isCacheRelatedRequest(uint8_t asi)</span>
+<span class="lineNum">    1084 </span>            : {
+<span class="lineNum">    1085 </span><span class="lineCov">  121495615 :     if(  asi==ASI_CACHE_TAG_I</span>
+<span class="lineNum">    1086 </span><span class="lineCov">  121495615 :        ||asi==ASI_CACHE_DATA_I</span>
+<span class="lineNum">    1087 </span><span class="lineCov">  121495615 :        ||asi==ASI_CACHE_TAG_I_D</span>
+<span class="lineNum">    1088 </span><span class="lineCov">  121495615 :        ||asi==ASI_CACHE_DATA_I_D</span>
+<span class="lineNum">    1089 </span><span class="lineCov">  121495615 :        || ASI_CACHE_FLUSH(asi))</span>
+<span class="lineNum">    1090 </span>            :         {//LCOV_EXCL_START
+<span class="lineNum">    1091 </span>            :             return 1;} 
+<span class="lineNum">    1092 </span>            :         //LCOV_EXCL_STOP
+<span class="lineNum">    1093 </span>            :     else
+<span class="lineNum">    1094 </span><span class="lineCov">  121495615 :         return 0;</span>
+<span class="lineNum">    1095 </span>            : }
+<span class="lineNum">    1096 </span>            : 
+<span class="lineNum">    1097 </span>            : 
+<span class="lineNum">    1098 </span>            : 
+<a name="1099"><span class="lineNum">    1099 </span>            : //returns true, if the request coming from cpu-side </a>
+<span class="lineNum">    1100 </span>            : //is a valid request
+<span class="lineNum">    1101 </span><span class="lineCov">  121495615 : uint8_t isValidMmuRequest(uint8_t asi)</span>
+<span class="lineNum">    1102 </span>            : {
+<span class="lineNum">    1103 </span><span class="lineCov">  121495615 :     if(  asi==ASI_BLOCK_COPY</span>
+<span class="lineNum">    1104 </span><span class="lineCov">  121495615 :        ||asi==ASI_BLOCK_FILL</span>
+<span class="lineNum">    1105 </span><span class="lineCov">  121495615 :        ||ASI_reserved(asi)</span>
+<span class="lineNum">    1106 </span><span class="lineCov">  121495615 :        ||ASI_unassigned(asi)</span>
+<span class="lineNum">    1107 </span>            :       )
+<span class="lineNum">    1108 </span>            :     {
+<span class="lineNum">    1109 </span>            :         //LCOV_EXCL_START
+<span class="lineNum">    1110 </span>            :         #ifdef SW
+<span class="lineNum">    1111 </span>            :         fprintf(stderr,&quot;\nMMU: ERROR. asi=0x%x not valid or not supported&quot;,asi);
+<span class="lineNum">    1112 </span>            :         #endif 
+<span class="lineNum">    1113 </span>            : 
+<span class="lineNum">    1114 </span>            :         return 0;
+<span class="lineNum">    1115 </span>            :         //LCOV_EXCL_STOP
+<span class="lineNum">    1116 </span>            :     }
+<span class="lineNum">    1117 </span><span class="lineCov">  121495615 :     return 1;</span>
+<span class="lineNum">    1118 </span>            : }
+<span class="lineNum">    1119 </span>            : 
+<span class="lineNum">    1120 </span>            : 
+<span class="lineNum">    1121 </span>            : 
+<span class="lineNum">    1122 </span>            : 
+<span class="lineNum">    1123 </span>            : 
+<a name="1124"><span class="lineNum">    1124 </span>            : //flush a TLB entry </a>
+<span class="lineNum">    1125 </span>            : //return 1 if flush was successful
+<span class="lineNum">    1126 </span><span class="lineCov">     355138 : uint8_t  flushPTEfromTLB(uint32_t TLB_index)</span>
+<span class="lineNum">    1127 </span>            : {
+<span class="lineNum">    1128 </span>            :     //Just invalidate the PTE entry
+<span class="lineNum">    1129 </span><span class="lineCov">     355138 :     TLB_entries[TLB_index].va_tag=0;</span>
+<span class="lineNum">    1130 </span><span class="lineCov">     355138 :     TLB_entries[TLB_index].ctx_tag=0;</span>
+<span class="lineNum">    1131 </span><span class="lineCov">     355138 :     TLB_entries[TLB_index].pte=0;</span>
+<span class="lineNum">    1132 </span><span class="lineCov">     355138 :     TLB_entries[TLB_index].pte_level=0;</span>
+<span class="lineNum">    1133 </span><span class="lineCov">     355138 :     return 1;</span>
+<span class="lineNum">    1134 </span>            : }
+<span class="lineNum">    1135 </span>            : 
+<span class="lineNum">    1136 </span>            : 
+<span class="lineNum">    1137 </span>            : 
+<a name="1138"><span class="lineNum">    1138 </span>            : //flush the entire TLB </a>
+<span class="lineNum">    1139 </span>            : ////return 1 if flush was successful
+<span class="lineNum">    1140 </span><span class="lineCov">       5550 : uint8_t  flushEntireTLB()</span>
+<span class="lineNum">    1141 </span>            : {
+<span class="lineNum">    1142 </span>            :     uint32_t i;
+<span class="lineNum">    1143 </span>            :     if(TLB_ENABLED)
+<span class="lineNum">    1144 </span>            :     {
+<span class="lineNum">    1145 </span><span class="lineCov">     360687 :         for(i=0;i&lt;TLB_SIZE;i++)</span>
+<span class="lineNum">    1146 </span>            :         {
+<span class="lineNum">    1147 </span><span class="lineCov">     355137 :             if(flushPTEfromTLB(i)==0) return 0; //there was an error</span>
+<span class="lineNum">    1148 </span>            :         }
+<span class="lineNum">    1149 </span>            :     }
+<span class="lineNum">    1150 </span><span class="lineCov">       5550 :     return 1; //success</span>
+<span class="lineNum">    1151 </span>            : }
+<span class="lineNum">    1152 </span>            : 
+<span class="lineNum">    1153 </span>            : 
+<span class="lineNum">    1154 </span>            : 
+<span class="lineNum">    1155 </span>            : 
+<span class="lineNum">    1156 </span>            :     
+<span class="lineNum">    1157 </span>            : //return the first empty location in TLB
+<span class="lineNum">    1158 </span>            : //to store a new entry. If all TLB entries
+<a name="1159"><span class="lineNum">    1159 </span>            : //are valid, pick a random entry, flush </a>
+<span class="lineNum">    1160 </span>            : //it to memory and use that location
+<span class="lineNum">    1161 </span><span class="lineCov">      10570 : uint32_t getEmptyTLBLocation()</span>
+<span class="lineNum">    1162 </span>            : {
+<span class="lineNum">    1163 </span>            :     uint32_t i;
+<span class="lineNum">    1164 </span>            :     uint32_t pte;
+<span class="lineNum">    1165 </span><span class="lineCov">      17344 :     for(i=0;i&lt;TLB_SIZE;i++)</span>
+<span class="lineNum">    1166 </span>            :     {
+<span class="lineNum">    1167 </span><span class="lineCov">      17343 :         pte=TLB_entries[i].pte;</span>
+<span class="lineNum">    1168 </span><span class="lineCov">      17343 :         if(getSlice32(pte,1,0)==0) //empty TLB entry</span>
+<span class="lineNum">    1169 </span>            :         {
+<span class="lineNum">    1170 </span><span class="lineCov">      10569 :             return i;</span>
+<span class="lineNum">    1171 </span>            :         }
+<span class="lineNum">    1172 </span>            :     }
+<span class="lineNum">    1173 </span>            :     
+<span class="lineNum">    1174 </span>            :     //None of the TLB entries are empty.
+<span class="lineNum">    1175 </span>            :     //Pick an entry randomly
+<span class="lineNum">    1176 </span><span class="lineCov">          1 :     i = rand()%TLB_SIZE;</span>
+<span class="lineNum">    1177 </span>            : 
+<span class="lineNum">    1178 </span>            :     //flush/invalidate the existing TLB entry
+<span class="lineNum">    1179 </span><span class="lineCov">          1 :     flushPTEfromTLB(i);</span>
+<span class="lineNum">    1180 </span>            :     
+<span class="lineNum">    1181 </span><span class="lineCov">          1 :     return i;</span>
+<span class="lineNum">    1182 </span>            : }
+<span class="lineNum">    1183 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

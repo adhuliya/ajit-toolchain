@@ -1,0 +1,8 @@
+Floating Point Multiply Instruction
+==================================
+fmuls	=>	Multiply Single
+fmuld	=>	Multiply Double
+fmulq	=>	Multiply Quad
+
+fsmuld	=>	Multiply Single to Double
+fdmulq	=>	Multiply Double to Quad
