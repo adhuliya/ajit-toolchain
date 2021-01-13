@@ -1697,11 +1697,11 @@ CONDFC  ("fbule", "cb013", 0xe, F_CONDBR),
 { "vfmul16",    F3F(2, 0x34, 0x147), F3F(~2, ~0x34, ~0x147), "v,B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 /* AJIT ISA V2: Aug 27, 2020. Changed success on: Sep 27, 2020. */
 /* AJIT ISA V2: New additions */
-{ "vfi16toh",   F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "v,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "vfhtoi16",   F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "v,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "v,g", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "fstoh",      F3F(2, 0x34, 0x151), F3F(~2, ~0x34, ~0x151), "e,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
-{ "fhtos",      F3F(2, 0x34, 0x152), F3F(~2, ~0x34, ~0x152), "e,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfi16toh",   F3F(2, 0x34, 0x148), F3F(~2, ~0x34, ~0x148), "B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "vfhtoi16",   F3F(2, 0x34, 0x149), F3F(~2, ~0x34, ~0x149), "B,H", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "faddreduce16", F3F(2, 0x34, 0x150), F3F(~2, ~0x34, ~0x150), "B,g", F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "fstoh",      F3F(2, 0x34, 0x151), F3F(~2, ~0x34, ~0x151), "f,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
+{ "fhtos",      F3F(2, 0x34, 0x152), F3F(~2, ~0x34, ~0x152), "f,g",   F_FLOAT, 0, v8}, /* rs1,rs2,rd are even numbered! */ /* AJIT */
 
 #define CMPFCC(x)	(((x)&0x3)<<25)
 
