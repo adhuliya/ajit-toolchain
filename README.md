@@ -69,7 +69,7 @@ disk size of the system (this step will be automated in future).
 
 First set `AJIT_HOME` environment variable to the
 directory this README.md file is in. This is `AJIT_HOME`.
-(Or run `source ./ajit_home_env` from this directory)
+(Or run `source ./set_ajit_home` from this directory)
 
 
 ### Install/Setup docker images
@@ -110,7 +110,7 @@ To cleanup the local system setup use,
 
 To setup the environment to start using Ajit Toolchain,
 
-    source ./ajit_home_env;
+    source ./set_ajit_home;
     source ./ajit_env;
 
 `./ajit_env` contains all the truth about the global
