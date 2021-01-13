@@ -182,6 +182,15 @@ void sdhc_initialize()
 
 }
 
+void cardInsert()
+{
+	//setting bits 16,17,18 of PSR indicated that card is inserted 
+	//and detected
+	cpu_reg_view.present_state[2]=0x7;
+	internal_map.present_state=0x0700;
+}
+
+
 void register_sdhc_pipes()
 {
 	//signal going from SDHC to IRC
@@ -206,7 +215,7 @@ void start_sdhc_threads()
 {
 	register_sdhc_pipes();
 	sdhc_initialize();
-
+	cardInsert();
 	PTHREAD_DECL(SDHC_Control);
 	PTHREAD_CREATE(SDHC_Control);
 }
@@ -498,10 +507,7 @@ void SDHC_Control()
 				// from this 32-bit read-only reg
 				// Members are updated as per the states of SDHC.
                           
-				//setting bits 16,17,18 of PSR indicated that card is inserted 
-				//and detected
-				cpu_reg_view.present_state[2]=0x7;
-				internal_map.present_state=0x0700;
+
 				switch (rwbar)
 				{
 				case WRITE:
