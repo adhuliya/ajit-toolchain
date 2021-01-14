@@ -35,20 +35,100 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
-uint32_t checkNormalInterrupts(struct SDHCInternalMap *int_str)
-{	//checks card insertion interrupt
-	uint8_t intr_flag = (int_str->normal_intr_status >> 6) & 0x1;
-	if (intr_flag)
+//if any bits in normal_intr_signal_en reg are set, they are 
+//to be compared with the bits of normal_intr_stat reg and,
+//if both are 1, interrupt has to be generated for that bit
+void checkNormalInterrupts(struct SDHCInternalMap *int_str, struct CPUViewOfSDHCRegs *str)
+{	
+	uint32_t normalStatusEnableBits = internal_map.normal_intr_status_enable & 0x1FFF;//12:0
+	// To find which bit of the normal_interrrupt_status_enable register
+	// has been set and reflect those in normal_interrupt_status register
+	internal_map.normal_intr_status |= normalStatusEnableBits << 12;
+
+	//copy these values to cpu side regs for normal-intr-stat reg
+	uint8_t size=2;
+	void *dest = &(str->normal_intr_status);//cpu side regs are destination here
+	void *source = &(int_str->normal_intr_status);
+	memcpy(dest,source,size);	
+
+	uint16_t intr_flag=0;
+	if ( (internal_map.present_state>>16) & 0x1 )//card insertion check
+	{	
+		event_card_inserted=1;
+		uint8_t norm_intr_stat_val = getBit16(internal_map.normal_intr_status,6);
+		uint8_t norm_intr_sig_en_val = getBit16(internal_map.normal_intr_signal_enable,6);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+	}
+
+	else if ( ((internal_map.present_state>>16) & 0x1) == 0)//card removal check
 	{
+		event_card_inserted=0;
+		uint8_t norm_intr_stat_val = getBit16(internal_map.normal_intr_status,7);
+		uint8_t norm_intr_sig_en_val = getBit16(internal_map.normal_intr_signal_enable,7);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+	}
+	//	TODO: more checks for other interrupts sources to be added
+	else if ( (internal_map.normal_intr_status>>15) & 0x1)//checks for error interrupts here itself first
+	{
+		intr_flag=1; 
+	}
+	
+	switch (intr_flag)
+	{
+	case 1:
 		SDHC_INT_OUT=SDHC_IRL;
 		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
-	}
-	else if (intr_flag==0)
-	{
+		break;
+	case 0:
 		//de-asserts the interrupt that may have been generated earlier
 		SDHC_INT_OUT = 0;
 		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
-	}	
+		break;
+	default:	
+		SDHC_INT_OUT = 0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+		break;
+	}
+}
+
+void checkErrorInterrupts(struct SDHCInternalMap *int_str, struct CPUViewOfSDHCRegs *str)
+{
+	uint16_t errorStatusEnableBits = internal_map.error_intr_status_enable & 0x1FFF;
+	// To find which bit of the error_interrrupt_status_enable register
+	// has been set and reflect those(12:0) in error_interrupt_status register
+	internal_map.error_intr_status |= errorStatusEnableBits << 12;
+
+	//copy these values to cpu side regs for error-intr-stat reg
+	uint8_t size=2;		
+	void *dest = &(str->error_intr_status);//cpu side regs are destination here
+	void *source = &(int_str->error_intr_status);
+	memcpy(dest,source,size);	
+
+	//check the "Normal" Interrupt status reg's 'MSB', 
+	//if it is 1, means an error interrupt is present
+	
+	uint16_t err_sign_en_bits = getSlice16(internal_map.error_intr_signal_enable,12,0);
+	uint16_t err_status_bits = getSlice16(internal_map.error_intr_status,12,0);
+	if( ( (err_sign_en_bits & err_status_bits) !=0) )
+	{
+		//if the above ANDed value is non-zero, indicates that there is an error interrupt,
+		//needs to be notified in the normal intr status's MSB
+		//the error interrupt will be notified through the normal intr status reg.
+		internal_map.normal_intr_status |= 1<<15;
+		uint8_t size=2;		
+		void *dest = &(str->normal_intr_status);
+		void *source = &(str->normal_intr_status);
+		memcpy(dest,source,size);
+	}
+
+	else // no error interrupt, send 0 to IRC
+	{
+		//de-asserts the interrupt that may have been generated earlier
+		SDHC_INT_OUT = 0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);		
+	}
+	//	TODO: write individual cases for all possible
+	//	error interrupt sources
 }
 
 void readSDHCRegister(uint32_t addr,
@@ -183,10 +263,10 @@ void readSDHCRegister(uint32_t addr,
 		else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS))
 		{
 		uint8_t size=2;
-		void *dest = &(str->timeout_ctrl);//cpu side regs are destination here
-		void *source = &(int_str->timeout_ctrl);
+		void *dest = &(str->normal_intr_status);//cpu side regs are destination here
+		void *source = &(int_str->normal_intr_status);
 		memcpy(dest,source,size);
-		data_out = (uint32_t)str->timeout_ctrl;
+		data_out = (uint32_t)str->normal_intr_status;
 		}
 		else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS))
 		{
@@ -462,7 +542,7 @@ void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->normal_intr_status[0] = temp1;
-		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		uint8_t temp2 = getSlice32(data_in_masked,15,8);
 		str->normal_intr_status[1] = temp2;
 		uint8_t size=2;		
 		void *dest = &(int_str->normal_intr_status);

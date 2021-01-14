@@ -2,7 +2,7 @@
 
 AUTHORS: Saurabh Bansode, Vishnu Easwaran E
 
-last modified: 28 Dec 2020
+last modified: 14 Jan 2021
 
 Model that emulates a version 3.00 SD Host Controller
 and an SD card for verification purposes.
@@ -15,7 +15,7 @@ Reference:
 /* FUNCTIONAL DETAIL
 
  THREADS:
-	SDHC controller consists of 1 thread
+	SDHC controller consists of 2 threads
 
 	1. Thread 'SDHC_Control'
 		keeps monitoring requests from CPU and performs
@@ -81,6 +81,10 @@ Reference:
 
 SDHC_Control:
 	Polls CPU commands and do corresponding register updates.
+
+2. SDHC_Internal_ops:
+	This thread will take special actions after read and write operations are performed to 
+	the register bank. Interrupts are handled in this thread.
 */
 
 #include <stdio.h>
@@ -112,8 +116,8 @@ uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 uint8_t SDHC_INT_OUT;
 
-CPUViewOfSDHCRegs cpu_reg_view;// = {0};
-SDHCInternalMap internal_map;// = {0};
+CPUViewOfSDHCRegs cpu_reg_view = {0};
+SDHCInternalMap internal_map = {0};
 
 // **** events **** //
 
@@ -124,7 +128,8 @@ bool event_card_inserted; // TRUE for inserted; FALSE for removed
 // thread that monitors data written and read from the SDHC registers
 void SDHC_Control();
 DEFINE_THREAD(SDHC_Control);
-
+void SDHC_internal_ops();
+DEFINE_THREAD(SDHC_internal_ops);
 // Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -185,7 +190,7 @@ void sdhc_initialize()
 void cardInsert()
 {
 	//setting bits 16,17,18 of PSR indicated that card is inserted 
-	//and detected
+	//and detected 
 	cpu_reg_view.present_state[2]=0x7;
 	internal_map.present_state=0x0700;
 }
@@ -218,11 +223,12 @@ void start_sdhc_threads()
 	cardInsert();
 	PTHREAD_DECL(SDHC_Control);
 	PTHREAD_CREATE(SDHC_Control);
+	PTHREAD_DECL(SDHC_internal_ops);
+	PTHREAD_CREATE(SDHC_internal_ops);
 }
 
 void SDHC_Control()
 {
-	register_sdhc_pipes();
 	while(1)
 	{
 		uint8_t rwbar, byte_mask;
@@ -513,7 +519,6 @@ void SDHC_Control()
 				case WRITE:
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
-				
 				case READ:
 					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
 					break;
@@ -642,23 +647,40 @@ void SDHC_Control()
 				switch (rwbar)
 				{
 				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-				//after writing to regs, check if interrupts have to be enabled/disabled
-				checkNormalInterrupts(&internal_map);
 				break;
 				case READ: readSDHCRegister(addr, &cpu_reg_view, &internal_map);
 				break;
-				default:
-					break;
+				default:break;
 				}
 				
 			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
+			switch (rwbar)
+			{
+				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				break;
+				case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+			default:break;
+			}
 				// Rsvd & RW1C
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):
-				// Rsvd, RW & RO
+			switch (rwbar)
+			{
+				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				break;
+				case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+				default: break;
+			}
 			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS_EN):
 				// Rsvd & RW
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN):
-				// Rsvd, RW & RO
+			switch (rwbar)
+			{
+			case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+			break;
+			case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+			break;
+			default: break;
+			}
 			case (0xffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN):
 				// Rsvd & RW
 			case (0xffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS):
@@ -741,14 +763,12 @@ void SDHC_Control()
 
 void SDHC_internal_ops()
 {
-	if (event_card_inserted)
+while (1)
 	{
-		// TODO
-	}
-	else if(!event_card_inserted)
-	{
-		// TODO
-		// - clear 'SD Bus Power'
-		// - clear D Clock Enable
+		pthread_mutex_lock(&Sdhc_lock);
+		checkNormalInterrupts(&internal_map, &cpu_reg_view);
+		checkErrorInterrupts(&internal_map, &cpu_reg_view);
+		pthread_mutex_unlock(&Sdhc_lock);
 	}
 }
+
