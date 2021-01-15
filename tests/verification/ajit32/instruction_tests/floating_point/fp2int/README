@@ -1,0 +1,5 @@
+Convert Floating Point to Integer Instruction
+=============================================
+fstoi	=>	convert Single to Integer
+fdtoi	=> 	convert Double to Integer
+fqtoi	=> 	convert Quad to Integer

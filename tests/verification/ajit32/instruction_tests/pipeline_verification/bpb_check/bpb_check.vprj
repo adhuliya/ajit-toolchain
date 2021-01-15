@@ -1,0 +1,5 @@
+SOURCES= bpb_check.s
+
+RESULTS=
+g1=0x0
+g3=0x10

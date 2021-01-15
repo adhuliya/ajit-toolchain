@@ -1,0 +1,5 @@
+# source this file
+
+_APP_NAME="mysite";
+
+docker exec -w /app -it $_APP_NAME  /bin/bash;

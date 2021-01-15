@@ -1,0 +1,3 @@
+# First source this file for the development server to work.
+
+export DEV_SERVER=True;

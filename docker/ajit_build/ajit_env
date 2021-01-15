@@ -1,0 +1,150 @@
+# Script to setup the Ajit Environment variables.
+# Source this script to setup necessary paths.
+
+# NOTE: This script depends on $AJIT_HOME env variable.
+#       AJIT_HOME is set to the root of git repository.
+#
+#       In docker images this file is appended to the
+#       ~/.bashrc file which helps source this file
+#       automatically on opening a bash shell.
+
+################################################################
+## START: SETUP_BASE_PATHS
+################################################################
+export AJIT_AHIR_DIR="$AJIT_HOME/ahir_release";
+export AJIT_TOOLS_DIR="$AJIT_HOME/tools";
+export AJIT_TESTS_DIR="$AJIT_HOME/tests";
+
+export AJIT_CMODEL_DIR="$AJIT_HOME/simulators/c_model";
+export AJIT_CMODEL_BIN_DIR="$AJIT_CMODEL_DIR/bin";
+
+export AJIT_BUILD_DIR="$AJIT_HOME/build";
+
+export AJIT_BUILDROOT_DIR="$AJIT_BUILD_DIR/buildroot-2014.08";
+export AJIT_BUILDROOT_HOST_DIR="$AJIT_BUILDROOT_DIR/output/host";
+export AJIT_BUILDROOT_BIN_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/bin";
+
+export AJIT_UCLIBC_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/sparc-buildroot-linux-uclibc";
+
+################################################################
+## END  : SETUP_BASE_PATHS
+################################################################
+
+
+################################################################
+## START: SOURCE_AHIR_RELEASE
+################################################################
+pushd $AJIT_AHIR_DIR &> /dev/null;
+source ./ahir_bashrc;
+popd &> /dev/null;
+################################################################
+## END  : SOURCE_AHIR_RELEASE
+################################################################
+
+
+################################################################
+## START: SET_PROGRAM_EXECUTABLE_PATHS
+################################################################
+# for: sparc-linux-gcc, sparc-linux-readelf, ...
+export PATH=$AJIT_BUILDROOT_BIN_DIR:$PATH;
+# for: compileToSparc.py, pt_load_sections.py, ...
+export PATH=$AJIT_TOOLS_DIR/scripts:$PATH;
+# for: generateMemoryMap_Byte
+export PATH=$AJIT_TOOLS_DIR/misc/bin:$PATH;
+# for: remapMemmap
+export PATH=$AJIT_TOOLS_DIR/genVmapAsm/bin:$PATH;
+# for: ajit_C_system_model
+export PATH=$AJIT_CMODEL_BIN_DIR:$PATH;
+# for: TODO: Saurabh please comment here.
+export PATH=$AJIT_TOOLS_DIR/linker:$PATH;
+
+# points to the C system model executable
+export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";
+
+################################################################
+## END  : SET_PROGRAM_EXECUTABLE_PATHS
+################################################################
+
+
+################################################################
+## START: SET_LIBRARY_PATHS 
+################################################################
+export AJIT_BUILDROOT_LIB_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/lib";
+# UCLIBC_LIB="$AJIT_UCLIBC_DIR/lib";
+export AJIT_UCLIBC_LIB_DIR="$AJIT_UCLIBC_DIR/sysroot/usr/lib";
+export AJIT_CMODEL_LIB_DIR="$AJIT_CMODEL_DIR/code/debugger/doval/antlr3Cruntime/build/lib";
+export LD_LIBRARY_PATH=$AJIT_BUILDROOT_LIB_DIR:$LD_LIBRARY_PATH;
+export LD_LIBRARY_PATH=$AJIT_UCLIBC_LIB_DIR:$LD_LIBRARY_PATH;
+export LD_LIBRARY_PATH=$AJIT_CMODEL_LIB_DIR:$LD_LIBRARY_PATH;
+
+# set include paths
+# UCLIBC_INCLUDE="$AJIT_UCLIBC_DIR/include/c++/4.7.4/";
+export AJIT_UCLIBC_HEADERS_DIR="$AJIT_UCLIBC_DIR/sysroot/usr/include";
+
+# python paths
+export PYTHONPATH="$AJIT_TOOLS_DIR/pyelftools-0.25:$AJIT_TOOLS_DIR/scripts:$PYTHONPATH";
+
+################################################################
+## END  : SET_LIBRARY_PATHS 
+################################################################
+
+
+
+################################################################
+# START: OLD_PATHS
+################################################################
+export AJIT_TOOLS_RELEASE=$(pwd)
+#AD export AJIT_C_REF_MODEL=$(pwd)/c_reference_model
+export AJIT_C_REF_MODEL=$AJIT_CMODEL_DIR;
+
+# compileToSparc.py needs these to be defined.
+export AJIT_PROJECT_HOME=$AJIT_HOME;
+export AJIT_PROJECT_CROSS_COMPILER=sparc-linux
+#export AJIT_GLIBC_INSTALL_DIR=/usr/local/ajit_release/tools/glibc
+export AJIT_GLIBC_INSTALL_DIR=$(pwd)/tools/glibc
+
+################################################
+#  C-reference model (we use the "new" 64-bit C reference model)
+################################################
+export AJIT_C_REF_RELEASE=$AJIT_TOOLS_RELEASE/c_reference_model
+
+#library paths for C-reference model...
+#AD export LD_LIBRARY_PATH=$AJIT_C_REF_RELEASE/lib:$LD_LIBRARY_PATH
+
+# executable path for C reference model.
+#AD export PATH=$AJIT_C_REF_RELEASE/bin:$PATH
+
+################################################
+#  Aa-reference model
+################################################
+# export LD_LIBRARY_PATH=$AJIT_TOOLS_RELEASE/Aa/lib:$LD_LIBRARY_PATH
+
+# executable.
+# export PATH=$AJIT_TOOLS_RELEASE/Aa/bin:$PATH;
+
+
+################################################
+# tools.. scripts, cross-compiler etc.
+################################################
+# export LD_LIBRARY_PATH=$AJIT_TOOLS_RELEASE/tools/cross-compiler/lib/:$LD_LIBRARY_PATH
+
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/scripts/:$PATH
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/bin/:$PATH
+#AD export PATH=$AJIT_TOOLS_RELEASE/tools/cross-compiler/bin/:$PATH
+
+export AJIT_UCLIBC_INSTALL_DIR=$AJIT_UCLIBC_LIB_DIR/..;
+export AJIT_LIBGCC_INSTALL_DIR=$AJIT_BUILDROOT_HOST_DIR/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4;
+
+export AJIT_UCLIBC_HEADERS=$AJIT_BUILDROOT_DIR/output/build/host-binutils-2.22/include;
+#export AJIT_LIBGCC_INSTALL_DIR=$AJIT_BUILDROOT_DIR/output/build/host-gcc-final-4.7.4/gcc;
+export AJIT_ACCESS_ROUTINES=$AJIT_TOOLS_DIR/ajit_access_routines;
+export AJIT_MINIMAL_PRINTF_TIMER=$AJIT_TOOLS_DIR/minimal_printf_timer; 
+
+
+# To satisfy validation_outer_env_v3.py script
+export AJIT_AA_VALIDATION_EXECUTABLE_LOCATION=""
+
+################################################################
+# END  : OLD_PATHS
+################################################################
+

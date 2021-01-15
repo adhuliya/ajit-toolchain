@@ -1,7 +1,0 @@
-set pagination off
-handle SIGTRAP nostop
-handle SIGTRAP ignore
-handle SIGTRAP noprint
-set debug remote 1
-set logging file gdb_log.txt
-set logging on

@@ -1,0 +1,7 @@
+SOURCES = Test_Timer.s
+
+RESULTS = 
+g5=0x1
+g6=0xFFFF3000
+g2=0x5
+g3=0xFFF

@@ -1,3 +1,6 @@
+# general
+build/
+
 # Prerequisites
 *.d
 
@@ -16,6 +19,8 @@
 *.dylib
 *.dll
 !/src/buildroot-2014.08/**/*.so
+!/buildroot/buildroot-2014.08/**/*.so
+!/ahir_release/**/*.so
 
 # Fortran module files
 *.mod
@@ -50,6 +55,8 @@
 *.objdump
 *wtrace*
 
+# scons
+*.dblite
 
 # python related
 __pycache__/
@@ -61,3 +68,11 @@ __pycache__/
 # When configure fails, SCons outputs these
 config.log
 .sconf_temp
+
+#misc
+/run
+
+# tests folder
+/tests/**/sparc-assembly
+/tests/**/sparc-obj
+

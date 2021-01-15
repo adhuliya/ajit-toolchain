@@ -1,0 +1,5 @@
+Instruction : LD
+Details :
+Loads a word from memory into the register
+
+LDTV - Checking the trap conditions for LD

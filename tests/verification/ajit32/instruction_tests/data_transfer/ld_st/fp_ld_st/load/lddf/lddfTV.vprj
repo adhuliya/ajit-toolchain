@@ -1,0 +1,10 @@
+SOURCES = lddfTV.s
+
+
+
+RESULTS = 
+g1=0x00000080
+o0 = 0x110
+o1 = 0x118
+l0 = 0x000010e0
+g2 = 0x00000002

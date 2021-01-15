@@ -1,0 +1,2 @@
+This validation suite was written for initial PC=0xf0004000 and is now defunct. Please use the updated mmu validation test suite (which works with initial PC=0) at ../mmu_validation_suite_for_PC_0
+

@@ -1,0 +1,5 @@
+Instruction : STF
+Details :
+Stores the floating-point register content in a memory location
+
+stfTV - test cases for trap conditions

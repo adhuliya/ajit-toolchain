@@ -1,0 +1,23 @@
+
+NOTE: Change the path to your verification folder.
+
+The script can be used as -
+
+valid.py -option
+
+THe options are -
+
+1. 32       - All 32 bit tests
+2. control  - All control instructions
+3. data     - All data instructions
+4. float    - All floating point instructions
+5. integer  - All integer_alu instructions
+6. misc     - Some instructions such as rd_wr,save,restore etc.
+7. pipe     - Verifying pipeline
+8. cache    - Cache based validation
+9. Ctests   - Basic C programs 
+10. memory  - Memory test with and without mmu
+11. mmu     - mmu validation suite 
+12. serial  - serial devide tests
+13. template- C with inline assembly 
+14. timer   - Testing the timer

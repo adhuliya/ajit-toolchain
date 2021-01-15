@@ -1,0 +1,3 @@
+Instruction : STSB
+Details :
+Stores the lower byte from the register into memory.
