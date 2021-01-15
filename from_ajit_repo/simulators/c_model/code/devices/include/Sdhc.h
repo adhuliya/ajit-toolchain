@@ -251,6 +251,10 @@ struct CPUViewOfSDHCRegs *str);
 void checkErrorInterrupts(struct SDHCInternalMap *int_str, 
 struct CPUViewOfSDHCRegs *str);
 
+//For setting what type of response to expect for all commands send to sd card
+uint8_t checkResponseType(struct SDHCInternalMap *int_str, 
+struct CPUViewOfSDHCRegs *str);
+
 //Accumulates the parameters to be inserted in the 48 bit frame
 // and places them in the required manner
 void generateCommandForSDCard(struct SDHCInternalMap *int_str);

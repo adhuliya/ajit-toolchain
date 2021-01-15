@@ -120,11 +120,12 @@ CPUViewOfSDHCRegs cpu_reg_view = {0};
 SDHCInternalMap internal_map = {0};
 
 // **** events **** //
-
 bool event_card_inserted; // TRUE for inserted; FALSE for removed
+//flags
+uint8_t command_register_updated; //TRUE after a write is performed on this register
+uint8_t cmd_response_receieved; //associated with command completed interrupt
 
 // **** Thread declarations **** //
-
 // thread that monitors data written and read from the SDHC registers
 void SDHC_Control();
 DEFINE_THREAD(SDHC_Control);
@@ -431,6 +432,7 @@ void SDHC_Control()
 				{
 				case WRITE:
 					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					command_register_updated=1;
 					break;
 				
 				case READ:
@@ -440,6 +442,7 @@ void SDHC_Control()
 					break;
 				}
 				break;
+
 			case (0xffffff & ADDR_SDHC_RESPONSE0):
 			case (0xffffff & ADDR_SDHC_RESPONSE1):
 			case (0xffffff & ADDR_SDHC_RESPONSE2):
@@ -766,6 +769,16 @@ void SDHC_internal_ops()
 while (1)
 	{
 		pthread_mutex_lock(&Sdhc_lock);
+		
+		if(command_register_updated)
+		{
+			internal_map.present_state |= 1<<0; //set the CMD inhibit(CMD) bit to 1
+			uint8_t resp_type = checkResponseType(&internal_map, &cpu_reg_view);
+			//the value resp_type holds the lower byte of the command(0xE) register
+			setSlice16(internal_map.command_reg,7,0,resp_type);
+			memcpy(&cpu_reg_view.present_state, &internal_map.present_state,4);
+			memcpy(&cpu_reg_view.command_reg, &internal_map.command_reg,2);
+		}
 		checkNormalInterrupts(&internal_map, &cpu_reg_view);
 		checkErrorInterrupts(&internal_map, &cpu_reg_view);
 		pthread_mutex_unlock(&Sdhc_lock);

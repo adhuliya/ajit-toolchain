@@ -35,6 +35,34 @@ void generateCommandForSDCard(struct SDHCInternalMap *int_str)
 	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
+uint8_t checkResponseType(struct SDHCInternalMap *int_str, struct CPUViewOfSDHCRegs *str)
+{
+	uint8_t n = getSlice16(int_str->command_reg,13,8);
+	uint8_t cmd;
+	if( (n == 0)|| (n==4) ||(n==15))//No response
+  	cmd = (0<<6)|(0<<5)|(0<<4)|(0<<3)|0;
+  else if((n==2)||(n==9)||(n==10))//Response generated is R2.
+    cmd = (0<<6)|(0<<5)|(0<<4)|(1<<3)|(0<<2)|1;
+  else if ((n == 411) || (n == 412)) //Response generated is R3.
+  {
+    n=41;
+    cmd = (0<<6)|(0<<5)|(0<<4)|(0<<3)|(0<<2)|2;
+  }
+  else if((n == 55)||(n == 3)||(n==8)||(n==17)||(n==19)||(n==24)||(n==25))
+  //Response generated is of the type R1/R7.
+  {
+    if((n==17)||(n==24)||(n==25))
+    cmd = (0<<6)|(1<<5)|(1<<4)|(1<<3)|(0<<2)|2;
+    else
+    cmd = (0<<6)|(0<<5)|(1<<4)|(1<<3)|(0<<2)|2;
+  }
+  else//Response Type R1b, R5b
+  {
+  cmd = (0<<6)|(0<<5)|(1<<4)|(1<<3)|(0<<2)|3;
+  }
+  return (cmd & 0xff);
+}
+
 //if any bits in normal_intr_signal_en reg are set, they are 
 //to be compared with the bits of normal_intr_stat reg and,
 //if both are 1, interrupt has to be generated for that bit
@@ -71,6 +99,13 @@ void checkNormalInterrupts(struct SDHCInternalMap *int_str, struct CPUViewOfSDHC
 	else if ( (internal_map.normal_intr_status>>15) & 0x1)//checks for error interrupts here itself first
 	{
 		intr_flag=1; 
+	}
+	
+	else if ( internal_map.command_reg & 0x1 ) //command complete check interrupt
+	{
+		uint8_t norm_intr_stat_val = getBit16(internal_map.normal_intr_status,0);
+		uint8_t norm_intr_sig_en_val = getBit16(internal_map.normal_intr_signal_enable,0);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);		
 	}
 	
 	switch (intr_flag)
