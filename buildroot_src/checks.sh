@@ -17,31 +17,37 @@
 
 if [[ -e $BUILD_DIR/$BUILDROOT_DIR_NAME ]]; then
   echo "ERROR: $BUILD_DIR/$BUILDROOT_DIR_NAME already exists." |& tee -a $BUILD_OUTFILE;
+  echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 2;
 fi
 
 if [[ ! -e "$SRC/$BUILDROOT_DIR_NAME" ]]; then
   echo "ERROR: $SRC/$BUILDROOT_DIR_NAME doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
+  echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 1;
 fi
 
 if [[ ! -e $SRC/cfns.h ]]; then
   echo "ERROR: cfns.h doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
+  echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 1;
 fi
 
 if [[ ! -e $SRC/e_sqrt.c ]]; then
   echo "ERROR: e_sqrt.c doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
+  echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 1;
 fi
 
 if [[ ! -e $SRC/update-all-ajit-code-and-run-tests.sh ]]; then
   echo "ERROR: update-all-ajit-code-and-run-tests.sh doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
+  echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 1;
 fi
 
 if [[ ! -e "$SRC/$DEVELOPMENT" ]]; then
   echo "ERROR: $SRC/$DEVELOPMENT doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
-  exit 1;
+  echo -e "\n\nNOT EXITING BUT NOTE THIS!!!!!! Once updated bin-utils is added this msg should be addressed.\n\n" |& tee -a $BUILD_OUTFILE;
+  # exit 1; # uncomment this once development is added
 fi
 
