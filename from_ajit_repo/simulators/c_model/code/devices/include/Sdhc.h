@@ -238,10 +238,10 @@ typedef struct CPUViewOfSDHCRegs
 }CPUViewOfSDHCRegs;
 
 //Functions for register value manipulations
-void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
+void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
-void readSDHCRegister(uint32_t addr,  
+void readSdhcReg(uint32_t addr,  
 struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
 
 //functions for checking whether an interrupt has to be generated

@@ -268,12 +268,12 @@ void sdhcControl()
 					#ifdef SDHC_DEBUG
 					fprintf(stderr, "\nInside case arg2 and rwbar = %d\n", rwbar);
 					#endif
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				}
 					break;
 				case READ:
 				{
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 				}
 					break;
 				default:
@@ -296,12 +296,12 @@ void sdhcControl()
 					// checking for ongoing transactions
 					if ( !( getBit32(internal_map.present_state, 9) || (getBit32(internal_map.present_state, 8))) )
 					{
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					}
 				}
 					break;
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					setSlice32(internal_map.blk_size, 14, 12, 0);
@@ -326,10 +326,10 @@ void sdhcControl()
 					switch (rwbar)
 					{
 					case WRITE:
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 						break;
 					case READ:
-						readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+						readSdhcReg(addr, &cpu_reg_view, &internal_map);
 						break;
 					default:
 						break;
@@ -345,10 +345,10 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -389,11 +389,11 @@ void sdhcControl()
 				{
 				case WRITE:
 					if (!(getBit32(internal_map.present_state, 1)))
-						updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+						writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -431,12 +431,12 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					command_register_updated=1;
 					break;
 				
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -460,11 +460,11 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -481,12 +481,12 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					// TODO copy to sdhc_tx_buffer
 					break;
 				
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					// TODO copy from sdhc_rx_buffer
 					break;
 				default:
@@ -520,10 +520,10 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -561,11 +561,11 @@ void sdhcControl()
 				switch (rwbar)
 				{
 				case WRITE:
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					break;
 				
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -620,7 +620,7 @@ void sdhcControl()
 				{
 				case WRITE:
 					
-					updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+					writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 					
 					if (getBit8(internal_map.sw_reset, 2))
 					{
@@ -649,9 +649,9 @@ void sdhcControl()
 				// Rsvd, ROC & RW1C
 				switch (rwbar)
 				{
-				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				case WRITE: writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
-				case READ: readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+				case READ: readSdhcReg(addr, &cpu_reg_view, &internal_map);
 				break;
 				default:break;
 				}
@@ -659,18 +659,18 @@ void sdhcControl()
 			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS):
 			switch (rwbar)
 			{
-				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				case WRITE: writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
-				case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+				case READ: readSdhcReg(addr,&cpu_reg_view,&internal_map);
 			default:break;
 			}
 				// Rsvd & RW1C
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN):
 			switch (rwbar)
 			{
-				case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				case WRITE: writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
-				case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+				case READ: readSdhcReg(addr,&cpu_reg_view,&internal_map);
 				default: break;
 			}
 			case (0xffff & ADDR_SDHC_ERROR_INTR_STATUS_EN):
@@ -678,9 +678,9 @@ void sdhcControl()
 			case (0xffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN):
 			switch (rwbar)
 			{
-			case WRITE: updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+			case WRITE: writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 			break;
-			case READ: readSDHCRegister(addr,&cpu_reg_view,&internal_map);
+			case READ: readSdhcReg(addr,&cpu_reg_view,&internal_map);
 			break;
 			default: break;
 			}
@@ -701,7 +701,7 @@ void sdhcControl()
 					// write protected
 					break;
 				case READ:
-					readSDHCRegister(addr, &cpu_reg_view, &internal_map);
+					readSdhcReg(addr, &cpu_reg_view, &internal_map);
 					break;
 				default:
 					break;
@@ -751,7 +751,7 @@ void sdhcControl()
 /* 
 			if (!rwbar)	// write
 			{
-				updateRegister(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 
 			}
 			else if(rwbar)	// read

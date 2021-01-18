@@ -166,7 +166,7 @@ void checkErrorInterrupts(struct SDHCInternalMap *int_str, struct CPUViewOfSDHCR
 	//	error interrupt sources
 }
 
-void readSDHCRegister(uint32_t addr,
+void readSdhcReg(uint32_t addr,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
 	uint32_t data_out = 0;
@@ -378,7 +378,7 @@ void readSDHCRegister(uint32_t addr,
 	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 }
 
-void updateRegister(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
+void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
  struct CPUViewOfSDHCRegs *str, struct SDHCInternalMap *int_str)
 {
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
