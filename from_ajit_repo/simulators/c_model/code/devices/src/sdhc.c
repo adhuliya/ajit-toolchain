@@ -19,7 +19,7 @@ Reference:
 
 	1. Thread 'SDHC_Control'
 		keeps monitoring requests from CPU and performs
-		read/writes to deviceregisters
+		read/writes to device registers
 
   DEVICE REGISTERS:
 	- The register set is 256 bytes in size
@@ -125,16 +125,16 @@ bool event_card_inserted; // TRUE for inserted; FALSE for removed
 uint8_t command_register_updated; //TRUE after a write is performed on this register
 uint8_t cmd_response_receieved; //associated with command completed interrupt
 
-// **** Thread declarations **** //
+/**** Thread declarations ****/
 // thread that monitors data written and read from the SDHC registers
-void SDHC_Control();
-DEFINE_THREAD(SDHC_Control);
-void SDHC_internal_ops();
-DEFINE_THREAD(SDHC_internal_ops);
+void sdhcControl();
+DEFINE_THREAD(sdhcControl);
+void sdhcInternalOps();
+DEFINE_THREAD(sdhcInternalOps);
 // Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
 
-void sdhc_initialize()
+void sdhcInitialState()
 {
 
 	//interrupt output signal
@@ -197,7 +197,7 @@ void cardInsert()
 }
 
 
-void register_sdhc_pipes()
+void registerSdhcPipes()
 {
 	//signal going from SDHC to IRC
 	register_port("SDHC_to_IRC_INT",8,1);
@@ -208,8 +208,8 @@ void register_sdhc_pipes()
 
 	register_pipe("peripheral_bridge_to_sdhc_request", depth, 64, 0);
 	register_pipe("sdhc_to_peripheral_bridge_response", depth, 32, 0);
-	register_pipe("sdhc_to_sdcard_request",depth,64,0);
-	register_pipe("sdcard_to_sdhc_response",depth,64,0);
+	register_pipe("sdhc_to_sdcard_request", depth, 64, 0);
+	register_pipe("sdcard_to_sdhc_response", depth, 64, 0);
 	
 	set_pipe_is_read_from("peripheral_bridge_to_sdhc_request");
 	set_pipe_is_written_into("sdhc_to_peripheral_bridge_response");
@@ -217,19 +217,20 @@ void register_sdhc_pipes()
 	set_pipe_is_read_from("sdcard_to_sdhc_response");
 }
 
-void start_sdhc_threads()
+void startSdhcThreads()
 {
-	register_sdhc_pipes();
-	sdhc_initialize();
+	registerSdhcPipes();
+	sdhcInitialState();
 	cardInsert();
-	PTHREAD_DECL(SDHC_Control);
-	PTHREAD_CREATE(SDHC_Control);
-	PTHREAD_DECL(SDHC_internal_ops);
-	PTHREAD_CREATE(SDHC_internal_ops);
+	PTHREAD_DECL(sdhcControl);
+	PTHREAD_CREATE(sdhcControl);
+	PTHREAD_DECL(sdhcInternalOps);
+	PTHREAD_CREATE(sdhcInternalOps);
 }
 
-void SDHC_Control()
+void sdhcControl()
 {
+	registerSdhcPipes();
 	while(1)
 	{
 		uint8_t rwbar, byte_mask;
@@ -310,15 +311,14 @@ void SDHC_Control()
 				
 				break;
 			case (0xffffff & ADDR_SDHC_BLOCK_COUNT):
-				// bits
+				// *bits*
 				// 15-0		RW
 				// enabled when 'block count enable' in 'transfer mode' is set to 1
-				// valid for the case, values/states wont change
-				// writes a only multiple block transfers
+				// valid for only multiple block transfers
 				// host driver set this value and host controller decrements the value
 				// according to the tranfered blocks; stops when reaches zero
 				// can be accessed only when no transactions is executing; during data transfer
-				// ignore write and read will be incorrect
+				// ignore write, and read will be incorrect
 				if( getBit16(internal_map.tx_mode, 1) &&  
 					(!( getBit32(internal_map.present_state, 9) || 
 						(getBit32(internal_map.present_state, 8)))) )
@@ -340,7 +340,7 @@ void SDHC_Control()
 				break;
 			case (0xFFFFFF & ADDR_SDHC_ARG_1):
 				// *bits*
-				//  31-00	RW 	SD command arg is specified as bit 39-8 of Command-Format
+				// 31-00	RW 	SD command arg is specified as bit 39-8 of Command-Format
 				// 			 in the physical layer spec
 				switch (rwbar)
 				{
@@ -359,8 +359,8 @@ void SDHC_Control()
 				// 15-06	Rsvd
 				// 05		RW	multi/single blk select
 				// 			 bit is set when issuing multiple-block tx commands
-				// 			 using DAT line. For any other command this bit willbe 0.
-				// 			 If 0, it is not necessary to se 'blk count' register.
+				// 			 using DAT line. For any other command this bit will be 0.
+				// 			 If 0, it is not necessary to set 'blk count' register.
 				// 04		RW	data transfer direction set
 				// 			 bit defines direction of data line transfers.
 				// 			 set to 1 by host driver to tx data from SD to SDHC, 0 for
@@ -380,8 +380,8 @@ void SDHC_Control()
 				// 			 to upper byte of 'command reg'
 				// 				1 DMA data tx
 				// 				0 no data tx or non-DMA data tx
-				// Used to control the operation of data transfer;host driver shall set this reg before issuing 
-				// cmd which transfers data or before issuing a Resume command
+				// Used to control the operation of data transfer; host driver shall set this reg before issuing 
+				// cmd which transfers data, or before issuing a Resume command
 				// To prevent data loss host controller shall implement write protection during
 				// data transfers; writes to this reg sahll be ignroed when 'comand inhibit (DAT)'[1]
 				// in 'present state reg'[31:0] is 1
@@ -636,7 +636,7 @@ void SDHC_Control()
 					}
 					else if(getBit8(internal_map.sw_reset, 0))
 					{
-						sdhc_initialize();
+						sdhcInitialState();
 					}
 					break;
 				case READ:
@@ -764,7 +764,7 @@ void SDHC_Control()
 	}
 }
 
-void SDHC_internal_ops()
+void sdhcInternalOps()
 {
 while (1)
 	{

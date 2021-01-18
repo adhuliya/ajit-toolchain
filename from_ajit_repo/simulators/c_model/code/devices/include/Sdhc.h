@@ -128,22 +128,22 @@
 
 
 //register pipes/signals used by the SDHC
-void register_sdhc_pipes();
-void sdhc_initialize();
+void registerSdhcPipes();
+void sdhcInitialState();
 
 //this function will imitate the action of a SD card being
 //physically inserted in the Slot and will change the necessary
 //bits of internal registers.
 void cardInsert();
 
-void start_sdhc_threads();
+void startSdhcThreads();
 
 // Threads for SDHC control
 //1.monitors data going to and coming from CPU via bridge 
 //2. values are stored in CPUViewOfSDHCRegs struct 
 //3. Copies the values of CPUViewOfSDHCRegs inside
 //	SDHCInternalMap struct using updateRegister function
-void SDHC_Control();
+void sdhcControl();
 
 typedef struct SDHCInternalMap
 {
