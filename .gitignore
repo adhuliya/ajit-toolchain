@@ -71,6 +71,7 @@ config.log
 
 #misc
 /run
+ajit_C_system_model
 
 # tests folder
 /tests/**/sparc-assembly
