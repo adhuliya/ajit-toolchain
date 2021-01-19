@@ -65,11 +65,6 @@ uint8_t getBit16(uint16_t reg, uint8_t pos)
 	return getSlice16(reg, pos, pos);
 }
 
-// from a 32-bit value (reg), extract the
-// bit at position pos.
-//
-//  reg is assumed to be [31:0]
-//
 uint8_t getBit32(uint32_t reg, uint8_t pos)
 {
 	return getSlice32(reg, pos, pos);

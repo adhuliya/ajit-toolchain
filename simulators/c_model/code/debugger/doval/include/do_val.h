@@ -1,7 +1,7 @@
 #ifndef do_val_h__
 #define do_val_h__
-//#include "Mmu.h"
-//#include "CacheInterface.h"
+#include "Mmu.h"
+#include "CacheInterface.h"
 #include "SparcCore.h"
 #include "hwServer.h"
 #include <stdio.h>

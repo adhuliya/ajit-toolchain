@@ -4,7 +4,7 @@
 #   ABS_BIN_DIR_PATH
 #   BUILD_OUTFILE
 
-echo "\n\n\n`date`\n\n" >> $BUILD_OUTFILE;
+echo -e "\n\n\n`date`\n\n";
 
 # STEP 0: Some basic tests.
 if [[ ! -e $ABS_BIN_DIR_PATH ]]; then

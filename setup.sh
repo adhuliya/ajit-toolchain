@@ -20,34 +20,38 @@ if [[ -z $AJIT_HOME ]]; then
   exit 1;
 fi
 
-mkdir -p $AJIT_HOME/build;
-OUTFILE_LOG=$AJIT_HOME/build/local_build.log;
+_OUT_LOG=$AJIT_HOME/build.log;
 
-echo -e "\nOutput log file: $OUTFILE_LOG\n";
-sleep 1;
+{
+  echo -e "\nOutput log file: $_OUT_LOG \n";
+  sleep 1;
 
-if isdocker; then 
-  echo "Inside a docker container.";
-  echo "Skipping ajit_base setup!";
-else
+  mkdir -p $AJIT_HOME/build;
+
+  if isdocker; then 
+    echo "Inside a docker container.";
+    echo "Skipping ajit_base setup!";
+  else
+    echo "################################################";
+    echo "##  Setting up ajit_base.";
+    echo "################################################";
+    sleep 3;
+    bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
+  fi
+
   echo "################################################";
-  echo "##  Setting up ajit_base.";
+  echo "##  Setting up ajit_builds.";
   echo "################################################";
   sleep 3;
-  bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
-fi
-
-echo "################################################";
-echo "##  Setting up ajit_builds.";
-echo "################################################";
-sleep 3;
-bash $AJIT_HOME/docker/ajit_build/setup_ajit_build.sh;
+  bash $AJIT_HOME/docker/ajit_build/setup_ajit_build.sh;
 
 
-echo "################################################";
-echo "##  Setting up ajit_tools.";
-echo "################################################";
-sleep 3;
-bash $AJIT_HOME/docker/ajit_tools/setup_ajit_tools.sh;
+  echo "################################################";
+  echo "##  Setting up ajit_tools.";
+  echo "################################################";
+  sleep 3;
+  bash $AJIT_HOME/docker/ajit_tools/setup_ajit_tools.sh;
 
+  echo "DONE!";
+} |& tee $_OUT_LOG;
 

@@ -4,7 +4,6 @@
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
-#include <inttypes.h>
 #include <assert.h>
 #include "pthreadUtils.h"
 #include "Pipes.h"
@@ -26,12 +25,20 @@ DEFINE_THREAD(bridge_cpu_2)
 DEFINE_THREAD(bridge_cpu_3)
 
 
-MUTEX_DECL(peripheral_mutex);
+MUTEX_DECL(timer_mutex)
+MUTEX_DECL(irc_mutex)
+MUTEX_DECL(serial_mutex)
 MUTEX_DECL(memory_mutex)
 MUTEX_DECL(lock_mutex)
 
-#define __GET_PERIPHERAL_LOCK__ 	MUTEX_LOCK(peripheral_mutex)
-#define __RELEASE_PERIPHERAL_LOCK__ 		MUTEX_UNLOCK(peripheral_mutex)
+#define __GET_TIMER_LOCK__ 	MUTEX_LOCK(timer_mutex)
+#define __RELEASE_TIMER_LOCK__ 	MUTEX_UNLOCK(timer_mutex)
+
+#define __GET_IRC_LOCK__ 	MUTEX_LOCK(irc_mutex)
+#define __RELEASE_IRC_LOCK__ 	MUTEX_UNLOCK(irc_mutex)
+
+#define __GET_SERIAL_LOCK__ 		MUTEX_LOCK(serial_mutex)
+#define __RELEASE_SERIAL_LOCK__ 	MUTEX_UNLOCK(serial_mutex)
 
 #define __GET_MEMORY_LOCK__ 		MUTEX_LOCK(memory_mutex)
 #define __RELEASE_MEMORY_LOCK__ 	MUTEX_UNLOCK(memory_mutex)
@@ -187,18 +194,157 @@ void bridge_cpu_core (int cpu_id,
 		data64       = read_uint64(wdata_pipe_name);
 		byte_mask    = read_uint8 (byte_mask_pipe_name);
 
-#ifdef DEBUG
-		fprintf(stderr,"\nMEMORY ACCESS from CPU %d :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",cpu_id, addr,request_type,byte_mask,data64);
-#endif
-
 		// get the lock bit.
 		uint8_t set_mem_access_lock = ((request_type & SET_LOCK_FLAG) != 0);
 
 		// clear the top 2 bits of the request since they
 		// are not used.
 		request_type     = request_type & 0x3f;
-		memDescriptorList* mdl = lookupMem(addr);
-		if(mdl != NULL)
+
+
+		//Check if this request should be forwarded to the timer...
+		if(USE_TIMER_MODEL && addr==ADDR_TIMER_CONTROL_REGISTER)
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d timer access lock flag set, but ignored\n",
+							cpu_id);
+			}
+
+
+			//forward this request to the Timer.
+			//Depending on addr[2], bits[31:0] or bits[63:32]
+			//of data64 are forwarded.
+			uint32_t data32;
+			uint32_t response;
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+			__GET_TIMER_LOCK__
+				sendRequestToTimer(request_type,addr,data32);
+
+			//timer is required to send an ack on data line
+			readResponseFromTimer(&response);
+
+			__RELEASE_TIMER_LOCK__;
+
+			//send the response back to cpu
+			if(request_type == REQUEST_TYPE_WRITE) data64=0;
+			else if(getBit32(addr,2)==0) 
+				data64 = setSlice64(0x00, 63,32, response);
+			else 
+				data64 = setSlice64(0x00,31,0, response);
+
+#ifdef DEBUG
+			if(request_type == REQUEST_TYPE_READ)
+				fprintf(stderr,"0x%x = TIMER[0x%x] CPU=%d \n", response, addr, cpu_id);
+			else
+				fprintf(stderr,"TIMER[0x%x] = 0x%x CPU=%d\n", addr,data32,cpu_id);
+#endif
+
+			write_uint64(rdata_pipe_name, data64);
+		}
+		//Check if this request should be forwarded to the interrupt controller
+		else if(USE_INTERRUPT_CONTROLLER_MODEL && addr==ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER)
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d interrupt-controller access lock flag set, but ignored\n",
+						cpu_id);
+			}
+
+			//forward this request to the  interrupt controller
+			//Depending on addr[2], bits[31:0] or bits[63:32]
+			//of data64 are forwarded.
+			uint32_t data32;
+			uint32_t response;
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+			__GET_IRC_LOCK__;
+			sendRequestToIRC(request_type,addr,data32);
+
+			//IRC is required to send an ack on data line
+			readResponseFromIRC(&response);
+			__RELEASE_IRC_LOCK__;
+
+
+			//send the response back to cpu
+			if(request_type == REQUEST_TYPE_WRITE) data64=0;
+			else if(getBit32(addr,2)==0) 
+				data64 = setSlice64(0x00, 63,32, response);
+			else 
+				data64 = setSlice64(0x00,31,0, response);
+#ifdef DEBUG
+			if(request_type == REQUEST_TYPE_READ)
+				fprintf(stderr,"0x%x = IRC[0x%x] CPU=%d \n", response, addr, cpu_id);
+			else
+				fprintf(stderr,"IRC[0x%x] = 0x%x CPU=%d\n", addr,data32,cpu_id);
+#endif
+
+			write_uint64(rdata_pipe_name, data64);
+		}
+		//check if this access should be forwarded to the serial device
+		else if(USE_SERIAL_MODEL && 
+				(   addr==ADDR_SERIAL_CONTROL_REGISTER
+				    || addr==ADDR_SERIAL_TX_REGISTER 
+				    ||  addr==ADDR_SERIAL_RX_REGISTER
+				))
+		{
+			if(set_mem_access_lock)
+			{
+				fprintf(stderr,"WARNING: CPU %d serial-device access lock flag set, but ignored\n",
+						cpu_id);
+			}
+
+			//forward this request to the serial device
+			//Depending on addr[2], bits[31:0] or bits[63:32]
+			//of data64 are forwarded.
+			uint32_t data32;
+			uint32_t response;
+
+
+			if(getBit32(addr,2)==0) 
+				data32 = getSlice64(data64,63,32);
+			else 
+				data32 = getSlice64(data64,31,0);
+
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: serial access start req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+#endif
+			__GET_SERIAL_LOCK__;
+			sendRequestToSerial(request_type,addr,data32);
+
+			//the serial device is required to send an ack on data line
+			readResponseFromSerial(&response);
+			__RELEASE_SERIAL_LOCK__;
+#ifdef DEBUG
+			fprintf(stderr,"\nBRIDGE: serial access end req-type=%d, addr=0x%x, data=0x%x\n",
+					request_type, addr, data32);
+			if(request_type == REQUEST_TYPE_READ)
+				fprintf(stderr,"0x%x = SERIAL[0x%x] CPU=%d \n", response, addr, cpu_id);
+			else
+				fprintf(stderr,"SERIAL[0x%x] = 0x%x CPU=%d\n", addr,data32,cpu_id);
+#endif
+
+
+			//send the response back to cpu
+			if(request_type == REQUEST_TYPE_WRITE) data64=0;
+			else if(getBit32(addr,2)==0) 
+				data64 = setSlice64(0x00, 63,32, response);
+			else 
+				data64 = setSlice64(0x00,31,0, response);
+
+			write_uint64(rdata_pipe_name, data64);
+		}
+		else //this is a memory load/store
 		{
 			// acquire and set lock for atomic operations.	
 			while (!testAndSetGlobalLock(set_mem_access_lock, cpu_id))
@@ -226,11 +372,10 @@ void bridge_cpu_core (int cpu_id,
 				data64 = getDoubleWordInMemory(addr);
 
 				if(global_verbose_flag) {
-					fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=%d lock=%d\n", data64, addr, cpu_id, global_lock_flag);
+					fprintf(stderr,"0x%llx = MEM[0x%x] CPU=%d lock=%d\n", data64, addr, cpu_id, global_lock_flag);
 				}
 
 				write_uint64(rdata_pipe_name, data64);
-
 			}
 			else if(request_type == REQUEST_TYPE_WRITE)
 			{
@@ -242,7 +387,7 @@ void bridge_cpu_core (int cpu_id,
 				data64 = getDoubleWordInMemory(addr);
 
 				if(global_verbose_flag) {
-					fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=%d lock=%d\n", addr,data64,byte_mask, cpu_id, global_lock_flag);
+					fprintf(stderr,"MEM[0x%x] = 0x%llx bmask=0x%x CPU=%d lock=%d\n", addr,data64,byte_mask, cpu_id, global_lock_flag);
 				}
 
 				uint32_t line_addr = (addr >> LOG_BYTES_PER_CACHE_LINE);
@@ -271,6 +416,7 @@ void bridge_cpu_core (int cpu_id,
 				//this is an invalid request
 				fprintf(stderr,"\nERROR: invalid request type %d to memoryAccess thread",request_type);
 				assert(0);
+				exit(1);
 			}
 
 			__RELEASE_MEMORY_LOCK__;
@@ -279,33 +425,10 @@ void bridge_cpu_core (int cpu_id,
 			if(request_type!=REQUEST_TYPE_IFETCH)
 				clearGlobalLock(set_mem_access_lock, cpu_id);
 		}
-		else 
-		{
-			peripheralDescriptorList* pdl = lookupPeripheral(addr); 	
-			if(pdl != NULL)
-			{
-				__GET_PERIPHERAL_LOCK__
-
-				uint8_t rwbar = (request_type == REQUEST_TYPE_READ);
-				data64 = executePeripheralAccess(pdl, rwbar, addr, byte_mask, data64);
-				write_uint64(rdata_pipe_name, data64);
-
-				__RELEASE_PERIPHERAL_LOCK__
-				
-			}
-			else
-			{
-				fprintf(stderr,"\nERROR: unmapped address 0x%x at bridge.\n",addr);
-				assert(0);
-			}
-		}
-
 
 #ifdef DEBUG
-		fprintf(stderr,"\nbridge: Memory access response=0x%" PRIx64 "\n", data64);
-#endif
+		fprintf(stderr,"\nMEMORY ACCESS from CPU %d :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",cpu_id, addr,request_type,byte_mask,data64);
 
-#ifdef DEBUG
 		fprintf(stderr,"\nbrige-req-done-%d\n", cpu_id);
 #endif
 	}

@@ -16,7 +16,7 @@ export AJIT_TOOLS_DIR="$AJIT_HOME/tools";
 export AJIT_TESTS_DIR="$AJIT_HOME/tests";
 
 export AJIT_CMODEL_DIR="$AJIT_HOME/simulators/c_model";
-export AJIT_CMODEL_BIN_DIR="$AJIT_CMODEL_DIR/bin";
+export AJIT_CMODEL_BIN_DIR="$AJIT_CMODEL_DIR/code/testbench/bin";
 
 export AJIT_BUILD_DIR="$AJIT_HOME/build";
 

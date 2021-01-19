@@ -18,5 +18,3 @@ void readOperands(RegisterFile* rf,
 			uint32_t *operand1_1, uint32_t *operand1_0,
 			InstructionType type, uint8_t cwp, uint32_t *data1, 
 			uint32_t *data, uint8_t *fp_invalid_reg);
-
-uint8_t calculateReadByteMask(Opcode opcode, uint32_t address);

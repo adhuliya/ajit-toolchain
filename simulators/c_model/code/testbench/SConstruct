@@ -7,6 +7,7 @@ COMPILATION_FLAGS=' -g -DSW -Wall'
 AHIR_RELEASE=os.environ['AHIR_RELEASE']
 AHIR_INCLUDE=AHIR_RELEASE+"/include"
 AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
 AJIT_64_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
 
 env.Append(CPPPATH = "./:" + AJIT_64_C_REF_MODEL + "/common/include:" + AJIT_64_C_REF_MODEL + "/cpu/include:" + AJIT_64_C_REF_MODEL + "/cpu_interface/include:"+ AJIT_64_C_REF_MODEL + "/memory/include:" + AJIT_64_C_REF_MODEL + "/IO_drivers/include:"+ AJIT_64_C_REF_MODEL + "/cache/include:" + AJIT_64_C_REF_MODEL + "/devices/include:"+ AJIT_64_C_REF_MODEL + "/mmu/include:" + AJIT_64_C_REF_MODEL + "/debugger/gpb/include:" + AJIT_64_C_REF_MODEL + "/debugger/hwServer/include:" + AJIT_64_C_REF_MODEL + "/debugger/doval/include:" + AJIT_64_C_REF_MODEL + "/debugger/spi_common/include:" + AJIT_64_C_REF_MODEL + "/debugger/doval/antlr3Cruntime/build/include:")
@@ -29,11 +30,7 @@ MONITOR_LOGGER_LIBPATH=AJIT_64_C_REF_MODEL +'/monitorLogger/lib'
 
 # Half precision
 HALFPREC_INCLUDE=AJIT_64_C_REF_MODEL +'/half_precision_float/include'
-HALFPREC_AA_INCLUDE=AJIT_64_C_REF_MODEL +'/half_precision_float/aa2clib/include'
-
 HALFPREC_LIBPATH=AJIT_64_C_REF_MODEL +'/half_precision_float/lib'
-HALFPREC_AA_LIBPATH=AJIT_64_C_REF_MODEL +'/half_precision_float/aa2clib/lib'
-
 
 #Antlr related
 ANTLR_PATH = "../debugger/doval/antlr3Cruntime/build/lib "
@@ -44,14 +41,18 @@ CONSOLE_LIB=AJIT_64_C_REF_MODEL+"/console/lib"
 CONSOLE_INCLUDE=AJIT_64_C_REF_MODEL+"/console/include"
 CHAR_SERVER_LIB=AJIT_64_C_REF_MODEL+"/char_client_server/lib"
 CHAR_SERVER_INCLUDE=AJIT_64_C_REF_MODEL+"/char_client_server/include"
+#CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
+#CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
+#CHAR_SERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
+#CHAR_SERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
 
 env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:"+MONITOR_LOGGER_INCLUDE + ":" + CONSOLE_INCLUDE+ ":"+CHAR_SERVER_INCLUDE + ":" + HALFPREC_INCLUDE)
 
 
 
 #ajit_C_system_model executable
-LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'Rlut', 'Mmu', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors']
+LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'Rlut', 'Mmu', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'rt' , 'SPICommon','SockPipes', 'Hserver','doval', 'antlr3c' , 'm' ,'HalfPrecisionFloat' ] 
 
-LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../rlut/lib ../mmu/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH + PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH + " " + HALFPREC_AA_LIBPATH)
+LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../rlut/lib ../mmu/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH + PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH)
 
 env.Program('./bin/ajit_C_system_model', './src/Ajit_C_system_testbench.c', CCFLAGS=COMPILATION_FLAGS, LINKFLAGS='-g  ', LIBS=LIBS, LIBPATH=LIBPATH)

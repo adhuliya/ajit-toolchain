@@ -359,7 +359,6 @@ void execute64BitReduce8  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
-	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -405,7 +404,6 @@ void execute64BitReduce16  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
-	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -436,7 +434,6 @@ void execute64BitZBytePos  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	}
 	
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
-	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*flags = f;
 }
 
@@ -555,7 +552,8 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 				uint32_t operand2_1, uint32_t operand2_0,
 				uint32_t *result_h,  uint32_t *result_l, 
 				uint8_t* f_trap,
-				uint8_t *flags)
+				uint8_t *flags,
+				uint8_t half_precision_exponent_width)
 {
 #ifdef DEBUG
 	fprintf(stderr,"\tInfo : FloatVectorOp  op-code=0x%x data_type=0x%x operand1=0x%x,0x%x operand2=0x%x,0x%x\n", 
@@ -606,13 +604,16 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 		switch(op)
 		{
 			case _VFADD16_:      
-				a16_result = vectorHalfPrecisionAddInU64Form(o1,o2); 
+				a16_result = vectorHalfPrecisionAddInU64Form(o1,o2, 
+								half_precision_exponent_width);
 				break;
 			case _VFSUB16_:
-				a16_result = vectorHalfPrecisionSubInU64Form(o1,o2); 
+				a16_result = vectorHalfPrecisionSubInU64Form(o1,o2, 
+								half_precision_exponent_width);
 				break;
 			case _VFMUL16_:
-				a16_result = vectorHalfPrecisionMulInU64Form(o1,o2);
+				a16_result = vectorHalfPrecisionMulInU64Form(o1,o2, 
+								half_precision_exponent_width);
 				break;
 			default:
 				break;
@@ -621,15 +622,17 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 	}
 	else if(cvt)
 	{
-		uint64_t cvt_op = splice_words ( operand2_1, operand2_0);
+		uint64_t cvt_op = splice_words ( operand1_1, operand1_0);
 		uint64_t cvt_result = 0;
 		switch(op) 
 		{
 			case _VFHTOI16_:
-				cvt_result = halfPrecisionToI16VectorConvert(cvt_op);
+				cvt_result = halfPrecisionToI16VectorConvert(cvt_op, 
+								half_precision_exponent_width);
 				break;
 			case _VFI16TOH_:
-				cvt_result = i16ToHalfPrecisionVectorConvert(cvt_op);
+				cvt_result = i16ToHalfPrecisionVectorConvert(cvt_op, 
+								half_precision_exponent_width);
 				break;
 			default:
 				break;
@@ -645,42 +648,42 @@ void execute64FloatVf (Opcode op, uint32_t operand1_1, uint32_t operand1_0,
 }
 
 // source is a 64-bit operand, result is in 32-bit register.
-void execute64FpHalfAddReduce(Opcode op, uint32_t operand2_1, uint32_t operand2_0,
-		uint32_t* result_l, uint8_t* ft, uint8_t* flags)
+void execute64FpHalfAddReduce(Opcode op, uint32_t operand1_1, uint32_t operand1_0,
+		uint32_t* result_l, uint8_t* ft, uint8_t* flags,
+		uint8_t half_precision_exponent_width)
 {
 	assert(op == _FADDREDUCE16_);
 
 	uint8_t f = *flags;
-	uint64_t cvt_op = splice_words ( operand2_1, operand2_0);
-	uint32_t cvt_result = vectorHalfAddReduce(cvt_op);
+	uint64_t cvt_op = splice_words ( operand1_1, operand1_0);
+	uint32_t cvt_result = vectorHalfAddReduce(cvt_op, half_precision_exponent_width);
 
 	*result_l = cvt_result;
 
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
-	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*ft = setBit8(*ft, 0, 1); // set c = 1 to indicate completion.
 	*flags = f;
 }
 
 // source and destination are 32-bit registers.
-void execute64FpHalfConvert(Opcode op, uint32_t operand2_0,
-		uint32_t* result_l, uint8_t* ft, uint8_t* flags)
+void execute64FpHalfConvert(Opcode op, uint32_t operand1_0,
+		uint32_t* result_l, uint8_t* ft, uint8_t* flags,
+		uint8_t half_precision_exponent_width)
 {
 	uint32_t cvt_result;
 	uint8_t f = *flags;
 
 	if(op == _FHTOS_)
 	{
-		cvt_result = halfToFloatInU32Form(operand2_0);
+		cvt_result = halfToFloatInU32Form(operand1_0, half_precision_exponent_width);
 	}
 	else
 	{
-		cvt_result  = floatToHalfInU32Form(operand2_0);
+		cvt_result  = floatToHalfInU32Form(operand1_0, half_precision_exponent_width);
 	}
 
 	*result_l = cvt_result;
 	f = setBit8(f, _NEED_WRITE_BACK_, 1);
-	f = setBit8(f, _SINGLE_RESULT_, 1);
 	*ft = setBit8(*ft, 0, 1); // set c = 1 to indicate completion.
 	*flags = f;
 }

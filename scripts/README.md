@@ -1,4 +1,3 @@
-Contains scripts to handle docker container and other related things
-without manually entering the docker container.
+Useful scripts to use the Ajit system.
 
 NOTE: Run these scripts as `./<script.sh>` from this directory.

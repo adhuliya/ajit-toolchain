@@ -8,7 +8,7 @@ function AND() {
   #  $2 Error msg (optional)
   #  $3 Exit Code (optional)
   echo -e "\nAND: START:" "$1" "\n";
-  sh -c "$1";
+  bash -c "$1";
   local _EXITCODE=$?;
   if [[ $_EXITCODE != "0" ]]; then
     echo -e "AND: ERROR:($_EXITCODE): '$1'\n$2";
@@ -24,7 +24,7 @@ function OR() {
   #  $1 Quoted Command
   #  $2 Error msg (optional)
   echo -e "\nOR: START:" "$1" "\n";
-  sh -c "$1";
+  bash -c "$1";
   local _EXITCODE=$?;
   if [[ $_EXITCODE != "0" ]]; then
     echo -e "OR: ERROR:($_EXITCODE): '$1'\n$2";

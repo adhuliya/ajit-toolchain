@@ -4,23 +4,30 @@
 # This script builds the required docker images
 # It depends on the $AJIT_HOME env variable.
 
+_OUT_FILE=$AJIT_HOME/docker_build.log;
+
 isdocker () {
   local count=$(cat /proc/1/cgroup | grep "/docker" | wc -l);
   if [[ count -eq 0 ]]; then false; else true; fi
 }
 
-if isdocker; then
-  echo "Inside a docker container. EXITING!"
-  exit 1;
-fi
+function AND() {
+  # Executes the given command. Exits on error.
+  # Takes three arguments
+  #  $1 Quoted Command
+  #  $2 Error msg (optional)
+  #  $3 Exit Code (optional)
+  echo -e "\nAND: START:" "$1" "\n";
+  bash -c "$1";
+  local _EXITCODE=$?;
+  if [[ $_EXITCODE != "0" ]]; then
+    echo -e "AND: ERROR:($_EXITCODE): '$1'\n$2";
+    exit $3;
+  else
+    echo -e "AND:  DONE: $1";
+  fi
+}
 
-
-if ! which docker; then
-  # install docker first
-  bash $AJIT_HOME/install_docker.sh;
-fi
-echo "Good. Docker is installed!";
-sleep 1;
 
 if [[ -z $AJIT_HOME ]]; then
   echo "ERROR: Please set the env variable \$AJIT_HOME";
@@ -28,55 +35,69 @@ if [[ -z $AJIT_HOME ]]; then
   exit 1;
 fi
 
-mkdir -p $AJIT_HOME/build;
-OUTFILE_LOG=$AJIT_HOME/build/docker_build.log;
 
-echo -e "\nRunning...";
-echo -e "\nSee output log file: $OUTFILE_LOG\n";
-sleep 1;
+{
+  echo -e "\nSee log file: $_OUT_FILE\n";
+  sleep 1;
 
-echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-echo "##  Building ajit_base image." &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-sleep 1;
-pushd $AJIT_HOME/docker/ajit_base &> /dev/null;
-./build.sh &>> $OUTFILE_LOG;
-popd &> /dev/null;
+  if isdocker; then
+    echo "Inside a docker container. EXITING!"
+    exit 1;
+  fi
 
 
-echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-echo "##  Building ajit_build_dev image." &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-sleep 1;
-pushd $AJIT_HOME/docker/ajit_build_dev &> /dev/null;
-./build.sh &>> $OUTFILE_LOG;
-popd &> /dev/null;
+  if ! which docker; then
+    # install docker first
+    AND "$AJIT_HOME/install_docker.sh";
+  fi
+  echo "Good. Docker is installed!";
+  sleep 1;
+
+  mkdir -p $AJIT_HOME/build;
+
+  echo -e "\n\n\n\n\n";
+  echo "################################################";
+  echo "##  Building ajit_base image.";
+  echo "################################################";
+  sleep 1;
+  pushd $AJIT_HOME/docker/ajit_base;
+  ./build.sh;
+  popd;
 
 
-################################################################################
-exit;  ############## Comment this line if images below are needed #############
-################################################################################
+  echo -e "\n\n\n\n\n";
+  echo "################################################";
+  echo "##  Building ajit_build_dev image.";
+  echo "################################################";
+  sleep 1;
+  pushd $AJIT_HOME/docker/ajit_build_dev;
+  ./build.sh;
+  popd;
 
 
-echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-echo "##  Building ajit_build image." &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-sleep 1;
-pushd $AJIT_HOME/docker/ajit_build &> /dev/null;
-./build.sh &>> $OUTFILE_LOG;
-popd &> /dev/null;
+  ################################################################################
+  exit;  ############## Comment this line if images below are needed #############
+  ################################################################################
 
 
-echo "\n\n\n\n\n" &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-echo "##  Building ajit_tools image." &>> $OUTFILE_LOG;
-echo "################################################" &>> $OUTFILE_LOG;
-sleep 1;
-pushd $AJIT_HOME/docker/ajit_tools &> /dev/null;
-./build.sh &>> $OUTFILE_LOG;
-popd &> /dev/null;
+  echo -e "\n\n\n\n\n";
+  echo "################################################";
+  echo "##  Building ajit_build image.";
+  echo "################################################";
+  sleep 1;
+  pushd $AJIT_HOME/docker/ajit_build;
+  ./build.sh;
+  popd;
+
+
+  echo -e "\n\n\n\n\n";
+  echo "################################################";
+  echo "##  Building ajit_tools image.";
+  echo "################################################";
+  sleep 1;
+  pushd $AJIT_HOME/docker/ajit_tools;
+  ./build.sh;
+  popd &> /dev/null;
+} |& tee $_OUT_FILE;
 
 

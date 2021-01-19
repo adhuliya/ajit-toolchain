@@ -905,30 +905,3 @@ int isCswapInstr   (Opcode opcode)
 }
 
 
-uint8_t calculateReadByteMask(Opcode op, uint32_t address)
-{
-	uint8_t ret_val = 0;
-	if((op == _LDD_) || (op == _LDDA_) || (op == _LDDF_) || (op == _LDDC_)) 
-	{
-		ret_val = 0xff;
-	}
-	else if ((op == _LD_) || (op == _LDA_) || (op == _LDF_) || (op == _LDFSR_) 
-					|| (op == _LDC_) || (op == _LDCSR_)) 
-	{
-		ret_val = ((address & 0x7) == 0) ? 0xf0 : 0x0f;
-	}
-	else if ((op == _LDSH_) || (op == _LDSHA_) || (op == _LDUH_) || (op == _LDUHA_)) 
-	{
-		ret_val = ((address & 0x4) == 0) ?
-				(((address & 0x2) == 0) ? 0xc0 : 0x30) :
-				(((address & 0x2) == 0) ? 0x0c : 0x03);
-			
-	}
-	else
-	{
-		ret_val = (0x80 >> (address & 0x7));
-	}
-	return(ret_val);
-}
-
-

@@ -78,7 +78,6 @@
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"
 #include "Ancillary.h"
-#include "Device_utils.h"
 
 //Main Timer thread
 //which keeps monitoring 
@@ -138,11 +137,9 @@ void register_Timer_pipes()
 
 	//pipes between system bus and the timer
 	int depth = 1;
-	register_pipe("peripheral_bridge_to_timer_request", depth,  64, 0);
-	register_pipe("timer_to_peripheral_bridge_response", depth, 32, 0);
-
-	set_pipe_is_read_from("peripheral_bridge_to_timer_request");
-	set_pipe_is_written_into("timer_to_peripheral_bridge_response");
+	register_pipe("BUS_to_TIMER_request_type", depth, 8, 0);
+	register_pipe("BUS_to_TIMER_addr", depth, 32, 0);
+	register_pipe("BUS_to_TIMER_data", depth, 32, 0);
 	
 	set_pipe_is_read_from("BUS_to_TIMER_request_type");
 	set_pipe_is_read_from("BUS_to_TIMER_addr");
@@ -176,38 +173,42 @@ void start_timer_threads()
 //requests from cpu-side
 void Timer_Control()
 {
+	uint8_t  request_type;
+	uint32_t addr;
+	uint32_t data_in=0;
 	uint32_t data_out=0;
-
+	
+	
 	while(1)
 	{
 		//wait for a request from processor-side
-		uint8_t rwbar, byte_mask;
-		uint32_t addr, data_in;
-		getPeripheralAccessCommand("peripheral_bridge_to_timer_request",
-							&rwbar, &byte_mask, &addr, &data_in);
-		if(rwbar)
+		request_type	= read_uint8 ("BUS_to_TIMER_request_type");
+		addr		= read_uint32("BUS_to_TIMER_addr");
+		data_in		= read_uint32("BUS_to_TIMER_data");
+
+		
+		if(request_type==REQUEST_TYPE_READ)
 		{
 			//this is a register-read.
 			//send response to cpu
 			data_out = Timer_Control_Register;
 		}
-		else 
+		else if (request_type==REQUEST_TYPE_WRITE)
 		{
 			//lock the state variables
 			pthread_mutex_lock(&Timer_lock);
 			
-			if(addr==(0xffffff & ADDR_TIMER_CONTROL_REGISTER))
+			if(addr==ADDR_TIMER_CONTROL_REGISTER)
 			{
 				//Cpu wants to update the control register
-				Timer_Control_Register = insertUsingByteMask(Timer_Control_Register, 
-											data_in, byte_mask);
+				Timer_Control_Register = data_in;
 			
 				#ifdef DEBUG
-				printf("\nTIMER: Control word 0x%x bmask 0x%x written. ",data_in, byte_mask);
+				printf("\nTIMER: Control word 0x%x written. ",data_in);
 				#endif
 
 
-				if(getBit32(Timer_Control_Register,0)==0)
+				if(getBit32(data_in,0)==0)
 				{
 					#ifdef DEBUG
 					printf(" State = TIMER_DISABLED");
@@ -228,7 +229,7 @@ void Timer_Control()
 
 				
 				}
-				else if (Timer_State==TIMER_DISABLED && getBit32(Timer_Control_Register,0)==1)
+				else if (Timer_State==TIMER_DISABLED && getBit32(data_in,0)==1)
 				{
 					
 					//Enable TIMER
@@ -238,7 +239,7 @@ void Timer_Control()
 					write_uint8("TIMER_to_IRC_INT",0);
 					//clear count, and set max count
 					Timer_count=0;
-					Timer_max_count=getSlice32(Timer_Control_Register, 31,1);
+					Timer_max_count=getSlice32(data_in, 31,1);
 					
 					#ifdef DEBUG
 					printf(" State = TIMER_ENABLED");
@@ -258,7 +259,7 @@ void Timer_Control()
 		}
 			
 		//send ack to cpu
-		sendPeripheralResponse("timer_to_peripheral_bridge_response", data_out);
+		write_uint32("TIMER_to_BUS_data",data_out);
 			
 	}//while(1)
 }

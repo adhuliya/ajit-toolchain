@@ -9,6 +9,6 @@ cd $AHIR_DIR;
 source ./ahir_bashrc;
 
 cd $TOOLS_DIR;
-scons;
+./build.sh;
 
 
