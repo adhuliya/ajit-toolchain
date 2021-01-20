@@ -1,0 +1,51 @@
+An example which illustrates the use of memory mapped
+I/O to access a peripheral.  This uses normal load/store
+instructions to access the peripheral (in this case,
+a serial device), instead of using an mmu-bypass load/store.
+
+
+The first thing you have to do is to set up a memory
+map which clearly marks the memory mapped peripheral
+addresses as non-cacheable.  In this example, we use
+the following vmap.
+
+!
+! Instructions
+!   256 KB page at 0x0 mapped to 0x0
+!   cacheable, acc=3. 
+0x0 0x0 0x0 0x2 0x1 0x3
+!
+! Data 
+!   256 KB page at 040000000 mapped
+!   to 0x8000, cacheable, acc=3
+!
+0x0 0x40000000 0x80000 0x2  0x1 0x3
+!
+! Stack
+!   4KB page at 0xfff00000 mapped to
+!   0xe0000, cacheable, acc=3
+0x0 0xfff00000 0xe0000 0x3  0x1 0x3
+! IO 
+!   5x 4KB pages mapped with physical
+!   equal to virtual. NON-CACHEABLE,
+!   acc=3
+!
+0x0 0xffff1000 0xffff1000 0x3  0x0 0x3
+0x0 0xffff2000 0xffff2000 0x3  0x0 0x3
+0x0 0xffff3000 0xffff3000 0x3  0x0 0x3
+0x0 0xffff4000 0xffff4000 0x3  0x0 0x3
+0x0 0xffff5000 0xffff5000 0x3  0x0 0x3
+
+
+In this vmap, the last 5 lines setup the
+translation of the periperal addresses.
+They are translated so that Virtual = Physical
+and their pages are marked non-cacheable.
+Note that the stack starts at virtual 0xfff00000
+(physical 0xe0000) and is allocated a 4KB
+page.
+
+
+The code in serial_io.c then uses the ajit_access_routines
+functions which use the vmap (_via_vmap) to access
+the peripherals.
