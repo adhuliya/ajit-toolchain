@@ -1,1 +1,6 @@
 source.sh
+__genvmap_setup_page_tables.s
+main.vars
+
+sparc-obj/
+sparc-assembly/

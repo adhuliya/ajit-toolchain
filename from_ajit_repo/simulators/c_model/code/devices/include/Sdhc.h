@@ -239,21 +239,23 @@ typedef struct CPUViewOfSDHCRegs
 
 //Functions for register value manipulations
 void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
-struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
+			struct CPUViewOfSDHCRegs *str, 
+			struct SDHCInternalMap *int_str);
 
-void readSdhcReg(uint32_t addr,  
-struct CPUViewOfSDHCRegs *str,struct SDHCInternalMap *int_str);
+uint32_t readSdhcReg(uint32_t addr,  
+			struct CPUViewOfSDHCRegs *str, 
+			struct SDHCInternalMap *int_str);
 
 //functions for checking whether an interrupt has to be generated
 //based on the data received 
 void checkNormalInterrupts(struct SDHCInternalMap *int_str, 
-struct CPUViewOfSDHCRegs *str);
+				struct CPUViewOfSDHCRegs *str);
 void checkErrorInterrupts(struct SDHCInternalMap *int_str, 
-struct CPUViewOfSDHCRegs *str);
+				struct CPUViewOfSDHCRegs *str);
 
 //For setting what type of response to expect for all commands send to sd card
 uint8_t checkResponseType(struct SDHCInternalMap *int_str, 
-struct CPUViewOfSDHCRegs *str);
+				struct CPUViewOfSDHCRegs *str);
 
 //Accumulates the parameters to be inserted in the 48 bit frame
 // and places them in the required manner
