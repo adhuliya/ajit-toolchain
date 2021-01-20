@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# must run this script from its absolute position
-
-cd $AHIR_DIR;
+cd $AJIT_AHIR_DIR;
 source ./ahir_bashrc;
 
 if [[ -z $AHIR_RELEASE ]]; then
@@ -19,3 +17,4 @@ fi
 
 cd $AJIT_CMODEL_DIR;
 ./build.sh;
+

@@ -7,8 +7,10 @@ if [[ $DIR != "`pwd`" ]]; then
   exit;  # if not then exit
 fi
 
-rm validation* &> /dev/null;
-rm tmp_test_dirs.out &> /dev/null;
-rm src_file_list_file_C.txt &> /dev/null;
-rm test-results.out &> /dev/null;
+
+rm -Rf test-results.out &> /dev/null;
+
+cd verification;
+./clean.sh;
+
 

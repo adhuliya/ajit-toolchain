@@ -132,7 +132,8 @@ To be on a safer side do run all the automated tests as given below.
 
 ### Running (all) automated tests
 
-Run the following as given from the root of the repository,
+Run the following sequence of commands as given,
+from the root of the repository,
 
     cd ./tests; ./test.sh;
     cd ..; cd ./tests/verfication; ./verify.sh;

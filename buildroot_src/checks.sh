@@ -17,6 +17,7 @@
 
 if [[ -e $BUILD_DIR/$BUILDROOT_DIR_NAME ]]; then
   echo "ERROR: $BUILD_DIR/$BUILDROOT_DIR_NAME already exists." |& tee -a $BUILD_OUTFILE;
+  echo "Remove/Cleanup the previous builds" |& tee -a $BUILD_OUTFILE;
   echo "EXITING." |& tee -a $BUILD_OUTFILE;
   exit 2;
 fi

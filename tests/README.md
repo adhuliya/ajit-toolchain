@@ -5,3 +5,5 @@ hence the testing scripts are the best place
 to know what is happening. You can start from,
 
     ./test.sh
+
+See also ./verification/README.md file.

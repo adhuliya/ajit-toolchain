@@ -24,7 +24,7 @@ _OUT_LOG=$AJIT_HOME/build.log;
 
 {
   echo -e "\nOutput log file: $_OUT_LOG \n";
-  sleep 1;
+  sleep 2;
 
   mkdir -p $AJIT_HOME/build;
 

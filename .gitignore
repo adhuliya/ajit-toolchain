@@ -1,5 +1,6 @@
 # general
 build/
+bin/
 
 # Prerequisites
 *.d
@@ -18,8 +19,6 @@ build/
 *.so
 *.dylib
 *.dll
-!/src/buildroot-2014.08/**/*.so
-!/buildroot/buildroot-2014.08/**/*.so
 !/ahir_release/**/*.so
 
 # Fortran module files
@@ -39,11 +38,6 @@ build/
 
 # log files
 *.log
-
-# buildroot related
-/buildroot-2014.08/
-/development/
-/buildroot-2014.08.*
 
 # vim
 *.swp

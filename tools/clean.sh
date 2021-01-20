@@ -46,7 +46,7 @@ fi
     exit 1;
   fi
 
-  echo -e "\nBuilding the tools.\n";     sleep 1;
+  echo -e "\nCleaning the tools.\n";     sleep 1;
   AND "scons -c";
 
   rm $_OUT_BUILD_FILE;
