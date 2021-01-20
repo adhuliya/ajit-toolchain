@@ -140,12 +140,12 @@ void startSdhcThreads();
 
 // Threads for SDHC control
 //1.monitors data going to and coming from CPU via bridge 
-//2. values are stored in CPUViewOfSDHCRegs struct 
-//3. Copies the values of CPUViewOfSDHCRegs inside
-//	SDHCInternalMap struct using updateRegister function
+//2. values are stored in sdhc_reg_cpu_view struct 
+//3. Copies the values of sdhc_reg_cpu_view inside
+//	sdhc_reg_internal_view struct using updateRegister function
 void sdhcControl();
 
-typedef struct SDHCInternalMap
+typedef struct sdhc_reg_internal_view
 {
 	uint32_t argument2; 			//0x0
 	uint16_t blk_size; 			//0x4 	
@@ -189,9 +189,9 @@ typedef struct SDHCInternalMap
 	uint16_t shared_bus_control;		//0xE0
 	uint16_t slot_interrupt_status;		//0xFC
  	uint16_t host_controller_version; 	//0xFE 
-}SDHCInternalMap;
+}sdhc_reg_internal_view;
 
-typedef struct CPUViewOfSDHCRegs
+typedef struct sdhc_reg_cpu_view
 {
 	uint8_t argument2[4];   		//0x0  	
 	uint8_t blk_size[2];    		//0x4 		
@@ -235,31 +235,31 @@ typedef struct CPUViewOfSDHCRegs
 	uint8_t shared_bus_control[2];		//0xE0
 	uint8_t slot_interrupt_status[2];	//0xFC
  	uint8_t host_controller_version[2]; 	//0xFE 
-}CPUViewOfSDHCRegs;
+}sdhc_reg_cpu_view;
 
 //Functions for register value manipulations
 void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
-			struct CPUViewOfSDHCRegs *str, 
-			struct SDHCInternalMap *int_str);
+			sdhc_reg_cpu_view *str, 
+			sdhc_reg_internal_view *int_str);
 
 uint32_t readSdhcReg(uint32_t addr,  
-			struct CPUViewOfSDHCRegs *str, 
-			struct SDHCInternalMap *int_str);
+			sdhc_reg_cpu_view *str, 
+			sdhc_reg_internal_view *int_str);
 
 //functions for checking whether an interrupt has to be generated
 //based on the data received 
-void checkNormalInterrupts(struct SDHCInternalMap *int_str, 
-				struct CPUViewOfSDHCRegs *str);
-void checkErrorInterrupts(struct SDHCInternalMap *int_str, 
-				struct CPUViewOfSDHCRegs *str);
+void checkNormalInterrupts(struct sdhc_reg_internal_view *int_str, 
+				struct sdhc_reg_cpu_view *str);
+void checkErrorInterrupts(struct sdhc_reg_internal_view *int_str, 
+				struct sdhc_reg_cpu_view *str);
 
 //For setting what type of response to expect for all commands send to sd card
-uint8_t checkResponseType(struct SDHCInternalMap *int_str, 
-				struct CPUViewOfSDHCRegs *str);
+uint8_t checkResponseType(struct sdhc_reg_internal_view *int_str, 
+				struct sdhc_reg_cpu_view *str);
 
 //Accumulates the parameters to be inserted in the 48 bit frame
 // and places them in the required manner
-void generateCommandForSDCard(struct SDHCInternalMap *int_str);
+void generateCommandForSDCard(struct sdhc_reg_internal_view *int_str);
 void receiveResponseFromSDCard();
 char readDataFromSDCard();
 void writeDataToSDCard(uint64_t inputToSDCard);

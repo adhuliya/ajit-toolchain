@@ -119,8 +119,36 @@ uint32_t sdhc_tx_buffer;
 uint32_t sdhc_rx_buffer;
 uint8_t SDHC_INT_OUT;
 
-CPUViewOfSDHCRegs cpu_reg_view = {0};
-SDHCInternalMap internal_map = {0};
+sdhc_reg_cpu_view cpu_reg_view = {0};
+sdhc_reg_internal_view internal_map = {0};
+
+
+#ifdef BASIC
+// ***** easwaran ***** //
+
+uint32_t ve_read(uint32_t addr, sdhc_reg_cpu_view *cpu_view, sdhc_reg_internal_view *internal_view)
+{
+	uint32_t out = 0;
+
+	if (addr == (0xFFFFFF & ADDR_SDHC_ARG_2))
+	{
+		void *dest = &cpu_view->argument2[0];
+		void *source = &internal_view->argument2;
+		memcpy(dest, source, sizeof(internal_view->argument2));
+		out = (uint32_t)internal_view->argument2;
+	}
+	if (addr == (0xFFFFFF & ADDR_SDHC_ARG_1))
+	{
+		void *dest = cpu_view->argument1;
+		void *source = &internal_view->argument1;
+		memcpy(dest, source, sizeof(internal_view->argument1));
+		out = (uint32_t)internal_view->argument1;
+	}
+
+	return out;
+}
+
+#endif
 
 // **** events **** //
 
@@ -257,6 +285,8 @@ void sdhcControl()
 		uint32_t data_out = 0;
 
 #ifdef SWITCH
+		pthread_mutex_lock(&Sdhc_lock);
+
 		switch (addr)
 		{
 		case (0xFFFFFF & ADDR_SDHC_ARG_2):
@@ -751,44 +781,50 @@ void sdhcControl()
 		default:
 			break;
 		}
+
+		pthread_mutex_unlock(&Sdhc_lock);
 #endif
 
 #ifdef BASIC
-		if (!rwbar)	// write
+		pthread_mutex_lock(&Sdhc_lock);
+		
+		switch (addr)
 		{
-			pthread_mutex_lock(&Sdhc_lock);
-			writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
-			data_out = 0;
-			pthread_mutex_unlock(&Sdhc_lock);
-
-		}
-		else if(rwbar)	// read
-		{
-			pthread_mutex_lock(&Sdhc_lock);
-
-			// internal_map.argument2 = 0x1234;
-
-			// data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
-			// data_out = internal_map.argument2;
-
-			// cpu_reg_view.argument2[0] = 8;
-			// cpu_reg_view.argument2[1] = 10;
-			// data_out = cpu_reg_view.argument2[1];
-
-			switch (addr)
+		case(0xFFFFFF & ADDR_SDHC_ARG_2):
+			switch (rwbar)
 			{
-			case(0xFFFFFF & ADDR_SDHC_ARG_2):
-				data_out = 0xBAD;
+			case WRITE:
+				data_out = 0;
 				break;
-			case(0xFFFFFF & ADDR_SDHC_ARG_1):
-				data_out = 0x1234;
+			case READ:
+				internal_map.argument2 = 0xFFEE;
+				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
 				break;
 			default:
 				break;
 			}
-			pthread_mutex_unlock(&Sdhc_lock);
-			
+			break;
+		case(0xFFFFFF & ADDR_SDHC_ARG_1):
+			switch (rwbar)
+			{
+			case WRITE:
+				data_out = 0;
+				break;
+			case READ:
+				internal_map.argument1 = 0x1235;
+				data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			data_out = 0;
+			break;
 		}
+		
+		pthread_mutex_unlock(&Sdhc_lock);
 #endif
 
 		sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
