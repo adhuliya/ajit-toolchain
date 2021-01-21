@@ -30,24 +30,27 @@ int ajit_main()
 
         // SDHC interface begin--------------------------------------------------
 
-        // __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_ARG_2, 0xFFFF);
-
         uint32_t data;
 
-        data  = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2);
-        ee_printf("data read from register arg2 = %x \n", data);
+        // 32b registers
+        ee_printf("data read from SDHC arg2 register = 0x%x \n", 
+                        __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2)); ;
 
-        data  = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_1);
-        ee_printf("data read from register arg1 = %x \n", data);
+        ee_printf("data read from SDHC arg1 register = 0x%x \n", 
+                        __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_1));        
 
+        // 16b registers
 
-        // ee_printf("data read from SDHC arg2 register = %d \n", __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2));
+        ee_printf("data read from SDHC blk size register = 0x%x \n", 
+                        __ajit_bypass_read_sdhc_reg_word(ADDR_SDHC_BLOCK_SIZE));
+
+        // 8bit registers
+
+        ee_printf("data read from SDHC host cntrl 1 register = 0x%x \n", 
+                        __ajit_bypass_read_sdhc_reg_byte(ADDR_SDHC_HOST_CONTROL_1));
 
         // SDHC interface end----------------------------------------------------
 
-
-        // ee_printf("data read from serial control register = %d \n", __ajit_read_serial_control_register__());
-        
         ee_printf("\n------------------------------\n\n");
 
        	return 0;

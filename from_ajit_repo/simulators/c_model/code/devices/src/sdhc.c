@@ -129,23 +129,47 @@ sdhc_reg_internal_view internal_map = {0};
 uint32_t ve_read(uint32_t addr, sdhc_reg_cpu_view *cpu_view, sdhc_reg_internal_view *internal_view)
 {
 	uint32_t out = 0;
-
-	if (addr == (0xFFFFFF & ADDR_SDHC_ARG_2))
+	
+	switch (addr)
+	{
+	case (0xFFFFFF & ADDR_SDHC_ARG_2):
 	{
 		void *dest = &cpu_view->argument2[0];
 		void *source = &internal_view->argument2;
 		memcpy(dest, source, sizeof(internal_view->argument2));
 		out = (uint32_t)internal_view->argument2;
+		break;
 	}
-	if (addr == (0xFFFFFF & ADDR_SDHC_ARG_1))
+	case (0xFFFFFF & ADDR_SDHC_ARG_1):
 	{
-		void *dest = cpu_view->argument1;
+		void *dest = &cpu_view->argument1[0];
 		void *source = &internal_view->argument1;
 		memcpy(dest, source, sizeof(internal_view->argument1));
 		out = (uint32_t)internal_view->argument1;
+		break;
 	}
-
+	case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
+	{
+		void *dest = &cpu_view->blk_size[0];
+		void *source = &internal_view->blk_size;
+		memcpy(dest, source, sizeof(internal_view->blk_size));
+		out = (uint32_t)internal_view->blk_size;
+		break;
+	}
+	case (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1):
+	{
+		void *dest = &cpu_view->host_ctrl1;
+		void *source = &internal_view->host_ctrl1;
+		memcpy(dest, source, sizeof(internal_view->host_ctrl1));
+		out = (uint32_t)internal_view->host_ctrl1;
+		break;
+	}
+	default:
+		out = 0;
+		break;
+	}
 	return out;
+	out = 0;
 }
 
 #endif
@@ -790,29 +814,57 @@ void sdhcControl()
 		
 		switch (addr)
 		{
-		case(0xFFFFFF & ADDR_SDHC_ARG_2):
+		case(0xFFFFFF & ADDR_SDHC_ARG_2): // 32b
 			switch (rwbar)
 			{
 			case WRITE:
-				data_out = 0;
+				/* code */
 				break;
 			case READ:
-				internal_map.argument2 = 0xFFEE;
-				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
-				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				internal_map.argument2 = 0xFFFFFFEF;
+				// data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				data_out = ve_read(addr, &cpu_reg_view, &internal_map);
 				break;
 			default:
 				break;
 			}
 			break;
-		case(0xFFFFFF & ADDR_SDHC_ARG_1):
+		case(0xFFFFFF & ADDR_SDHC_ARG_1): //32b
 			switch (rwbar)
 			{
 			case WRITE:
-				data_out = 0;
+				/* code */				
 				break;
 			case READ:
-				internal_map.argument1 = 0x1235;
+				internal_map.argument1 = 0x12356789;
+				data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				break;
+			default:
+				break;
+			}
+			break;
+		case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE): // 16b
+			switch (rwbar)
+			{
+			case WRITE:
+				/* code */
+				break;
+			case READ:
+				internal_map.blk_size = 0xABCD;
+				data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				break;
+			default:
+				break;
+			}
+			break;
+		case (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1): // 8b
+			switch (rwbar)
+			{
+			case WRITE:
+				/* code */
+				break;
+			case READ:
+				internal_map.host_ctrl1 = 0xEF;
 				data_out = ve_read(addr, &cpu_reg_view, &internal_map);
 				break;
 			default:
@@ -827,7 +879,9 @@ void sdhcControl()
 		pthread_mutex_unlock(&Sdhc_lock);
 #endif
 
+		// data_out = 0xBAD;
 		sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
+		data_out = 0;
 	}
 }
 

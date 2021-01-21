@@ -30,31 +30,25 @@ inline void __ajit_bypass_write_sdhc_reg_dword(uint32_t addr, uint32_t val)
 }
 
 /* read: byte, word and double-word */
-inline uint32_t __ajit_bypass_read_sdhc_reg_byte(uint32_t addr)
-{
-        uint8_t ret_val = 0;
-        __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr, ret_val);
-        return(ret_val);
-}
-
-inline uint32_t __ajit_bypass_read_sdhc_reg_word(uint32_t addr)
-{
-        uint8_t temp, i = 0;
-        uint16_t ret_val = 0;
-        for (i = 0; i < 2; addr++)
-        {
-                __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr, ret_val);
-                if (i=0)
-                temp = ret_val;
-                else
-                temp = (temp << 7) + ret_val;
-        }
-        return(ret_val);
-}
-
-inline uint32_t __ajit_bypass_read_sdhc_reg_dword(uint32_t addr)
+uint32_t __ajit_bypass_read_sdhc_reg_byte(uint32_t addr)
 {
         uint32_t ret_val = 0;
-	__AJIT_LOAD_WORD_MMU_BYPASS__(addr, ret_val);
+        ret_val = __ajit_bypass_read_sdhc_reg_dword(addr);
+        ret_val = ret_val & 0x000000FF;
+        return(ret_val);
+}
+
+uint32_t __ajit_bypass_read_sdhc_reg_word(uint32_t addr)
+{
+        uint32_t ret_val = 0;
+        ret_val = __ajit_bypass_read_sdhc_reg_dword(addr);
+        ret_val = ret_val & 0x00000FFFF;
+        return ret_val;
+}
+
+uint32_t __ajit_bypass_read_sdhc_reg_dword(uint32_t addr)
+{
+        uint32_t ret_val = 0;
+        ret_val = __ajit_load_word_mmu_bypass__(addr);
         return(ret_val);
 }

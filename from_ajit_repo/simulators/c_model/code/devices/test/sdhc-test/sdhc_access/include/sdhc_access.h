@@ -54,8 +54,8 @@ inline void __ajit_bypass_write_sdhc_reg_byte(uint32_t addr, uint8_t val);
 inline void __ajit_bypass_write_sdhc_reg_word(uint32_t addr, uint16_t val);
 inline void __ajit_bypass_write_sdhc_reg_dword(uint32_t addr, uint32_t val);
 
-inline uint32_t __ajit_bypass_read_sdhc_reg_byte(uint32_t addr);
-inline uint32_t __ajit_bypass_read_sdhc_reg_word(uint32_t addr);
-inline uint32_t __ajit_bypass_read_sdhc_reg_dword(uint32_t addr);
+uint32_t __ajit_bypass_read_sdhc_reg_byte(uint32_t addr);
+uint32_t __ajit_bypass_read_sdhc_reg_word(uint32_t addr);
+uint32_t __ajit_bypass_read_sdhc_reg_dword(uint32_t addr);
 
 #endif
