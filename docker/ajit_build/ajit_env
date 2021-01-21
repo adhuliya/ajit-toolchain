@@ -14,6 +14,7 @@
 export AJIT_AHIR_DIR="$AJIT_HOME/ahir_release";
 export AJIT_TOOLS_DIR="$AJIT_HOME/tools";
 export AJIT_TESTS_DIR="$AJIT_HOME/tests";
+export AJIT_DEV_TREE_COMPILER_DIR="$AJIT_TOOLS_DIR/deviceTreeCompiler";
 
 export AJIT_CMODEL_DIR="$AJIT_HOME/simulators/c_model";
 export AJIT_CMODEL_BIN_DIR="$AJIT_CMODEL_DIR/code/testbench/bin";
@@ -57,6 +58,10 @@ export PATH=$AJIT_TOOLS_DIR/genVmapAsm/bin:$PATH;
 export PATH=$AJIT_CMODEL_BIN_DIR:$PATH;
 # for: TODO: Saurabh please comment here.
 export PATH=$AJIT_TOOLS_DIR/linker:$PATH;
+# for: TODO: Saurabh please comment here.
+export PATH=$AJIT_DEV_TREE_COMPILER_DIR:$PATH;
+# for: TODO: Saurabh please comment here.
+export PATH=$AJIT_DEV_TREE_COMPILER_DIR/scripts:$PATH;
 
 # points to the C system model executable
 export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";
@@ -76,6 +81,10 @@ export AJIT_CMODEL_LIB_DIR="$AJIT_CMODEL_DIR/code/debugger/doval/antlr3Cruntime/
 export LD_LIBRARY_PATH=$AJIT_BUILDROOT_LIB_DIR:$LD_LIBRARY_PATH;
 export LD_LIBRARY_PATH=$AJIT_UCLIBC_LIB_DIR:$LD_LIBRARY_PATH;
 export LD_LIBRARY_PATH=$AJIT_CMODEL_LIB_DIR:$LD_LIBRARY_PATH;
+
+# device tree compiler
+export LD_LIBRARY_PATH=$AJIT_DEV_TREE_COMPILER_DIR:$LD_LIBRARY_PATH;
+export LD_LIBRARY_PATH=$AJIT_DEV_TREE_COMPILER_DIR/libfdt:$LD_LIBRARY_PATH;
 
 # set include paths
 # UCLIBC_INCLUDE="$AJIT_UCLIBC_DIR/include/c++/4.7.4/";

@@ -6,7 +6,9 @@
 # Do the needed in one step.
 # REF: https://buildroot.org/downloads/manual/manual.html#requirement-mandatory
 # EXTRA packages for Ajit:
-#   For testing: time, parallel, libncurses5-dev
+#   For testing: time, parallel
+#   Others: libncurses5-dev, gedit
+#   For deviceTreeCompiler: bison, flex
   apt-get update \
 && \
   apt-get -y install --no-install-recommends \
@@ -36,6 +38,9 @@
     time \
     parallel \
     libncurses5-dev \
+    bison \
+    flex \
+    gedit \
 && \
   apt-get -y autoremove \
 && \

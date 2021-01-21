@@ -48,6 +48,9 @@ fi
   echo -e "\nBuilding the tools.\n";     sleep 1;
   AND "scons";
 
+  echo -e "\nBuilding the deviceTreeCompiler.\n";     sleep 1;
+  cd deviceTreeCompiler;
+  AND "make";
 } |& tee $_OUT_BUILD_FILE;
 
 

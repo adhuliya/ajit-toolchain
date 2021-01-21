@@ -49,6 +49,10 @@ fi
   echo -e "\nCleaning the tools.\n";     sleep 1;
   AND "scons -c";
 
+  echo -e "\nCleaning the deviceTreeCompiler.\n";     sleep 1;
+  cd deviceTreeCompiler;
+  AND "make clean";
+
   rm $_OUT_BUILD_FILE;
 } |& tee $_OUT_CLEANUP_FILE;
 
