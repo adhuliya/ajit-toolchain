@@ -56,11 +56,11 @@ export PATH=$AJIT_TOOLS_DIR/misc/bin:$PATH;
 export PATH=$AJIT_TOOLS_DIR/genVmapAsm/bin:$PATH;
 # for: ajit_C_system_model
 export PATH=$AJIT_CMODEL_BIN_DIR:$PATH;
-# for: TODO: Saurabh please comment here.
+# for: sourcing makeLinkerScript.py
 export PATH=$AJIT_TOOLS_DIR/linker:$PATH;
-# for: TODO: Saurabh please comment here.
+# for: compiling Device Tree
 export PATH=$AJIT_DEV_TREE_COMPILER_DIR:$PATH;
-# for: TODO: Saurabh please comment here.
+# for: building Device Tree Compiler
 export PATH=$AJIT_DEV_TREE_COMPILER_DIR/scripts:$PATH;
 
 # points to the C system model executable
@@ -148,7 +148,8 @@ export AJIT_UCLIBC_HEADERS=$AJIT_BUILDROOT_DIR/output/build/host-binutils-2.22/i
 #export AJIT_LIBGCC_INSTALL_DIR=$AJIT_BUILDROOT_DIR/output/build/host-gcc-final-4.7.4/gcc;
 export AJIT_ACCESS_ROUTINES=$AJIT_TOOLS_DIR/ajit_access_routines;
 export AJIT_MINIMAL_PRINTF_TIMER=$AJIT_TOOLS_DIR/minimal_printf_timer; 
-
+# FOR bootstrap scripts
+export AJIT_FLASH_IMAGE_DIR=$AJIT_TOOLS_DIR/flash_image;
 
 # To satisfy validation_outer_env_v3.py script
 export AJIT_AA_VALIDATION_EXECUTABLE_LOCATION=""
