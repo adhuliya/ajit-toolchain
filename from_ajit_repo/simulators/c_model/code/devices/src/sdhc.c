@@ -172,6 +172,50 @@ uint32_t ve_read(uint32_t addr, sdhc_reg_cpu_view *cpu_view, sdhc_reg_internal_v
 	out = 0;
 }
 
+void ve_write(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
+ 			struct sdhc_reg_cpu_view *cpu_view, struct sdhc_reg_internal_view *internal_view)
+{
+	data_in = insertUsingByteMask(0, data_in, byte_mask);
+	switch (addr)
+	{
+	case (0xFFFFFF & ADDR_SDHC_ARG_2):
+	{
+		internal_view->argument2 = data_in;
+		void *dest = &cpu_view->argument2[0];
+		void *source = &internal_view->argument2;
+		memcpy(dest, source, sizeof(internal_view->argument2));
+		break;
+	}
+	case (0xFFFFFF & ADDR_SDHC_ARG_1):
+	{
+		internal_view->argument1 = data_in;
+		void *dest = &cpu_view->argument1[0];
+		void *source = &internal_view->argument1;
+		memcpy(dest, source, sizeof(internal_view->argument1));
+		break;
+	}
+	case (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
+	{
+		internal_view->blk_size = data_in;
+		void *dest = &cpu_view->blk_size[0];
+		void *source = &internal_view->blk_size;
+		memcpy(dest, source, sizeof(internal_view->blk_size));
+		break;
+	}
+	case (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1):
+	{
+		internal_view->host_ctrl1 = data_in;
+		void *dest = &cpu_view->host_ctrl1;
+		void *source = &internal_view->host_ctrl1;
+		memcpy(dest, source, sizeof(internal_view->host_ctrl1));
+		break;
+	}
+	default:
+		break;
+	}
+
+	data_in = 0;
+}
 #endif
 
 // **** events **** //
@@ -306,12 +350,12 @@ void sdhcControl()
 
 		uint32_t data_out = 0;
 		//added for verifying the read functions
-		internal_map.argument2 = 0x123;
-		internal_map.argument1 = 0x234;
+		// internal_map.argument2 = 0x123;
+		// internal_map.argument1 = 0x234;
 		internal_map.buffer_data_port = 0x345;
 		internal_map.max_current_cap = 0x456;
-		internal_map.blk_size = 0x567;
-		internal_map.host_ctrl1 = 0x78;
+		// internal_map.blk_size = 0x567;
+		// internal_map.host_ctrl1 = 0x78;
 #ifdef SWITCH
 		pthread_mutex_lock(&Sdhc_lock);
 
@@ -812,35 +856,67 @@ void sdhcControl()
 		
 		switch (addr)
 		{
-
-
+		// arg2, arg1, blk_size and host_ctrl1 are the candidates for testing
+		//  32b, 16b and 8b registers. ****DO NOT CHANGE THE ORDER****
 		case(0xFFFFFF & ADDR_SDHC_ARG_2):
 			switch (rwbar)
 			{
 			case WRITE:
-				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
 				break;
 			default:
 				break;
 			}
-		break;
+			break;
 		
 		case(0xFFFFFF & ADDR_SDHC_ARG_1):
 			switch (rwbar)
 			{
 			case WRITE:
-				/* code */
+				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
 				break;
 			default:
 				break;
 			}
-		break;
+			break;
+
+		case(0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
+		 	switch (rwbar)
+			{
+			case WRITE:
+				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				break;
+			case READ:
+				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				break;
+			default:
+				break;
+			}
+			break;
+
+		case(0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1):
+		 	switch (rwbar)
+			{
+			case WRITE:
+				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				break;
+			case READ:
+				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
+				// data_out = ve_read(addr, &cpu_reg_view, &internal_map);
+				break;
+			default:
+				break;
+			}
+			break;
 
 		case(0xFFFFFF & ADDR_SDHC_BUFFER_DATA_PORT):
 		 	switch (rwbar)
@@ -854,7 +930,7 @@ void sdhcControl()
 			default:
 				break;
 			}
-		break;
+			break;
 		
 		case(0xFFFFFF & ADDR_SDHC_MAX_CURRENT_CAPS):
 		 	switch (rwbar)
@@ -868,7 +944,7 @@ void sdhcControl()
 			default:
 				break;
 			}
-		break;
+			break;
 
 		case(0xFFFFFF & ADDR_SDHC_PRESENT_STATE):
 		 	switch (rwbar)
@@ -882,39 +958,11 @@ void sdhcControl()
 			default:
 				break;
 			}
-		break;
-
-		case(0xFFFFFF & ADDR_SDHC_BLOCK_SIZE):
-		 	switch (rwbar)
-			{
-			case WRITE:
-				data_out = 0;
-				break;
-			case READ:
-				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
-				break;
-			default:
-				break;
-			}
-		break;
-
-		case(0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1):
-		 	switch (rwbar)
-			{
-			case WRITE:
-				data_out = 0;
-				break;
-			case READ:
-				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
-				break;
-			default:
-				break;
-			}
-		break;
+			break;
 
 		default:
 			data_out = 0x1deadbee;
-		break;
+			break;
 		}
 		
 		pthread_mutex_unlock(&Sdhc_lock);
