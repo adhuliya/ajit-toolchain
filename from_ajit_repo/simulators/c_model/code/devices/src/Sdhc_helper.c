@@ -19,25 +19,25 @@
 #include "sdhc.c"
 #include "sd.h"
 
-void generateCommandForSDCard(struct sdhc_reg_internal_view *sdhc_int_map)
+void generateCommandForSDCard(struct sdhc_reg_internal_view *internal_reg_view)
 {
 //extracting command index value to be inserted in bits 40:45
-	uint8_t cmd_index = getSlice16(sdhc_int_map->command_reg,13,8);
+	uint8_t cmd_index = getSlice16(internal_reg_view->command_reg,13,8);
 	uint8_t crc7=7;//dummy value for now, will be updated with crc7 function's
 							//return value later
 	uint64_t frame_data=0;
 	frame_data|=0UL<<47;//start bit
 	frame_data|=1UL<<46;//tx bit
 	frame_data|=(uint64_t)cmd_index<<40;
-	frame_data|=sdhc_int_map->argument1<<8;
+	frame_data|=internal_reg_view->argument1<<8;
 	frame_data|=crc7<<1;
 	frame_data|=0UL<<0;
 	write_uint64("sdhc_to_sdcard_request",frame_data);
 }
 
-uint8_t checkResponseType(struct sdhc_reg_internal_view *sdhc_int_map, struct sdhc_reg_cpu_view *cpu_side_regs)
+uint8_t checkResponseType(struct sdhc_reg_internal_view *internal_reg_view, struct sdhc_reg_cpu_view *cpu_reg_view)
 {
-	uint8_t n = getSlice16(sdhc_int_map->command_reg,13,8);
+	uint8_t n = getSlice16(internal_reg_view->command_reg,13,8);
 	uint8_t cmd;
 	if( (n == 0)|| (n==4) ||(n==15))//No response
   	cmd = (0<<6)|(0<<5)|(0<<4)|(0<<3)|0;
@@ -66,7 +66,7 @@ uint8_t checkResponseType(struct sdhc_reg_internal_view *sdhc_int_map, struct sd
 //if any bits in normal_intr_signal_en reg are set, they are 
 //to be compared with the bits of normal_intr_stat reg and,
 //if both are 1, interrupt has to be generated for that bit
-void checkNormalInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct sdhc_reg_cpu_view *cpu_side_regs)
+void checkNormalInterrupts(struct sdhc_reg_internal_view *internal_reg_view, struct sdhc_reg_cpu_view *cpu_reg_view)
 {	
 	uint32_t normalStatusEnableBits = internal_map.normal_intr_status_enable & 0x1FFF;//12:0
 	// To find which bit of the normal_interrrupt_status_enable register
@@ -75,8 +75,8 @@ void checkNormalInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct s
 
 	//copy these values to cpu side regs for normal-intr-stat reg
 	uint8_t size=2;
-	void *dest = &(cpu_side_regs->normal_intr_status);//cpu side regs are destination here
-	void *source = &(sdhc_int_map->normal_intr_status);
+	void *dest = &(cpu_reg_view->normal_intr_status);//cpu side regs are destination here
+	void *source = &(internal_reg_view->normal_intr_status);
 	memcpy(dest,source,size);	
 
 	uint16_t intr_flag=0;
@@ -126,7 +126,7 @@ void checkNormalInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct s
 	}
 }
 
-void checkErrorInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct sdhc_reg_cpu_view *cpu_side_regs)
+void checkErrorInterrupts(struct sdhc_reg_internal_view *internal_reg_view, struct sdhc_reg_cpu_view *cpu_reg_view)
 {
 	uint16_t errorStatusEnableBits = internal_map.error_intr_status_enable & 0x1FFF;
 	// To find which bit of the error_interrrupt_status_enable register
@@ -135,8 +135,8 @@ void checkErrorInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct sd
 
 	//copy these values to cpu side regs for error-intr-stat reg
 	uint8_t size=2;		
-	void *dest = &(cpu_side_regs->error_intr_status);//cpu side regs are destination here
-	void *source = &(sdhc_int_map->error_intr_status);
+	void *dest = &(cpu_reg_view->error_intr_status);//cpu side regs are destination here
+	void *source = &(internal_reg_view->error_intr_status);
 	memcpy(dest,source,size);	
 
 	//check the "Normal" Interrupt status reg's 'MSB', 
@@ -151,8 +151,8 @@ void checkErrorInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct sd
 		//the error interrupt will be notified through the normal intr status reg.
 		internal_map.normal_intr_status |= 1<<15;
 		uint8_t size=2;		
-		void *dest = &(cpu_side_regs->normal_intr_status);
-		void *source = &(cpu_side_regs->normal_intr_status);
+		void *dest = &(cpu_reg_view->normal_intr_status);
+		void *source = &(cpu_reg_view->normal_intr_status);
 		memcpy(dest,source,size);
 	}
 
@@ -167,52 +167,52 @@ void checkErrorInterrupts(struct sdhc_reg_internal_view *sdhc_int_map, struct sd
 }
 
 uint32_t readSdhcReg(uint32_t addr,
- 			sdhc_reg_cpu_view *cpu_side_regs, sdhc_reg_internal_view *sdhc_int_map)
+ 			sdhc_reg_cpu_view *cpu_reg_view, sdhc_reg_internal_view *internal_reg_view)
 {
 	uint32_t data_out = 0;
 
 	if (addr == (0xFFFFFF & ADDR_SDHC_ARG_2))
 	{
 		//cpu side regs are destination in readSdhcReg function
-		void *dest = &cpu_side_regs->argument2[0];
-		void *source = &sdhc_int_map->argument2;
-		memcpy(dest, source, sizeof(sdhc_int_map->argument2));
-		data_out = (uint32_t)(sdhc_int_map->argument2);
+		void *dest = &cpu_reg_view->argument2[0];
+		void *source = &internal_reg_view->argument2;
+		memcpy(dest, source, sizeof(internal_reg_view->argument2));
+		data_out = (uint32_t)(internal_reg_view->argument2);
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_SIZE))
 	{
-		void *dest = &cpu_side_regs->blk_size[0];
-		void *source = &sdhc_int_map->blk_size;
-		memcpy(dest,source,sizeof(sdhc_int_map->blk_size));
-		data_out = (uint32_t)(sdhc_int_map->blk_size);
+		void *dest = &cpu_reg_view->blk_size[0];
+		void *source = &internal_reg_view->blk_size;
+		memcpy(dest,source,sizeof(internal_reg_view->blk_size));
+		data_out = (uint32_t)(internal_reg_view->blk_size);
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_COUNT))
 	{
-		void *dest = &cpu_side_regs->blk_count[0];
-		void *source = &sdhc_int_map->blk_count;
-		memcpy(dest,source,sizeof(sdhc_int_map->blk_count));
-		data_out = (uint32_t)sdhc_int_map->blk_count;
+		void *dest = &cpu_reg_view->blk_count[0];
+		void *source = &internal_reg_view->blk_count;
+		memcpy(dest,source,sizeof(internal_reg_view->blk_count));
+		data_out = (uint32_t)internal_reg_view->blk_count;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_ARG_1))
 	{
-		void *dest = &cpu_side_regs->argument1[0];
-		void *source = &sdhc_int_map->argument1;
-		memcpy(dest,source,sizeof(sdhc_int_map->argument1));
-		data_out = (uint32_t)(sdhc_int_map->argument1);
+		void *dest = &cpu_reg_view->argument1[0];
+		void *source = &internal_reg_view->argument1;
+		memcpy(dest,source,sizeof(internal_reg_view->argument1));
+		data_out = (uint32_t)(internal_reg_view->argument1);
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
 	{
-		void *dest = &cpu_side_regs->tx_mode[0];
-		void *source = &sdhc_int_map->tx_mode;
-		memcpy(dest,source,sizeof(sdhc_int_map->tx_mode));
-		data_out = (uint32_t)sdhc_int_map->tx_mode;
+		void *dest = &cpu_reg_view->tx_mode[0];
+		void *source = &internal_reg_view->tx_mode;
+		memcpy(dest,source,sizeof(internal_reg_view->tx_mode));
+		data_out = (uint32_t)internal_reg_view->tx_mode;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
 	{
-		void *dest = &cpu_side_regs->command_reg[0];
-		void *source = &sdhc_int_map->command_reg;
-		memcpy(dest,source,sizeof(sdhc_int_map->command_reg));
-		data_out = (uint32_t)sdhc_int_map->command_reg;
+		void *dest = &cpu_reg_view->command_reg[0];
+		void *source = &internal_reg_view->command_reg;
+		memcpy(dest,source,sizeof(internal_reg_view->command_reg));
+		data_out = (uint32_t)internal_reg_view->command_reg;
 	}
 					/*	else if	((addr>=ADDR_SDHC_RESPONSE0)&&(addr<=ADDR_SDHC_RESPONSE7))
 						{
@@ -220,136 +220,136 @@ uint32_t readSdhcReg(uint32_t addr,
 						}*/	
 	else if (addr == (0xffffff && ADDR_SDHC_BUFFER_DATA_PORT))
 	{
-		void *dest = &cpu_side_regs->buffer_data_port[0];
-		void *source = &sdhc_int_map->buffer_data_port;
-		memcpy(dest,source,sizeof(sdhc_int_map->buffer_data_port));
-		data_out = (uint32_t)sdhc_int_map->buffer_data_port;
+		void *dest = &cpu_reg_view->buffer_data_port[0];
+		void *source = &internal_reg_view->buffer_data_port;
+		memcpy(dest,source,sizeof(internal_reg_view->buffer_data_port));
+		data_out = (uint32_t)internal_reg_view->buffer_data_port;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_PRESENT_STATE))
 	{
-		void *dest = &cpu_side_regs->present_state[0];
-		void *source = &sdhc_int_map->present_state;
-		memcpy(dest,source,sizeof(sdhc_int_map->present_state));
-		data_out = (uint32_t)sdhc_int_map->present_state;			
+		void *dest = &cpu_reg_view->present_state[0];
+		void *source = &internal_reg_view->present_state;
+		memcpy(dest,source,sizeof(internal_reg_view->present_state));
+		data_out = (uint32_t)internal_reg_view->present_state;			
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_1))
 	{
-		void *dest = &cpu_side_regs->host_ctrl1;
-		void *source = &sdhc_int_map->host_ctrl1;
-		memcpy(dest,source,sizeof(sdhc_int_map->host_ctrl1));
-		data_out = (uint32_t)sdhc_int_map->host_ctrl1;			
+		void *dest = &cpu_reg_view->host_ctrl1;
+		void *source = &internal_reg_view->host_ctrl1;
+		memcpy(dest,source,sizeof(internal_reg_view->host_ctrl1));
+		data_out = (uint32_t)internal_reg_view->host_ctrl1;			
 	}
 	else if(addr == (0xffffff & ADDR_SDHC_POWER_CONTROL))
 	{
-		void *dest = &cpu_side_regs->pwr_ctrl;
-		void *source = &sdhc_int_map->pwr_ctrl;
-		memcpy(dest,source,sizeof(sdhc_int_map->pwr_ctrl));
-		data_out = (uint32_t)sdhc_int_map->pwr_ctrl;						
+		void *dest = &cpu_reg_view->pwr_ctrl;
+		void *source = &internal_reg_view->pwr_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->pwr_ctrl));
+		data_out = (uint32_t)internal_reg_view->pwr_ctrl;						
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL))
 	{
-		void *dest = &cpu_side_regs->blk_gap_ctrl;
-		void *source = &sdhc_int_map->blk_gap_ctrl;
-		memcpy(dest,source,sizeof(sdhc_int_map->blk_gap_ctrl));
-		data_out = (uint32_t)sdhc_int_map->blk_gap_ctrl;
+		void *dest = &cpu_reg_view->blk_gap_ctrl;
+		void *source = &internal_reg_view->blk_gap_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->blk_gap_ctrl));
+		data_out = (uint32_t)internal_reg_view->blk_gap_ctrl;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_WAKEUP_CONTROL))
 	{
-		void *dest = &cpu_side_regs->wakeup_ctrl;
-		void *source = &sdhc_int_map->wakeup_ctrl;
-		memcpy(dest,source,sizeof(sdhc_int_map->wakeup_ctrl));
-		data_out = (uint32_t)sdhc_int_map->wakeup_ctrl;
+		void *dest = &cpu_reg_view->wakeup_ctrl;
+		void *source = &internal_reg_view->wakeup_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->wakeup_ctrl));
+		data_out = (uint32_t)internal_reg_view->wakeup_ctrl;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_CLOCK_CONTROL))
 	{
-		void *dest = &cpu_side_regs->clk_ctrl[0];
-		void *source = &sdhc_int_map->clk_ctrl;
-		memcpy(dest,source,sizeof(sdhc_int_map->clk_ctrl));
-		data_out = (uint32_t)sdhc_int_map->clk_ctrl;
+		void *dest = &cpu_reg_view->clk_ctrl[0];
+		void *source = &internal_reg_view->clk_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->clk_ctrl));
+		data_out = (uint32_t)internal_reg_view->clk_ctrl;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL))
 	{
-		void *dest = &cpu_side_regs->timeout_ctrl;
-		void *source = &sdhc_int_map->timeout_ctrl;
-		memcpy(dest,source,sizeof(sdhc_int_map->timeout_ctrl));
-		data_out = (uint32_t)sdhc_int_map->timeout_ctrl;
+		void *dest = &cpu_reg_view->timeout_ctrl;
+		void *source = &internal_reg_view->timeout_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->timeout_ctrl));
+		data_out = (uint32_t)internal_reg_view->timeout_ctrl;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_SOFTWARE_RESET))
 	{
-		void *dest = &cpu_side_regs->sw_reset;
-		void *source = &sdhc_int_map->sw_reset;
-		memcpy(dest,source,sizeof(sdhc_int_map->sw_reset));
-		data_out = (uint32_t)sdhc_int_map->sw_reset;
+		void *dest = &cpu_reg_view->sw_reset;
+		void *source = &internal_reg_view->sw_reset;
+		memcpy(dest,source,sizeof(internal_reg_view->sw_reset));
+		data_out = (uint32_t)internal_reg_view->sw_reset;
 	}		
 	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS))
 	{
-		void *dest = &cpu_side_regs->normal_intr_status[0];
-		void *source = &sdhc_int_map->normal_intr_status;
-		memcpy(dest,source,sizeof(sdhc_int_map->normal_intr_status));
-		data_out = (uint32_t)sdhc_int_map->normal_intr_status;
+		void *dest = &cpu_reg_view->normal_intr_status[0];
+		void *source = &internal_reg_view->normal_intr_status;
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_status));
+		data_out = (uint32_t)internal_reg_view->normal_intr_status;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS))
 	{
-		void *dest = &cpu_side_regs->error_intr_status[0];
-		void *source = &sdhc_int_map->error_intr_status;
-		memcpy(dest,source,sizeof(sdhc_int_map->error_intr_status));
-		data_out = (uint32_t)sdhc_int_map->error_intr_status;
+		void *dest = &cpu_reg_view->error_intr_status[0];
+		void *source = &internal_reg_view->error_intr_status;
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_status));
+		data_out = (uint32_t)internal_reg_view->error_intr_status;
 	}	
 	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
 	{
-		void *dest = &cpu_side_regs->normal_intr_status_enable[0];
-		void *source = &sdhc_int_map->normal_intr_status_enable;
-		memcpy(dest,source,sizeof(sdhc_int_map->normal_intr_status_enable));
-		data_out = (uint32_t)sdhc_int_map->normal_intr_status_enable;
+		void *dest = &cpu_reg_view->normal_intr_status_enable[0];
+		void *source = &internal_reg_view->normal_intr_status_enable;
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_status_enable));
+		data_out = (uint32_t)internal_reg_view->normal_intr_status_enable;
 	}	
 	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS_EN))
 	{
-		void *dest = &cpu_side_regs->error_intr_status_enable[0];
-		void *source = &sdhc_int_map->error_intr_status_enable;
-		memcpy(dest,source,sizeof(sdhc_int_map->error_intr_status_enable));
-		data_out = (uint32_t)sdhc_int_map->error_intr_status_enable;
+		void *dest = &cpu_reg_view->error_intr_status_enable[0];
+		void *source = &internal_reg_view->error_intr_status_enable;
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_status_enable));
+		data_out = (uint32_t)internal_reg_view->error_intr_status_enable;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN))
 	{
-		void *dest = &cpu_side_regs->normal_intr_signal_enable[0];
-		void *source = &sdhc_int_map->normal_intr_signal_enable;
-		memcpy(dest,source,sizeof(sdhc_int_map->normal_intr_signal_enable));
-		data_out = (uint32_t)sdhc_int_map->normal_intr_signal_enable;
+		void *dest = &cpu_reg_view->normal_intr_signal_enable[0];
+		void *source = &internal_reg_view->normal_intr_signal_enable;
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_signal_enable));
+		data_out = (uint32_t)internal_reg_view->normal_intr_signal_enable;
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN))
 	{
-		void *dest = &cpu_side_regs->error_intr_signal_enable[0];
-		void *source = &sdhc_int_map->error_intr_signal_enable;
-		memcpy(dest,source,sizeof(sdhc_int_map->error_intr_signal_enable));
-		data_out = (uint32_t)sdhc_int_map->error_intr_signal_enable;
+		void *dest = &cpu_reg_view->error_intr_signal_enable[0];
+		void *source = &internal_reg_view->error_intr_signal_enable;
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_signal_enable));
+		data_out = (uint32_t)internal_reg_view->error_intr_signal_enable;
 	}		
 	else if (addr == (0xffffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS))
 	{
-		void *dest = &cpu_side_regs->autoCMD_error_status[0];
-		void *source = &sdhc_int_map->autoCMD_error_status;
-		memcpy(dest,source,sizeof(sdhc_int_map->autoCMD_error_status));
-		data_out = (uint32_t)sdhc_int_map->autoCMD_error_status;
+		void *dest = &cpu_reg_view->autoCMD_error_status[0];
+		void *source = &internal_reg_view->autoCMD_error_status;
+		memcpy(dest,source,sizeof(internal_reg_view->autoCMD_error_status));
+		data_out = (uint32_t)internal_reg_view->autoCMD_error_status;
 	}		
 	else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_2))
 	{
-		void *dest = &cpu_side_regs->host_ctrl2[0];
-		void *source = &sdhc_int_map->host_ctrl2;
-		memcpy(dest,source,sizeof(sdhc_int_map->host_ctrl2));
-		data_out = (uint32_t)sdhc_int_map->host_ctrl2;
+		void *dest = &cpu_reg_view->host_ctrl2[0];
+		void *source = &internal_reg_view->host_ctrl2;
+		memcpy(dest,source,sizeof(internal_reg_view->host_ctrl2));
+		data_out = (uint32_t)internal_reg_view->host_ctrl2;
 	}		
 	else if (addr == (0xffffff & ADDR_SDHC_CAPS))
 	{
-		void *dest = &cpu_side_regs->capabilities[0];
-		void *source = &sdhc_int_map->capabilities;
-		memcpy(dest,source,sizeof(sdhc_int_map->capabilities));
-		data_out = (uint32_t)sdhc_int_map->capabilities;
+		void *dest = &cpu_reg_view->capabilities[0];
+		void *source = &internal_reg_view->capabilities;
+		memcpy(dest,source,sizeof(internal_reg_view->capabilities));
+		data_out = (uint32_t)internal_reg_view->capabilities;
 	}	
 	else if (addr == (0xffffff & ADDR_SDHC_MAX_CURRENT_CAPS))
 	{
-		void *dest = &cpu_side_regs->max_current_cap[0];
-		void *source = &sdhc_int_map->max_current_cap;
-		memcpy(dest,source,sizeof(sdhc_int_map->max_current_cap));
-		data_out = (uint32_t)sdhc_int_map->max_current_cap;
+		void *dest = &cpu_reg_view->max_current_cap[0];
+		void *source = &internal_reg_view->max_current_cap;
+		memcpy(dest,source,sizeof(internal_reg_view->max_current_cap));
+		data_out = (uint32_t)internal_reg_view->max_current_cap;
 	}	
 	// sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 
@@ -357,7 +357,7 @@ uint32_t readSdhcReg(uint32_t addr,
 }
 
 void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
- 			struct sdhc_reg_cpu_view *str, struct sdhc_reg_internal_view *sdhc_int_map)
+ 			struct sdhc_reg_cpu_view *str, struct sdhc_reg_internal_view *internal_reg_view)
 {
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
 	uint32_t data_out=0;
@@ -372,7 +372,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
 		str->argument2[3] = temp4;
 		uint8_t size=4;
-		void *dest = &(sdhc_int_map->argument2);//internal regs are destionation here
+		void *dest = &(internal_reg_view->argument2);//internal regs are destionation here
 		void *source = &(str->argument2);
 		memcpy(dest,source,size);
 	}
@@ -384,7 +384,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
 		str->blk_size[1] = temp2;
 		uint8_t size=2;
-		void *dest = &(sdhc_int_map->blk_size);
+		void *dest = &(internal_reg_view->blk_size);
 		void *source = &(str->blk_size);
 		memcpy(dest,source,size);
 	}
@@ -396,7 +396,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
 		str->blk_count[1] = temp2;
 		uint8_t size=2;
-		void *dest = &(sdhc_int_map->blk_count);
+		void *dest = &(internal_reg_view->blk_count);
 		void *source = &(str->blk_count);
 		memcpy(dest,source,size);
 	}
@@ -412,7 +412,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
 		str->argument1[3] = temp4;
 		uint8_t size=4;
-		void *dest = &(sdhc_int_map->argument1);
+		void *dest = &(internal_reg_view->argument1);
 		void *source = &(str->argument1);
 		memcpy(dest,source,size);
 	}
@@ -424,30 +424,30 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
 		str->tx_mode[1] = temp2;
 		uint8_t size=2;
-		void *dest = &(sdhc_int_map->tx_mode);
+		void *dest = &(internal_reg_view->tx_mode);
 		void *source = &(str->tx_mode);
 		memcpy(dest,source,size);
 	}
 	else if(addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
 	{
 		//stores cmd_index value before anything is updated
-		uint8_t cmd_index_init=getSlice16(sdhc_int_map->command_reg,13,8);
+		uint8_t cmd_index_init=getSlice16(internal_reg_view->command_reg,13,8);
 		uint8_t temp1 = getSlice16(data_in_masked,7,0);
 		str->command_reg[0] = temp1;
 		uint8_t temp2 = getSlice16(data_in_masked,15,8);
 		str->command_reg[1] = temp2;
 		uint8_t size=2;		
-		void *dest = &(sdhc_int_map->command_reg);
+		void *dest = &(internal_reg_view->command_reg);
 		void *source = &(str->command_reg);
 		memcpy(dest,source,size);
 		//stores cmd_index value after register is updated
-		uint8_t cmd_index_post=getSlice16(sdhc_int_map->command_reg,13,8);
+		uint8_t cmd_index_post=getSlice16(internal_reg_view->command_reg,13,8);
 		//compares old cmd_index value i.e cmd_init with the updated one
 		//if there is a change in the upper byte of this register, 
 		//command is to be send to SD card, which happens by generateCommandForSDCard
 		if(cmd_index_init!=cmd_index_post)
 		{
-			generateCommandForSDCard(sdhc_int_map);
+			generateCommandForSDCard(internal_reg_view);
 		}
 	}
 	else if (addr == (0xffffff & ADDR_SDHC_RESPONSE0))
@@ -467,7 +467,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
 		str->buffer_data_port[3] = temp4;
 		uint8_t size=4;		
-		void *dest = &(sdhc_int_map->buffer_data_port);
+		void *dest = &(internal_reg_view->buffer_data_port);
 		void *source = &(str->buffer_data_port);
 		memcpy(dest,source,size);		
 	}
@@ -482,7 +482,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
 		str->present_state[3] = temp4;
 		uint8_t size=4;		
-		void *dest = &(sdhc_int_map->present_state);
+		void *dest = &(internal_reg_view->present_state);
 		void *source = &(str->present_state);
 		memcpy(dest,source,size);			
 	}
@@ -491,7 +491,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->host_ctrl1 = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->host_ctrl1);
+		void *dest = &(internal_reg_view->host_ctrl1);
 		void *source = &(str->host_ctrl1);
 		memcpy(dest,source,size);			
 	}
@@ -500,7 +500,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->pwr_ctrl = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->pwr_ctrl);
+		void *dest = &(internal_reg_view->pwr_ctrl);
 		void *source = &(str->pwr_ctrl);
 		memcpy(dest,source,size);			
 	}	
@@ -509,7 +509,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->blk_gap_ctrl = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->blk_gap_ctrl);
+		void *dest = &(internal_reg_view->blk_gap_ctrl);
 		void *source = &(str->blk_gap_ctrl);
 		memcpy(dest,source,size);			
 	}
@@ -518,7 +518,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->wakeup_ctrl = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->wakeup_ctrl);
+		void *dest = &(internal_reg_view->wakeup_ctrl);
 		void *source = &(str->wakeup_ctrl);
 		memcpy(dest,source,size);			
 	}
@@ -529,7 +529,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
 		str->clk_ctrl[1] = temp2;		
 		uint8_t size=2;		
-		void *dest = &(sdhc_int_map->wakeup_ctrl);
+		void *dest = &(internal_reg_view->wakeup_ctrl);
 		void *source = &(str->wakeup_ctrl);
 		memcpy(dest,source,size);			
 	}	
@@ -538,7 +538,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->timeout_ctrl = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->timeout_ctrl);
+		void *dest = &(internal_reg_view->timeout_ctrl);
 		void *source = &(str->timeout_ctrl);
 		memcpy(dest,source,size);			
 	}	
@@ -547,7 +547,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
 		str->sw_reset = temp1;
 		uint8_t size=1;		
-		void *dest = &(sdhc_int_map->sw_reset);
+		void *dest = &(internal_reg_view->sw_reset);
 		void *source = &(str->sw_reset);
 		memcpy(dest,source,size);			
 	}	
@@ -558,7 +558,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
 		str->normal_intr_status[1] = temp2;
 		uint8_t size=2;		
-		void *dest = &(sdhc_int_map->normal_intr_status);
+		void *dest = &(internal_reg_view->normal_intr_status);
 		void *source = &(str->normal_intr_status);
 		memcpy(dest,source,size);			
 	}			
@@ -569,7 +569,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
 		str->error_intr_status[1] = temp2;
 		uint8_t size=2;		
-		void *dest = &(sdhc_int_map->error_intr_status);
+		void *dest = &(internal_reg_view->error_intr_status);
 		void *source = &(str->error_intr_status);
 		memcpy(dest,source,size);			
 	}			
@@ -580,7 +580,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
 		str->normal_intr_status_enable[1] = temp2;
 		uint8_t size=2;		
-		void *dest = &(sdhc_int_map->normal_intr_status_enable);
+		void *dest = &(internal_reg_view->normal_intr_status_enable);
 		void *source = &(str->normal_intr_status_enable);
 		memcpy(dest,source,size);			
 	}	
