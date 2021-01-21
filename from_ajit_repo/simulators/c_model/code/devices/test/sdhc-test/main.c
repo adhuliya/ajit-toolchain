@@ -24,22 +24,26 @@ int ajit_main()
        	__enable_serial();
         __enable_serial_interrupt();
 
-       	ee_printf("\n\nHello world\n\n");
+       	ee_printf("\n\n March test for SDHC regs\n\n");
 	
         ee_printf("\n------------------------------\n\n");
 
         // SDHC interface begin--------------------------------------------------
 
-        uint32_t data;
+        // __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_ARG_2, 0xFFFF);
 
-        // 32b registers
-        ee_printf("data read from SDHC arg2 register = 0x%x \n", 
-                        __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2)); ;
+        uint32_t data=0;
 
-        ee_printf("data read from SDHC arg1 register = 0x%x \n", 
-                        __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_1));        
-
-        // 16b registers
+        data  = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2);
+        ee_printf("data read from register arg2 = %x \n", data);
+        data  = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_1);
+        ee_printf("data read from register arg1 = %x \n", data);
+	data = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_PRESENT_STATE);
+        ee_printf("data read from PSR = %x \n", data);
+	data = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_BUFFER_DATA_PORT);
+        ee_printf("data read from buffer data port = %x \n", data);
+        data = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_MAX_CURRENT_CAPS);
+        ee_printf("data read from max current capabilities = %x \n", data);
 
         ee_printf("data read from SDHC blk size register = 0x%x \n", 
                         __ajit_bypass_read_sdhc_reg_word(ADDR_SDHC_BLOCK_SIZE));

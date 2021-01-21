@@ -218,7 +218,7 @@ uint32_t readSdhcReg(uint32_t addr,
 						{
 					In progress
 						}*/	
-	else if (addr == (0xffffff && ADDR_SDHC_BUFFER_DATA_PORT))
+	else if (addr == (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT))
 	{
 		void *dest = &cpu_reg_view->buffer_data_port[0];
 		void *source = &internal_reg_view->buffer_data_port;
