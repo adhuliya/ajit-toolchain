@@ -357,89 +357,85 @@ uint32_t readSdhcReg(uint32_t addr,
 }
 
 void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
- 			struct sdhc_reg_cpu_view *str, struct sdhc_reg_internal_view *internal_reg_view)
+ 			struct sdhc_reg_cpu_view *cpu_reg_view, struct sdhc_reg_internal_view *internal_reg_view)
 {
 	uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
 	uint32_t data_out=0;
 	if (addr== (0xffffff & ADDR_SDHC_ARG_2))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->argument2[0] = temp1;
+		cpu_reg_view->argument2[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->argument2[1] = temp2;
+		cpu_reg_view->argument2[1] = temp2;
 		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->argument2[2] = temp3;
+		cpu_reg_view->argument2[2] = temp3;
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->argument2[3] = temp4;
-		uint8_t size=4;
+		cpu_reg_view->argument2[3] = temp4;
+		//uint8_t size=4;
 		void *dest = &(internal_reg_view->argument2);//internal regs are destionation here
-		void *source = &(str->argument2);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->argument2[0];
+		memcpy(dest,source,sizeof(internal_reg_view->argument2));
 	}
 
 	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_SIZE))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->blk_size[0] = temp1;
+		cpu_reg_view->blk_size[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->blk_size[1] = temp2;
-		uint8_t size=2;
+		cpu_reg_view->blk_size[1] = temp2;
 		void *dest = &(internal_reg_view->blk_size);
-		void *source = &(str->blk_size);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->blk_size[0];
+		memcpy(dest,source,sizeof(internal_reg_view->blk_size));
 	}
 
 	else if (addr== (0xffffff & ADDR_SDHC_BLOCK_COUNT))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->blk_count[0] = temp1;
+		cpu_reg_view->blk_count[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->blk_count[1] = temp2;
-		uint8_t size=2;
+		cpu_reg_view->blk_count[1] = temp2;
 		void *dest = &(internal_reg_view->blk_count);
-		void *source = &(str->blk_count);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->blk_count[0];
+		memcpy(dest,source,sizeof(internal_reg_view->blk_size));
 	}
 
 	else if (addr== (0xffffff & ADDR_SDHC_ARG_1))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->argument1[0] = temp1;
+		cpu_reg_view->argument1[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->argument1[1] = temp2;
+		cpu_reg_view->argument1[1] = temp2;
 		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->argument1[2] = temp3;
+		cpu_reg_view->argument1[2] = temp3;
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->argument1[3] = temp4;
-		uint8_t size=4;
+		cpu_reg_view->argument1[3] = temp4;
 		void *dest = &(internal_reg_view->argument1);
-		void *source = &(str->argument1);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->argument1[0];
+		memcpy(dest,source,sizeof(internal_reg_view->argument1));
 	}
 
 	else if(addr == (0xffffff & ADDR_SDHC_TRANSFER_MODE))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->tx_mode[0] = temp1;
+		cpu_reg_view->tx_mode[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->tx_mode[1] = temp2;
-		uint8_t size=2;
+		cpu_reg_view->tx_mode[1] = temp2;
 		void *dest = &(internal_reg_view->tx_mode);
-		void *source = &(str->tx_mode);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->tx_mode[0];
+		memcpy(dest,source,sizeof(internal_reg_view));
 	}
+
 	else if(addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
 	{
 		//stores cmd_index value before anything is updated
 		uint8_t cmd_index_init=getSlice16(internal_reg_view->command_reg,13,8);
 		uint8_t temp1 = getSlice16(data_in_masked,7,0);
-		str->command_reg[0] = temp1;
+		cpu_reg_view->command_reg[0] = temp1;
 		uint8_t temp2 = getSlice16(data_in_masked,15,8);
-		str->command_reg[1] = temp2;
-		uint8_t size=2;		
+		cpu_reg_view->command_reg[1] = temp2;
 		void *dest = &(internal_reg_view->command_reg);
-		void *source = &(str->command_reg);
-		memcpy(dest,source,size);
+		void *source = &cpu_reg_view->command_reg[0];
+		memcpy(dest,source,sizeof(internal_reg_view->command_reg));
 		//stores cmd_index value after register is updated
 		uint8_t cmd_index_post=getSlice16(internal_reg_view->command_reg,13,8);
 		//compares old cmd_index value i.e cmd_init with the updated one
@@ -450,6 +446,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 			generateCommandForSDCard(internal_reg_view);
 		}
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_RESPONSE0))
 	{
 		/* to be done during sd card modelling as write to 
@@ -459,134 +456,189 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 	else if (addr == (0xffffff & ADDR_SDHC_BUFFER_DATA_PORT))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->buffer_data_port[0] = temp1;
+		cpu_reg_view->buffer_data_port[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->buffer_data_port[1] = temp2;
+		cpu_reg_view->buffer_data_port[1] = temp2;
 		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->buffer_data_port[2] = temp3;
+		cpu_reg_view->buffer_data_port[2] = temp3;
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->buffer_data_port[3] = temp4;
-		uint8_t size=4;		
+		cpu_reg_view->buffer_data_port[3] = temp4;
 		void *dest = &(internal_reg_view->buffer_data_port);
-		void *source = &(str->buffer_data_port);
-		memcpy(dest,source,size);		
+		void *source = &cpu_reg_view->buffer_data_port[0];
+		memcpy(dest,source,sizeof(internal_reg_view->buffer_data_port));		
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_PRESENT_STATE))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->present_state[0] = temp1;
+		cpu_reg_view->present_state[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->present_state[1] = temp2;
+		cpu_reg_view->present_state[1] = temp2;
 		uint8_t temp3 = getSlice32(data_in_masked,23,16);
-		str->present_state[2] = temp3;
+		cpu_reg_view->present_state[2] = temp3;
 		uint8_t temp4 = getSlice32(data_in_masked,31,24);
-		str->present_state[3] = temp4;
-		uint8_t size=4;		
+		cpu_reg_view->present_state[3] = temp4;
 		void *dest = &(internal_reg_view->present_state);
-		void *source = &(str->present_state);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->present_state[0];
+		memcpy(dest,source,sizeof(internal_reg_view->present_state));			
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_1))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->host_ctrl1 = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->host_ctrl1 = temp1;
 		void *dest = &(internal_reg_view->host_ctrl1);
-		void *source = &(str->host_ctrl1);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->host_ctrl1;
+		memcpy(dest,source,sizeof(internal_reg_view->host_ctrl1));			
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_POWER_CONTROL))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->pwr_ctrl = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->pwr_ctrl = temp1;
 		void *dest = &(internal_reg_view->pwr_ctrl);
-		void *source = &(str->pwr_ctrl);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->pwr_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->pwr_ctrl));			
 	}	
+
 	else if (addr == (0xffffff & ADDR_SDHC_BLOCK_GAP_CONTROL))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->blk_gap_ctrl = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->blk_gap_ctrl = temp1;
 		void *dest = &(internal_reg_view->blk_gap_ctrl);
-		void *source = &(str->blk_gap_ctrl);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->blk_gap_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->blk_gap_ctrl));			
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_WAKEUP_CONTROL))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->wakeup_ctrl = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->wakeup_ctrl = temp1;
 		void *dest = &(internal_reg_view->wakeup_ctrl);
-		void *source = &(str->wakeup_ctrl);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->wakeup_ctrl;
+		memcpy(dest,source,sizeof(internal_reg_view->wakeup_ctrl));			
 	}
+
 	else if (addr == (0xffffff & ADDR_SDHC_CLOCK_CONTROL))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->clk_ctrl[0] = temp1;
+		cpu_reg_view->clk_ctrl[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
-		str->clk_ctrl[1] = temp2;		
-		uint8_t size=2;		
+		cpu_reg_view->clk_ctrl[1] = temp2;		
 		void *dest = &(internal_reg_view->wakeup_ctrl);
-		void *source = &(str->wakeup_ctrl);
-		memcpy(dest,source,size);			
+		void *source = &(cpu_reg_view->wakeup_ctrl);
+		memcpy(dest,source,sizeof(internal_reg_view->wakeup_ctrl));			
 	}	
+
 	else if (addr == (0xffffff & ADDR_SDHC_TIMEOUT_CONTROL))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->timeout_ctrl = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->timeout_ctrl = temp1;
 		void *dest = &(internal_reg_view->timeout_ctrl);
-		void *source = &(str->timeout_ctrl);
-		memcpy(dest,source,size);			
+		void *source = &(cpu_reg_view->timeout_ctrl);
+		memcpy(dest,source,sizeof(internal_reg_view->timeout_ctrl));			
 	}	
+
 	else if (addr == (0xffffff & ADDR_SDHC_SOFTWARE_RESET))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->sw_reset = temp1;
-		uint8_t size=1;		
+		cpu_reg_view->sw_reset = temp1;
 		void *dest = &(internal_reg_view->sw_reset);
-		void *source = &(str->sw_reset);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->sw_reset;
+		memcpy(dest,source,sizeof(internal_reg_view->sw_reset));			
 	}	
+
 	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->normal_intr_status[0] = temp1;
+		cpu_reg_view->normal_intr_status[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,15,8);
-		str->normal_intr_status[1] = temp2;
-		uint8_t size=2;		
+		cpu_reg_view->normal_intr_status[1] = temp2;
 		void *dest = &(internal_reg_view->normal_intr_status);
-		void *source = &(str->normal_intr_status);
-		memcpy(dest,source,size);			
-	}			
+		void *source = &cpu_reg_view->normal_intr_status[0];
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_status));			
+	}		
+
 	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->error_intr_status[0] = temp1;
+		cpu_reg_view->error_intr_status[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
-		str->error_intr_status[1] = temp2;
-		uint8_t size=2;		
+		cpu_reg_view->error_intr_status[1] = temp2;
 		void *dest = &(internal_reg_view->error_intr_status);
-		void *source = &(str->error_intr_status);
-		memcpy(dest,source,size);			
-	}			
+		void *source = &cpu_reg_view->error_intr_status[0];
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_status));			
+	}		
+
 	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
 	{
 		uint8_t temp1 = getSlice32(data_in_masked,7,0);
-		str->normal_intr_status_enable[0] = temp1;
+		cpu_reg_view->normal_intr_status_enable[0] = temp1;
 		uint8_t temp2 = getSlice32(data_in_masked,7,0);
-		str->normal_intr_status_enable[1] = temp2;
-		uint8_t size=2;		
+		cpu_reg_view->normal_intr_status_enable[1] = temp2;
 		void *dest = &(internal_reg_view->normal_intr_status_enable);
-		void *source = &(str->normal_intr_status_enable);
-		memcpy(dest,source,size);			
+		void *source = &cpu_reg_view->normal_intr_status_enable[0];
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_status_enable));			
 	}	
+
+	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_STATUS_EN))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->error_intr_status_enable[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->error_intr_status_enable[1] = temp2;
+		void *dest = &(internal_reg_view->error_intr_status_enable);
+		void *source = &cpu_reg_view->error_intr_status_enable[0];
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_status_enable));			
+	}
+
+	else if (addr == (0xffffff & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->normal_intr_signal_enable[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->normal_intr_signal_enable[1] = temp2;
+		void *dest = &(internal_reg_view->normal_intr_signal_enable);
+		void *source = &cpu_reg_view->normal_intr_signal_enable[0];
+		memcpy(dest,source,sizeof(internal_reg_view->normal_intr_signal_enable));		
+	}
+
+	else if (addr == (0xffffff & ADDR_SDHC_ERROR_INTR_SIGNAL_EN))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->error_intr_signal_enable[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->error_intr_signal_enable[1] = temp2;
+		void *dest = &(internal_reg_view->error_intr_signal_enable);
+		void *source = &cpu_reg_view->error_intr_signal_enable[0];
+		memcpy(dest,source,sizeof(internal_reg_view->error_intr_signal_enable));	
+	}		
+
+	else if (addr == (0xffffff & ADDR_SDHC_AUTO_CMD_ERROR_STATUS))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->autoCMD_error_status[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->autoCMD_error_status[1] = temp2;
+		void *dest = &(internal_reg_view->autoCMD_error_status);
+		void *source = &cpu_reg_view->autoCMD_error_status[0];
+		memcpy(dest,source,sizeof(internal_reg_view->autoCMD_error_status));	
+	}
+
+	else if (addr == (0xffffff & ADDR_SDHC_HOST_CONTROL_2))
+	{
+		uint8_t temp1 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->host_ctrl2[0] = temp1;
+		uint8_t temp2 = getSlice32(data_in_masked,7,0);
+		cpu_reg_view->host_ctrl2[1] = temp2;
+		void *dest = &(internal_reg_view->host_ctrl2);
+		void *source = &cpu_reg_view->host_ctrl2[0];
+		memcpy(dest,source,sizeof(internal_reg_view->host_ctrl2));	
+	}
+
 	//acknowledgement MUST be sent to CPU 
 	//read requests will carry the data the read request was supposed to read
 	//write requests will return the value 0 as acknowledgement
-	sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
+	//sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 }
 

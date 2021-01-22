@@ -33,7 +33,7 @@ int ajit_main()
         // __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_ARG_2, 0xFFFF);
 
         uint32_t data=0;
-
+        ee_printf("Reading hard-coded values from PSR, buffer data port and max current caps\n");
 	data = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_PRESENT_STATE);
         ee_printf("data read from PSR = %x \n", data);
 	data = __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_BUFFER_DATA_PORT);
@@ -42,23 +42,23 @@ int ajit_main()
         ee_printf("data read from max current capabilities = %x \n", data);
         
         // 32b registers: read and write
-
+        ee_printf("#    32-bit Writes and reads #\n");
         __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_ARG_2, 0x87654321);
         ee_printf("data read from SDHC arg2 register = 0x%x \n", 
                         __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_2));
 
         __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_ARG_1, 0x12345678);
-        ee_printf("data read from SDHC arg1 register = 0x%x \n", 
+        ee_printf("data read from SDHC arg1 register = 0x%x\n", 
                         __ajit_bypass_read_sdhc_reg_dword(ADDR_SDHC_ARG_1));        
 
         // 16b registers: read and write
-
+        ee_printf("#    16-bit Writes and reads      #\n");
         __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_BLOCK_SIZE, 0x1234);
         ee_printf("data read from SDHC blk size register = 0x%x \n", 
                         __ajit_bypass_read_sdhc_reg_word(ADDR_SDHC_BLOCK_SIZE));
 
         // 8bit registers: read and write
-
+        ee_printf("#    8-bit Writes and reads  #\n");
         __ajit_bypass_write_sdhc_reg_dword(ADDR_SDHC_HOST_CONTROL_1, 0x12);
         ee_printf("data read from SDHC host cntrl 1 register = 0x%x \n", 
                         __ajit_bypass_read_sdhc_reg_byte(ADDR_SDHC_HOST_CONTROL_1));

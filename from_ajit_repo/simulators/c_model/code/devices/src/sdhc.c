@@ -354,8 +354,7 @@ void sdhcControl()
 		// internal_map.argument1 = 0x234;
 		internal_map.buffer_data_port = 0x345;
 		internal_map.max_current_cap = 0x456;
-		// internal_map.blk_size = 0x567;
-		// internal_map.host_ctrl1 = 0x78;
+
 #ifdef SWITCH
 		pthread_mutex_lock(&Sdhc_lock);
 
@@ -862,7 +861,8 @@ void sdhcControl()
 			switch (rwbar)
 			{
 			case WRITE:
-				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				//ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -877,7 +877,8 @@ void sdhcControl()
 			switch (rwbar)
 			{
 			case WRITE:
-				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				//ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -892,7 +893,8 @@ void sdhcControl()
 		 	switch (rwbar)
 			{
 			case WRITE:
-				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+			//	ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -907,7 +909,8 @@ void sdhcControl()
 		 	switch (rwbar)
 			{
 			case WRITE:
-				ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
+				//ve_write(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -922,7 +925,7 @@ void sdhcControl()
 		 	switch (rwbar)
 			{
 			case WRITE:
-				data_out = 0;
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -950,7 +953,7 @@ void sdhcControl()
 		 	switch (rwbar)
 			{
 			case WRITE:
-				data_out = 0;
+				writeSdhcReg(data_in, addr, byte_mask, &cpu_reg_view, &internal_map);
 				break;
 			case READ:
 				data_out = readSdhcReg(addr, &cpu_reg_view, &internal_map);
@@ -968,7 +971,6 @@ void sdhcControl()
 		pthread_mutex_unlock(&Sdhc_lock);
 #endif
 
-		// data_out = 0xBAD;
 		sendPeripheralResponse("sdhc_to_peripheral_bridge_response", data_out);
 		data_out = 0;
 	}
