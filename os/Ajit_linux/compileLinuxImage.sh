@@ -1,13 +1,4 @@
 # Script for producing Linux image for AJIT processor
-AJIT_KERNEL=$PWD/Ajit_linux_3.16.1
-AJIT_LINUX_TAR=$PWD/ajit-linux-source.tar.gz.tar.gz
-	#If you're running this script for the first time,
-	#the decompressed AJIT Linux Source code may not exist.
-	#Let's create it first.
-
-if ! [ -d "$AJIT_KERNEL" ]; then
-	tar -xvf $AJIT_LINUX_TAR
-fi
 
 echo "================================================="
 echo "Executing Step 1 of AJIT Linux build, log can be found in compilelog/ directory"
