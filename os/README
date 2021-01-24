@@ -1,0 +1,27 @@
+	24 Jan 2021
+
+For building Linux images using Docker setup,
+changes to the scripts have been made:
+	1. GeneratememMapForAjit.sh,  
+	2. vmLinuzToMemmapAtf0004000.sh
+	3. linux_boot/compile.sh
+
+In the GeneratememMapForAjit.sh, $BUILDROOT_BUILD_DIR
+points to build/buildroot-2014.08/
+
+Steps to build Linux image:
+	1. Start the docker image ajit_build_dev
+	2. go to os/Ajit_linux/ and run compileLinuxImage.sh	 
+	3. This in turn runs following scripts
+		A ./GeneratememMapForAjit.sh |& tee ./compilelog/GenMemMapScript.log
+		B ./vmLinuzToMemmapAtf0004000.sh |& tee ./compilelog/vmLinuzF0004000.log
+	4. It copies the boot_loader_plus_kernel.mmap file from
+		Ajit_linux/Generated_memory_map.f0004000/Output.f0004000/ directory
+		to Ajit_linux/linux_boot/boot_loader_plus_kernel_mmap directory
+	5. Further it runs ./compile.sh |& tee finalImagebuild.log from
+	Ajit_linux/linux_boot/
+	6. This will produce the binary file to be loaded in FPGA's
+	flash in the ./linux_boot/flash_contents/ directory.
+
+	
+	
