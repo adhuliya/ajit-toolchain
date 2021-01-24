@@ -1,0 +1,47 @@
+Info: destination base address = 0xf0000000
+Info: block size in bytes = 0x200000
+Info: text-section-begins-at  = 0x0.
+Info: data-section-begins-at  = 0x40000000.
+Info: output-file (linker-script-file)  = customLinkerScript.lnk.
+sparc-linux-ld: warning: cannot find entry symbol main; defaulting to 0000000000000000
+readelf: Warning: Section '.bss' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
+readelf: Warning: Section '.data' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata' was not dumped because it does not exist!
+File /tmp/objdump-trace.txt open error with error number 24.
+Info: optimization level = 2
+Info: added include-directory = /usr/include.
+Info: added include-directory = ./.
+Info: added assembly-file = ./bootstrap_u64.s.
+Info: added assembly-file = ./boot_loader_plus_kernel.s.
+Info: elf-file to be produced  = bootstrap_u64.elf.
+Info: var-dump-file to be produced  = bootstrap_u64.vars.
+Info: hex-dump-file to be produced  = bootstrap_u64.hex.
+Info: memory-map-file to be produced  = bootstrap_u64.mmap.
+Info: object-dump-file to be produced  = bootstrap_u64.objdump.
+Info: linker_script_file  = customLinkerScript.lnk.
+Info: Executing:
+	rm -rf .//sparc-assembly
+Info: Executing:
+	mkdir .//sparc-assembly
+Info: Executing:
+	rm -rf .//sparc-obj
+Info: Executing:
+	mkdir .//sparc-obj
+Info: Executing:
+	sparc-linux-as   -Av8 -am  ./bootstrap_u64.s -o .//sparc-obj/bootstrap_u64.o
+Info: Executing:
+	sparc-linux-as   -Av8 -am  ./boot_loader_plus_kernel.s -o .//sparc-obj/boot_loader_plus_kernel.o
+Info: Executing:
+	sparc-linux-ld  -nostdlib -L/home/ajit/ajit-toolchain/tools/cross-compiler/buildroot_cross_compiler/usr/sparc-buildroot-linux-uclibc/lib/ -e main -T customLinkerScript.lnk .//sparc-obj/bootstrap_u64.o  .//sparc-obj/boot_loader_plus_kernel.o   -o .//bootstrap_u64.elf
+Info: Executing:
+	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  .//bootstrap_u64.elf | tr -cd '\11\12\15\40-\176' | grep 0x > .//bootstrap_u64.hex
+Info: Executing:
+	sparc-linux-readelf  --symbols .//bootstrap_u64.elf  > .//bootstrap_u64.vars
+Info: Executing:
+	Info: Generating memory map .//bootstrap_u64.mmap
+Info: Executing:
+	sparc-linux-objdump -d  .//bootstrap_u64.elf > .//bootstrap_u64.objdump
+Info: Executing:
+	sparc-linux-readelf  `pt_load_sections.py .//bootstrap_u64.elf` .//bootstrap_u64.elf | grep 0x > .//bootstrap_u64.hex

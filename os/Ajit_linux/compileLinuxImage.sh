@@ -10,7 +10,7 @@ echo "Executing Step 2 of AJIT Linux build, log can be found in build-logs/ dire
 ./vmLinuzToMemmapAtf0004000.sh |& tee ./build-logs/vmLinuzF0004000.log
 echo "Finished Step 2 of AJIT Linux build"
 
-cp Ajit_linux/Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./Ajit_linux/linux_boot/boot_loader_plus_kernel_mmap/
+cp Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./linux_boot/boot_loader_plus_kernel_mmap/
 echo "boot_loader_plus_kernel.mmap file copied"
 
 echo "================================================="
