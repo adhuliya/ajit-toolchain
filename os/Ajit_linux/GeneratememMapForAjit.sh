@@ -94,7 +94,7 @@ then
 fi
 cp Ajit_bootloader/output/AjitBootloader.elf ./Generated_memory_map/
 cp Ajit_bootloader/output/AjitBootloader_*.txt ./Generated_memory_map/
-cp buildroot-2014.08/output/images/vmlinux ./Generated_memory_map/
+cp $BUILDROOT_BUILD_DIR/output/images/vmlinux ./Generated_memory_map/
 
 
 cd ./Generated_memory_map/

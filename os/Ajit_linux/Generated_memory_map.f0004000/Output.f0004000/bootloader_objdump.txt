@@ -1,0 +1,830 @@
+
+AjitBootloader.elf:     file format elf32-sparc
+
+
+Disassembly of section .text:
+
+f0000000 <main>:
+f0000000:	9d e3 bf a0 	save  %sp, -96, %sp
+f0000004:	82 10 00 00 	mov  %g0, %g1
+f0000008:	84 10 00 00 	mov  %g0, %g2
+f000000c:	86 10 00 00 	mov  %g0, %g3
+f0000010:	88 10 00 00 	mov  %g0, %g4
+f0000014:	8a 10 00 00 	mov  %g0, %g5
+f0000018:	8c 10 00 00 	mov  %g0, %g6
+f000001c:	8e 10 00 00 	mov  %g0, %g7
+f0000020:	b0 10 00 00 	mov  %g0, %i0
+f0000024:	b2 10 00 00 	mov  %g0, %i1
+f0000028:	b4 10 00 00 	mov  %g0, %i2
+f000002c:	b6 10 00 00 	mov  %g0, %i3
+f0000030:	b8 10 00 00 	mov  %g0, %i4
+f0000034:	ba 10 00 00 	mov  %g0, %i5
+f0000038:	bc 10 00 00 	mov  %g0, %fp
+f000003c:	be 10 00 00 	mov  %g0, %i7
+f0000040:	a0 10 00 00 	mov  %g0, %l0
+f0000044:	a2 10 00 00 	mov  %g0, %l1
+f0000048:	a4 10 00 00 	mov  %g0, %l2
+f000004c:	a6 10 00 00 	mov  %g0, %l3
+f0000050:	a8 10 00 00 	mov  %g0, %l4
+f0000054:	aa 10 00 00 	mov  %g0, %l5
+f0000058:	ac 10 00 00 	mov  %g0, %l6
+f000005c:	ae 10 00 00 	mov  %g0, %l7
+f0000060:	90 10 00 00 	mov  %g0, %o0
+f0000064:	92 10 00 00 	mov  %g0, %o1
+f0000068:	94 10 00 00 	mov  %g0, %o2
+f000006c:	96 10 00 00 	mov  %g0, %o3
+f0000070:	98 10 00 00 	mov  %g0, %o4
+f0000074:	9a 10 00 00 	mov  %g0, %o5
+f0000078:	9c 10 00 00 	mov  %g0, %sp
+f000007c:	9e 10 00 00 	mov  %g0, %o7
+f0000080:	81 e0 00 00 	save 
+f0000084:	a0 10 00 00 	mov  %g0, %l0
+f0000088:	a2 10 00 00 	mov  %g0, %l1
+f000008c:	a4 10 00 00 	mov  %g0, %l2
+f0000090:	a6 10 00 00 	mov  %g0, %l3
+f0000094:	a8 10 00 00 	mov  %g0, %l4
+f0000098:	aa 10 00 00 	mov  %g0, %l5
+f000009c:	ac 10 00 00 	mov  %g0, %l6
+f00000a0:	ae 10 00 00 	mov  %g0, %l7
+f00000a4:	90 10 00 00 	mov  %g0, %o0
+f00000a8:	92 10 00 00 	mov  %g0, %o1
+f00000ac:	94 10 00 00 	mov  %g0, %o2
+f00000b0:	96 10 00 00 	mov  %g0, %o3
+f00000b4:	98 10 00 00 	mov  %g0, %o4
+f00000b8:	9a 10 00 00 	mov  %g0, %o5
+f00000bc:	9c 10 00 00 	mov  %g0, %sp
+f00000c0:	9e 10 00 00 	mov  %g0, %o7
+f00000c4:	81 e0 00 00 	save 
+f00000c8:	a0 10 00 00 	mov  %g0, %l0
+f00000cc:	a2 10 00 00 	mov  %g0, %l1
+f00000d0:	a4 10 00 00 	mov  %g0, %l2
+f00000d4:	a6 10 00 00 	mov  %g0, %l3
+f00000d8:	a8 10 00 00 	mov  %g0, %l4
+f00000dc:	aa 10 00 00 	mov  %g0, %l5
+f00000e0:	ac 10 00 00 	mov  %g0, %l6
+f00000e4:	ae 10 00 00 	mov  %g0, %l7
+f00000e8:	90 10 00 00 	mov  %g0, %o0
+f00000ec:	92 10 00 00 	mov  %g0, %o1
+f00000f0:	94 10 00 00 	mov  %g0, %o2
+f00000f4:	96 10 00 00 	mov  %g0, %o3
+f00000f8:	98 10 00 00 	mov  %g0, %o4
+f00000fc:	9a 10 00 00 	mov  %g0, %o5
+f0000100:	9c 10 00 00 	mov  %g0, %sp
+f0000104:	9e 10 00 00 	mov  %g0, %o7
+f0000108:	81 e0 00 00 	save 
+f000010c:	a0 10 00 00 	mov  %g0, %l0
+f0000110:	a2 10 00 00 	mov  %g0, %l1
+f0000114:	a4 10 00 00 	mov  %g0, %l2
+f0000118:	a6 10 00 00 	mov  %g0, %l3
+f000011c:	a8 10 00 00 	mov  %g0, %l4
+f0000120:	aa 10 00 00 	mov  %g0, %l5
+f0000124:	ac 10 00 00 	mov  %g0, %l6
+f0000128:	ae 10 00 00 	mov  %g0, %l7
+f000012c:	90 10 00 00 	mov  %g0, %o0
+f0000130:	92 10 00 00 	mov  %g0, %o1
+f0000134:	94 10 00 00 	mov  %g0, %o2
+f0000138:	96 10 00 00 	mov  %g0, %o3
+f000013c:	98 10 00 00 	mov  %g0, %o4
+f0000140:	9a 10 00 00 	mov  %g0, %o5
+f0000144:	9c 10 00 00 	mov  %g0, %sp
+f0000148:	9e 10 00 00 	mov  %g0, %o7
+f000014c:	81 e0 00 00 	save 
+f0000150:	a0 10 00 00 	mov  %g0, %l0
+f0000154:	a2 10 00 00 	mov  %g0, %l1
+f0000158:	a4 10 00 00 	mov  %g0, %l2
+f000015c:	a6 10 00 00 	mov  %g0, %l3
+f0000160:	a8 10 00 00 	mov  %g0, %l4
+f0000164:	aa 10 00 00 	mov  %g0, %l5
+f0000168:	ac 10 00 00 	mov  %g0, %l6
+f000016c:	ae 10 00 00 	mov  %g0, %l7
+f0000170:	90 10 00 00 	mov  %g0, %o0
+f0000174:	92 10 00 00 	mov  %g0, %o1
+f0000178:	94 10 00 00 	mov  %g0, %o2
+f000017c:	96 10 00 00 	mov  %g0, %o3
+f0000180:	98 10 00 00 	mov  %g0, %o4
+f0000184:	9a 10 00 00 	mov  %g0, %o5
+f0000188:	9c 10 00 00 	mov  %g0, %sp
+f000018c:	9e 10 00 00 	mov  %g0, %o7
+f0000190:	81 e0 00 00 	save 
+f0000194:	a0 10 00 00 	mov  %g0, %l0
+f0000198:	a2 10 00 00 	mov  %g0, %l1
+f000019c:	a4 10 00 00 	mov  %g0, %l2
+f00001a0:	a6 10 00 00 	mov  %g0, %l3
+f00001a4:	a8 10 00 00 	mov  %g0, %l4
+f00001a8:	aa 10 00 00 	mov  %g0, %l5
+f00001ac:	ac 10 00 00 	mov  %g0, %l6
+f00001b0:	ae 10 00 00 	mov  %g0, %l7
+f00001b4:	90 10 00 00 	mov  %g0, %o0
+f00001b8:	92 10 00 00 	mov  %g0, %o1
+f00001bc:	94 10 00 00 	mov  %g0, %o2
+f00001c0:	96 10 00 00 	mov  %g0, %o3
+f00001c4:	98 10 00 00 	mov  %g0, %o4
+f00001c8:	9a 10 00 00 	mov  %g0, %o5
+f00001cc:	9c 10 00 00 	mov  %g0, %sp
+f00001d0:	9e 10 00 00 	mov  %g0, %o7
+f00001d4:	81 e0 00 00 	save 
+f00001d8:	a0 10 00 00 	mov  %g0, %l0
+f00001dc:	a2 10 00 00 	mov  %g0, %l1
+f00001e0:	a4 10 00 00 	mov  %g0, %l2
+f00001e4:	a6 10 00 00 	mov  %g0, %l3
+f00001e8:	a8 10 00 00 	mov  %g0, %l4
+f00001ec:	aa 10 00 00 	mov  %g0, %l5
+f00001f0:	ac 10 00 00 	mov  %g0, %l6
+f00001f4:	ae 10 00 00 	mov  %g0, %l7
+f00001f8:	90 10 00 00 	mov  %g0, %o0
+f00001fc:	92 10 00 00 	mov  %g0, %o1
+f0000200:	94 10 00 00 	mov  %g0, %o2
+f0000204:	96 10 00 00 	mov  %g0, %o3
+f0000208:	98 10 00 00 	mov  %g0, %o4
+f000020c:	9a 10 00 00 	mov  %g0, %o5
+f0000210:	9c 10 00 00 	mov  %g0, %sp
+f0000214:	9e 10 00 00 	mov  %g0, %o7
+f0000218:	81 e0 00 00 	save 
+f000021c:	a0 10 00 00 	mov  %g0, %l0
+f0000220:	a2 10 00 00 	mov  %g0, %l1
+f0000224:	a4 10 00 00 	mov  %g0, %l2
+f0000228:	a6 10 00 00 	mov  %g0, %l3
+f000022c:	a8 10 00 00 	mov  %g0, %l4
+f0000230:	aa 10 00 00 	mov  %g0, %l5
+f0000234:	ac 10 00 00 	mov  %g0, %l6
+f0000238:	ae 10 00 00 	mov  %g0, %l7
+f000023c:	90 10 00 00 	mov  %g0, %o0
+f0000240:	92 10 00 00 	mov  %g0, %o1
+f0000244:	94 10 00 00 	mov  %g0, %o2
+f0000248:	96 10 00 00 	mov  %g0, %o3
+f000024c:	98 10 00 00 	mov  %g0, %o4
+f0000250:	9a 10 00 00 	mov  %g0, %o5
+f0000254:	9c 10 00 00 	mov  %g0, %sp
+f0000258:	9e 10 00 00 	mov  %g0, %o7
+f000025c:	81 e0 00 00 	save 
+f0000260:	a0 10 00 00 	mov  %g0, %l0
+f0000264:	a2 10 00 00 	mov  %g0, %l1
+f0000268:	a4 10 00 00 	mov  %g0, %l2
+f000026c:	a6 10 00 00 	mov  %g0, %l3
+f0000270:	a8 10 00 00 	mov  %g0, %l4
+f0000274:	aa 10 00 00 	mov  %g0, %l5
+f0000278:	ac 10 00 00 	mov  %g0, %l6
+f000027c:	ae 10 00 00 	mov  %g0, %l7
+f0000280:	90 10 00 00 	mov  %g0, %o0
+f0000284:	92 10 00 00 	mov  %g0, %o1
+f0000288:	94 10 00 00 	mov  %g0, %o2
+f000028c:	96 10 00 00 	mov  %g0, %o3
+f0000290:	98 10 00 00 	mov  %g0, %o4
+f0000294:	9a 10 00 00 	mov  %g0, %o5
+f0000298:	9c 10 00 00 	mov  %g0, %sp
+f000029c:	9e 10 00 00 	mov  %g0, %o7
+f00002a0:	81 e8 00 00 	restore 
+f00002a4:	81 e8 00 00 	restore 
+f00002a8:	81 e8 00 00 	restore 
+f00002ac:	81 e8 00 00 	restore 
+f00002b0:	81 e8 00 00 	restore 
+f00002b4:	81 e8 00 00 	restore 
+f00002b8:	81 e8 00 00 	restore 
+f00002bc:	81 e8 00 00 	restore 
+f00002c0:	03 3c 00 0c 	sethi  %hi(0xf0003000), %g1
+f00002c4:	9c 10 00 01 	mov  %g1, %sp
+f00002c8:	40 00 00 05 	call  f00002dc <bootloader>
+f00002cc:	01 00 00 00 	nop 
+f00002d0:	81 e8 00 00 	restore 
+f00002d4:	81 c3 e0 08 	retl 
+f00002d8:	01 00 00 00 	nop 
+
+f00002dc <bootloader>:
+f00002dc:	9d e3 bf 90 	save  %sp, -112, %sp
+f00002e0:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f00002e4:	90 10 60 80 	or  %g1, 0x80, %o0	! f0000c80 <get_Ajit_romvec+0x1a4>
+f00002e8:	40 00 01 dd 	call  f0000a5c <ajit_putstring>
+f00002ec:	01 00 00 00 	nop 
+f00002f0:	03 3c 00 04 	sethi  %hi(0xf0001000), %g1
+f00002f4:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+f00002f8:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f00002fc:	05 03 c0 00 	sethi  %hi(0xf000000), %g2
+f0000300:	84 10 a2 01 	or  %g2, 0x201, %g2	! f000201 <main-0xe0fffdff>
+f0000304:	c4 20 40 00 	st  %g2, [ %g1 ]
+f0000308:	03 3c 00 08 	sethi  %hi(0xf0002000), %g1
+f000030c:	c2 27 bf f8 	st  %g1, [ %fp + -8 ]
+f0000310:	c2 07 bf f8 	ld  [ %fp + -8 ], %g1
+f0000314:	82 00 63 c0 	add  %g1, 0x3c0, %g1
+f0000318:	05 03 c0 00 	sethi  %hi(0xf000000), %g2
+f000031c:	84 10 a0 9e 	or  %g2, 0x9e, %g2	! f00009e <main-0xe0ffff62>
+f0000320:	c4 20 40 00 	st  %g2, [ %g1 ]
+f0000324:	03 03 c0 00 	sethi  %hi(0xf000000), %g1
+f0000328:	82 10 61 00 	or  %g1, 0x100, %g1	! f000100 <main-0xe0ffff00>
+f000032c:	c2 27 bf f4 	st  %g1, [ %fp + -12 ]
+f0000330:	82 10 20 00 	clr  %g1
+f0000334:	84 10 22 00 	mov  0x200, %g2
+f0000338:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+f000033c:	c2 07 bf f4 	ld  [ %fp + -12 ], %g1
+f0000340:	84 10 21 00 	mov  0x100, %g2
+f0000344:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+f0000348:	40 00 01 e5 	call  f0000adc <get_Ajit_romvec>
+f000034c:	01 00 00 00 	nop 
+f0000350:	82 10 00 08 	mov  %o0, %g1
+f0000354:	c2 27 bf f0 	st  %g1, [ %fp + -16 ]
+f0000358:	c2 07 bf f0 	ld  [ %fp + -16 ], %g1
+f000035c:	90 10 00 01 	mov  %g1, %o0
+f0000360:	82 10 20 01 	mov  1, %g1
+f0000364:	84 10 20 00 	clr  %g2
+f0000368:	c2 a0 80 80 	sta  %g1, [ %g2 ] #ASI_N
+f000036c:	05 3c 00 10 	sethi  %hi(0xf0004000), %g2
+f0000370:	81 c0 80 00 	jmp  %g2
+f0000374:	01 00 00 00 	nop 
+f0000378:	01 00 00 00 	nop 
+f000037c:	01 00 00 00 	nop 
+f0000380:	91 d0 20 00 	ta  0
+f0000384:	01 00 00 00 	nop 
+f0000388:	01 00 00 00 	nop 
+f000038c:	82 10 20 00 	clr  %g1	! 0 <main-0xf0000000>
+f0000390:	b0 10 00 01 	mov  %g1, %i0
+f0000394:	81 e8 00 00 	restore 
+f0000398:	81 c3 e0 08 	retl 
+f000039c:	01 00 00 00 	nop 
+
+f00003a0 <dt_blob_start>:
+f00003a0:	d0 0d fe ed 	ldub  [ %l7 + -275 ], %o0
+f00003a4:	00 00 05 0b 	unimp  0x50b
+f00003a8:	00 00 00 38 	unimp  0x38
+f00003ac:	00 00 04 5c 	unimp  0x45c
+f00003b0:	00 00 00 28 	unimp  0x28
+f00003b4:	00 00 00 11 	unimp  0x11
+f00003b8:	00 00 00 10 	unimp  0x10
+f00003bc:	00 00 00 00 	unimp  0
+f00003c0:	00 00 00 af 	unimp  0xaf
+f00003c4:	00 00 04 24 	unimp  0x424
+
+f00003c8 <dt_reserve_map>:
+	...
+
+f00003d8 <dt_struct_start>:
+f00003d8:	00 00 00 01 	unimp  0x1
+f00003dc:	00 00 00 00 	unimp  0
+f00003e0:	00 00 00 01 	unimp  0x1
+f00003e4:	61 6a 69 74 	call  75a9a9b4 <main-0x7a56564c>
+f00003e8:	00 00 00 00 	unimp  0
+f00003ec:	00 00 00 03 	unimp  0x3
+f00003f0:	00 00 00 05 	unimp  0x5
+f00003f4:	00 00 00 00 	unimp  0
+f00003f8:	41 6a 69 74 	call  f5a9a9c8 <Ajit_romvec+0x5a99d00>
+f00003fc:	00 00 00 00 	unimp  0
+f0000400:	00 00 00 03 	unimp  0x3
+f0000404:	00 00 00 20 	unimp  0x20
+f0000408:	00 00 00 0b 	unimp  0xb
+f000040c:	01 40 01 02 	unknown
+f0000410:	03 04 05 06 	sethi  %hi(0x10141800), %g1
+f0000414:	07 08 09 0a 	sethi  %hi(0x20242800), %g3
+f0000418:	0b 0c 0d 40 	sethi  %hi(0x30350000), %g5
+	...
+f000042c:	00 00 00 03 	unimp  0x3
+f0000430:	00 00 00 0f 	unimp  0xf
+f0000434:	00 00 00 12 	unimp  0x12
+f0000438:	41 6a 69 74 	call  f5a9aa08 <Ajit_romvec+0x5a99d40>
+f000043c:	20 70 72 6f 	unknown
+f0000440:	63 65 73 73 	call  7d95d20c <main-0x726a2df4>
+f0000444:	6f 72 00 00 	call  adc80444 <main-0x4237fbbc>
+f0000448:	00 00 00 03 	unimp  0x3
+f000044c:	00 00 00 0c 	unimp  0xc
+f0000450:	00 00 00 1e 	unimp  0x1e
+f0000454:	4d 6f 64 65 	call  25bd95e8 <Ajit_romvec+0x35bd8920>
+f0000458:	6c 20 56 20 	call  a0815cd8 <main-0x4f7ea328>
+f000045c:	30 2e 31 00 	unknown
+f0000460:	00 00 00 03 	unimp  0x3
+f0000464:	00 00 00 04 	unimp  0x4
+f0000468:	00 00 00 24 	unimp  0x24
+f000046c:	00 00 00 01 	unimp  0x1
+f0000470:	00 00 00 03 	unimp  0x3
+f0000474:	00 00 00 04 	unimp  0x4
+f0000478:	00 00 00 33 	unimp  0x33
+f000047c:	00 00 00 01 	unimp  0x1
+f0000480:	00 00 00 01 	unimp  0x1
+f0000484:	61 6a 69 74 	call  75a9aa54 <main-0x7a5655ac>
+f0000488:	5f 63 70 75 	call  6d8dc65c <Ajit_romvec+0x7d8db994>
+f000048c:	00 00 00 00 	unimp  0
+f0000490:	00 00 00 03 	unimp  0x3
+f0000494:	00 00 00 04 	unimp  0x4
+f0000498:	00 00 00 3f 	unimp  0x3f
+f000049c:	63 70 75 00 	call  7dc1d89c <main-0x723e2764>
+f00004a0:	00 00 00 03 	unimp  0x3
+f00004a4:	00 00 00 04 	unimp  0x4
+f00004a8:	00 00 00 4b 	unimp  0x4b
+f00004ac:	00 00 01 00 	unimp  0x100
+f00004b0:	00 00 00 02 	unimp  0x2
+f00004b4:	00 00 00 01 	unimp  0x1
+f00004b8:	61 6a 69 74 	call  75a9aa88 <main-0x7a565578>
+f00004bc:	5f 69 6e 74 	call  6da5be8c <Ajit_romvec+0x7da5b1c4>
+f00004c0:	65 72 72 75 	call  85c9ce94 <main-0x6a36316c>
+f00004c4:	70 74 5f 63 	call  b1d18250 <main-0x3e2e7db0>
+f00004c8:	6f 6e 74 72 	call  adb9d690 <main-0x42462970>
+f00004cc:	6f 6c 6c 65 	call  adb1b660 <main-0x424e49a0>
+f00004d0:	72 00 00 00 	call  b80004d0 <main-0x37fffb30>
+f00004d4:	00 00 00 03 	unimp  0x3
+f00004d8:	00 00 00 05 	unimp  0x5
+f00004dc:	00 00 00 00 	unimp  0
+f00004e0:	41 6a 69 74 	call  f5a9aab0 <Ajit_romvec+0x5a99de8>
+f00004e4:	00 00 00 00 	unimp  0
+f00004e8:	00 00 00 03 	unimp  0x3
+f00004ec:	00 00 00 04 	unimp  0x4
+f00004f0:	00 00 00 24 	unimp  0x24
+f00004f4:	00 00 00 01 	unimp  0x1
+f00004f8:	00 00 00 03 	unimp  0x3
+f00004fc:	00 00 00 04 	unimp  0x4
+f0000500:	00 00 00 33 	unimp  0x33
+f0000504:	00 00 00 00 	unimp  0
+f0000508:	00 00 00 03 	unimp  0x3
+f000050c:	00 00 00 15 	unimp  0x15
+f0000510:	00 00 00 3f 	unimp  0x3f
+f0000514:	69 6e 74 65 	call  95b9d6a8 <main-0x5a462958>
+f0000518:	72 72 75 70 	call  b9c9dad8 <main-0x36362528>
+f000051c:	74 5f 63 6f 	call  c17d92d8 <main-0x2e826d28>
+f0000520:	6e 74 72 6f 	call  a9d1cedc <main-0x462e3124>
+f0000524:	6c 6c 65 72 	call  a1b19aec <main-0x4e4e6514>
+f0000528:	00 00 00 00 	unimp  0
+f000052c:	00 00 00 03 	unimp  0x3
+f0000530:	00 00 00 08 	unimp  0x8
+f0000534:	00 00 00 54 	unimp  0x54
+f0000538:	ff ff 30 00 	cswapa  [ %i4 + -4096 ], %i7
+f000053c:	00 00 01 00 	unimp  0x100
+f0000540:	00 00 00 02 	unimp  0x2
+f0000544:	00 00 00 01 	unimp  0x1
+f0000548:	61 6a 69 74 	call  75a9ab18 <main-0x7a5654e8>
+f000054c:	5f 74 69 6d 	call  6dd1ab00 <Ajit_romvec+0x7dd19e38>
+f0000550:	65 72 00 00 	call  85c80550 <main-0x6a37fab0>
+f0000554:	00 00 00 03 	unimp  0x3
+f0000558:	00 00 00 05 	unimp  0x5
+f000055c:	00 00 00 00 	unimp  0
+f0000560:	41 6a 69 74 	call  f5a9ab30 <Ajit_romvec+0x5a99e68>
+f0000564:	00 00 00 00 	unimp  0
+f0000568:	00 00 00 03 	unimp  0x3
+f000056c:	00 00 00 04 	unimp  0x4
+f0000570:	00 00 00 24 	unimp  0x24
+f0000574:	00 00 00 01 	unimp  0x1
+f0000578:	00 00 00 03 	unimp  0x3
+f000057c:	00 00 00 04 	unimp  0x4
+f0000580:	00 00 00 33 	unimp  0x33
+f0000584:	00 00 00 01 	unimp  0x1
+f0000588:	00 00 00 03 	unimp  0x3
+f000058c:	00 00 00 06 	unimp  0x6
+f0000590:	00 00 00 3f 	unimp  0x3f
+f0000594:	74 69 6d 65 	call  c1a5bb28 <main-0x2e5a44d8>
+f0000598:	72 00 00 00 	call  b8000598 <main-0x37fffa68>
+f000059c:	00 00 00 03 	unimp  0x3
+f00005a0:	00 00 00 08 	unimp  0x8
+f00005a4:	00 00 00 54 	unimp  0x54
+f00005a8:	ff ff 31 00 	cswapa  [ %i4 + -3840 ], %i7
+f00005ac:	00 00 01 00 	unimp  0x100
+f00005b0:	00 00 00 03 	unimp  0x3
+f00005b4:	00 00 00 04 	unimp  0x4
+f00005b8:	00 00 00 58 	unimp  0x58
+f00005bc:	00 00 00 01 	unimp  0x1
+f00005c0:	00 00 00 03 	unimp  0x3
+f00005c4:	00 00 00 04 	unimp  0x4
+f00005c8:	00 00 00 69 	unimp  0x69
+f00005cc:	00 00 00 0a 	unimp  0xa
+f00005d0:	00 00 00 03 	unimp  0x3
+f00005d4:	00 00 00 04 	unimp  0x4
+f00005d8:	00 00 00 74 	unimp  0x74
+f00005dc:	05 f5 e1 00 	cb12  efd789dc <main-0x287624>
+f00005e0:	00 00 00 03 	unimp  0x3
+f00005e4:	00 00 00 04 	unimp  0x4
+f00005e8:	00 00 00 83 	unimp  0x83
+f00005ec:	05 f5 e1 00 	cb12  efd789ec <main-0x287614>
+f00005f0:	00 00 00 02 	unimp  0x2
+f00005f4:	00 00 00 01 	unimp  0x1
+f00005f8:	61 6a 69 74 	call  75a9abc8 <main-0x7a565438>
+f00005fc:	5f 73 65 72 	call  6dcd9bc4 <Ajit_romvec+0x7dcd8efc>
+f0000600:	69 61 6c 00 	call  9585b600 <main-0x5a7a4a00>
+f0000604:	00 00 00 03 	unimp  0x3
+f0000608:	00 00 00 05 	unimp  0x5
+f000060c:	00 00 00 00 	unimp  0
+f0000610:	41 6a 69 74 	call  f5a9abe0 <Ajit_romvec+0x5a99f18>
+f0000614:	00 00 00 00 	unimp  0
+f0000618:	00 00 00 03 	unimp  0x3
+f000061c:	00 00 00 04 	unimp  0x4
+f0000620:	00 00 00 24 	unimp  0x24
+f0000624:	00 00 00 01 	unimp  0x1
+f0000628:	00 00 00 03 	unimp  0x3
+f000062c:	00 00 00 04 	unimp  0x4
+f0000630:	00 00 00 33 	unimp  0x33
+f0000634:	00 00 00 01 	unimp  0x1
+f0000638:	00 00 00 03 	unimp  0x3
+f000063c:	00 00 00 07 	unimp  0x7
+f0000640:	00 00 00 3f 	unimp  0x3f
+f0000644:	73 65 72 69 	call  bd95cfe8 <main-0x326a3018>
+f0000648:	61 6c 00 00 	call  75b00648 <main-0x7a4ff9b8>
+f000064c:	00 00 00 03 	unimp  0x3
+f0000650:	00 00 00 08 	unimp  0x8
+f0000654:	00 00 00 54 	unimp  0x54
+f0000658:	ff ff 32 00 	cswapa  [ %i4 + -3584 ], %i7
+f000065c:	00 00 01 00 	unimp  0x100
+f0000660:	00 00 00 03 	unimp  0x3
+f0000664:	00 00 00 04 	unimp  0x4
+f0000668:	00 00 00 58 	unimp  0x58
+f000066c:	00 00 00 01 	unimp  0x1
+f0000670:	00 00 00 03 	unimp  0x3
+f0000674:	00 00 00 04 	unimp  0x4
+f0000678:	00 00 00 69 	unimp  0x69
+f000067c:	00 00 00 0c 	unimp  0xc
+f0000680:	00 00 00 02 	unimp  0x2
+f0000684:	00 00 00 01 	unimp  0x1
+f0000688:	6f 62 69 6f 	call  ad89ac44 <main-0x427653bc>
+f000068c:	00 00 00 00 	unimp  0
+f0000690:	00 00 00 03 	unimp  0x3
+f0000694:	00 00 00 0d 	unimp  0xd
+f0000698:	00 00 00 3f 	unimp  0x3f
+f000069c:	68 69 65 72 	call  91a59c64 <main-0x5e5a639c>
+f00006a0:	61 72 63 68 	call  75c99440 <main-0x7a366bc0>
+f00006a4:	69 63 61 6c 	call  958d8c54 <main-0x5a7273ac>
+f00006a8:	00 00 00 00 	unimp  0
+f00006ac:	00 00 00 03 	unimp  0x3
+f00006b0:	00 00 00 04 	unimp  0x4
+f00006b4:	00 00 00 24 	unimp  0x24
+f00006b8:	00 00 00 02 	unimp  0x2
+f00006bc:	00 00 00 03 	unimp  0x3
+f00006c0:	00 00 00 04 	unimp  0x4
+f00006c4:	00 00 00 33 	unimp  0x33
+f00006c8:	00 00 00 01 	unimp  0x1
+f00006cc:	00 00 00 03 	unimp  0x3
+f00006d0:	00 00 00 14 	unimp  0x14
+f00006d4:	00 00 00 95 	unimp  0x95
+	...
+f00006e4:	71 00 00 00 	call  b40006e4 <main-0x3bfff91c>
+f00006e8:	01 00 00 00 	nop 
+f00006ec:	00 00 00 01 	unimp  0x1
+f00006f0:	7a 73 00 00 	call  d9cc06f0 <main-0x1633f910>
+f00006f4:	00 00 00 03 	unimp  0x3
+f00006f8:	00 00 00 07 	unimp  0x7
+f00006fc:	00 00 00 3f 	unimp  0x3f
+f0000700:	73 65 72 69 	call  bd95d0a4 <main-0x326a2f5c>
+f0000704:	61 6c 00 00 	call  75b00704 <main-0x7a4ff8fc>
+f0000708:	00 00 00 03 	unimp  0x3
+f000070c:	00 00 00 0c 	unimp  0xc
+f0000710:	00 00 00 54 	unimp  0x54
+f0000714:	00 00 00 00 	unimp  0
+f0000718:	00 10 00 00 	unimp  0x100000
+f000071c:	00 00 00 08 	unimp  0x8
+f0000720:	00 00 00 03 	unimp  0x3
+f0000724:	00 00 00 04 	unimp  0x4
+f0000728:	00 00 00 9c 	unimp  0x9c
+f000072c:	ff dd 30 00 	unknown
+f0000730:	00 00 00 03 	unimp  0x3
+f0000734:	00 00 00 04 	unimp  0x4
+f0000738:	00 00 00 a4 	unimp  0xa4
+f000073c:	00 00 00 00 	unimp  0
+f0000740:	00 00 00 03 	unimp  0x3
+f0000744:	00 00 00 08 	unimp  0x8
+f0000748:	00 00 00 aa 	unimp  0xaa
+f000074c:	00 00 00 2c 	unimp  0x2c
+f0000750:	00 00 00 00 	unimp  0
+f0000754:	00 00 00 02 	unimp  0x2
+f0000758:	00 00 00 01 	unimp  0x1
+f000075c:	63 6f 75 6e 	call  7dbddd14 <main-0x724222ec>
+f0000760:	74 65 72 00 	call  c195cf60 <main-0x2e6a30a0>
+f0000764:	00 00 00 03 	unimp  0x3
+f0000768:	00 00 00 18 	unimp  0x18
+f000076c:	00 00 00 54 	unimp  0x54
+f0000770:	00 00 00 00 	unimp  0
+f0000774:	00 d0 00 00 	unknown
+f0000778:	00 00 00 10 	unimp  0x10
+f000077c:	00 00 00 00 	unimp  0
+f0000780:	00 d1 00 00 	unknown
+f0000784:	00 00 00 10 	unimp  0x10
+f0000788:	00 00 00 03 	unimp  0x3
+f000078c:	00 00 00 08 	unimp  0x8
+f0000790:	00 00 00 9c 	unimp  0x9c
+f0000794:	ff dd b0 00 	unknown
+f0000798:	ff de b0 00 	unknown
+f000079c:	00 00 00 02 	unimp  0x2
+f00007a0:	00 00 00 01 	unimp  0x1
+f00007a4:	69 6e 74 65 	call  95b9d938 <main-0x5a4626c8>
+f00007a8:	72 72 75 70 	call  b9c9dd68 <main-0x36362298>
+f00007ac:	74 00 00 00 	call  c00007ac <main-0x2ffff854>
+f00007b0:	00 00 00 03 	unimp  0x3
+f00007b4:	00 00 00 18 	unimp  0x18
+f00007b8:	00 00 00 54 	unimp  0x54
+f00007bc:	00 00 00 00 	unimp  0
+f00007c0:	00 e0 00 00 	unknown
+f00007c4:	00 00 00 10 	unimp  0x10
+f00007c8:	00 00 00 00 	unimp  0
+f00007cc:	00 e1 00 00 	unknown
+f00007d0:	00 00 00 10 	unimp  0x10
+f00007d4:	00 00 00 03 	unimp  0x3
+f00007d8:	00 00 00 08 	unimp  0x8
+f00007dc:	00 00 00 9c 	unimp  0x9c
+f00007e0:	ff de c0 00 	unknown
+f00007e4:	ff df c0 00 	unknown
+f00007e8:	00 00 00 02 	unimp  0x2
+f00007ec:	00 00 00 02 	unimp  0x2
+f00007f0:	00 00 00 02 	unimp  0x2
+f00007f4:	00 00 00 02 	unimp  0x2
+f00007f8:	00 00 00 09 	unimp  0x9
+
+f00007fc <dt_strings_start>:
+f00007fc:	63 6f 6d 70 	call  7dbdbdbc <main-0x72424244>
+f0000800:	61 74 69 62 	call  75d1ad88 <main-0x7a2e5278>
+f0000804:	6c 65 00 69 	call  a19409a8 <main-0x4e6bf658>
+f0000808:	64 70 72 6f 	call  81c1d1c4 <main-0x6e3e2e3c>
+f000080c:	6d 00 62 61 	call  a4019190 <main-0x4bfe6e70>
+f0000810:	6e 6e 65 72 	call  a9b99dd8 <main-0x46466228>
+f0000814:	2d 6e 61 6d 	unknown
+f0000818:	65 00 6d 6f 	call  8401bdd4 <main-0x6bfe422c>
+f000081c:	64 65 6c 00 	call  8195b81c <main-0x6e6a47e4>
+f0000820:	23 61 64 64 	unknown
+f0000824:	72 65 73 73 	call  b995d5f0 <main-0x366a2a10>
+f0000828:	2d 63 65 6c 	unknown
+f000082c:	6c 73 00 23 	call  a1cc08b8 <main-0x4e33f748>
+f0000830:	73 69 7a 65 	call  bda5f1c4 <main-0x325a0e3c>
+f0000834:	2d 63 65 6c 	unknown
+f0000838:	6c 73 00 64 	call  a1cc09c8 <main-0x4e33f638>
+f000083c:	65 76 69 63 	call  85d9adc8 <main-0x6a265238>
+f0000840:	65 5f 74 79 	call  857dda24 <main-0x6a8225dc>
+f0000844:	70 65 00 6d 	call  b19409f8 <main-0x3e6bf608>
+f0000848:	6d 75 2d 6e 	call  a5d4be00 <main-0x4a2b4200>
+f000084c:	63 74 78 00 	call  7dd1e84c <main-0x722e17b4>
+f0000850:	72 65 67 00 	call  b995a450 <main-0x366a5bb0>
+f0000854:	23 69 6e 74 	unknown
+f0000858:	65 72 72 75 	call  85c9d22c <main-0x6a362dd4>
+f000085c:	70 74 2d 63 	call  b1d0bde8 <main-0x3e2f4218>
+f0000860:	65 6c 6c 73 	call  85b1ba2c <main-0x6a4e45d4>
+f0000864:	00 69 6e 74 	unknown
+f0000868:	65 72 72 75 	call  85c9d23c <main-0x6a362dc4>
+f000086c:	70 74 73 00 	call  b1d1d46c <main-0x3e2e2b94>
+f0000870:	74 69 63 6b 	call  c1a5961c <main-0x2e5a69e4>
+f0000874:	2d 72 65 61 	unknown
+f0000878:	6c 2d 66 72 	call  a0b5a240 <main-0x4f4a5dc0>
+f000087c:	65 71 00 74 	call  85c40a4c <main-0x6a3bf5b4>
+f0000880:	69 63 6b 2d 	call  958db534 <main-0x5a724acc>
+f0000884:	76 69 72 74 	call  c9a5d254 <main-0x265a2dac>
+f0000888:	75 61 6c 2d 	call  c585b93c <main-0x2a7a46c4>
+f000088c:	66 72 65 71 	call  89c99e50 <main-0x663661b0>
+f0000890:	00 72 61 6e 	unknown
+f0000894:	67 65 73 00 	call  8d95d494 <main-0x626a2b6c>
+f0000898:	61 64 64 72 	call  75919a60 <main-0x7a6e65a0>
+f000089c:	65 73 73 00 	call  85cdd49c <main-0x6a322b64>
+f00008a0:	73 6c 61 76 	call  bdb18e78 <main-0x324e7188>
+f00008a4:	65 00 69 6e 	call  8401ae5c <main-0x6bfe51a4>
+f00008a8:	74 72 00 00 	call  c1c808a8 <main-0x2e37f758>
+
+f00008ab <dt_blob_abs_end>:
+f00008ab:	00 01 00 00 	unimp  0x10000
+	...
+
+f00008b0 <mmu_bypass_load>:
+f00008b0:	9d e3 bf 98 	save  %sp, -104, %sp
+f00008b4:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+f00008b8:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+f00008bc:	fa 80 44 00 	lda  [ %g1 ] #ASI_SCRATCHPAD, %i5
+f00008c0:	fa 27 bf fc 	st  %i5, [ %fp + -4 ]
+f00008c4:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f00008c8:	b0 10 00 01 	mov  %g1, %i0
+f00008cc:	81 e8 00 00 	restore 
+f00008d0:	81 c3 e0 08 	retl 
+f00008d4:	01 00 00 00 	nop 
+
+f00008d8 <mmu_bypass_store>:
+f00008d8:	9d e3 bf a0 	save  %sp, -96, %sp
+f00008dc:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+f00008e0:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
+f00008e4:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+f00008e8:	c4 07 a0 48 	ld  [ %fp + 0x48 ], %g2
+f00008ec:	c2 a0 84 00 	sta  %g1, [ %g2 ] #ASI_SCRATCHPAD
+f00008f0:	81 e8 00 00 	restore 
+f00008f4:	81 c3 e0 08 	retl 
+f00008f8:	01 00 00 00 	nop 
+
+f00008fc <mmu_bypass_store_byte>:
+f00008fc:	9d e3 bf a0 	save  %sp, -96, %sp
+f0000900:	82 10 00 18 	mov  %i0, %g1
+f0000904:	f2 27 a0 48 	st  %i1, [ %fp + 0x48 ]
+f0000908:	c2 2f a0 44 	stb  %g1, [ %fp + 0x44 ]
+f000090c:	c2 0f a0 44 	ldub  [ %fp + 0x44 ], %g1
+f0000910:	c4 07 a0 48 	ld  [ %fp + 0x48 ], %g2
+f0000914:	c2 a8 84 00 	stba  %g1, [ %g2 ] #ASI_SCRATCHPAD
+f0000918:	81 e8 00 00 	restore 
+f000091c:	81 c3 e0 08 	retl 
+f0000920:	01 00 00 00 	nop 
+
+f0000924 <enableTx>:
+f0000924:	9d e3 bf 98 	save  %sp, -104, %sp
+f0000928:	03 3f ff cc 	sethi  %hi(0xffff3000), %g1
+f000092c:	90 10 62 00 	or  %g1, 0x200, %o0	! ffff3200 <Ajit_romvec+0xfff2538>
+f0000930:	7f ff ff e0 	call  f00008b0 <mmu_bypass_load>
+f0000934:	01 00 00 00 	nop 
+f0000938:	d0 27 bf fc 	st  %o0, [ %fp + -4 ]
+f000093c:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f0000940:	82 10 60 01 	or  %g1, 1, %g1
+f0000944:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+f0000948:	d0 07 bf fc 	ld  [ %fp + -4 ], %o0
+f000094c:	03 3f ff cc 	sethi  %hi(0xffff3000), %g1
+f0000950:	92 10 62 00 	or  %g1, 0x200, %o1	! ffff3200 <Ajit_romvec+0xfff2538>
+f0000954:	7f ff ff e1 	call  f00008d8 <mmu_bypass_store>
+f0000958:	01 00 00 00 	nop 
+f000095c:	81 e8 00 00 	restore 
+f0000960:	81 c3 e0 08 	retl 
+f0000964:	01 00 00 00 	nop 
+
+f0000968 <writetoTx>:
+f0000968:	9d e3 bf a0 	save  %sp, -96, %sp
+f000096c:	82 10 00 18 	mov  %i0, %g1
+f0000970:	c2 2f a0 44 	stb  %g1, [ %fp + 0x44 ]
+f0000974:	c2 0f a0 44 	ldub  [ %fp + 0x44 ], %g1
+f0000978:	82 08 60 ff 	and  %g1, 0xff, %g1
+f000097c:	90 10 00 01 	mov  %g1, %o0
+f0000980:	03 3f ff cc 	sethi  %hi(0xffff3000), %g1
+f0000984:	92 10 62 10 	or  %g1, 0x210, %o1	! ffff3210 <Ajit_romvec+0xfff2548>
+f0000988:	7f ff ff dd 	call  f00008fc <mmu_bypass_store_byte>
+f000098c:	01 00 00 00 	nop 
+f0000990:	81 e8 00 00 	restore 
+f0000994:	81 c3 e0 08 	retl 
+f0000998:	01 00 00 00 	nop 
+
+f000099c <getTxfull>:
+f000099c:	9d e3 bf 98 	save  %sp, -104, %sp
+f00009a0:	03 3f ff cc 	sethi  %hi(0xffff3000), %g1
+f00009a4:	90 10 62 00 	or  %g1, 0x200, %o0	! ffff3200 <Ajit_romvec+0xfff2538>
+f00009a8:	7f ff ff c2 	call  f00008b0 <mmu_bypass_load>
+f00009ac:	01 00 00 00 	nop 
+f00009b0:	d0 27 bf fc 	st  %o0, [ %fp + -4 ]
+f00009b4:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f00009b8:	82 08 60 08 	and  %g1, 8, %g1
+f00009bc:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+f00009c0:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f00009c4:	80 a0 60 00 	cmp  %g1, 0
+f00009c8:	02 80 00 05 	be  f00009dc <getTxfull+0x40>
+f00009cc:	01 00 00 00 	nop 
+f00009d0:	82 10 20 01 	mov  1, %g1	! 1 <main-0xefffffff>
+f00009d4:	10 80 00 03 	b  f00009e0 <getTxfull+0x44>
+f00009d8:	01 00 00 00 	nop 
+f00009dc:	82 10 20 00 	clr  %g1	! 0 <main-0xf0000000>
+f00009e0:	82 08 60 ff 	and  %g1, 0xff, %g1
+f00009e4:	b0 10 00 01 	mov  %g1, %i0
+f00009e8:	81 e8 00 00 	restore 
+f00009ec:	81 c3 e0 08 	retl 
+f00009f0:	01 00 00 00 	nop 
+
+f00009f4 <pv_nbputchar>:
+f00009f4:	9d e3 bf a0 	save  %sp, -96, %sp
+f00009f8:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+f00009fc:	7f ff ff ca 	call  f0000924 <enableTx>
+f0000a00:	01 00 00 00 	nop 
+f0000a04:	c2 07 a0 44 	ld  [ %fp + 0x44 ], %g1
+f0000a08:	83 28 60 18 	sll  %g1, 0x18, %g1
+f0000a0c:	83 38 60 18 	sra  %g1, 0x18, %g1
+f0000a10:	90 10 00 01 	mov  %g1, %o0
+f0000a14:	7f ff ff d5 	call  f0000968 <writetoTx>
+f0000a18:	01 00 00 00 	nop 
+f0000a1c:	10 80 00 03 	b  f0000a28 <pv_nbputchar+0x34>
+f0000a20:	01 00 00 00 	nop 
+f0000a24:	01 00 00 00 	nop 
+f0000a28:	7f ff ff dd 	call  f000099c <getTxfull>
+f0000a2c:	01 00 00 00 	nop 
+f0000a30:	82 10 00 08 	mov  %o0, %g1
+f0000a34:	82 08 60 ff 	and  %g1, 0xff, %g1
+f0000a38:	80 a0 60 00 	cmp  %g1, 0
+f0000a3c:	12 bf ff fa 	bne  f0000a24 <pv_nbputchar+0x30>
+f0000a40:	01 00 00 00 	nop 
+f0000a44:	01 00 00 00 	nop 
+f0000a48:	82 10 20 01 	mov  1, %g1	! 1 <main-0xefffffff>
+f0000a4c:	b0 10 00 01 	mov  %g1, %i0
+f0000a50:	81 e8 00 00 	restore 
+f0000a54:	81 c3 e0 08 	retl 
+f0000a58:	01 00 00 00 	nop 
+
+f0000a5c <ajit_putstring>:
+f0000a5c:	9d e3 bf 98 	save  %sp, -104, %sp
+f0000a60:	f0 27 a0 44 	st  %i0, [ %fp + 0x44 ]
+f0000a64:	c0 27 bf fc 	clr  [ %fp + -4 ]
+f0000a68:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f0000a6c:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+f0000a70:	82 00 80 01 	add  %g2, %g1, %g1
+f0000a74:	c2 08 40 00 	ldub  [ %g1 ], %g1
+f0000a78:	83 28 60 18 	sll  %g1, 0x18, %g1
+f0000a7c:	83 38 60 18 	sra  %g1, 0x18, %g1
+f0000a80:	90 10 00 01 	mov  %g1, %o0
+f0000a84:	7f ff ff dc 	call  f00009f4 <pv_nbputchar>
+f0000a88:	01 00 00 00 	nop 
+f0000a8c:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f0000a90:	c4 07 a0 44 	ld  [ %fp + 0x44 ], %g2
+f0000a94:	82 00 80 01 	add  %g2, %g1, %g1
+f0000a98:	c2 08 40 00 	ldub  [ %g1 ], %g1
+f0000a9c:	83 28 60 18 	sll  %g1, 0x18, %g1
+f0000aa0:	83 38 60 18 	sra  %g1, 0x18, %g1
+f0000aa4:	80 a0 60 00 	cmp  %g1, 0
+f0000aa8:	02 80 00 07 	be  f0000ac4 <ajit_putstring+0x68>
+f0000aac:	01 00 00 00 	nop 
+f0000ab0:	c2 07 bf fc 	ld  [ %fp + -4 ], %g1
+f0000ab4:	82 00 60 01 	inc  %g1
+f0000ab8:	c2 27 bf fc 	st  %g1, [ %fp + -4 ]
+f0000abc:	10 bf ff eb 	b  f0000a68 <ajit_putstring+0xc>
+f0000ac0:	01 00 00 00 	nop 
+f0000ac4:	01 00 00 00 	nop 
+f0000ac8:	82 10 20 00 	clr  %g1	! 0 <main-0xf0000000>
+f0000acc:	b0 10 00 01 	mov  %g1, %i0
+f0000ad0:	81 e8 00 00 	restore 
+f0000ad4:	81 c3 e0 08 	retl 
+f0000ad8:	01 00 00 00 	nop 
+
+f0000adc <get_Ajit_romvec>:
+f0000adc:	9d e3 bf a0 	save  %sp, -96, %sp
+f0000ae0:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000ae4:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000ae8:	c0 20 40 00 	clr  [ %g1 ]
+f0000aec:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000af0:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000af4:	c0 20 60 04 	clr  [ %g1 + 4 ]
+f0000af8:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000afc:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b00:	c0 20 60 08 	clr  [ %g1 + 8 ]
+f0000b04:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b08:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b0c:	c0 20 60 0c 	clr  [ %g1 + 0xc ]
+f0000b10:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b14:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b18:	05 3c 00 03 	sethi  %hi(0xf0000c00), %g2
+f0000b1c:	84 10 a0 b4 	or  %g2, 0xb4, %g2	! f0000cb4 <totphys_p>
+f0000b20:	c4 20 60 10 	st  %g2, [ %g1 + 0x10 ]
+f0000b24:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b28:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b2c:	05 3c 00 03 	sethi  %hi(0xf0000c00), %g2
+f0000b30:	84 10 a0 c0 	or  %g2, 0xc0, %g2	! f0000cc0 <null_ptr>
+f0000b34:	c4 20 60 14 	st  %g2, [ %g1 + 0x14 ]
+f0000b38:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b3c:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b40:	05 3c 00 03 	sethi  %hi(0xf0000c00), %g2
+f0000b44:	84 10 a0 b8 	or  %g2, 0xb8, %g2	! f0000cb8 <avail_p>
+f0000b48:	c4 20 60 18 	st  %g2, [ %g1 + 0x18 ]
+f0000b4c:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b50:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b54:	c0 20 60 20 	clr  [ %g1 + 0x20 ]
+f0000b58:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b5c:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b60:	c0 20 60 50 	clr  [ %g1 + 0x50 ]
+f0000b64:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b68:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b6c:	c0 20 60 54 	clr  [ %g1 + 0x54 ]
+f0000b70:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b74:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b78:	c0 20 60 58 	clr  [ %g1 + 0x58 ]
+f0000b7c:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b80:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b84:	c0 20 60 60 	clr  [ %g1 + 0x60 ]
+f0000b88:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b8c:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b90:	c0 20 60 64 	clr  [ %g1 + 0x64 ]
+f0000b94:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000b98:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000b9c:	c0 20 60 68 	clr  [ %g1 + 0x68 ]
+f0000ba0:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000ba4:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000ba8:	c0 20 60 6c 	clr  [ %g1 + 0x6c ]
+f0000bac:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bb0:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bb4:	c0 20 60 70 	clr  [ %g1 + 0x70 ]
+f0000bb8:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bbc:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bc0:	c0 20 60 74 	clr  [ %g1 + 0x74 ]
+f0000bc4:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bc8:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bcc:	c0 20 60 84 	clr  [ %g1 + 0x84 ]
+f0000bd0:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bd4:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bd8:	c0 20 61 04 	clr  [ %g1 + 0x104 ]
+f0000bdc:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000be0:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000be4:	c0 20 60 7c 	clr  [ %g1 + 0x7c ]
+f0000be8:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bec:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bf0:	c0 20 60 7c 	clr  [ %g1 + 0x7c ]
+f0000bf4:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000bf8:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000bfc:	c0 20 60 48 	clr  [ %g1 + 0x48 ]
+f0000c00:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c04:	82 10 60 c0 	or  %g1, 0xc0, %g1	! f0000cc0 <null_ptr>
+f0000c08:	c4 00 40 00 	ld  [ %g1 ], %g2
+f0000c0c:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c10:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c14:	c4 20 60 80 	st  %g2, [ %g1 + 0x80 ]
+f0000c18:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c1c:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c20:	05 3c 00 03 	sethi  %hi(0xf0000c00), %g2
+f0000c24:	84 10 a0 c4 	or  %g2, 0xc4, %g2	! f0000cc4 <EMPTY_sync_hook>
+f0000c28:	c4 20 60 78 	st  %g2, [ %g1 + 0x78 ]
+f0000c2c:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c30:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c34:	05 3c 00 03 	sethi  %hi(0xf0000c00), %g2
+f0000c38:	84 10 a0 bc 	or  %g2, 0xbc, %g2	! f0000cbc <AJIT_PROMDEV_TTYA>
+f0000c3c:	c4 20 60 4c 	st  %g2, [ %g1 + 0x4c ]
+f0000c40:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c44:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c48:	05 3c 00 02 	sethi  %hi(0xf0000800), %g2
+f0000c4c:	84 10 a1 f4 	or  %g2, 0x1f4, %g2	! f00009f4 <pv_nbputchar>
+f0000c50:	c4 20 60 5c 	st  %g2, [ %g1 + 0x5c ]
+f0000c54:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c58:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c5c:	05 3c 00 00 	sethi  %hi(0xf0000000), %g2
+f0000c60:	84 10 a3 a0 	or  %g2, 0x3a0, %g2	! f00003a0 <dt_blob_start>
+f0000c64:	c4 20 60 1c 	st  %g2, [ %g1 + 0x1c ]
+f0000c68:	03 3c 00 03 	sethi  %hi(0xf0000c00), %g1
+f0000c6c:	82 10 60 c8 	or  %g1, 0xc8, %g1	! f0000cc8 <Ajit_romvec>
+f0000c70:	b0 10 00 01 	mov  %g1, %i0
+f0000c74:	81 e8 00 00 	restore 
+f0000c78:	81 c3 e0 08 	retl 
+f0000c7c:	01 00 00 00 	nop 

@@ -1,0 +1,213 @@
+=================================================
+ STEP 1: 
+  copying kernel source code (using rync)
+  from: ./Ajit_linux_3.16.1/
+  to  : ./buildroot-2014.08/output/build/linux-custom
+=================================================
+sending incremental file list
+./
+scripts/basic/
+
+sent 1,129,755 bytes  received 3,263 bytes  251,781.78 bytes/sec
+total size is 540,591,157  speedup is 477.12
+ Running make clean inside linux build directory
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 2: 
+  Running 'make' inside buildroot folder.
+=================================================
+#
+# configuration written to /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/.config
+#
+/usr/bin/make -j1  HOSTCC="/usr/bin/gcc" HOSTCXX="/home/saurabh/ajit/flash/ajit_release/bin-utils/gcc/g++" silentoldconfig
+make[1]: Entering directory '/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08'
+BR2_DEFCONFIG='' KCONFIG_AUTOCONFIG=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/auto.conf KCONFIG_AUTOHEADER=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/autoconf.h KCONFIG_TRISTATE=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/tristate.config BR2_CONFIG=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/.config BR2_EXTERNAL=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/Ajit_buildroot_configs /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/buildroot-config/conf --silentoldconfig Config.in
+make[1]: Leaving directory '/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08'
+[7m>>>   Finalizing target directory[27m
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/luarocks
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/5.18.2/pod
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/5.18.2/sparc-linux/CORE
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/ -name 'extralibs.ld' -print0 | xargs -0 rm -f
+find: ‘/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/’: No such file or directory
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/ -name '*.bs' -print0 | xargs -0 rm -f
+find: ‘/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/’: No such file or directory
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/ -name '.packlist' -print0 | xargs -0 rm -f
+find: ‘/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/perl5/’: No such file or directory
+grep -q '^ttyS0$' /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/securetty || echo 'ttyS0' >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/securetty
+mkdir -p /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc
+echo "buildroot" > /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/hostname
+/bin/sed -i -e '$a \127.0.1.1\tbuildroot' -e '/^127.0.1.1/d' /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/hosts
+mkdir -p /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc
+echo "Welcome to Buildroot" > /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/issue
+[ -n "" ] && TARGET_GENERIC_ROOT_PASSWD_HASH=$(/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/mkpasswd -m "md5" ""); /bin/sed -i -e "s,^root:[^:]*:,root:$TARGET_GENERIC_ROOT_PASSWD_HASH:," /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/shadow
+/bin/sed -i -e '/# GENERIC_SERIAL$/s~^.*#~ttyS0::respawn:/sbin/getty -L  ttyS0 115200 vt100 #~' /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/inittab
+/bin/sed -i -e '/^#.*# REMOUNT_ROOTFS_RW$/s~^#\+~~' /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/inittab
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/include /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/aclocal \
+	/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/pkgconfig /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/pkgconfig \
+	/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib/cmake /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/cmake
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/{lib,share}/ -name '*.cmake' -print0 | xargs -0 rm -f
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/lib \( -name '*.a' -o -name '*.la' \) -print0 | xargs -0 rm -f
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/lib \( -name '*.a' -o -name '*.la' \) -print0 | xargs -0 rm -f
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/gdb
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/man /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/man
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/info /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/info
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/doc /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/doc
+rm -rf /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share/gtk-doc
+rmdir /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/usr/share 2>/dev/null
+Makefile:559: recipe for target 'target-finalize' failed
+make: [target-finalize] Error 1 (ignored)
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target -type f \( -perm /111 -o -name '*.so*' \) -not \( -name 'libpthread*.so*' -o -name '*.ko' \) -print | xargs /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-strip --remove-section=.comment --remove-section=.note 2>/dev/null || true
+if test -d /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/lib/modules; then \
+	find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/lib/modules -type f -name '*.ko' | \
+	xargs -r /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-strip --remove-section=.comment --remove-section=.note --strip-unneeded; fi
+find /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/lib -type f -name 'libpthread*.so*' | \
+	xargs -r /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-strip --remove-section=.comment --remove-section=.note --strip-debug
+mkdir -p /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc
+# Mandatory configuration file and auxilliary cache directory
+# for recent versions of ldconfig
+touch /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/ld.so.conf
+mkdir -p /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/var/cache/ldconfig
+if [ -x "/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-ldconfig" ]; \
+then \
+	/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-ldconfig -r /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target; \
+else \
+	/sbin/ldconfig -r /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target; \
+fi
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-ldconfig: can't resolve /usr/X11R6/lib in chroot .: No such file or directory
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-ldconfig: skipping /usr/X11R6/lib: No such file or directory
+( \
+	echo "NAME=Buildroot"; \
+	echo "VERSION=2014.08-g2617e9a-dirty"; \
+	echo "ID=buildroot"; \
+	echo "VERSION_ID=2014.08"; \
+	echo "PRETTY_NAME=\"Buildroot 2014.08\"" \
+) >  /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/etc/os-release
+[7m>>>   Copying overlay /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/Ajit_buildroot_configs/board/rootfs_overlay[27m
+[7m>>>   Generating root filesystem image rootfs.cpio[27m
+if [ ! -e /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/init ]; then ln -sf sbin/init /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/init; fi
+rm -f /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+rm -f /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM
+rm -f /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_users_table.txt
+echo "chown -h -R 0:0 /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target" >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+cat system/device_table.txt system/device_table_dev.txt > /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_device_table.txt
+printf '' >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_device_table.txt
+printf '/bin/busybox			 f 4755	0 0 - - - - -\n/usr/share/udhcpc/default.script f 755  0 0 - - - - -\n' >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_device_table.txt
+echo "/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/makedevs -d /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_device_table.txt /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target" >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+printf '' >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_users_table.txt
+PATH="/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/linker:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/misc/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/flash_image/bin/:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/vm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/generateInitVal/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/genVmapAsm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/traceCompareServer/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/ajit/flash/ajit_release/bin-utils/gcc:/home/saurabh/ajit/flash/ajit_release/bin-utils/bin:/home/saurabh/ajit/flash/ajit_release/tools/bin/:/home/saurabh/ajit/flash/ajit_release/tools/scripts/:/home/saurabh/ajit/flash/ajit_release/simulators_and_models//bin:/home/saurabh/bin:/home/saurabh/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/saurabh/esp/xtensa-lx106-elf/bin" /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/support/scripts/mkusers /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_users_table.txt /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+echo "	cd /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target && find . | cpio --quiet -o -H newc > /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/images/rootfs.cpio" >> /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+chmod a+x /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+PATH="/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/linker:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/misc/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/flash_image/bin/:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/vm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/generateInitVal/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/genVmapAsm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/traceCompareServer/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/ajit/flash/ajit_release/bin-utils/gcc:/home/saurabh/ajit/flash/ajit_release/bin-utils/bin:/home/saurabh/ajit/flash/ajit_release/tools/bin/:/home/saurabh/ajit/flash/ajit_release/tools/scripts/:/home/saurabh/ajit/flash/ajit_release/simulators_and_models//bin:/home/saurabh/bin:/home/saurabh/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/saurabh/esp/xtensa-lx106-elf/bin" /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/fakeroot -- /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_fakeroot.fs
+rootdir=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target
+table='/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/_device_table.txt'
+/usr/bin/install -m 0644 support/misc/target-dir-warning.txt /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target/THIS_IS_NOT_YOUR_ROOT_FILESYSTEM
+[7m>>>   Rebuilding kernel with initramfs[27m
+# Build the kernel.
+PATH="/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/sbin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/linker:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/misc/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/flash_image/bin/:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/vm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/generateInitVal/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/genVmapAsm/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/traceCompareServer/bin:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/scripts:/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin:/home/saurabh/ajit/flash/ajit_release/bin-utils/gcc:/home/saurabh/ajit/flash/ajit_release/bin-utils/bin:/home/saurabh/ajit/flash/ajit_release/tools/bin/:/home/saurabh/ajit/flash/ajit_release/tools/scripts/:/home/saurabh/ajit/flash/ajit_release/simulators_and_models//bin:/home/saurabh/bin:/home/saurabh/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/saurabh/esp/xtensa-lx106-elf/bin" /usr/bin/make -j9 HOSTCC="/usr/bin/gcc" HOSTCFLAGS="" ARCH=sparc INSTALL_MOD_PATH=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/target CROSS_COMPILE=" /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/usr/bin/sparc-buildroot-linux-uclibc-" DEPMOD=/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/host/sbin/depmod -C /home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom vmlinux
+make[1]: Entering directory '/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom'
+  CHK     include/config/kernel.release
+  CHK     include/generated/uapi/linux/version.h
+  CHK     include/generated/utsrelease.h
+  HOSTCC  scripts/basic/fixdep
+/home/saurabh/ajit/flash/ajit_release/bin-utils/gcc/as: 87: exec: /home/gaurip/OPEN_ME_TO_README/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/bin/as: not found
+scripts/Makefile.host:118: recipe for target 'scripts/basic/fixdep' failed
+make[2]: *** [scripts/basic/fixdep] Error 1
+Makefile:454: recipe for target 'scripts_basic' failed
+make[1]: *** [scripts_basic] Error 2
+make[1]: Leaving directory '/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom'
+linux/linux.mk:339: recipe for target '/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom/.stamp_initramfs_rebuilt' failed
+make: *** [/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux/buildroot-2014.08/output/build/linux-custom/.stamp_initramfs_rebuilt] Error 2
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 3: 
+  Compiling the device tree.
+=================================================
+Checking if Device tree compiler (dtc) is installed ...
+/home/saurabh/bin/dtc
+dtc is installed.
+Warning (ranges_format): "ranges" property in /ajit/obio has invalid length (20 bytes) (parent #address-cells == 1, child #address-cells == 2, #size-cells == 1)
+generated device tree blob Ajit_device_tree.S
+applying patch to device tree blob
+patching file Ajit_device_tree.S
+patched Ajit_device_tree.S
+Preprocessing Ajit_device_tree.S file to generate assembly Ajit_device_tree.s file
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 4: 
+  Compiling bootloader code.
+=================================================
+readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
+Info: work_area  = ./output.
+Info: linker_script_file  = ./BootloaderLinkerScript.lnk.
+Info: elf-file to be produced  = AjitBootloader.elf.
+Info: hex-dump-file to be produced  = AjitBootloader_hexdump.txt.
+Info: var-dump-file to be produced  = AjitBootloader_vardump.txt.
+Info: memory-map-file to be produced  = AjitBootloader_memmap.txt.
+Info: object-dump-file to be produced  = AjitBootloader_objdump.txt.
+Info: added src-file = AjitBootloader.c.
+Info: added assembly-file = ../Ajit_device_tree/Ajit_device_tree.s.
+Info: Executing:
+	rm -rf ./output/sparc-assembly
+Info: Executing:
+	mkdir ./output/sparc-assembly
+Info: Executing:
+	rm -rf ./output/sparc-obj
+Info: Executing:
+	mkdir ./output/sparc-obj
+Info: Executing:
+	sparc-linux-as   -Av8 -am  ../Ajit_device_tree/Ajit_device_tree.s -o ./output/sparc-obj/Ajit_device_tree.o
+Info: Executing:
+	sparc-linux-gcc  -c  -S -Wall -Werror -m32 -mcpu=v8 -nostdlib -ffreestanding    -O0  -ffreestanding     AjitBootloader.c -o ./output/sparc-assembly/AjitBootloader.s
+Info: Executing:
+	sparc-linux-as   -Av8 -am ./output/sparc-assembly/AjitBootloader.s  -o ./output/sparc-obj/AjitBootloader.o
+Info: Executing:
+	sparc-linux-ld  -nostdlib -L/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/tools/cross-compiler/buildroot_cross_compiler/usr/sparc-buildroot-linux-uclibc/lib/ -e main -T ./BootloaderLinkerScript.lnk ./output/sparc-obj/Ajit_device_tree.o  ./output/sparc-obj/AjitBootloader.o   -o ./output/AjitBootloader.elf
+Info: Executing:
+	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  ./output/AjitBootloader.elf | tr -cd '\11\12\15\40-\176' | grep 0x > ./output/AjitBootloader_hexdump.txt
+Info: Executing:
+	sparc-linux-readelf  --symbols ./output/AjitBootloader.elf  > ./output/AjitBootloader_vardump.txt
+Info: Executing:
+	Info: Generating memory map ./output/AjitBootloader_memmap.txt
+Info: Executing:
+	sparc-linux-objdump -d  ./output/AjitBootloader.elf > ./output/AjitBootloader_objdump.txt
+Info: Executing:
+	sparc-linux-readelf  `pt_load_sections.py ./output/AjitBootloader.elf` ./output/AjitBootloader.elf | grep 0x > ./output/AjitBootloader_hexdump.txt
+Info: Executing:
+	compileToSparc.py -W ./output -L ./BootloaderLinkerScript.lnk -E AjitBootloader.elf -H AjitBootloader_hexdump.txt -V AjitBootloader_vardump.txt -M AjitBootloader_memmap.txt -O AjitBootloader_objdump.txt -c AjitBootloader.c -s ../Ajit_device_tree/Ajit_device_tree.s 
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ STEP 5: 
+  Combining the bootloader executable and the kernel image 
+  into a single memory-map
+=================================================
+readelf: Warning: Section '.leon_1insn_patch' was not dumped because it does not exist!
+readelf: Warning: Section '.init.data' was not dumped because it does not exist!
+readelf: Warning: Section '.init.text' was not dumped because it does not exist!
+readelf: Warning: Section '.notes' was not dumped because it does not exist!
+readelf: Warning: Section '__ex_table' was not dumped because it does not exist!
+readelf: Warning: Section '.fixup' was not dumped because it does not exist!
+readelf: Warning: Section '__modver' was not dumped because it does not exist!
+readelf: Warning: Section '__param' was not dumped because it does not exist!
+
+Generating memory map into folder  ./Output
+Executing command: sparc-linux-readelf  --hex-dump=.text  --hex-dump=.rodata  --hex-dump=__param  --hex-dump=__modver  --hex-dump=.data  --hex-dump=.fixup  --hex-dump=__ex_table  --hex-dump=.notes  --hex-dump=.init.text  --hex-dump=.init.data  --hex-dump=.leon_1insn_patch  --hex-dump=.bss  AjitBootloader.elf | grep 0x > ./Output/bootloader_hex_file.txt 
+
+Executing command: sparc-linux-objdump -d  AjitBootloader.elf > ./Output/bootloader_objdump.txt 
+
+Executing command: sparc-linux-readelf -a  AjitBootloader.elf > ./Output/bootloader_vardump.txt 
+
+Executing command: sparc-linux-readelf  --hex-dump=.text  --hex-dump=.rodata  --hex-dump=__param  --hex-dump=__modver  --hex-dump=.data  --hex-dump=.fixup  --hex-dump=__ex_table  --hex-dump=.notes  --hex-dump=.init.text  --hex-dump=.init.data  --hex-dump=.leon_1insn_patch  --hex-dump=.bss  vmlinux | grep 0x > ./Output/kernel_hex_file.txt 
+
+Executing command: sparc-linux-objdump -d  vmlinux > ./Output/kernel_objdump.txt 
+
+Executing command: sparc-linux-readelf -a  vmlinux > ./Output/kernel_vardump.txt 
+
+Generating memory map  ./Output/mem_map.txt
+/home/saurabh/embedded/ajit-toolchain/from_ajit_repo/os/Ajit_linux
+=================================================
+ 
+  If there were no errors, the memory map will be created in 
+  ./Generated_memory_map/Output/mem_map.txt
+ 
+=================================================
