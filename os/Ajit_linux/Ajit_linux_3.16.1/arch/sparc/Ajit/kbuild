@@ -1,0 +1,6 @@
+
+#Makefile for AJIT nodeops
+obj-y	+= fdt.o fdt_ro.o Ajit_nodeops.o 
+
+
+
