@@ -11,7 +11,7 @@ points to build/buildroot-2014.08/
 
 Steps to build Linux image:
 	1. Start the docker image ajit_build_dev
-	2. go to os/Ajit_linux/ and run compileLinuxImage.sh	 
+	2. go to os/Ajit_linux/ and run compileLinuxImage.sh |& tee completeAJITLinuxBuild.log	 
 	3. This in turn runs following scripts
 		A ./GeneratememMapForAjit.sh |& tee ./compilelog/GenMemMapScript.log
 		B ./vmLinuzToMemmapAtf0004000.sh |& tee ./compilelog/vmLinuzF0004000.log
