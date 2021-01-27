@@ -100,10 +100,10 @@ typedef struct cardStatus
 uint8_t flash_array[1024];//1 block or 1kByte
 
 /*functions declarations and misc initialization*/
-void SDCard_Control();
-void initialize_sdcard();
-void register_sdcard_pipes();
-void start_sdcard_threads();
+void sdCardControl();
+void initializeSdCard();
+void registerSdCardPipes();
+void startSdCardThreads();
 
 //takes data from the incoming cmd pipe and
 //extracts the 48 bit frame contents
@@ -119,12 +119,12 @@ void actionForReceivedCommandIndex(uint8_t cmd_index);
 //TODO: should the response pipe(s) for R2 response be declared as
 //3 pipes of 64, 64 & 8 bits OR should the sdhc take care of this 
 //when CMD3 is sent to SD card and is expecting a 136 bit response
-void sendR2_Response();//IN PROGRESS
+void sendR2Response();//IN PROGRESS
 
-void sendR3_Response();
+void sendR3Response();
 
 //Gather values to be put together for R6 response and load them in a pipe
-void sendR6_Response();
+void sendR6Response();
 
 
 //functions that read commands from the SDHC
@@ -134,6 +134,6 @@ void writeToSDHC();
 
 //functions that perform read and writes to the 
 //flash memory
-void readFlash(uint8_t flash_array);
-void writeFlash(uint8_t flash_array);
+void readFromFlashMemory(uint8_t flash_array);
+void writeToFlashMemory(uint8_t flash_array);
 #endif

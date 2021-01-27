@@ -37,6 +37,7 @@
 #include "Serial.h"
 #include "console.h"
 #include "Sdhc.h"
+#include "sd.h"
 
 #include "StartCpuThreads.h"
 
@@ -472,7 +473,7 @@ int main(int argc, char **argv)
 	//peripherals
 	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IRC_threads();
 	if(USE_TIMER_MODEL)  start_timer_threads();
-	if(USE_SDHC_MODEL) startSdhcThreads();
+	if(USE_SDHC_MODEL) startSdhcThreads(); startSdCardThreads();
 	if(USE_SERIAL_MODEL) 
 	{
 		start_serial_threads();

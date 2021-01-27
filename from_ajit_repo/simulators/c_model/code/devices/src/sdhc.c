@@ -230,8 +230,8 @@ uint8_t cmd_response_receieved; //associated with command completed interrupt
 // thread that monitors data written and read from the SDHC registers
 void sdhcControl();
 DEFINE_THREAD(sdhcControl);
-void sdhcInternalOps();
-DEFINE_THREAD(sdhcInternalOps);
+void sdhcInterruptAndOtherActions();
+DEFINE_THREAD(sdhcInterruptAndOtherActions);
 
 // Mutex for locking state variables (only control register in this case)
 pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -326,8 +326,8 @@ void startSdhcThreads()
 	cardInsert();
 	PTHREAD_DECL(sdhcControl);
 	PTHREAD_CREATE(sdhcControl);
-	PTHREAD_DECL(sdhcInternalOps);
-	PTHREAD_CREATE(sdhcInternalOps);
+	PTHREAD_DECL(sdhcInterruptAndOtherActions);
+	PTHREAD_CREATE(sdhcInterruptAndOtherActions);
 }
 
 void sdhcControl()
@@ -976,7 +976,7 @@ void sdhcControl()
 	}
 }
 
-void sdhcInternalOps()
+void sdhcInterruptAndOtherActions()
 {
 while (1)
 	{

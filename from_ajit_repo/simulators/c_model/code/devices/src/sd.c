@@ -30,8 +30,8 @@ Device Registers:
 #include "Sdhc.h"
 #include "sd.h"
 
-void SDCard_Control();
-DEFINE_THREAD(SDCard_Control); 
+void sdCardControl();
+DEFINE_THREAD(sdCardControl); 
 
 pthread_mutex_t SDcard_lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -41,12 +41,12 @@ uint16_t RCA=0x1111;
 uint16_t DSR=0;
 uint32_t OCR=0;
 
-void initialize_sdcard()
+void initializeSdCard()
 {
     //some initialization routines
 }
 
-void register_sdcard_pipes()
+void registerSdCardPipes()
 {
 int depth=1;
 //pipe declarations
@@ -62,13 +62,13 @@ int depth=1;
 
 }
 
-void start_sdcard_threads()
+void startSdCardThreads()
 {
-    register_sdcard_pipes();
-    initialize_sdcard();
+    registerSdCardPipes();
+    initializeSdCard();
    
-    PTHREAD_DECL(SDCard_Control);
-	PTHREAD_CREATE(SDCard_Control); 
+    PTHREAD_DECL(sdCardControl);
+	PTHREAD_CREATE(sdCardControl); 
 }
 
  void extractCommandFromSDHC(const char* req_pipe, uint8_t *start_bit, uint8_t *tx_bit, 
@@ -88,7 +88,7 @@ void start_sdcard_threads()
 #endif
 }
 
-void sendR2_Response()//IN PROGRESS
+void sendR2Response()//IN PROGRESS
 {
     uint64_t cid_upper64=0, cid_lower64=0;
     cid_upper64 |= ((uint64_t)CID->MID >> 56) & 0xff;
@@ -107,7 +107,7 @@ void sendR2_Response()//IN PROGRESS
     write_uint64("sdcard_to_sdhc_cmd_response",cid_lower64);
 }
 
-void R3_Response()
+void sendR3Response()
 {   uint64_t frame_data=0;
     uint8_t res_value1=0x3F;uint8_t res_value2 = 0x7F;
     frame_data|=0UL<<47;//start bit
@@ -119,7 +119,7 @@ void R3_Response()
     write_uint64("sdcard_to_sdhc_cmd_response",frame_data);
 }
 
-void sendR6_Response()
+void sendR6Response()
 {
 	uint64_t frame_data=0;
     uint16_t card_stat_bits=0;//23,22,19,12:9
@@ -149,17 +149,17 @@ void actionForReceivedCommandIndex(uint8_t cmd_index)
     switch (cmd_index)
     {
     case 0:
-         initialize_sdcard();   
+         initializeSdCard();   
     case 2: //send CID i.e R2 response
-        sendR2_Response();
+        sendR2Response();
         break;
     case 3: //
-        sendR6_Response();
+        sendR6Response();
         break;
     case 4:
         break;
     case 41:
-        sendR3_Response();
+        sendR3Response();
     default:
         break;
     }
@@ -167,7 +167,7 @@ void actionForReceivedCommandIndex(uint8_t cmd_index)
     
 }
 
-void SDCard_Control()
+void sdCardControl()
 {
     uint8_t start_bit, tx_bit,cmd_index, crc7, end_bit;
     uint32_t argument;
