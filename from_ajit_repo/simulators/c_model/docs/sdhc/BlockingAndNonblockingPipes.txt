@@ -1,0 +1,72 @@
+BLOCKING PIPES
+--------------------
+	Suppose "P" is a blocking pipe.
+
+	Sender
+
+		write_uint32("P", val);
+
+			This call will block if "P"
+			is already full.
+
+
+	Receiver
+
+		val = read_uint32("P");
+
+			This call will block if "P"
+			has no data.
+
+
+	In your SDHC
+
+		while(1) {
+			cmd_from_tb = read_uint...("..");
+			executeAction (....);
+			write_uint... (... response ...);
+		}
+
+
+		executeAction(....) {
+
+			modify_sdhc_registers....
+			executeSdCommand(...)
+		}
+
+		executeSdCommand(...) {
+			prepare command to sd-card
+			write_uint... command_to_sd_card ...	can block
+			fetch sd_card_responses ...		can block
+			updata_sdhc_data_structures.
+		}
+
+
+NONBLOCKING PIPES
+-----------------
+
+		Suppose nP is a non-blocking pipe
+
+	Sender
+
+		write_uint32("nP", val);
+
+			This call will block if "nP"
+			is already full.
+
+
+	Receiver
+
+		val = read_uint32("nP");
+
+			This call will return NULL (all 0's)
+			if "nP" has no data
+
+		while(1)
+		{
+			val = read_uint32("nP");
+			if(val != 0)
+				break;
+		}
+
+
+	
