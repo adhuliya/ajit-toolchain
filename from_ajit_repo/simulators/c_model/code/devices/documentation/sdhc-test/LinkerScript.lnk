@@ -1,0 +1,24 @@
+
+/*========================================================*/
+/*                                                        */
+/* Linker script for Sparc simulator 	                  */
+/*                                                        */
+/*========================================================*/
+
+ENTRY(_start)
+__DYNAMIC = 0;
+SECTIONS
+{
+	. = 0x00000000;
+	.text ALIGN(8) : { 
+		KEEP(*(.text.ajitstart))
+    		*(.text)
+    		*(.text.*)
+    		KEEP(*(.text.pagetablesetup))
+    		KEEP(*(.text.traphandlers))
+    		KEEP(*(.text.traptablebase))
+	}
+	. = 0x00020000;
+	.rodata ALIGN(8) : { *(.rodata) *(.rodata.*) }
+	.data ALIGN(8)   : { *(.data) *(.data.*) *(.bss) }
+}

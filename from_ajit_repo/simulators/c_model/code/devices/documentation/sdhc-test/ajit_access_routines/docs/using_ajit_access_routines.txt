@@ -1,0 +1,64 @@
+
+	Using the AJIT access routines
+	------------------------------
+
+		Madhav Desai
+
+
+1. Overview
+	The AJIT access routines consist of a set of functions,
+	constant declarations and utilities which help you 
+	to access base functionality of the AJIT processor.
+	The routines are organized into three directories
+	
+	asm/
+		Assembly code for trap handlers.   Two
+		trap handlers are provided: for window overflow
+		and window underflow traps (WOF, WUF).  All others are 
+		left blank (if such a trap occurs, the processor
+		will go into error mode).  The WOF and WUF handlers
+		are enough to take care of most issues that arise in
+		embedded bare metal software.
+			
+		(Note: Sparc linux port has a full set of handlers). 	
+
+
+	include/ and src/
+
+		Provide routines to access the processor's base 
+		functions.  These include
+			- routines to read/write from MMU registers
+			- routines to flush icache/dcache.
+			- routines to access default peripherals.
+			- routines to access AJIT instructions
+				fsqrtd,fsqrts,fitod,fitos,fdtoi,fstoi
+
+	Note that there are two ways to access a peripheral.
+
+	When we write to a peripheral attached to the memory bus,
+	we can use MMU bypass to directly access the peripheral
+	register so that the DCACHE and MMU are not involved
+	in the transfer.  This uses an ASI between 0x20 and 0x2f.
+	  Eg.	
+		inline void __ajit_write_serial_control_register__(uint32_t val);
+
+	We access the peripheral just by a load/store.  But the
+	peripheral address must be marked as non-cacheable in the
+	virtual to physical address map.  The MMU is involved in
+	the translation process to determine non-cacheability. 
+	The DCACHE is not involved in the transfer.
+
+	  Eg.	
+		inline void __ajit_write_serial_control_register_via_vmap__(uint32_t val);
+
+	Access functions of the type *_via_vmap__(..) use memory mapped 
+	peripheral accesses via/load stores and assume that virtual-physical
+	map has been set up appropriately.
+
+
+2. Using the ajit_access_routines in your application
+
+
+	You will need to supply the assembly files, the
+	include/ directory and the src/ directory to the
+	compileToSparc.py script. 

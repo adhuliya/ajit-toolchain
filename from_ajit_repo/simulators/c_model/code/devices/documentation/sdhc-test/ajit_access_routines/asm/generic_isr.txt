@@ -1,0 +1,22 @@
+From RTEMS
+  
+     In window T+1 there was an interrupt and we end
+     up in window T.
+   
+     We save the required state for correct resumption
+     in an interrupt stack.
+
+     First: if window T is an invalid window, then
+     we save to T-1, store its registers to stack
+     and make T-1 invalid. 
+
+     Now, back in window T:
+           sp := fp - cpu_interrupt_frame_size
+                             (some reasonable number)
+           store important registers in T to sp.
+
+     fp := sp
+     sp := some-known-stack-location.
+
+
+     etc.  ok got it. 
