@@ -1,0 +1,9 @@
+A simple test setup for testing SDHC model. This is written for working
+in the "ajit_buid_dev" docker image environment.
+
+/sdhc_access
+        contaings access routines to interafce with SDHC model
+
+After setting up all the environment variables run the 'compile_for_ajit.sh'.
+Post a succesful compile, use the generated memap with ajit_C_model to get 
+output.
