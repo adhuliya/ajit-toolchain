@@ -131,9 +131,11 @@
 void registerSdhcPipes();
 void sdhcInitialState();
 
-//this function will imitate the action of a SD card being
-//physically inserted in the Slot and will change the necessary
-//bits of internal registers.
+//constantly monitors signals from SDCARD
+void asyncListenerForSdCard();
+
+//this function will read the SDCARD_to_SDHC port and
+//change the necessary bits of internal registers.
 void cardInsert();
 
 void startSdhcThreads();

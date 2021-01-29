@@ -426,7 +426,7 @@ void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask,
 	}
 
 	else if(addr == (0xffffff & ADDR_SDHC_REGISTER_COMMAND))
-	{
+	{	//TODO shift the generateCommandForSDCard function call to the control or interrupt thread
 		//stores cmd_index value before anything is updated
 		uint8_t cmd_index_init=getSlice16(internal_reg_view->command_reg,13,8);
 		uint8_t temp1 = getSlice16(data_in_masked,7,0);

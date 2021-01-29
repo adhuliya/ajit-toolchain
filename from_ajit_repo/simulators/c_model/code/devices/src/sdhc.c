@@ -290,6 +290,16 @@ void sdhcInitialState()
 
 }
 
+void asyncListenerForSdCard()
+{
+	while (1)
+	{
+		uint8_t signalFromSdCard = read_uint8("SDCARD_TO_SDHC");
+		if(signalFromSdCard) cardInsert();
+	}
+	
+}
+
 void cardInsert()
 {
 	//setting bits 16,17,18 of PSR indicated that card is inserted 
@@ -297,7 +307,6 @@ void cardInsert()
 	cpu_reg_view.present_state[2]=0x7;
 	internal_map.present_state=0x0700;
 }
-
 
 void registerSdhcPipes()
 {

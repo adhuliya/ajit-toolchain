@@ -40,16 +40,22 @@ struct cardStatus *card_stat;
 uint16_t RCA=0x1111;
 uint16_t DSR=0;
 uint32_t OCR=0;
+uint8_t SDCARD_INSERT;
 
 void initializeSdCard()
-{
-    //some initialization routines
+{   
+    SDCARD_INSERT = 1;
+    write_uint8("SDCARD_to_SDHC",SDCARD_INSERT);
 }
 
 void registerSdCardPipes()
 {
 int depth=1;
 //pipe declarations
+    //Acts as an async external signal to SDHC
+	register_port("SDCARD_to_SDHC",8,1);
+	set_pipe_is_written_into("SDCARD_to_SDHC");
+
     register_pipe("sdhc_to_sdcard_cmd_request", depth, 64, 0);
 	register_pipe("sdcard_to_sdhc_cmd_response", depth, 64, 0);
     register_pipe("sdcard_to_sdhc_data", depth, 64, 0);
@@ -179,7 +185,7 @@ void sdCardControl()
 
     while(1)
     {
-        //check if received data in indeed a frame
+        //check if received data is indeed a frame
         if (start_bit == 0 && tx_bit == 1 && end_bit ==1)
         {
             actionForReceivedCommandIndex(cmd_index);

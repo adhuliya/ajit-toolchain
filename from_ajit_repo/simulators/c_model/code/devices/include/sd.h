@@ -11,7 +11,7 @@ been taken from the Physical layer specifications V 3.01 document
 #define _SD_H
 
 #include<stdint.h>
-#include<stdbool.h>
+//#include<stdbool.h>
 #include"Sdhc.h"
 /* Register decalarations	*/
 
@@ -95,23 +95,23 @@ typedef struct cardStatus
 	uint8_t ake_seq_err;		//3
 }cardStatus;
 
-//three registers: OCR, RCA, DSR, are directly initialized in "sd.c" 
-
-uint8_t flash_array[1024];//1 block or 1kByte
+//remaining three registers: OCR, RCA, DSR, are directly initialized in "sd.c" 
 
 /*functions declarations and misc initialization*/
+//monitors incoming command and performs
 void sdCardControl();
 void initializeSdCard();
 void registerSdCardPipes();
 void startSdCardThreads();
 
-//takes data from the incoming cmd pipe and
+//takes data from the incoming 64 bit command pipe and
 //extracts the 48 bit frame contents
 void extractCommandFromSDHC(const char* req_pipe, uint8_t *start_bit,
 uint8_t *tx_bit, uint8_t *cmd_index, uint32_t *argument, uint8_t *crc7, uint8_t *end_bit);
 
 
 //initiates actions to be performed based on received frame's command index
+//and sends responses to SDHC
 void actionForReceivedCommandIndex(uint8_t cmd_index);
 
 //sends CID/CSD as response R2
@@ -126,7 +126,7 @@ void sendR3Response();
 //Gather values to be put together for R6 response and load them in a pipe
 void sendR6Response();
 
-
+/*
 //functions that read commands from the SDHC
 //and send responses
 void readFromSDHC();
@@ -135,5 +135,5 @@ void writeToSDHC();
 //functions that perform read and writes to the 
 //flash memory
 void readFromFlashMemory(uint8_t flash_array);
-void writeToFlashMemory(uint8_t flash_array);
+void writeToFlashMemory(uint8_t flash_array);*/
 #endif
