@@ -1,10 +1,80 @@
-First setup pointer to Ahir release.
-(Go to ahir release folder and source ahir_bashrc)
+This folder contains C models of components in the AJIT processor,
+and testbenches for them.
 
-Then, go to the code/ directory, and type
-   export AJIT_C_REF_MODEL=$(pwd)
 
-In the code/ directory and type 
-   scons
+CONTENTS:
+	documentation	: documentation of component interfaces
+	cpu		: sources and library for cpu model
+	cache		: sources and library for cache model
+	mmu		: memory management unit 
+	memory		: main memory and initialization routines
+	common		: ancillary routines for bit manipulations etc.
+		  	   used by all other modules
+	testbench 	: testbenches for combinations of cpu, mmu, and cache
+	test_programs 	: assembly-level and C test programs 
+	                   that can be run on the Ajit model
+	archive 	: deprecated component models.
+	debugger 	: the hardware server and the GDB to processor bridge.
+	SConscript 	: build script used by scons.
 
-This should build the C model binary in testbench/bin.
+
+
+USAGE:
+	Run the following commands at the top-level
+	folder in this repository:
+		$ source ./exports.sh
+		$ scons
+	
+	This creates libraries for each of the components
+	in folders ./cache/lib, ./cpu/lib etc.
+	This also creates executables for testbenches 
+	in the testbenches/bin/ folder.
+
+
+RUNNING TEST PROGRAMS :
+	Test programs are present in 
+	./test_programs/assembly and 
+	./test_programs/C.
+
+	To compile/assemble a *single* file and 
+	generate a memory map for the processor model:
+		
+		$ cToSparc.py <C file>	OR
+		$ asmToSparc  <asmFile>
+	The memory map is created in a ./output folder.
+	For more detailed compilation/linking options,
+	see compileToSparc.py
+	
+	
+	3. The processor testbench binaries are created
+	in ./testbenches/bin/ folder.
+	Run the processor testbench with a memory
+	map file as argument :
+		$ <name of testbench executable> <memory map file>
+		Example:
+		$ AJIT_cpu_testbench <memory map file>
+
+
+DEBUGGING TEST PROGRAMS USING GDB:
+	
+	Refer the user manual in ./debugger/docs/Ajit_GDB_manual.pdf for all the details
+
+
+VALIDATING TEST PROGRAMS :
+
+	1. To compile the processor model with support for validation enabled,
+	add  flags '-DHW_SERVER -DDO_VAL' to COMPILATION FLAGS variable 
+	in processor/C/Sconscript.
+
+	Run scons on the top level folder, 
+	and it should succeed without any errors
+
+	2. Compile the test programs by the same method shown above, 
+	to generate memory map & executable (.elf) file.
+	
+	3. Run the processor testbench with a memory map file as argument :
+		$ <name of testbench executable> <memory_map_file> <results file> <log file>
+		Example:
+		$ AJIT_cpu_testbench hello_world_memmap.txt project.vprj log.txt
+
+

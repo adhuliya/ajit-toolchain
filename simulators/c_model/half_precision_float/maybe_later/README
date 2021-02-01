@@ -1,0 +1,3 @@
+For now, we will use the simpler Aa implementation
+of half-precision which assumes pre-determined precisions.
+This is kept around for potential later use.

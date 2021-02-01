@@ -1,8 +1,17 @@
-----------------------------------------------------------------------------
-Sat Dec 26 15:33:37 IST 2020
-commit 0c7b638eb83b862ad6775ec84724e25f8cb7317b
+commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
 Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Sun Dec 13 03:16:16 2020 +0530
+Date:   Mon Feb 1 17:21:43 2021 +0530
 
-    Bug fix in handling volatile function call operators..
+    Avoid printing foreign module info in aa2c file.  Also
+    changed an error to a warning for output ports of
+    operators.
+----------------------------------------------------------------------------
+Mon Feb 1 18:34:49 IST 2021
+commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
+Date:   Mon Feb 1 17:21:43 2021 +0530
+
+    Avoid printing foreign module info in aa2c file.  Also
+    changed an error to a warning for output ports of
+    operators.
 ----------------------------------------------------------------------------

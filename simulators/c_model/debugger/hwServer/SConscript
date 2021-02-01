@@ -1,0 +1,32 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+Import('COMPILATION_FLAGS')
+Import('DEBUG_COMPILATION_FLAGS')
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+env.Append(CPPPATH = './src/:./include:./antlr3Cruntime/build/include:')
+env.Append(CPPPATH = '../common/include:')
+
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+AJIT_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
+
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/cpu/src:" + AJIT_C_REF_MODEL + "/cpu/include:"+ AJIT_C_REF_MODEL + "/cpu_interface/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/common/src:" + AJIT_C_REF_MODEL + "/common/include:"+ AJIT_C_REF_MODEL + "/cpu_interface/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/mmu/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/cache/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/monitorLogger/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/rlut/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/tlbs/include:")
+
+#AHIR-related
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/include"
+PIPE_HANDLER_LIBPATH = AHIR_RELEASE + "/lib"
+PTHREAD_UTILS = AHIR_RELEASE + "/include"
+GNU_PTH_UTILS = AHIR_RELEASE + "/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:")
+
+#Create hwServer library
+#env.SharedLibrary('./lib/libHserver', Glob('src/*.c'), CCFLAGS=DEBUG_COMPILATION_FLAGS)
+env.Library('./lib/libHserver', Glob('src/*.c'), CCFLAGS=DEBUG_COMPILATION_FLAGS)

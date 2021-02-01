@@ -1,0 +1,4 @@
+A mini (joke of a) kernel.  Provides
+simple character manipulation functions
+via main memory, together with some
+rudimentary formatted reads/writes.
