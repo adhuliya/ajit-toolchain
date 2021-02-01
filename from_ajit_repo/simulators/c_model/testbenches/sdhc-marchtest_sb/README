@@ -1,0 +1,7 @@
+March test by Saurabh
+
+	To run the march test, please source path.sh first, 
+	which sets up the AHIR related paths
+	
+	To compile: ./compile.sh
+	run ./marchtest_sdhc
