@@ -1,0 +1,29 @@
+(TeX-add-style-hook
+ "binutils"
+ (lambda ()
+   (TeX-run-style-hooks
+    "../src/add-sub-insn-extns"
+    "../src/shift-insn-extns"
+    "../src/mul-div-insn-extns"
+    "../src/64-bit-logical-insn-extns"
+    "../src/simd-1-insn-extns")
+   (LaTeX-add-labels
+    "chap:amv:work"
+    "sec:binutils:support"
+    "sec:general:approach"
+    "tab:binutils:desc"
+    "stage:1"
+    "stage:2"
+    "sec:sparc:v8:opcode:format"
+    "fig:f3:layout"
+    "sec:sparc:v8:opcode:implementation"
+    "sec:ajit:opcode:format"
+    "sec:ajit:opcode:implementation"
+    "sec:ajit:implementation:notes"
+    "sec:integer-unit-extns:arith-logic-insns:impl"
+    "sec:integer-unit-extns:simd-instructions:impl"
+    "sec:integer-unit-extns:simd-instructions:2:impl"
+    "sec:vector-floating-point-instructions:impl"
+    "sec:cswap-instructions:impl"))
+ :latex)
+

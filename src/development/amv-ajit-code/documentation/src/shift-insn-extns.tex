@@ -1,0 +1,238 @@
+\subsubsection{Shift instructions:}
+\label{sec:shift:insn:impl}
+The shift  family of instructions  of AJIT  may each be  considered to
+have  two versions:  a direct  count version  and a  register indirect
+count version.  In the direct count  version the shift count is a part
+of the  instruction bits.   In the indirect  count version,  the shift
+count is  found on the  register specified by  the bit pattern  in the
+instruction  bits.   The direct  count  version  is specified  by  the
+14$^{th}$  bit, i.e.  insn[13]  (bit  number 13  in  the  0 based  bit
+numbering scheme), being set to 1.  If insn[13] is 0 then the register
+indirect version is specified.
+
+Similar to the addition and subtraction instructions, the shift family
+of instructions of  SPARC V8 also do  not use bits from 5  to 12 (both
+inclusive).  The AJIT processor uses bits  5 and 6.  In particular bit
+6 is always 1.   Bit 5 may be used in the direct  version giving a set
+of 6 bits  available for specifying the shift count.   The shift count
+can have  a maximum  value of  64.  Bit  5 is  unused in  the register
+indirect version, and is always 0 in that case.
+
+These instructions  are therefore  worked out  below in  two different
+sets: the direct and the register indirect ones.
+\begin{enumerate}
+\item The direct versions are given by  insn[13] = 1.  The 6 bit shift
+  count  is directly  specified  in the  instruction bits.   Therefore
+  insn[5:0] specify the shift count.  insn[7:6] = 2, distinguishes the
+  AJIT version from the SPARC V8 version.
+  \begin{enumerate}
+  \item \textbf{SLLD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/slld-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT  SLLD instruction.  Shift count  is directly
+          specified in the instruction.}
+        \label{fig:ajit:slld:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SLLD}: same as SLL, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{slld SrcReg1, 6BitShiftCnt,
+        DestReg}''. \\
+      % (\textbf{Note:} In an assembly language program, when the second
+      % argument is a number, we have direct mode.  A register number is
+      % prefixed with  ``r'', and hence the  syntax itself distinguished
+      % between   direct  and   register   indirect   version  of   this
+      % instruction.)
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $<<$
+      shift count.
+    \end{itemize}
+
+    The AJIT/SPARC bit layout of this instruction is:
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|     \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+      x &=& 0x2      &in& \verb|OP(x) | \\
+      y &=& 0x25     &in& \verb|OP3(y) | \\
+      z &=& 0x1      &in& \verb|F3I(z) | \\
+      a &=& 0x2      &in& \verb|OP_AJIT_BIT_5_AND_6(a) |
+    \end{tabular}
+
+  \item \textbf{SRLD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/srld-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT  SRLD instruction.  Shift count  is directly
+          specified in the instruction.}
+        \label{fig:ajit:srld:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SRLD}: same as SRL, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{sral SrcReg1, 6BitShiftCnt,
+        DestReg}''. \\
+      % (\textbf{Note:} In an assembly language program, when the second
+      % argument is a number, we have direct mode.  A register number is
+      % prefixed with  ``r'', and hence the  syntax itself distinguished
+      % between   direct  and   register   indirect   version  of   this
+      % instruction.)
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $>>$
+      shift count.
+    \end{itemize}
+
+    The AJIT/SPARC bit layout of this instruction is:
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|  \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|  \\
+      x              &=& 0x2                        &in& \verb|OP(x)|    \\
+      y              &=& 0x26                       &in& \verb|OP3(y)|   \\
+      z              &=& 0x1                        &in& \verb|F3I(z)|   \\
+      a              &=& 0x2                        &in& \verb|OP_AJIT_BIT_5_AND_6(a)|
+    \end{tabular}
+      % x &=& 0x2      &in& \verb|OP(x)                  /* ((x) & 0x3)  $<<$ 30 */| \\
+      % y &=& 0x26     &in& \verb|OP3(y)                 /* ((y) & 0x3f) $<<$ 19 */| \\
+      % z &=& 0x1      &in& \verb|F3I(z)                 /* ((z) & 0x1)  $<<$ 13 */| \\
+      % a &=& 0x2      &in& \verb|OP_AJIT_BIT_5_AND_6(a) /* ((a) & 0x3   $<<$ 6  */|
+
+  \item \textbf{SRAD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/srad-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT  SRAD instruction.  Shift count  is directly
+          specified in the instruction.}
+        \label{fig:ajit:srad:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SRAD}: same as SRA, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{srad SrcReg1, 6BitShiftCnt,
+        DestReg}''. \\
+      % (\textbf{Note:} In an assembly language program, when the second
+      % argument is a number, we have direct mode.  A register number is
+      % prefixed with  ``r'', and hence the  syntax itself distinguished
+      % between   direct  and   register   indirect   version  of   this
+      % instruction.)
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $>>$
+      shift count (with sign extension).
+    \end{itemize}
+
+    The AJIT/SPARC bit layout of this instruction is:
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|  \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|  \\
+      x              &=& 0x2                        &in& \verb|OP(x)|    \\
+      y              &=& 0x27                       &in& \verb|OP3(y)|   \\
+      z              &=& 0x1                        &in& \verb|F3I(z)|   \\
+      a              &=& 0x2                        &in& \verb|OP_AJIT_BIT_5_AND_6(a)|
+    \end{tabular}
+  \end{enumerate}
+\item The register  indirect versions are given by insn[13]  = 0.  The
+  shift count is indirectly specified in the 32 bit register specified
+  in instruction bits.  Therefore  insn[4:0] specify the register that
+  has the  shift count.  insn[6]  = 1, distinguishes the  AJIT version
+  from the SPARC V8 version.  In this case, insn[5] = 0, necessarily.
+  \begin{enumerate}
+  \item \textbf{SLLD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/slld-reg-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT SLLD instruction.   Shift count is specified
+          via a register in the instruction.}
+        \label{fig:ajit:slldcc:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SLLD}: same as SLL, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{slld SrcReg1, SrcReg2,
+        DestReg}''.
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $<<$
+      shift count register rs2.
+    \end{itemize}
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|     \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+      x &=& 0x2      &in& \verb|OP(x)| \\
+      y &=& 0x25     &in& \verb|OP3(y)| \\
+      z &=& 0x0      &in& \verb|F3I(z)| \\
+      a &=& 0x1      &in& \verb|OP_AJIT_BITS_5_AND_6(a)|
+    \end{tabular}
+
+  \item \textbf{SRLD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/srld-reg-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT SRLD instruction.   Shift count is specified
+          via a register in the instruction.}
+        \label{fig:ajit:srldcc:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SRLD}: same as SRL, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{slld SrcReg1, SrcReg2,
+        DestReg}''.
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $>>$
+      shift count register rs2.
+    \end{itemize}
+
+    The AJIT/SPARC bit layout of this instruction is:
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|     \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+      x &=& 0x2      &in& \verb|OP(x)| \\
+      y &=& 0x26     &in& \verb|OP3(y)| \\
+      z &=& 0x0      &in& \verb|F3I(z)| \\
+      a &=& 0x1      &in& \verb|OP_AJIT_BITS_5_AND_6(a)|
+    \end{tabular}
+
+  \item \textbf{SRAD}:\\
+    \begin{center}
+      \begin{figure}[h]
+        \centering
+        \epsfxsize=.8\linewidth
+        \epsffile{../figs/srad-reg-ajit-insn-32-bit-layout.eps}
+        \caption{The AJIT  SRAD instruction.   Shift count is specified
+          via a register in the instruction.}
+        \label{fig:ajit:slldcc:insn}
+      \end{figure}
+    \end{center}
+    \begin{itemize}
+    \item []\textbf{SRAD}: same as SRA, but with Instr[13]=0 (i=0),
+      and Instr[7:6]=2.
+    \item []\textbf{Syntax}: ``\texttt{slld SrcReg1, SrcReg2,
+        DestReg}''.
+    \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $>>$
+      shift count register rs2 (with sign extension).
+    \end{itemize}
+
+    The AJIT/SPARC bit layout of this instruction is:
+
+    \begin{tabular}[h]{lclcl}
+      Macro to set   &=&  \verb|F5(x, y, z, b)|     &in& \verb|sparc.h|     \\
+      Macro to reset &=&  \verb|F5(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+      x &=& 0x2      &in& \verb|OP(x)| \\
+      y &=& 0x27     &in& \verb|OP3(y)| \\
+      z &=& 0x0      &in& \verb|F3I(z)| \\
+      a &=& 0x1      &in& \verb|OP_AJIT_BITS_5_AND_6(a)|
+    \end{tabular}
+  \end{enumerate}
+\end{enumerate}

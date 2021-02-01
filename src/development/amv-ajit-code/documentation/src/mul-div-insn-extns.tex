@@ -1,0 +1,253 @@
+\subsubsection{Multiplication and division instructions:}
+\label{sec:mul:div:insn:impl}
+\begin{enumerate}
+\item \textbf{UMULD}: Unsigned Integer Multiply AJIT, no immediate
+  version (i.e. i is always 0).\\
+  % \textbf{NOTE:}  The \emph{suggested} mnemonic  ``umuld'' conflicts
+  % with  a mnemonic of the  same name for another  sparc architecture
+  % (other than  v8).  Hence we change it  to: ``\textbf{umuldaj}'' in
+  % the implementation, but not in the documentation below.
+
+  % This conflict occurs despite forcing the GNU assembler to assemble
+  % for v8 only via the  command line switch ``-Av8''! It appears that
+  % forcing  the  assembler  to  use  v8  is not  universally  applied
+  % throughout the assembler code.
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/umuld-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT UMULD instruction  with register operands.}
+      \label{fig:ajit:umuld:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{UMULD}: same as UMUL, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{umuld  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) * rs2(pair).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x0A                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{UMULDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/umuldcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT UMULDCC instruction  with register operands.}
+      \label{fig:ajit:umuldcc:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{UMULDCC}: same as UMULCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{umuldcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) * rs2(pair), set Z
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x1A                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{SMULD}: Unsigned Integer Multiply AJIT, no immediate
+  version (i.e. i is always 0).\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/smuld-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT SMULD instruction  with register operands.}
+      \label{fig:ajit:smuld:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{SMULD}: same as SMUL, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{smuld  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) *
+    rs2(pair) (signed).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x0B                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{SMULDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/smuldcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT SMULDCC instruction  with register operands.}
+      \label{fig:ajit:smuldcc:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{SMULDCC}: same as SMULCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{smuldcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) *
+    rs2(pair) (signed), set Z,N,O
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x1B                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{UDIVD}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/udivd-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT UDIVD instruction  with register operands.}
+      \label{fig:ajit:udivd:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{UDIVD}: same as UDIV, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{udivd  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) / rs2(pair).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x0E                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{UDIVDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/udivdcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT UDIVDCC instruction  with register operands.}
+      \label{fig:ajit:udivdcc:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{UDIVDCC}: same as UDIVCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{udivdcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) / rs2(pair), set Z,O
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x1E                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{SDIVD}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/sdivd-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT SIDVD instruction  with register operands.}
+      \label{fig:ajit:sdivd:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{SDIVD}: same as SDIV, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{sdivd  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) /
+    rs2(pair) (signed).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x0F                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+
+\item \textbf{SDIVDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/sdivdcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT SDIVDCC instruction  with register operands.}
+      \label{fig:ajit:sdivdcc:insn}
+    \end{figure}
+  \end{center}
+  New addition:
+  \begin{itemize}
+  \item []\textbf{SDIVDCC}: same as SDIVCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{sdivdcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) /
+    rs2(pair) (signed), set Z,N,O
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=& \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|           \\
+    Macro to reset &=& \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|           \\
+    x              &=& 0x2                       &in& \verb|OP(x) |            \\
+    y              &=& 0x1F                      &in& \verb|OP3(y) |           \\
+    z              &=& 0x0                       &in& \verb|F3I(z) |           \\
+    a              &=& 0x1                       &in& \verb|OP_AJIT_BIT_5(b) |
+  \end{tabular}
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
