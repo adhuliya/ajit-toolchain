@@ -7,7 +7,8 @@ COMPILATION_FLAGS=' -g -DSW -Wall'
 AHIR_RELEASE=os.environ['AHIR_RELEASE']
 AHIR_INCLUDE=AHIR_RELEASE+"/include"
 AHIR_LIBPATH=AHIR_RELEASE + "/lib"
-AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+
+AJIT_HOME=os.environ['AJIT_HOME']
 AJIT_64_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
 
 env.Append(CPPPATH = "./:" + AJIT_64_C_REF_MODEL + "/common/include:" + AJIT_64_C_REF_MODEL + "/cpu/include:" + AJIT_64_C_REF_MODEL + "/cpu_interface/include:"+ AJIT_64_C_REF_MODEL + "/memory/include:" + AJIT_64_C_REF_MODEL + "/IO_drivers/include:"+ AJIT_64_C_REF_MODEL + "/cache/include:" + AJIT_64_C_REF_MODEL + "/devices/include:"+ AJIT_64_C_REF_MODEL + "/mmu/include:" + AJIT_64_C_REF_MODEL + "/debugger/gpb/include:" + AJIT_64_C_REF_MODEL + "/debugger/hwServer/include:" + AJIT_64_C_REF_MODEL + "/debugger/doval/include:" + AJIT_64_C_REF_MODEL + "/debugger/spi_common/include:" + AJIT_64_C_REF_MODEL + "/debugger/doval/antlr3Cruntime/build/include:")
