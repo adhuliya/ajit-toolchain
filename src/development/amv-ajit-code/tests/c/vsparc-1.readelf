@@ -1,0 +1,129 @@
+ELF Header:
+  Magic:   7f 45 4c 46 01 02 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF32
+  Data:                              2's complement, big endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Sparc
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          1084 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               52 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           40 (bytes)
+  Number of section headers:         11
+  Section header string table index: 8
+
+Section Headers:
+  [Nr] Name
+       Type            Addr     Off    Size   ES   Lk Inf Al
+       Flags
+  [ 0] 
+       NULL            00000000 000000 000000 00   0   0  0
+       [00000000]: 
+  [ 1] .text
+       PROGBITS        00000000 000034 000364 00   0   0  4
+       [00000006]: ALLOC, EXEC
+  [ 2] .rela.text
+       RELA            00000000 000788 0001bc 0c   9   1  4
+       [00000000]: 
+  [ 3] .data
+       PROGBITS        00000000 000398 000000 00   0   0  1
+       [00000003]: WRITE, ALLOC
+  [ 4] .bss
+       NOBITS          00000000 000398 00000c 00   0   0  4
+       [00000003]: WRITE, ALLOC
+  [ 5] .rodata
+       PROGBITS        00000000 000398 000030 00   0   0  8
+       [00000002]: ALLOC
+  [ 6] .comment
+       PROGBITS        00000000 0003c8 000020 01   0   0  1
+       [00000030]: MERGE, STRINGS
+  [ 7] .note.GNU-stack
+       PROGBITS        00000000 0003e8 000000 00   0   0  1
+       [00000000]: 
+  [ 8] .shstrtab
+       STRTAB          00000000 0003e8 000052 00   0   0  1
+       [00000000]: 
+  [ 9] .symtab
+       SYMTAB          00000000 0005f4 000140 10  10   8  4
+       [00000000]: 
+  [10] .strtab
+       STRTAB          00000000 000734 000053 00   0   0  1
+       [00000000]: 
+
+There are no section groups in this file.
+
+There are no program headers in this file.
+
+Relocation section '.rela.text' at offset 0x788 contains 37 entries:
+ Offset     Info    Type            Sym.Value  Sym. Name + Addend
+0000004c  00000c07 R_SPARC_WDISP30   00000000   atoi + 0
+00000058  00000809 R_SPARC_HI22      00000000   head + 0
+0000005c  0000080c R_SPARC_LO10      00000000   head + 0
+0000006c  00000d07 R_SPARC_WDISP30   000001c0   cons + 0
+00000078  00000809 R_SPARC_HI22      00000000   head + 0
+0000007c  0000080c R_SPARC_LO10      00000000   head + 0
+000000a4  00000809 R_SPARC_HI22      00000000   head + 0
+000000a8  0000080c R_SPARC_LO10      00000000   head + 0
+000000b4  00000e07 R_SPARC_WDISP30   00000304   llrec + 0
+000000c0  00000a09 R_SPARC_HI22      00000008   lst_len + 0
+000000c4  00000a0c R_SPARC_LO10      00000008   lst_len + 0
+000000cc  00000a09 R_SPARC_HI22      00000008   lst_len + 0
+000000d0  00000a0c R_SPARC_LO10      00000008   lst_len + 0
+000000d8  00000509 R_SPARC_HI22      00000000   .rodata + 0
+000000dc  0000050c R_SPARC_LO10      00000000   .rodata + 0
+000000e4  00000f07 R_SPARC_WDISP30   00000000   printf + 0
+000000ec  00000809 R_SPARC_HI22      00000000   head + 0
+000000f0  0000080c R_SPARC_LO10      00000000   head + 0
+00000108  00001007 R_SPARC_WDISP30   00000230   car + 0
+00000114  00000909 R_SPARC_HI22      00000004   counter + 0
+00000118  0000090c R_SPARC_LO10      00000004   counter + 0
+00000124  00000509 R_SPARC_HI22      00000000   .rodata + 18
+00000128  0000050c R_SPARC_LO10      00000000   .rodata + 18
+00000134  00000f07 R_SPARC_WDISP30   00000000   printf + 0
+00000140  00001107 R_SPARC_WDISP30   0000026c   cdr + 0
+0000014c  00000909 R_SPARC_HI22      00000004   counter + 0
+00000150  0000090c R_SPARC_LO10      00000004   counter + 0
+0000015c  00000909 R_SPARC_HI22      00000004   counter + 0
+00000160  0000090c R_SPARC_LO10      00000004   counter + 0
+00000178  00000909 R_SPARC_HI22      00000004   counter + 0
+0000017c  0000090c R_SPARC_LO10      00000004   counter + 0
+00000184  00000a09 R_SPARC_HI22      00000008   lst_len + 0
+00000188  00000a0c R_SPARC_LO10      00000008   lst_len + 0
+000001d8  00001207 R_SPARC_WDISP30   00000000   calloc + 0
+000002d4  00001107 R_SPARC_WDISP30   0000026c   cdr + 0
+00000334  00001107 R_SPARC_WDISP30   0000026c   cdr + 0
+00000344  00000e07 R_SPARC_WDISP30   00000304   llrec + 0
+
+There are no unwind sections in this file.
+
+Symbol table '.symtab' contains 20 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 00000000     0 FILE    LOCAL  DEFAULT  ABS cons-car-cdr.c
+     2: 00000000     0 SECTION LOCAL  DEFAULT    1 
+     3: 00000000     0 SECTION LOCAL  DEFAULT    3 
+     4: 00000000     0 SECTION LOCAL  DEFAULT    4 
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 00000000     0 SECTION LOCAL  DEFAULT    7 
+     7: 00000000     0 SECTION LOCAL  DEFAULT    6 
+     8: 00000000     4 OBJECT  GLOBAL DEFAULT    4 head
+     9: 00000004     4 OBJECT  GLOBAL DEFAULT    4 counter
+    10: 00000008     4 OBJECT  GLOBAL DEFAULT    4 lst_len
+    11: 00000000   448 FUNC    GLOBAL DEFAULT    1 main
+    12: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND atoi
+    13: 000001c0   112 FUNC    GLOBAL DEFAULT    1 cons
+    14: 00000304    96 FUNC    GLOBAL DEFAULT    1 llrec
+    15: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND printf
+    16: 00000230    60 FUNC    GLOBAL DEFAULT    1 car
+    17: 0000026c    60 FUNC    GLOBAL DEFAULT    1 cdr
+    18: 00000000     0 NOTYPE  GLOBAL DEFAULT  UND calloc
+    19: 000002a8    92 FUNC    GLOBAL DEFAULT    1 ll
+
+No version information found in this file.

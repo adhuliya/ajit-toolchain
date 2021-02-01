@@ -1,0 +1,52 @@
+sparc-dis.c: In function ‘print_all_sparc_opcodes’:
+sparc-dis.c:516:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (insn,                   HEXLONGFMT, "0x%08X%c");
+                                                      ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:517:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (opcode->match,          HEXLONGFMT, "0x%08X%c");
+                                                      ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:518:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (opcode->lose,           HEXLONGFMT, "0x%08X%c");
+                                                      ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:525:88: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field ((opcode->match & insn),                                   HEXLONGFMT, "0x%08X%c");
+                                                                                        ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:527:88: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (((opcode->match & insn) - opcode->match),                 INTFMT,     "%10s%c");
+                                                                                        ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:528:88: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field ((opcode->lose & insn),                                    HEXLONGFMT, "0x%08X%c");
+                                                                                        ^
+sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+sparc-dis.c:474:22: warning: unused variable ‘op’ [-Wunused-variable]
+   sparc_opcode_hash *op;
+                      ^
+sparc-dis.c:469:10: warning: variable ‘ok’ set but not used [-Wunused-but-set-variable]
+   int i, ok = 0;
+          ^
+sparc-dis.c:468:7: warning: unused variable ‘amv_i’ [-Wunused-variable]
+   int amv_i;
+       ^
+sparc-dis.c:453:44: warning: unused parameter ‘info’ [-Wunused-parameter]
+ print_all_sparc_opcodes (disassemble_info *info, unsigned long insn)
+                                            ^
+sparc-opc.c:2022:0: warning: ignoring #pragma MCPP end_debug [-Wunknown-pragmas]
+ #pragma MCPP end_debug
+ ^

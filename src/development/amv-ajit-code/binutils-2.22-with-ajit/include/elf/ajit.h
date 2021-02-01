@@ -30,9 +30,9 @@
 
 #define EF_AJIT_32PLUS_MASK	0xffff00	/* bits indicating V8+ type */
 #define EF_AJIT_32PLUS		0x000100	/* generic V8+ features */
-#define EF_AJIT_SUN_US1	0x000200	/* Sun UltraAJIT1 extensions */
+#define EF_AJIT_SUN_US1	        0x000200	/* Sun UltraAJIT1 extensions */
 #define EF_AJIT_HAL_R1		0x000400	/* HAL R1 extensions */
-#define EF_AJIT_SUN_US3	0x000800	/* Sun UltraAJITIII extensions */
+#define EF_AJIT_SUN_US3	        0x000800	/* Sun UltraAJITIII extensions */
 
 #define EF_AJIT_LEDATA         0x800000	/* little endian data */
 

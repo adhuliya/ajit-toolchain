@@ -1,0 +1,13 @@
+flonum-konst.o: ../../../binutils-2.22-with-ajit/gas/flonum-konst.c \
+ /usr/include/stdc-predef.h \
+ ../../../binutils-2.22-with-ajit/gas/../include/ansidecl.h \
+ ../../../binutils-2.22-with-ajit/gas/flonum.h \
+ ../../../binutils-2.22-with-ajit/gas/bignum.h
+
+/usr/include/stdc-predef.h:
+
+../../../binutils-2.22-with-ajit/gas/../include/ansidecl.h:
+
+../../../binutils-2.22-with-ajit/gas/flonum.h:
+
+../../../binutils-2.22-with-ajit/gas/bignum.h:

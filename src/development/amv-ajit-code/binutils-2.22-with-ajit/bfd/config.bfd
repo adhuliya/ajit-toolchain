@@ -120,6 +120,7 @@ esac
 #  Keep obsolete entries above the START comment, to keep them out of
 #  targmatch.h.
 
+# echo "The IITB AJIT processor has been added."	
 case "${targ}" in
   mips*-dec-bsd*)
     echo "This target is obsolete and has been removed."
@@ -1619,3 +1620,23 @@ case "${targ_defvec} ${targ_selvecs}" in
     targ_archs="$targ_archs bfd_k1om_arch"
     ;;
 esac
+
+# AMV Added
+printf "BFD Settings: Input target is - ${targ}\n"
+printf "   targ_defvec     = %-30s #  Default vector for this target\n" "${targ_defvec}"
+### printf "targ_selvecs    = %-60s #  Vectors to build for this target\n" "${targ_selvecs}"
+for val in ${targ_selvecs}
+do
+    printf "   targ_selvecs    = %-30s #  Vectors to build for this target\n" "${val}"
+done
+printf "   targ64_selvecs  = %-30s #  Vectors to build for 64 bit BFD.\n" "${targ64_selvecs}"
+printf "   targ_archs      = %-30s #  Architectures for this target\n" "${targ_archs}"
+printf "   targ_cflags     = %-30s #  \$(CFLAGS) for this target (See FIXME)\n" "${targ_cflags}"
+printf "   targ_underscore = %-30s #  Whether underscores are used: yes or no\n" "${targ_underscore}"
+# echo "BFD Settings: Input target is - ${targ}"
+# echo "targ_defvec     = ${targ_defvec}      #  Default vector for this target"
+# echo "targ_selvecs    = ${targ_selvecs}     #  Vectors to build for this target"
+# echo "targ64_selvecs  = ${targ64_selvecs}   #  Vectors to build if --enable-64-bit-bfd is given or if host is 64 bit."
+# echo "targ_archs      = ${targ_archs}       #  Architectures for this target"
+# echo "targ_cflags     = ${targ_cflags}      #  $(CFLAGS) for this target (FIXME: pretty bogus)"
+# echo "targ_underscore = ${targ_underscore}  #  Whether underscores are used: yes or no"

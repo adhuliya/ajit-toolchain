@@ -1356,61 +1356,6 @@ synthetize_setx (const struct sparc_opcode *insn)
     }
 }
 
-typedef struct binbyte {
-unsigned char bit0:1;
-unsigned char bit1:1;
-unsigned char bit2:1;
-unsigned char bit3:1;
-unsigned char bit4:1;
-unsigned char bit5:1;
-unsigned char bit6:1;
-unsigned char bit7:1;
-} BINARYBYTE;
-
-typedef union binrep {
-  unsigned char in;
-  BINARYBYTE out;
-} BINREP;
-
-void    print_bin      (FILE *, unsigned char);
-void    print_in_bin   (FILE *, unsigned int);
-
-void
-print_bin  (FILE *f, unsigned char in)
-{
-  BINREP x;
-
-  x.in = in;
-
-  fprintf (f, "%c", (x.out.bit7 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit6 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit5 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit4 == 0) ? '0' : '1');
-  fprintf (f, " ");
-  fprintf (f, "%c", (x.out.bit3 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit2 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit1 == 0) ? '0' : '1');
-  fprintf (f, "%c", (x.out.bit0 == 0) ? '0' : '1');
-}
-
-void
-print_in_bin (FILE *f, unsigned int in)
-{
-  int scan_bytes = 0;
-  int i;
-  unsigned char x;
-  int toshift;
-
-  scan_bytes = 4;
-
-  for (i = scan_bytes; i > 0 ; i--) {
-    toshift = (i - 1) * 8;
-    x = (unsigned char) (in >> toshift);
-    print_bin(f, x);
-    fprintf (f, " ");
-  }
-}
-
 /* Main entry point to assemble one instruction.  */
 
 void
@@ -1548,8 +1493,6 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
   int v9_arg_p;
   int special_case = SPECIAL_CASE_NONE;
 
-  fprintf (stderr, "\nNEXT AMV== %-40s: \"%s\"\n", "Starting special case analysis: Instruction is", str);
-  fprintf (stderr, "AMV== %-40s: %d.\n", "Number of opcodes in SPARC", sparc_num_opcodes);
   s = str;
   if (ISLOWER (*s))
     {
@@ -1576,7 +1519,6 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
       *pinsn = NULL;
       return special_case;
     }
-  fprintf (stderr, "AMV== == %-37s\n", "A known opcode. Finding the insn");
   insn = (struct sparc_opcode *) hash_find (op_hash, str);
   *pinsn = insn;
   if (insn == NULL)
@@ -1584,7 +1526,6 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
       as_bad (_("Unknown opcode: `%s'"), str);
       return special_case;
     }
-  fprintf (stderr, "AMV== == %-37s: \"%s\".\n", "Insn found for later return is", insn->name);
   if (comma)
     {
       *--s = ',';
@@ -1600,14 +1541,8 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
 
       /* Build the opcode, checking as we go to make sure that the
          operands match.  */
-      fprintf (stderr, "AMV== == %-37s: 0x%lX.\n", "Match found is", opcode);
-      fprintf (stderr, "AMV== == %-37s: ", "Match found is");
-      print_in_bin (stderr, opcode);
-      fprintf (stderr, "\n");
-      fprintf (stderr, "AMV== == %-37s: %s.\n", "Arguments pattern is", insn->args);
       for (args = insn->args;; ++args)
 	{
-          fprintf (stderr, "AMV== == == %-34s: %s.\n", "Examining argument", args);
 	  switch (*args)
 	    {
 	    case 'K':
@@ -2893,20 +2828,10 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
 	  break;
 	}			/* For each arg that we expect.  */
 
-      fprintf (stderr, "AMV== == %-37s: ", "Opcode fully determined?");
-      print_in_bin (stderr, opcode);
-      fprintf (stderr, "\n");
-
-      fprintf (stderr,
-      	       "AMVEE == %-37s: 0x%lX.\n", "Opcode fully determined?",
-      	       opcode);
     error:
       if (match == 0)
 	{
 	  /* Args don't match.  */
-          fprintf (stderr, "AMV EE %s\n", "Error analysis follows.");
-          fprintf (stderr, "AMV EE == %-36s.\n", "match is 0.");
-
 	  if (&insn[1] - sparc_opcodes < sparc_num_opcodes
 	      && (insn->name == insn[1].name
 		  || !strcmp (insn->name, insn[1].name)))
@@ -2926,16 +2851,6 @@ sparc_ip (char *str, const struct sparc_opcode **pinsn)
 	  /* We have a match.  Now see if the architecture is OK.  */
 	  int needed_arch_mask = insn->architecture;
 	  int hwcaps = insn->flags & F_HWCAP_MASK;
-
-          fprintf (stderr, "AMV EE %s\n", "Error analysis follows.");
-          fprintf (stderr, "AMV EE == %-36s: %d.\n", "match is non zero", match);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "Architecture mask", needed_arch_mask);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "Insn flags", insn->flags);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "HWCAP Mask", F_HWCAP_MASK);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "Hardware capabilities", hwcaps);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "Allowed Hardware capabilities", hwcap_allowed);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "NOT Allowed Hardware capabilities", ~hwcap_allowed);
-          fprintf (stderr, "AMV EE == %-36s: 0x%08X.\n", "(hwcaps & ~hwcap_allowed)", (hwcaps & ~hwcap_allowed));
 
 #if defined(OBJ_ELF) && !defined(TE_SOLARIS)
 	  if (hwcaps)

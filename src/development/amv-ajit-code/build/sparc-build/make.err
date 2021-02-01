@@ -1,0 +1,234 @@
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_regex_compile’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:3124:13: note: in expansion of macro ‘bzero’
+             bzero (b, (1 << BYTEWIDTH) / BYTEWIDTH);
+             ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_re_compile_fastmap’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:4582:3: note: in expansion of macro ‘bzero’
+   bzero (fastmap, 1 << BYTEWIDTH);  /* Assume nothing's valid.  */
+   ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_regex_compile’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:3124:13: note: in expansion of macro ‘bzero’
+             bzero (b, (1 << BYTEWIDTH) / BYTEWIDTH);
+             ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_re_compile_fastmap’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:4582:3: note: in expansion of macro ‘bzero’
+   bzero (fastmap, 1 << BYTEWIDTH);  /* Assume nothing's valid.  */
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c: In function ‘md5_finish_ctx’:
+../../../binutils-2.22-with-ajit/libiberty/md5.c:117:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad] = SWAP (ctx->total[0] << 3);
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c:118:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad + 4] = SWAP ((ctx->total[1] << 3) |
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c: In function ‘md5_finish_ctx’:
+../../../binutils-2.22-with-ajit/libiberty/md5.c:117:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad] = SWAP (ctx->total[0] << 3);
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c:118:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad + 4] = SWAP ((ctx->total[1] << 3) |
+   ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c: In function ‘print_stack_level’:
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:479:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+   fprintf (stderr, "current string stack depth = %d, ", tos - stack);
+                    ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:480:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+   fprintf (stderr, "current integer stack depth = %d\n", isp - istack);
+                    ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c: In function ‘main’:
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:1566:24: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+       fprintf (stderr, "finishing with current stack level %d\n",
+                        ^
+In file included from ../../../binutils-2.22-with-ajit/bfd/opncls.c:26:0:
+../../../binutils-2.22-with-ajit/bfd/opncls.c: In function ‘bfd_fopen’:
+./bfd.h:524:65: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_cacheable(abfd,bool) (((abfd)->cacheable = bool), TRUE)
+                                                                 ^
+../../../binutils-2.22-with-ajit/bfd/opncls.c:249:5: note: in expansion of macro ‘bfd_set_cacheable’
+     bfd_set_cacheable (nbfd, TRUE);
+     ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c: In function ‘print_all_sparc_opcodes’:
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:516:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (insn,                   HEXLONGFMT, "0x%08X%c");
+                                                      ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:517:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (opcode->match,          HEXLONGFMT, "0x%08X%c");
+                                                      ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:518:54: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (opcode->lose,           HEXLONGFMT, "0x%08X%c");
+                                                      ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:525:88: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field ((opcode->match & insn),                                   HEXLONGFMT, "0x%08X%c");
+                                                                                        ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:527:88: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field (((opcode->match & insn) - opcode->match),                 INTFMT,     "%10s%c");
+                                                                                        ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:528:88: warning: format ‘%X’ expects argument of type ‘unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     print_field ((opcode->lose & insn),                                    HEXLONGFMT, "0x%08X%c");
+                                                                                        ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:461:62: note: in definition of macro ‘print_field’
+ #define print_field(val,valtype,fmt)     fprintf (amv_trace, fmt, val, amv_sep_char)
+                                                              ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:474:22: warning: unused variable ‘op’ [-Wunused-variable]
+   sparc_opcode_hash *op;
+                      ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:469:10: warning: variable ‘ok’ set but not used [-Wunused-but-set-variable]
+   int i, ok = 0;
+          ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:468:7: warning: unused variable ‘amv_i’ [-Wunused-variable]
+   int amv_i;
+       ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:453:44: warning: unused parameter ‘info’ [-Wunused-parameter]
+ print_all_sparc_opcodes (disassemble_info *info, unsigned long insn)
+                                            ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c: In function ‘print_insn_sparc’:
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:581:0: warning: "NAMEFMT" redefined
+ #define NAMEFMT       " %-10s %c"
+ ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:455:0: note: this is the location of the previous definition
+ #define NAMEFMT       " %-18s %c"
+ ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:582:0: warning: "HEXFMT" redefined
+ #define HEXFMT        " 0x%016lX %c"
+ ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:456:0: note: this is the location of the previous definition
+ #define HEXFMT        " 0x%016X %c"
+ ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:657:11: warning: declaration of ‘i’ shadows a previous local [-Wshadow]
+       int i;
+           ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:600:7: note: shadowed declaration is here
+   int i, ok = 0;
+       ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:600:10: warning: variable ‘ok’ set but not used [-Wunused-but-set-variable]
+   int i, ok = 0;
+          ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:600:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i, ok = 0;
+       ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:599:7: warning: unused variable ‘amv_i’ [-Wunused-variable]
+   int amv_i;
+       ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-dis.c:589:7: warning: unused variable ‘amv_0’ [-Wunused-variable]
+   int amv_0 = 0;
+       ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-opc.c:176:0: warning: ignoring #pragma MCPP debug [-Wunknown-pragmas]
+ #pragma MCPP debug path expand
+ ^
+../../../binutils-2.22-with-ajit/opcodes/sparc-opc.c:2031:0: warning: ignoring #pragma MCPP end_debug [-Wunknown-pragmas]
+ #pragma MCPP end_debug
+ ^
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/binutils/../../../binutils-2.22-with-ajit/binutils/sysinfo.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
+syslex.c: In function ‘yy_get_next_buffer’:
+syslex.c:1225:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/binutils/../../../binutils-2.22-with-ajit/binutils/defparse.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/binutils/../../../binutils-2.22-with-ajit/binutils/rcparse.y: warning: 52 shift/reduce conflicts [-Wconflicts-sr]
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/binutils/../../../binutils-2.22-with-ajit/binutils/rcparse.y: warning: 10 reduce/reduce conflicts [-Wconflicts-rr]
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/binutils/../../../binutils-2.22-with-ajit/binutils/mcparse.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/binutils/../etc/texi2pod.pl line 314.
+arlex.c: In function ‘yy_get_next_buffer’:
+arlex.c:1350:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+In file included from ../../../binutils-2.22-with-ajit/binutils/objcopy.c:24:0:
+../../../binutils-2.22-with-ajit/binutils/objcopy.c: In function ‘copy_object’:
+../bfd/bfd.h:296:108: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_vma(bfd, ptr, val) (((ptr)->vma = (ptr)->lma = (val)), ((ptr)->user_set_vma = TRUE), TRUE)
+                                                                                                            ^
+../../../binutils-2.22-with-ajit/binutils/objcopy.c:1750:4: note: in expansion of macro ‘bfd_set_section_vma’
+    bfd_set_section_vma (obfd, gnu_debuglink_section, debuglink_vma);
+    ^
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../../binutils-2.22-with-ajit/gas/doc/../../etc/texi2pod.pl line 314.
+In file included from ../../../binutils-2.22-with-ajit/gas/as.h:90:0,
+                 from ../../../binutils-2.22-with-ajit/gas/subsegs.c:25:
+../../../binutils-2.22-with-ajit/gas/subsegs.c: In function ‘subseg_change’:
+../bfd/bfd.h:298:75: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_userdata(bfd, ptr, val) (((ptr)->userdata = (val)),TRUE)
+                                                                           ^
+../../../binutils-2.22-with-ajit/gas/subsegs.c:70:7: note: in expansion of macro ‘bfd_set_section_userdata’
+       bfd_set_section_userdata (stdoutput, seg, seginfo);
+       ^
+../../../binutils-2.22-with-ajit/gas/subsegs.c: In function ‘subseg_get’:
+../bfd/bfd.h:298:75: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_userdata(bfd, ptr, val) (((ptr)->userdata = (val)),TRUE)
+                                                                           ^
+../../../binutils-2.22-with-ajit/gas/subsegs.c:172:7: note: in expansion of macro ‘bfd_set_section_userdata’
+       bfd_set_section_userdata (stdoutput, secptr, seginfo);
+       ^
+In file included from ../../../binutils-2.22-with-ajit/gas/as.h:90:0,
+                 from ../../../binutils-2.22-with-ajit/gas/write.c:25:
+../../../binutils-2.22-with-ajit/gas/write.c: In function ‘record_alignment’:
+../bfd/bfd.h:297:83: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_alignment(bfd, ptr, val) (((ptr)->alignment_power = (val)),TRUE)
+                                                                                   ^
+../../../binutils-2.22-with-ajit/gas/write.c:366:5: note: in expansion of macro ‘bfd_set_section_alignment’
+     bfd_set_section_alignment (stdoutput, seg, align);
+     ^
+../../../binutils-2.22-with-ajit/gas/write.c: In function ‘chain_frchains_together’:
+../../../binutils-2.22-with-ajit/gas/write.c:409:24: warning: ‘dummy.fr_type’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   gas_assert (prev_frag->fr_type != 0);
+                        ^
+../../../binutils-2.22-with-ajit/gas/write.c:392:9: note: ‘dummy’ was declared here
+   fragS dummy, *prev_frag = &dummy;
+         ^
+In file included from ../../../binutils-2.22-with-ajit/gas/as.h:90:0,
+                 from ../../../binutils-2.22-with-ajit/gas/config/obj-elf.c:24:
+../../../binutils-2.22-with-ajit/gas/config/obj-elf.c: In function ‘obj_elf_init_stab_section’:
+../bfd/bfd.h:297:83: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_alignment(bfd, ptr, val) (((ptr)->alignment_power = (val)),TRUE)
+                                                                                   ^
+../../../binutils-2.22-with-ajit/gas/config/obj-elf.c:1787:3: note: in expansion of macro ‘bfd_set_section_alignment’
+   bfd_set_section_alignment (stdoutput, seg, 2);
+   ^
+as.o: In function `main':
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/gas/../../../binutils-2.22-with-ajit/gas/as.c:1156: undefined reference to `amv_list_ajit_opcodes'
+collect2: error: ld returned 1 exit status
+make[4]: *** [as-new] Error 1
+make[3]: *** [all-recursive] Error 1
+make[2]: *** [all] Error 2
+make[1]: *** [all-gas] Error 2
+make: *** [all] Error 2

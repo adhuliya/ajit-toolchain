@@ -1,0 +1,97 @@
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_regex_compile’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:3124:13: note: in expansion of macro ‘bzero’
+             bzero (b, (1 << BYTEWIDTH) / BYTEWIDTH);
+             ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c: In function ‘byte_re_compile_fastmap’:
+../../../binutils-2.22-with-ajit/libiberty/regex.c:152:47: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #      define bzero(s, n) (memset (s, '\0', n), (s))
+                                               ^
+../../../binutils-2.22-with-ajit/libiberty/regex.c:4582:3: note: in expansion of macro ‘bzero’
+   bzero (fastmap, 1 << BYTEWIDTH);  /* Assume nothing's valid.  */
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c: In function ‘md5_finish_ctx’:
+../../../binutils-2.22-with-ajit/libiberty/md5.c:117:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad] = SWAP (ctx->total[0] << 3);
+   ^
+../../../binutils-2.22-with-ajit/libiberty/md5.c:118:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   *(md5_uint32 *) &ctx->buffer[bytes + pad + 4] = SWAP ((ctx->total[1] << 3) |
+   ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c: In function ‘print_stack_level’:
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:479:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+   fprintf (stderr, "current string stack depth = %d, ", tos - stack);
+                    ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:480:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+   fprintf (stderr, "current integer stack depth = %d\n", isp - istack);
+                    ^
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c: In function ‘main’:
+../../../../binutils-2.22-with-ajit/bfd/doc/chew.c:1566:24: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long int’ [-Wformat=]
+       fprintf (stderr, "finishing with current stack level %d\n",
+                        ^
+In file included from ../../../binutils-2.22-with-ajit/bfd/opncls.c:26:0:
+../../../binutils-2.22-with-ajit/bfd/opncls.c: In function ‘bfd_fopen’:
+./bfd.h:524:65: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_cacheable(abfd,bool) (((abfd)->cacheable = bool), TRUE)
+                                                                 ^
+../../../binutils-2.22-with-ajit/bfd/opncls.c:249:5: note: in expansion of macro ‘bfd_set_cacheable’
+     bfd_set_cacheable (nbfd, TRUE);
+     ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c: In function ‘elf32_ajit_merge_private_bfd_data’:
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:86:7: warning: implicit declaration of function ‘bfd_mach_ajit_64bit_p’ [-Wimplicit-function-declaration]
+   if (bfd_mach_ajit_64bit_p (ibfd_mach))
+       ^
+In file included from ../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:24:0:
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:95:27: error: ‘bfd_arch_ajit’ undeclared (first use in this function)
+  bfd_set_arch_mach (obfd, bfd_arch_ajit, ibfd_mach);
+                           ^
+./bfd.h:5728:30: note: in definition of macro ‘BFD_SEND’
+   ((*((bfd)->xvec->message)) arglist)
+                              ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:95:2: note: in expansion of macro ‘bfd_set_arch_mach’
+  bfd_set_arch_mach (obfd, bfd_arch_ajit, ibfd_mach);
+  ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:95:27: note: each undeclared identifier is reported only once for each function it appears in
+  bfd_set_arch_mach (obfd, bfd_arch_ajit, ibfd_mach);
+                           ^
+./bfd.h:5728:30: note: in definition of macro ‘BFD_SEND’
+   ((*((bfd)->xvec->message)) arglist)
+                              ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:95:2: note: in expansion of macro ‘bfd_set_arch_mach’
+  bfd_set_arch_mach (obfd, bfd_arch_ajit, ibfd_mach);
+  ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c: In function ‘elf32_ajit_final_write_processing’:
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:126:10: error: ‘bfd_mach_ajit’ undeclared (first use in this function)
+     case bfd_mach_ajit :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:127:10: error: ‘bfd_mach_ajit_ajitlet’ undeclared (first use in this function)
+     case bfd_mach_ajit_ajitlet :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:128:10: error: ‘bfd_mach_ajit_ajitlite’ undeclared (first use in this function)
+     case bfd_mach_ajit_ajitlite :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:130:10: error: ‘bfd_mach_ajit_v8plus’ undeclared (first use in this function)
+     case bfd_mach_ajit_v8plus :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:135:10: error: ‘bfd_mach_ajit_v8plusa’ undeclared (first use in this function)
+     case bfd_mach_ajit_v8plusa :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:140:10: error: ‘bfd_mach_ajit_v8plusb’ undeclared (first use in this function)
+     case bfd_mach_ajit_v8plusb :
+          ^
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:146:10: error: ‘bfd_mach_ajit_ajitlite_le’ undeclared (first use in this function)
+     case bfd_mach_ajit_ajitlite_le :
+          ^
+./elf32-target.h: At top level:
+../../../binutils-2.22-with-ajit/bfd/elf32-ajit.c:192:18: error: ‘bfd_arch_ajit’ undeclared here (not in a function)
+ #define ELF_ARCH bfd_arch_ajit
+                  ^
+./elf32-target.h:667:3: note: in expansion of macro ‘ELF_ARCH’
+   ELF_ARCH,   /* arch */
+   ^
+make[4]: *** [elf32-ajit.lo] Error 1
+make[3]: *** [all-recursive] Error 1
+make[2]: *** [all] Error 2
+make[1]: *** [all-bfd] Error 2
+make: *** [all] Error 2

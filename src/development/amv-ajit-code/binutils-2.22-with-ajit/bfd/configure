@@ -15178,7 +15178,7 @@ do
     b_out_vec_big_host)		tb="$tb bout.lo aout32.lo" ;;
     b_out_vec_little_host)	tb="$tb bout.lo aout32.lo" ;;
     bfd_pei_ia64_vec)		tb="$tb pei-ia64.lo pepigen.lo cofflink.lo"; target_size=64 ;;
-    bfd_elf32_ajit_vec)		tb="$tb elf32-ajit.lo elfxx-ajit.lo elf-vxworks.lo elf32.lo $elf" ;;
+    bfd_elf32_ajit_vec)	        tb="$tb elf32-ajit.lo elfxx-ajit.lo elf-vxworks.lo elf32.lo $elf" ;;
     bfd_elf32_am33lin_vec)	tb="$tb elf32-am33lin.lo elf32.lo $elf" ;;
     bfd_elf32_avr_vec)		tb="$tb elf32-avr.lo elf32.lo $elf" ;;
     bfd_elf32_bfin_vec)		tb="$tb elf32-bfin.lo elf32.lo $elf" ;;

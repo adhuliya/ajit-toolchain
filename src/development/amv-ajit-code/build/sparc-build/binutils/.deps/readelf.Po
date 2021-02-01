@@ -1,0 +1,451 @@
+readelf.o: ../../../binutils-2.22-with-ajit/binutils/readelf.c \
+ /usr/include/stdc-predef.h config.h \
+ ../../../binutils-2.22-with-ajit/binutils/sysdep.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/alloca-conf.h \
+ /usr/include/alloca.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include/stddef.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/ansidecl.h \
+ /usr/include/stdio.h /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h \
+ /usr/include/x86_64-linux-gnu/sys/types.h /usr/include/time.h \
+ /usr/include/endian.h /usr/include/x86_64-linux-gnu/bits/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/byteswap.h \
+ /usr/include/x86_64-linux-gnu/bits/byteswap-16.h \
+ /usr/include/x86_64-linux-gnu/sys/select.h \
+ /usr/include/x86_64-linux-gnu/bits/select.h \
+ /usr/include/x86_64-linux-gnu/bits/sigset.h \
+ /usr/include/x86_64-linux-gnu/bits/time.h \
+ /usr/include/x86_64-linux-gnu/bits/select2.h \
+ /usr/include/x86_64-linux-gnu/sys/sysmacros.h \
+ /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h ../bfd/bfdver.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/fopen-same.h \
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/getopt.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd.h /usr/include/string.h \
+ /usr/include/xlocale.h /usr/include/x86_64-linux-gnu/bits/string.h \
+ /usr/include/x86_64-linux-gnu/bits/string2.h /usr/include/stdlib.h \
+ /usr/include/x86_64-linux-gnu/bits/string3.h \
+ /usr/include/x86_64-linux-gnu/bits/waitflags.h \
+ /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h /usr/include/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/x86_64-linux-gnu/bits/uio.h \
+ /usr/include/x86_64-linux-gnu/bits/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl2.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/binary-io.h \
+ /usr/include/libintl.h /usr/include/locale.h \
+ /usr/include/x86_64-linux-gnu/bits/locale.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/xopen_lim.h /usr/include/assert.h \
+ /usr/include/x86_64-linux-gnu/sys/stat.h \
+ /usr/include/x86_64-linux-gnu/bits/timex.h /usr/include/zlib.h \
+ /usr/include/zconf.h ../bfd/bfd.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/symcat.h \
+ ../../../binutils-2.22-with-ajit/binutils/bucomm.h \
+ ../../../binutils-2.22-with-ajit/binutils/elfcomm.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/aout/ar.h \
+ ../../../binutils-2.22-with-ajit/binutils/dwarf.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/common.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/external.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/internal.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/h8.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/reloc-macros.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/alpha.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/arc.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/arm.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/avr.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/bfin.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/cr16.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/cris.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/crx.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/d10v.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/d30v.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/dlx.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/fr30.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/frv.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/hppa.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/i386.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/i370.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/i860.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/i960.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/ia64.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/ip2k.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/lm32.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/iq2000.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/m32c.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/m32r.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/m68k.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/m68hc11.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mcore.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mep.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/microblaze.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mips.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mmix.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mn10200.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mn10300.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/moxie.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/mt.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/msp430.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/or32.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/pj.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/ppc.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/ppc64.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/rx.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/s390.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/score.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/sh.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/sparc.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/spu.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/tic6x.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/tic6x-attrs.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/tilegx.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/tilepro.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/v850.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/vax.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/x86-64.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/xc16x.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/xstormy16.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/elf/xtensa.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/libiberty.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/ansidecl.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/safe-ctype.h \
+ /usr/include/ctype.h \
+ ../../../binutils-2.22-with-ajit/binutils/../include/filenames.h \
+ ../../../binutils-2.22-with-ajit/binutils/unwind-ia64.h
+
+/usr/include/stdc-predef.h:
+
+config.h:
+
+../../../binutils-2.22-with-ajit/binutils/sysdep.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/alloca-conf.h:
+
+/usr/include/alloca.h:
+
+/usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include/stddef.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/ansidecl.h:
+
+/usr/include/stdio.h:
+
+/usr/include/x86_64-linux-gnu/bits/types.h:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include/stdarg.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/sys_errlist.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:
+
+/usr/include/x86_64-linux-gnu/sys/types.h:
+
+/usr/include/time.h:
+
+/usr/include/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap-16.h:
+
+/usr/include/x86_64-linux-gnu/sys/select.h:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/x86_64-linux-gnu/bits/sigset.h:
+
+/usr/include/x86_64-linux-gnu/bits/time.h:
+
+/usr/include/x86_64-linux-gnu/bits/select2.h:
+
+/usr/include/x86_64-linux-gnu/sys/sysmacros.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+../bfd/bfdver.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/fopen-same.h:
+
+/usr/include/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/unistd.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/getopt.h:
+
+/usr/include/x86_64-linux-gnu/bits/unistd.h:
+
+/usr/include/string.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/x86_64-linux-gnu/bits/string.h:
+
+/usr/include/x86_64-linux-gnu/bits/string2.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/x86_64-linux-gnu/bits/string3.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitflags.h:
+
+/usr/include/x86_64-linux-gnu/bits/waitstatus.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib-float.h:
+
+/usr/include/x86_64-linux-gnu/bits/stdlib.h:
+
+/usr/include/fcntl.h:
+
+/usr/include/x86_64-linux-gnu/bits/fcntl.h:
+
+/usr/include/x86_64-linux-gnu/bits/fcntl-linux.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio.h:
+
+/usr/include/x86_64-linux-gnu/bits/stat.h:
+
+/usr/include/x86_64-linux-gnu/bits/fcntl2.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/binary-io.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/limits.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/assert.h:
+
+/usr/include/x86_64-linux-gnu/sys/stat.h:
+
+/usr/include/x86_64-linux-gnu/bits/timex.h:
+
+/usr/include/zlib.h:
+
+/usr/include/zconf.h:
+
+../bfd/bfd.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/symcat.h:
+
+../../../binutils-2.22-with-ajit/binutils/bucomm.h:
+
+../../../binutils-2.22-with-ajit/binutils/elfcomm.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/aout/ar.h:
+
+../../../binutils-2.22-with-ajit/binutils/dwarf.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/common.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/external.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/internal.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/h8.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/reloc-macros.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/alpha.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/arc.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/arm.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/avr.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/bfin.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/cr16.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/cris.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/crx.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/d10v.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/d30v.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/dlx.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/fr30.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/frv.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/hppa.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/i386.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/i370.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/i860.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/i960.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/ia64.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/ip2k.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/lm32.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/iq2000.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/m32c.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/m32r.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/m68k.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/m68hc11.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mcore.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mep.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/microblaze.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mips.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mmix.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mn10200.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mn10300.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/moxie.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/mt.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/msp430.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/or32.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/pj.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/ppc.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/ppc64.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/rx.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/s390.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/score.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/sh.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/sparc.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/spu.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/tic6x.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/tic6x-attrs.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/tilegx.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/tilepro.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/v850.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/vax.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/x86-64.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/xc16x.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/xstormy16.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/elf/xtensa.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/libiberty.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/ansidecl.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/safe-ctype.h:
+
+/usr/include/ctype.h:
+
+../../../binutils-2.22-with-ajit/binutils/../include/filenames.h:
+
+../../../binutils-2.22-with-ajit/binutils/unwind-ia64.h:

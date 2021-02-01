@@ -1,0 +1,24 @@
+stab-syms.lo: ../../../binutils-2.22-with-ajit/bfd/stab-syms.c \
+ /usr/include/stdc-predef.h bfd.h \
+ ../../../binutils-2.22-with-ajit/bfd/../include/ansidecl.h \
+ ../../../binutils-2.22-with-ajit/bfd/../include/symcat.h \
+ ../../../binutils-2.22-with-ajit/bfd/libaout.h \
+ ../../../binutils-2.22-with-ajit/bfd/../include/bfdlink.h \
+ ../../../binutils-2.22-with-ajit/bfd/../include/aout/aout64.h \
+ ../../../binutils-2.22-with-ajit/bfd/../include/aout/stab.def
+
+/usr/include/stdc-predef.h:
+
+bfd.h:
+
+../../../binutils-2.22-with-ajit/bfd/../include/ansidecl.h:
+
+../../../binutils-2.22-with-ajit/bfd/../include/symcat.h:
+
+../../../binutils-2.22-with-ajit/bfd/libaout.h:
+
+../../../binutils-2.22-with-ajit/bfd/../include/bfdlink.h:
+
+../../../binutils-2.22-with-ajit/bfd/../include/aout/aout64.h:
+
+../../../binutils-2.22-with-ajit/bfd/../include/aout/stab.def:

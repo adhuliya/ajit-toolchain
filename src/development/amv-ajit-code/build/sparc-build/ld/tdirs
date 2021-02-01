@@ -1,0 +1,4 @@
+tdir_elf32_sparc=sparc-buildroot-linux-uclibc
+tdir_sparclinux=sparc-buildroot-linux-uclibcaout
+tdir_elf64_sparc=sparc-buildroot-linux-uclibc
+tdir_sun4=sparc-sun-sunos4

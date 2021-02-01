@@ -72,10 +72,6 @@ DESCRIPTION
 .{
 .  bfd_arch_unknown,   {* File arch not known.  *}
 .  bfd_arch_obscure,   {* Arch known, not one of these.  *}
-.  bfd_arch_ajit,      {* AJIT, IITB *}
-.#define bfd_mach_ajit 			1
-.#define bfd_mach_ajit_64bit_p(mach) \
-.  (0 == 1)            {* AJIT is not 64 bit, yet. Return FALSE *}
 .  bfd_arch_m68k,      {* Motorola 68xxx *}
 .#define bfd_mach_m68000 1
 .#define bfd_mach_m68008 2
@@ -129,6 +125,25 @@ DESCRIPTION
 .
 .  bfd_arch_or32,      {* OpenRISC 32 *}
 .
+.  bfd_arch_ajit,     {* AJIT *}
+.#define bfd_mach_ajit			1
+.{* The difference between v8plus and v9 is that v9 is a true 64 bit env.  *}
+.#define bfd_mach_ajit_ajitlet	2
+.#define bfd_mach_ajit_ajitlite	3
+.#define bfd_mach_ajit_v8plus		4
+.#define bfd_mach_ajit_v8plusa		5 {* with ultraajit add'ns.  *}
+.#define bfd_mach_ajit_ajitlite_le	6
+.#define bfd_mach_ajit_v9		7
+.#define bfd_mach_ajit_v9a		8 {* with ultraajit add'ns.  *}
+.#define bfd_mach_ajit_v8plusb		9 {* with cheetah add'ns.  *}
+.#define bfd_mach_ajit_v9b		10 {* with cheetah add'ns.  *}
+.{* Nonzero if MACH has the v9 instruction set.  *}
+.#define bfd_mach_ajit_v9_p(mach) \
+.  ((mach) >= bfd_mach_ajit_v8plus && (mach) <= bfd_mach_ajit_v9b \
+.   && (mach) != bfd_mach_ajit_ajitlite_le)
+.{* Nonzero if MACH is a 64 bit ajit architecture.  *}
+.#define bfd_mach_ajit_64bit_p(mach) \
+.  ((mach) >= bfd_mach_ajit_v9 && (mach) != bfd_mach_ajit_v8plusb)
 .  bfd_arch_sparc,     {* SPARC *}
 .#define bfd_mach_sparc			1
 .{* The difference between v8plus and v9 is that v9 is a true 64 bit env.  *}

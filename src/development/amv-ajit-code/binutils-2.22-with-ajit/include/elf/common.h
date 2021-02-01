@@ -309,6 +309,10 @@
    unofficial e_machine number should eventually ask registry@sco.com for
    an officially blessed number to be added to the list above.	*/
 
+#define EM_AJIT	         0xBABA	
+#define EM_AJIT32PLUS	 EM_AJIT
+#define EM_AJITV9	 EM_AJIT
+
 /* Old version of Sparc v9, from before the ABI;
    This should be removed shortly.  */
 #define EM_OLD_SPARCV9		11
@@ -400,9 +404,6 @@
 #define EM_SCORE_OLD            95
 
 #define EM_MICROBLAZE_OLD	0xbaab	/* Old MicroBlaze */
-
-/* For AJIT, IITB (2020) */
-#define EM_AJIT                 0xBABA
 
 /* See the above comment before you add a new EM_* value here.  */
 

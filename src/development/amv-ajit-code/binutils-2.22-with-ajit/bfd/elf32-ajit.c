@@ -124,28 +124,28 @@ elf32_ajit_final_write_processing (bfd *abfd,
   switch (bfd_get_mach (abfd))
     {
     case bfd_mach_ajit :
-    /* case bfd_mach_ajit_ajitlet : */
-    /* case bfd_mach_ajit_ajitlite : */
+    case bfd_mach_ajit_ajitlet :
+    case bfd_mach_ajit_ajitlite :
       break; /* nothing to do */
-    /* case bfd_mach_ajit_v8plus : */
-    /*   elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS; */
-    /*   elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK; */
-    /*   elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS; */
-    /*   break; */
-    /* case bfd_mach_ajit_v8plusa : */
-    /*   elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS; */
-    /*   elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK; */
-    /*   elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS | EF_AJIT_SUN_US1; */
-    /*   break; */
-    /* case bfd_mach_ajit_v8plusb : */
-    /*   elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS; */
-    /*   elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK; */
-    /*   elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS | EF_AJIT_SUN_US1 */
-    /* 				       | EF_AJIT_SUN_US3; */
-    /*   break; */
-    /* case bfd_mach_ajit_ajitlite_le : */
-    /*   elf_elfheader (abfd)->e_flags |= EF_AJIT_LEDATA; */
-    /*   break; */
+    case bfd_mach_ajit_v8plus :
+      elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS;
+      elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK;
+      elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS;
+      break;
+    case bfd_mach_ajit_v8plusa :
+      elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS;
+      elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK;
+      elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS | EF_AJIT_SUN_US1;
+      break;
+    case bfd_mach_ajit_v8plusb :
+      elf_elfheader (abfd)->e_machine = EM_AJIT32PLUS;
+      elf_elfheader (abfd)->e_flags &=~ EF_AJIT_32PLUS_MASK;
+      elf_elfheader (abfd)->e_flags |= EF_AJIT_32PLUS | EF_AJIT_SUN_US1
+				       | EF_AJIT_SUN_US3;
+      break;
+    case bfd_mach_ajit_ajitlite_le :
+      elf_elfheader (abfd)->e_flags |= EF_AJIT_LEDATA;
+      break;
     default :
       abort ();
       break;
@@ -190,9 +190,9 @@ elf32_ajit_add_symbol_hook (bfd * abfd,
 #define TARGET_BIG_SYM	bfd_elf32_ajit_vec
 #define TARGET_BIG_NAME	"elf32-ajit"
 #define ELF_ARCH	bfd_arch_ajit
-#define ELF_TARGET_ID	AJIT_ELF_DATA
+#define ELF_TARGET_ID	 AJIT_ELF_DATA
 #define ELF_MACHINE_CODE EM_AJIT
-/* #define ELF_MACHINE_ALT1 EM_AJIT32PLUS */
+#define ELF_MACHINE_ALT1 EM_AJIT32PLUS
 #define ELF_MAXPAGESIZE 0x10000
 #define ELF_COMMONPAGESIZE 0x2000
 

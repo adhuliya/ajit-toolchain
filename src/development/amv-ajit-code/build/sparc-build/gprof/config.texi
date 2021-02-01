@@ -1,0 +1,1 @@
+@set top_srcdir ../../../binutils-2.22-with-ajit/gprof

@@ -1,0 +1,41 @@
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../binutils-2.22-with-ajit/gprof/../etc/texi2pod.pl line 314.
+/lindata/My-work/Professional/iitb/development/ajit-branch/ajit-toolchain/src/development/amv-ajit-code/build/sparc-build/ld/../../../binutils-2.22-with-ajit/ld/deffilep.y: warning: 8 shift/reduce conflicts [-Wconflicts-sr]
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6074: warning: node next `i960' in menu `ARM' and in sectioning `M68HC11/68HC12' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6147: warning: node next `M68HC11/68HC12' in menu `PowerPC ELF32' and in sectioning `ARM' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6147: warning: node prev `M68HC11/68HC12' in menu `MSP430' and in sectioning `i960' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6193: warning: node prev `ARM' in menu `i960' and in sectioning `M68HC11/68HC12' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6505: warning: node next `MSP430' in menu `M68HC11/68HC12' and in sectioning `PowerPC ELF32' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:6546: warning: node prev `PowerPC ELF32' in menu `M68HC11/68HC12' and in sectioning `MSP430' differ
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:1318: warning: @pxref cross-reference name should not contain `:'
+../../../binutils-2.22-with-ajit/ld/ld.texinfo:7394: warning: @pxref node name should not contain `.'
+ldgram.y: In function ‘yyparse’:
+ldgram.y:627:27: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
+In file included from ../../../binutils-2.22-with-ajit/ld/ldlex-wrapper.c:6:0:
+ldlex.c: In function ‘yy_get_next_buffer’:
+ldlex.c:3370:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+ldlex.c: In function ‘yy_scan_buffer’:
+ldlex.c:3791:41: warning: declaration of ‘base’ shadows a global declaration [-Wshadow]
+ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size )
+                                         ^
+In file included from ldlex.l:33:0,
+                 from ../../../binutils-2.22-with-ajit/ld/ldlex-wrapper.c:6:
+../../../binutils-2.22-with-ajit/ld/ldlang.h:474:20: note: shadowed declaration is here
+ extern etree_type *base;
+                    ^
+In file included from ../../../binutils-2.22-with-ajit/ld/ldlang.c:24:0:
+../../../binutils-2.22-with-ajit/ld/ldlang.c: In function ‘lang_size_sections_1’:
+../bfd/bfd.h:296:108: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_vma(bfd, ptr, val) (((ptr)->vma = (ptr)->lma = (val)), ((ptr)->user_set_vma = TRUE), TRUE)
+                                                                                                            ^
+../../../binutils-2.22-with-ajit/ld/ldlang.c:4921:3: note: in expansion of macro ‘bfd_set_section_vma’
+   bfd_set_section_vma (os->bfd_section->owner,
+   ^
+../bfd/bfd.h:296:108: warning: right-hand operand of comma expression has no effect [-Wunused-value]
+ #define bfd_set_section_vma(bfd, ptr, val) (((ptr)->vma = (ptr)->lma = (val)), ((ptr)->user_set_vma = TRUE), TRUE)
+                                                                                                            ^
+../../../binutils-2.22-with-ajit/ld/ldlang.c:5006:3: note: in expansion of macro ‘bfd_set_section_vma’
+   bfd_set_section_vma (0, os->bfd_section, newdot);
+   ^
+Unescaped left brace in regex is deprecated, passed through in regex; marked by <-- HERE in m/^\@strong{ <-- HERE (.*)}$/ at ../../../binutils-2.22-with-ajit/ld/../etc/texi2pod.pl line 314.

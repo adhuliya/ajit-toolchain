@@ -1,0 +1,60 @@
+../../../../binutils-2.22-with-ajit/gas/doc/c-arc.texi:223: command @bullet not accepting argument in brace should not be on @table line
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:383: command @bullet not accepting argument in brace should not be on @table line
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:384: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:387: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:392: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:397: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:402: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:405: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:49: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:51: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:53: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:58: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:63: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-cr16.texi:65: warning: @item missing argument
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:237: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/c-score.texi:40: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/c-score.texi:52: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/c-score.texi:55: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/c-score.texi:58: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/c-tic54x.texi:113: @code expected braces
+../../../../binutils-2.22-with-ajit/gas/doc/c-tic54x.texi:130: @code expected braces
+../../../../binutils-2.22-with-ajit/gas/doc/c-tic54x.texi:137: @code expected braces
+../../../../binutils-2.22-with-ajit/gas/doc/c-tic54x.texi:313: @code expected braces
+../../../../binutils-2.22-with-ajit/gas/doc/c-tic54x.texi:348: @itemx must follow @item
+../../../../binutils-2.22-with-ajit/gas/doc/as.texinfo:4277: warning: node `Comm' is next for `CFI directives' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/as.texinfo:4399: warning: node `CFI directives' is prev for `Comm' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:437: warning: node next `ARM-Regs' in menu `ARM-Relocations' and in sectioning `ARM-Neon-Alignment' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:444: warning: node prev `ARM-Neon-Alignment' in menu `ARM-Relocations' and in sectioning `ARM-Regs' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:466: warning: node `ARM-Neon-Alignment' is next for `ARM-Relocations' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/c-arm.texi:466: warning: node `ARM-Regs' is prev for `ARM-Relocations' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:401: warning: node `i386-Regs' is next for `i386-Mnemonics' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:501: warning: node `i386-Mnemonics' is prev for `i386-Regs' in menu but not in sectioning
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:916: warning: node next `i386-16bit' in menu `i386-Arch' and in sectioning `i386-Bugs' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:968: warning: node next `i386-Bugs' in menu `i386-Notes' and in sectioning `i386-Arch' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:968: warning: node prev `i386-Bugs' in menu `i386-Arch' and in sectioning `i386-16bit' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:989: warning: node next `i386-Arch' in menu `i386-Bugs' and in sectioning `i386-Notes' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:989: warning: node prev `i386-Arch' in menu `i386-16bit' and in sectioning `i386-Bugs' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-i386.texi:1053: warning: node prev `i386-Notes' in menu `i386-Bugs' and in sectioning `i386-Arch' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:443: warning: node next `MIPS Stabs' in menu `MIPS ISA' and in sectioning `MIPS symbol sizes' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:457: warning: node next `MIPS symbol sizes' in menu `MIPS autoextend' and in sectioning `MIPS ISA' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:457: warning: node prev `MIPS symbol sizes' in menu `MIPS ISA' and in sectioning `MIPS Stabs' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:512: warning: node next `MIPS ISA' in menu `MIPS symbol sizes' and in sectioning `MIPS autoextend' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:512: warning: node prev `MIPS ISA' in menu `MIPS Stabs' and in sectioning `MIPS symbol sizes' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-mips.texi:551: warning: node prev `MIPS autoextend' in menu `MIPS symbol sizes' and in sectioning `MIPS ISA' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-ns32k.texi:35: warning: node next `NS32K-Dependent' in menu `SH-Dependent' and in sectioning `PDP-11-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-pdp11.texi:6: warning: node prev `PDP-11-Dependent' in menu `SH64-Dependent' and in sectioning `NS32K-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-score.texi:7: warning: node next `SCORE-Dependent' in menu `Sparc-Dependent' and in sectioning `SH-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-sh.texi:6: warning: node prev `SH-Dependent' in menu `NS32K-Dependent' and in sectioning `SCORE-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-sh64.texi:5: warning: node next `SH64-Dependent' in menu `PDP-11-Dependent' and in sectioning `Sparc-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-sparc.texi:8: warning: node prev `Sparc-Dependent' in menu `SCORE-Dependent' and in sectioning `SH64-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-tilepro.texi:7: warning: node next `TILEPro-Dependent' in menu `V850-Dependent' and in sectioning `Z80-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-z80.texi:7: warning: node prev `Z80-Dependent' in menu `Xtensa-Dependent' and in sectioning `TILEPro-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-vax.texi:7: warning: node `V850-Dependent' is next for `Vax-Dependent' in sectioning but not in menu
+../../../../binutils-2.22-with-ajit/gas/doc/c-v850.texi:5: warning: node prev `V850-Dependent' in menu `TILEPro-Dependent' and in sectioning `Vax-Dependent' differ
+../../../../binutils-2.22-with-ajit/gas/doc/c-xtensa.texi:9: warning: node `Z80-Dependent' is next for `Xtensa-Dependent' in menu but not in sectioning
+make[4]: *** [as.info] Error 1
+make[3]: *** [install-am] Error 2
+make[2]: *** [install-recursive] Error 1
+make[1]: *** [install-gas] Error 2
+make: *** [install] Error 2

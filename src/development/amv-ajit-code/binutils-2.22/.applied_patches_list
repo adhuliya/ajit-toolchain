@@ -1,0 +1,10 @@
+120-sh-conf.patch
+300-001_ld_makefile_patch.patch
+300-012_check_ldrunpath_length.patch
+500-sysroot.patch
+900-xtensa-trampolines.patch
+901-xtensa-gas-first-frag-alignment.patch
+902-xtensa-gas-ld-diff-relocation-signed.patch
+903-xtensa-fix-ld-segfault-when-linking-linux-modules.patch
+999-ppc-textrels.patch
+buildroot-libtool-v2.2.patch

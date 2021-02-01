@@ -4729,45 +4729,42 @@ _bfd_ajit_elf_finish_dynamic_sections (bfd *output_bfd, struct bfd_link_info *in
 
 
 /* Set the right machine number for a AJIT ELF file.  */
-/* AJIT is  not 64  bit yet.  So  no need  to do the  detailed machine
-   checks like the SPARC! */
+
 bfd_boolean
 _bfd_ajit_elf_object_p (bfd *abfd)
 {
-  /* if (ABI_64_P (abfd)) */
-  /*   { */
-  /*     unsigned long mach = bfd_mach_ajit_v9; */
+  if (ABI_64_P (abfd))
+    {
+      unsigned long mach = bfd_mach_ajit_v9;
 
-  /*     if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US3) */
-  /* 	mach = bfd_mach_ajit_v9b; */
-  /*     else if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US1) */
-  /* 	mach = bfd_mach_ajit_v9a; */
-  /*     return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, mach); */
-  /*   } */
-  /* else */
-  /*   { */
-  /*     if (elf_elfheader (abfd)->e_machine == EM_AJIT32PLUS) */
-  /* 	{ */
-  /* 	  if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US3) */
-  /* 	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, */
-  /* 					      bfd_mach_ajit_v8plusb); */
-  /* 	  else if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US1) */
-  /* 	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, */
-  /* 					      bfd_mach_ajit_v8plusa); */
-  /* 	  else if (elf_elfheader (abfd)->e_flags & EF_AJIT_32PLUS) */
-  /* 	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, */
-  /* 					      bfd_mach_ajit_v8plus); */
-  /* 	  else */
-  /* 	    return FALSE; */
-  /* 	} */
-  /*     else if (elf_elfheader (abfd)->e_flags & EF_AJIT_LEDATA) */
-  /* 	return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, */
-  /* 					  bfd_mach_ajit_ajitlite_le); */
-  /*     else */
-  /* 	return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, bfd_mach_ajit); */
-  /*   } */
-
-  return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, bfd_mach_ajit);
+      if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US3)
+	mach = bfd_mach_ajit_v9b;
+      else if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US1)
+	mach = bfd_mach_ajit_v9a;
+      return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, mach);
+    }
+  else
+    {
+      if (elf_elfheader (abfd)->e_machine == EM_AJIT32PLUS)
+	{
+	  if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US3)
+	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit,
+					      bfd_mach_ajit_v8plusb);
+	  else if (elf_elfheader (abfd)->e_flags & EF_AJIT_SUN_US1)
+	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit,
+					      bfd_mach_ajit_v8plusa);
+	  else if (elf_elfheader (abfd)->e_flags & EF_AJIT_32PLUS)
+	    return bfd_default_set_arch_mach (abfd, bfd_arch_ajit,
+					      bfd_mach_ajit_v8plus);
+	  else
+	    return FALSE;
+	}
+      else if (elf_elfheader (abfd)->e_flags & EF_AJIT_LEDATA)
+	return bfd_default_set_arch_mach (abfd, bfd_arch_ajit,
+					  bfd_mach_ajit_ajitlite_le);
+      else
+	return bfd_default_set_arch_mach (abfd, bfd_arch_ajit, bfd_mach_ajit);
+    }
 }
 
 /* Return address for Ith PLT stub in section PLT, for relocation REL
