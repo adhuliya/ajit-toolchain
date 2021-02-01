@@ -1,0 +1,12 @@
+
+	model/
+		Contains the SDHC model
+			
+	testapp/
+		Contains the code for march test.
+
+		- run compile.sh
+				successfull compilation produces an executable named 'run'
+		- execute ./run
+
+NOTE: The setup expect Ahir environment variables.
