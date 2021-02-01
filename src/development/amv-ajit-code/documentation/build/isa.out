@@ -1,0 +1,68 @@
+\BOOKMARK [0][-]{chapter.1}{The ISA Specification from IITB}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Overview}{chapter.1}% 2
+\BOOKMARK [2][-]{subsection.1.1.1}{Changes relative to Version 1}{section.1.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.1.1.1}{Instruction Modifications}{subsection.1.1.1}% 4
+\BOOKMARK [3][-]{subsubsection.1.1.1.2}{ASR mappings}{subsection.1.1.1}% 5
+\BOOKMARK [1][-]{section.1.2}{ISA Extensions}{chapter.1}% 6
+\BOOKMARK [1][-]{section.1.3}{ISA Version 2}{chapter.1}% 7
+\BOOKMARK [2][-]{subsection.1.3.1}{Integer-Unit Extensions: Arithmetic-Logic Instructions}{section.1.3}% 8
+\BOOKMARK [2][-]{subsection.1.3.2}{Integer-Unit Extensions: SIMD Instructions}{section.1.3}% 9
+\BOOKMARK [2][-]{subsection.1.3.3}{Integer-Unit Extensions: SIMD Instructions II}{section.1.3}% 10
+\BOOKMARK [2][-]{subsection.1.3.4}{Vector Floating Point Instructions}{section.1.3}% 11
+\BOOKMARK [2][-]{subsection.1.3.5}{FP Reduce}{section.1.3}% 12
+\BOOKMARK [2][-]{subsection.1.3.6}{Half Precision Conversion Operations}{section.1.3}% 13
+\BOOKMARK [2][-]{subsection.1.3.7}{CSWAP instructions}{section.1.3}% 14
+\BOOKMARK [0][-]{chapter.2}{AJIT Support for the GNU Binutils Toolchain}{}% 15
+\BOOKMARK [1][-]{section.2.1}{Towards a GNU Binutils Toolchain}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.1.1}{General Approach for Developing the Assembler}{section.2.1}% 17
+\BOOKMARK [3][-]{subsubsection.2.1.1.1}{Opcode Format of SPARC V8}{subsection.2.1.1}% 18
+\BOOKMARK [3][-]{subsubsection.2.1.1.2}{Illustrating SPARC V8 Opcode Implementation}{subsection.2.1.1}% 19
+\BOOKMARK [3][-]{subsubsection.2.1.1.3}{Opcode Format of AJIT}{subsection.2.1.1}% 20
+\BOOKMARK [3][-]{subsubsection.2.1.1.4}{Illustrating AJIT Opcode Implementation}{subsection.2.1.1}% 21
+\BOOKMARK [3][-]{subsubsection.2.1.1.5}{AJIT Implementation Notes}{subsection.2.1.1}% 22
+\BOOKMARK [2][-]{subsection.2.1.2}{Integer-Unit Extensions: Arithmetic-Logic Instructions}{section.2.1}% 23
+\BOOKMARK [3][-]{subsubsection.2.1.2.1}{Addition and subtraction instructions:}{subsection.2.1.2}% 24
+\BOOKMARK [3][-]{subsubsection.2.1.2.2}{Shift instructions:}{subsection.2.1.2}% 25
+\BOOKMARK [3][-]{subsubsection.2.1.2.3}{Multiplication and division instructions:}{subsection.2.1.2}% 26
+\BOOKMARK [3][-]{subsubsection.2.1.2.4}{64 Bit Logical Instructions:}{subsection.2.1.2}% 27
+\BOOKMARK [2][-]{subsection.2.1.3}{Integer-Unit Extensions: SIMD Instructions}{section.2.1}% 28
+\BOOKMARK [3][-]{subsubsection.2.1.3.1}{SIMD I instructions:}{subsection.2.1.3}% 29
+\BOOKMARK [2][-]{subsection.2.1.4}{Integer-Unit Extensions: SIMD Instructions II}{section.2.1}% 30
+\BOOKMARK [2][-]{subsection.2.1.5}{Vector Floating Point Instructions}{section.2.1}% 31
+\BOOKMARK [2][-]{subsection.2.1.6}{CSWAP instructions}{section.2.1}% 32
+\BOOKMARK [0][-]{chapter.3}{Towards Assembler Extraction}{}% 33
+\BOOKMARK [1][-]{section.3.1}{Succinct ISA Descriptions}{chapter.3}% 34
+\BOOKMARK [2][-]{subsection.3.1.1}{Instruction Set Design Study}{section.3.1}% 35
+\BOOKMARK [3][-]{subsubsection.3.1.1.1}{Basic Concepts of Instruction Set Design}{subsection.3.1.1}% 36
+\BOOKMARK [3][-]{subsubsection.3.1.1.2}{Some Examples of Instruction Set Design Languages}{subsection.3.1.1}% 37
+\BOOKMARK [2][-]{subsection.3.1.2}{Instruction Set Description and Generation}{section.3.1}% 38
+\BOOKMARK [3][-]{subsubsection.3.1.2.1}{Basic Elements of the Structure of an Instruction Set Language}{subsection.3.1.2}% 39
+\BOOKMARK [2][-]{subsection.3.1.3}{Instruction Set Generation}{section.3.1}% 40
+\BOOKMARK [3][-]{subsubsection.3.1.3.1}{Basic Elements of the ``Language'' to Describe the Instruction}{subsection.3.1.3}% 41
+\BOOKMARK [0][-]{chapter.4}{Packaging AJIT Within BuildRoot System}{}% 42
+\BOOKMARK [1][-]{section.4.1}{List and Sequence of Files}{chapter.4}% 43
+\BOOKMARK [1][-]{section.4.2}{List and Sequence of Files Processing}{chapter.4}% 44
+\BOOKMARK [2][-]{subsection.4.2.1}{bfd/elf-bfd.h: Yes}{section.4.2}% 45
+\BOOKMARK [2][-]{subsection.4.2.2}{bfd/archures.c: Yes}{section.4.2}% 46
+\BOOKMARK [2][-]{subsection.4.2.3}{bfd/config.bfd: Yes}{section.4.2}% 47
+\BOOKMARK [2][-]{subsection.4.2.4}{bfd/cpu-sparc.c: Yes}{section.4.2}% 48
+\BOOKMARK [2][-]{subsection.4.2.5}{bfd/elf32-sparc.c: Yes}{section.4.2}% 49
+\BOOKMARK [2][-]{subsection.4.2.6}{bfd/elf.c: Yes}{section.4.2}% 50
+\BOOKMARK [2][-]{subsection.4.2.7}{bfd/elfcode.h: Yes}{section.4.2}% 51
+\BOOKMARK [2][-]{subsection.4.2.8}{bfd/elfxx-sparc.c: Yes}{section.4.2}% 52
+\BOOKMARK [2][-]{subsection.4.2.9}{bfd/elfxx-sparc.h: Yes}{section.4.2}% 53
+\BOOKMARK [2][-]{subsection.4.2.10}{bfd/targets.c: Yes}{section.4.2}% 54
+\BOOKMARK [2][-]{subsection.4.2.11}{bfd/bfd-in2.h: Maybe}{section.4.2}% 55
+\BOOKMARK [2][-]{subsection.4.2.12}{bfd/bfd-in.h: Maybe}{section.4.2}% 56
+\BOOKMARK [2][-]{subsection.4.2.13}{bfd/bfd.m4: Maybe}{section.4.2}% 57
+\BOOKMARK [2][-]{subsection.4.2.14}{bfd/configure: Maybe}{section.4.2}% 58
+\BOOKMARK [2][-]{subsection.4.2.15}{bfd/configure.in: Maybe}{section.4.2}% 59
+\BOOKMARK [2][-]{subsection.4.2.16}{bfd/elf64-ajit.c: Maybe}{section.4.2}% 60
+\BOOKMARK [2][-]{subsection.4.2.17}{bfd/elf64-sparc.c: Maybe}{section.4.2}% 61
+\BOOKMARK [2][-]{subsection.4.2.18}{bfd/freebsd.h: Maybe}{section.4.2}% 62
+\BOOKMARK [2][-]{subsection.4.2.19}{bfd/libbfd.h: Maybe}{section.4.2}% 63
+\BOOKMARK [2][-]{subsection.4.2.20}{bfd/Makefile.am: Maybe}{section.4.2}% 64
+\BOOKMARK [2][-]{subsection.4.2.21}{bfd/Makefile.in: Maybe}{section.4.2}% 65
+\BOOKMARK [2][-]{subsection.4.2.22}{bfd/nlm32-sparc.c: Maybe}{section.4.2}% 66
+\BOOKMARK [2][-]{subsection.4.2.23}{bfd/reloc.c: Maybe}{section.4.2}% 67
+\BOOKMARK [1][-]{section.4.3}{Studying the Build Process}{chapter.4}% 68

@@ -1,0 +1,626 @@
+	64-bit ISA extensions to the AJIT processor
+
+		Version 2
+
+		Madhav Desai
+
+0. Changes relative to Version 1
+---------------------------------
+
+There has been some rationalization of the instructions.
+Further the ASR register mappings have been updated.
+
+Notes on instruction naming: V*  means a vector SIMD instruction
+
+0.1 Instruction Modifications
+------------------------------
+
+Some instructions have been removed.
+
+	VFDIV 
+        VFSQRT 
+
+Some instructions have been renamed.
+
+	ADDDBYTER    replaced with ADDDREDUCE8
+		instruction encoding modified as shown later.
+
+	 	Given [a1 a2 a3 ... a8]  
+			calculate (a1+a2+...+a8)
+
+	ORDBYTER     replaced with ORDREDUCE8
+		instruction encoding modified as shown later.
+
+	ANDDBYTER    replaced with ANDDREDUCE8
+		instruction encoding modified as shown later.
+
+	XORDBYTER    replaced with XORDREDUCE8
+		instruction encoding modified as shown later.
+
+	VFADD	     replaced with VFADD32
+			opcode modified.
+
+		Given  [x1 x2], [y1 y2]  of single-precision numbers
+			calculate  [(x1+y1) (x2+y2)]
+				this becomes VFADD32
+
+		Added half-precision
+			[x1 x2 x3 x4], [y1 y2 y3 y4]
+				calculate [(x1+y1) (x2+y2)  ... (x4 + y4)]
+				this becomes VFADD16
+
+	VFSUB	     replaced with VFSUB32
+			opcode modified.
+
+	VFMUL	     replaced with VFMUL32
+			opcode modified.
+
+
+Some instructions have been added.   Opcodes
+have been assigned (see below).
+
+	ADDDREDUCE16
+	ORDREDUCE16
+	ANDDREDUCE16
+	XORDREDUCE16
+
+	VFADD16
+	VFSUB16
+	VFMUL16
+
+	FADDREDUCE16
+
+	FSTOH
+	FHTOS
+
+	VFHTOI16
+	VFI16TOH
+
+	Instruction behaviour is described below.
+
+0.2 ASR mappings
+--------------------------------
+	ASR[31] and ASR[30]  provide a free-running 64-bit counter
+	running on the processor clock (same as in AJIT32).
+
+	ASR[29] is intialized to processor ID field (writes to this
+	register are ignored).
+
+	The ancillary state register ASR[28] is interpreted as a floating point
+	configuration register.  The bits of this register are interpreted
+	as follows:
+
+  	31:8  unused
+  	7:0    half-precision exponent width
+
+	This register is intialized to a value of 5 by default (as
+	per the IEEE half-precision format).  Valid values of the
+	exponent width are between 5 and 14.
+
+	IEEE half precision = 1 sign + 5 exp + 10 mantissa bits
+	would like 		
+		1 sign 8 exp 7 mantissa
+		1 sign 12 exp 3 mantissa
+
+
+1. Overview
+--------
+
+The AJIT processor implements the Sparc-V8 ISA.  We propose
+to extend this ISA to provide support for a native 64-bit
+integer datatype.  The proposed extensions use the existing
+instruction encodings to the maximum extent possible.
+
+All proposed extensions are RegisterXRegister -> Register,Condition-codes
+type instructions.  The load/store instructions are not modified.
+
+We list the additional instructions in the subsequent sections.
+In each case, only the differences in the encoding relative
+to an existing Sparc-V8 instruction are provided.
+
+
+2. Integer-unit extensions: Arithmetic-logic instructions
+-------------------------------------------------------
+
+
+These instructions provide 64-bit arithmetic/logic support
+in the integer unit.  The instructions work on 64-bit register
+pairs in most cases.  Register-pairs are identified by a 5-bit
+even number (lowest bit must be 0).
+
+
+	ADDD			
+		encoding:  same as ADD, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) + rs2(pair)
+
+	ADDDCC
+		encoding:  same as ADDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) + rs2(pair), set Z,N
+
+	SUBD
+		encoding:  same as SUB, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) - rs2(pair)
+
+	SUBDCC
+		encoding:  same as SUBCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) - rs2(pair), set Z,N
+
+	// shifts
+	SLLD
+		encoding:  same as SLL, but with Instr[7:6]=2.
+			if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
+			else shift-amount is the lowest 6 bits of rs2. Note that rs2
+			is a 32-bit register.
+		rd(pair) <-  rs1(pair) << shift-amount
+
+	SRLD
+		encoding:  same as SRL, but with Instr[7:6]=2.
+			if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
+			else shift-amount is the lowest 6 bits of rs2. Note that rs2
+			is a 32-bit register.
+		rd(pair) <-  rs1(pair) >> shift-amount
+
+	SRAD
+		encoding:  same as SRA, but with Instr[7:6]=2.
+			if imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount.
+			else shift-amount is the lowest 6 bits of rs2. Note that rs2
+			is a 32-bit register.
+		rd(pair) <-  rs1(pair) >> shift-amount (with sign extension).
+
+	// mul/div
+	UMULD
+		encoding:  same as UMUL, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) * rs2(pair)
+	UMULDCC
+		encoding:  same as UMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) * rs2(pair), sets Z, Ovflow
+
+	SMULD
+		encoding:  same as SMULD, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) * rs2(pair) (signed)
+	SMULDCC
+		encoding:  same as SMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) * rs2(pair) (signed)
+		sets condition codes Z,N,Ovflow
+
+	UDIVD
+		encoding:  same as UDIV, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) / rs2(pair)
+			note: can generate div-by-zero trap.
+	UDIVDCC
+		encoding:  same as UDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) / rs2(pair)
+			sets condition codes Z,Ovflow
+			note: can generate div-by-zero trap.
+	SDIVD
+		encoding:  same as SDIV, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) / rs2(pair) (signed)
+	SDIVDCC
+		encoding:  same as SDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) / rs2(pair) (signed)
+			sets condition codes Z,N,Ovflow
+			note: can generate div-by-zero trap.
+
+
+	// 64-bit logical.
+	ORD
+		encoding:  same as OR, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) | rs2(pair)
+	ORDCC
+		encoding:  same as ORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) | rs2(pair), sets Z.
+	ORDN
+		encoding:  same as ORN, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) | (~rs2(pair))
+	ORDNCC
+		encoding:  same as ORNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) | (~rs2(pair)), sets Z
+		sets Z.
+		
+	XORD
+		encoding:  same as XOR, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) ^ rs2(pair)
+	XORDCC
+		encoding:  same as XORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z
+		sets Z.
+
+	XNORD
+		encoding:  same as XNOR, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) ^ rs2(pair)
+	XNORDCC
+		encoding:  same as XNORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z
+
+	ANDD
+		encoding:  same as AND, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) . rs2(pair)
+	ANDDCC
+		encoding:  same as ANDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) . rs2(pair), sets Z
+	ANDDN
+		encoding:  same as ANDN, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd(pair) <- rs1(pair) . (~rs2(pair))
+	ANDDNCC
+		encoding:  same as ANDNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
+		rd <- rs1 . (~rs2), sets Z
+
+3. Integer-unit extensions: SIMD instructions
+-------------------------------------------------------
+	These instructions are vector instructions which work on
+	two source registers (each a 64 bit register pair), and
+	produce a 64-bit vector result.  The vector elements can
+	be 8-bit/16-bit/32-bit.
+
+	VADDD8, VADDD16, VADDD32
+		encoding:  same as ADDD, but with Instr[13]=0 (i=0), and Instr[6:5]=2.
+			   bits Instr[9:7] are a 3-bit field, which specify the data
+			   type
+				001   byte			(VADDD8)
+				010   half-word (16-bits)	(VADDD16)
+				100   word (32-bits) 		(VADDD32)
+		performs a vector operation by considering the 64-bit operands as	
+		a vector of objects with specified data-type.
+
+		vadd8 rs1,rs2, rd
+		vadd16
+		vadd32
+				
+	VSUBD8, VSUBD16, VSUBD32
+		encoding:  same as SUBD, but with Instr[13]=0 (i=0), and Instr[6:5]=2.
+			   bits Instr[9:7] are a 3-bit field, which specify the data
+			   type
+				001   byte 			(VSUBD8)
+				010   half-word (16-bits)	(VSUBD16)
+				100   word (32-bits) 		(VSUBD32)
+		performs a vector operation by considering the 64-bit operands as	
+		a vector of objects with specified data-type.
+
+		vsubd8
+		vsubd16
+		vsubd32
+
+	VUMULD8, VUMULD16, VUMULD32
+		encoding:  same as UMULD, but with Instr[13]=0 (i=0), and Instr[6:5]=2.
+			   bits Instr[9:7] are a 3-bit field, which specify the data
+			   type
+				001   byte			(VMULD8)
+				010   half-word (16-bits)	(VMULD16)
+				100   word (32-bits) 		(VMULD32)
+		performs a vector operation by considering the 64-bit operands as	
+		a vector of objects with specified data-type.
+
+		vumuld8
+		vumuld16
+		vumuld32
+
+	VSMULD8, VSMULD16, VSMULD32
+		encoding:  same as SMULD, but with Instr[13]=0 (i=0), and Instr[6:5]=2.
+			   bits Instr[9:7] are a 3-bit field, which specify the data
+			   type
+				001   byte			(VSMULD8)
+				010   half-word (16-bits)	(VSMULD16)
+				100   word (32-bits) 		(VSMULD32)
+		performs a vector operation by considering the 64-bit operands as	
+		a vector of objects with specified data-type.
+
+		vsmuld8
+		vsmuld16
+		vsmuld32
+
+4. Integer-unit extensions: SIMD instructions
+-------------------------------------------------------
+	These instructions are vector instructions which reduce
+	a 64 bit source register to a destination using an
+	associative operation.
+
+	ADDDREDUCE8
+		op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    32-bit register.
+		Instr[24:19] (op3) = 101101
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 1 for byte reduce
+				contents[7:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+
+		rd <- (m7 ? rs1_7 : 0x0) + (m6 ? rs1_6 : 0x0) + (m5 ? rs1_5:0)  ... 
+					+ (m0 ? rs1_0 : 0x0)
+
+
+		adddreduce8 %rs1, %rs2,  %rd
+
+	ADDDREDUCE16
+		op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    32-bit register.
+		Instr[24:19] (op3) = 101101
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]   = 2 for half word reduce
+				contents[3:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+
+		rd <- (m3 ? rs1_hw_3 : 0x0) + (m2 ? rs1_hw_2 : 0x0) 
+				+ (m1 ? rs1_hw_1: 0x0) + (m0 ? rs1_hw_0 : 0x0)
+
+
+		adddreduce16 %rs1, %rs2,  %rd
+
+	// byte-reduce or
+	ORDREDUCE8
+		op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 101110
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 1 for byte reduce
+				contents[7:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+
+		rd <- (m7 ? rs1_7 : 0x0) | (m6 ? rs1_6 : 0x0) | (m5 ? rs1_5:0)  ... 
+					| (m0 ? rs1_0 : 0x0)
+
+		ordreduce8 %rs1, %rs2,  %rd
+
+	// half-word reduce or
+	ORDREDUCE16
+		op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 101110
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 2 for half-word reduce
+				contents[3:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+
+		rd <- (m3 ? rs1_hw_3 : 0x0) | (m2 ? rs1_hw_2 : 0x0) 
+				| (m1 ? rs1_hw_1: 0x0) | (m0 ? rs1_hw_0 : 0x0)
+
+		ordreduce16 %rs1, %rs2,  %rd
+
+
+	// byte-reduce and
+	ANDDREDUCE8
+		op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 101111
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 1 for byte reduce
+				contents[7:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+		rd <- ( (m7 ? rs1_7 : 0xff) . (m6 ? rs1_6 : 0xff) .... (m0 ? rs1_0 : 0xff))
+
+		anddreduce8 %rs1, %rs2,  %rd
+
+	// half-word-reduce and
+	ANDDREDUCE16
+		op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 101111
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 2 for half-word reduce
+				contents[3:0] of rs2 specify a mask.
+		Instr[6:5]  (zero)
+		Instr[4:0]   (rs2)   32-bit register is read.
+
+		rd <- (m3 ? rs1_hw_3 : 0x0) + (m2 ? rs1_hw_2 : 0x0) 
+				+ (m1 ? rs1_hw_1: 0x0) + (m0 ? rs1_hw_0 : 0x0)
+
+		anddreduce16 %rs1, %rs2, %rd
+
+	// byte-reduce xor
+	XORDREDUCE8
+		op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 111110
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 1 for byte reduce
+				contents[7:0] of rs2 specify a mask.
+		Instr[4:0]   (rs2)   32-bit register is read.
+		Instr[6:5]     (zero)
+		rd <- (m7 ? rs1_7 : 0) ^ (m6 ? rs1_6 : 0) ^ (m5 ? rs1_5:0)  ... 
+					^ (m0 ? rs1_0 : 0)
+		xordreduce8 %rs1, %rs2,  %rd
+
+	// half-word-reduce xor
+	XORDREDUCE16
+		op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[3:0] of rs2 specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 111110
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  = 0 (ignored)
+		Instr[12:10]   (zero)
+		Instr[9:7]		
+			= 2 for half-word reduce
+				contents[3:0] of rs2 specify a mask.
+		Instr[4:0]   (rs2)   32-bit register is read.
+		Instr[6:5]     (zero)
+		
+		rd <- (m3 ? rs1_hw_3 : 0) ^ (m2 ? rs1_hw_2 : 0) 
+					^ (m1 ? rs1_hw_1:0) ^ (m0 ? rs1_hw_0 : 0)
+
+		xordreduce16 %rs1, %rs2,  %rd
+
+	// positions-of-zero-bytes in d-word.
+	ZBYTEDPOS
+		op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0] of rs2/imm-value specify a mask.
+		encoding
+		Instr[31:30] (op) = 0x2
+		Instr[29:25] (rd)    rd is a 32-bit register.
+		Instr[24:19] (op3) = 111111
+		Instr[18:14] (rs1)   lowest bit assumed 0.
+		Instr[13]    (i)  =  if 0, use rs2, else Instr[7:0]
+		Instr[12:5]  = 0  (ignored if i=0)
+		Instr[4:0]   (rs2, if i=0)   
+				32-bit register is read.
+
+		rd <- [b7_zero b6_zero b5_zero b4_zero .. b0_zero]
+			(if mask-bit is zero then b*_zero is zero) 
+
+		zbytedpos %rs1, %rs2/imm, %rd
+
+5.  Vector floating point instructions
+---------------------------------------
+	These are vector float operations which work
+	on two single precision operand pairs to 
+	produce two single precision results.
+
+	// SIMD float ops.
+	//   NaN propagated, but no traps.
+	//   For each of these, rs1,rs2,rd are
+	//   considered even numbers pointing to
+	//   a floating point register-pair.
+	//
+	VFADD32
+		op=2, op3=0x34, opf=0x142
+		vfadd32 %f0, %f2, %f4
+
+	VFADD16
+		// half-precision vector add.
+		// opcode to be assigned.
+		op=2, op3=0x34, opf=0x143
+		vfadd16 %f0, %f2, %f4
+
+	VFSUB32
+		op=2, op3=0x34, opf=0x144
+		vfsub32 %f0, %f2, %f4
+
+	VFSUB16
+		op=2, op3=0x34, opf=0x145
+		// half-precision vector sub.
+		// opcode to be assigned.
+		vfsub16 %f0, %f2, %f4
+
+	VFMUL32
+		op=2, op3=0x34, opf=0x146
+		vfmul32 %f0, %f2, %f4
+
+	VFMUL16
+		op=2, op3=0x34, opf=0x147
+		// half-precision vector multiply..
+		// opcode to be assigned.
+		vfmul16 %f0, %f2, %f4
+
+		// these are vector convert instructions
+		// to go from i16 to half and vice-versa.
+	VFI16TOH
+		op=2, op3=0x34, opf=0x148
+		// convert 4x i16 to 4x half-precision.
+		vfi16toh %f0, %f2
+
+	VFHTOI16
+		op=2, op3=0x34, opf=0x149
+		// convert 4x half-precisio to 4x i16.
+		vfhtoi16 %f0, %f2
+
+6.  FP reduce
+------------------------
+	FADDREDUCE16
+		op=2, op3=0x34, opf=0x150
+		// add the four half-precision numbers in 
+		// the 64-bit FP register pair rs1, and produce a 
+		// result into the 32-bit FP register 
+	
+
+6.  Half precision conversion instructions
+--------------------------------------------
+
+    These instructions allow conversion between IEEE half-precision
+    numbers and IEEE single/double precision numbers and integers.
+
+	FSTOH
+		op=2, op3=0x34, opf=0x151
+		// convert single precision value to half-precision value.
+		// %f1 -> %f2  (32-bit FP registers)
+		fstoh %f1, %f2
+	FHTOS
+		op=2, op3=0x34, opf=0x152
+		// convert half precision value to single-precision value.
+		// %f1 -> %f2  (32-bit FP registers)
+		fhtos %f1, %f3
+
+
+	Note: the double-to-half and half-to-double, int-to-half and half-to-int
+	      instructions are not provided.  This is because, these transformations
+	      are likely to be rarer.  Also, the FDTOS, FDTOI, FITOS, FITOD
+	      instructions together with the added FSTOH, FHTOS instructions
+	      are sufficient (at a minor cost).
+
+7.  CSWAP insruction
+--------------------------------------------
+
+	The Sparc-V8 ISA does not include a compare-and-swap (CAS) instruction
+	which is very useful in achieving consensus among distributed agents
+	when the number of agents is > 2.
+
+
+	We introduce a CSWAP instruction in two flavours
+		
+		CSWAPD     rs1, rs2-pair/immediate, rd-pair
+			op=3
+			op3= 10 1111
+				(rest of instruction similar to SWAP)
+
+			cswapd %rs1, %rs2/imm, %rd
+			
+		CSWAPDA    rs1, rs2-pair/immediate, rd-pair, asi
+			op=3
+			op3= 11 1111
+				(rest of instruction similar to SWAPA)
+
+			cswapda %rs1, %rs2/imm, %rd with asi specified.
+
+	The semantics of the instruction (the entire sequence is atomic)
+		TMPVAL = mem[rs1]  (load double, lock system bus)
+		if <rs2-pair/immediate> == TMPVAL 
+			(store double, unlock) mem[rs1] = <rd-pair>  
+			<rd-pair>  = TMPVAL
+		else
+			(store double, unlock) mem[rs1] = TMPVAL
+
+	The write under else is redundant but is required in order to unlock the bus.
+
+	Similar to SWAP, 
+		- mem[rs1] is left either with its value prior to the instruction or 
+			with the value in rd-pair.
+		- <rd-pair> is left either with its value prior to the instruction or
+			with the value in mem[rs1].
+	The processor can check rd-pair after execution to confirm if the swap
+	succeeded.
