@@ -36,4 +36,4 @@
 
 //takes the address of the register and writes the data
 //in it, and reads it afterwards, prints messages for the same
-int marchTest(long int addr, uint32_t data, char *regName);
+int marchTest(long int addr, uint32_t data, char *regName, long int byte_mask);

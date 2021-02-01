@@ -64,7 +64,9 @@ void sdhcControl()
 		            	 the bottom 24-bits for comparison.)
 		  data_in    	incoming word to be written (using byte_mask).*/
 		getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
-			&rwbar, &byte_mask, &addr, &data_in);
+		&rwbar, &byte_mask, &addr, &data_in);
+		data_in = insertUsingByteMask(0, data_in, byte_mask);
+
 	//fprintf(stderr,"Inside sdhcControl thread\r\nExtracted data from pipe is\r\n rwbar=%d, byte-mask=0x%x, addr=0x%x, wdata=0x%x\n",
 	 //rwbar, byte_mask, addr, data_in);
 
