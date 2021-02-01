@@ -1,0 +1,79 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+
+#AHIR-related
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+FUNCTIONLIB_INCLUDE = AHIR_RELEASE + "/functionLibrary/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+AJIT_HOME=os.environ['AJIT_HOME']
+C_HOME=os.environ['AJIT_C_REF_MODEL'] + "/code/"
+DOVAL_HOME=C_HOME+"/debugger/doval/lib"
+ANTLR_PATH = C_HOME +  "/debugger/doval/antlr3Cruntime/build/lib"
+
+
+DEBUG_UTILS_INCLUDE=AJIT_HOME + '/processor/TestEnvironments/debug_utils/include'
+DEBUG_UTILS_LIB=AJIT_HOME + '/processor/TestEnvironments/debug_utils/lib'
+env.Append(CPPPATH = DEBUG_UTILS_INCLUDE + ":./src/:")
+
+#  If RIFFA is not installable, use the next two 
+RIFFA_INCLUDE = AJIT_HOME + "/processor/TestEnvironments/core_environment/riffa_dummy/include"
+RIFFA_LIB  = AJIT_HOME + "/processor/TestEnvironments/core_environment/riffa_dummy/lib"
+libriffa = "riffa_dummy"
+
+env.Append(CPPPATH = RIFFA_INCLUDE + ":")
+MONITOR_LOGGER_INCLUDE = AJIT_HOME + '/processor/TestEnvironments/core_environment/monitorLogger/include'
+MONITOR_LOGGER_LIB = AJIT_HOME + '/processor/TestEnvironments/core_environment/monitorLogger/lib'
+CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
+CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
+BOOTMEM_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/bootmem/lib"
+BOOTMEM_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/bootmem/include"
+SYSMEM_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/sys_mem/lib"
+SYSMEM_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/sys_mem/include"
+MEMARRAY_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/mem_array/lib"
+MEMARRAY_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/mem_array/include"
+PROC_LINK_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/processor_link/lib"
+PROC_LINK_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/processor_link/include"
+CHARSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
+CHARSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
+SPISLAVECLUSTER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/lib"
+SPISLAVECLUSTER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/include"
+SPISLAVECLUSTER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/include"
+UART_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/lib"
+UART_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/include"
+
+DEBUGSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServer/lib"
+DEBUGSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServer/include"
+
+PTHREAD_LIB="usr/lib/x86_64-linux-gnu/"
+
+env.Append(CPPPATH = AHIR_INCLUDE + ":")
+env.Append(CPPPATH = MONITOR_LOGGER_INCLUDE + ":")
+env.Append(CPPPATH = CONSOLE_INCLUDE + ":")
+env.Append(CPPPATH = BOOTMEM_INCLUDE + ":")
+env.Append(CPPPATH = MEMARRAY_INCLUDE + ":")
+env.Append(CPPPATH = SYSMEM_INCLUDE + ":")
+env.Append(CPPPATH = PROC_LINK_INCLUDE + ":")
+env.Append(CPPPATH = CHARSERVER_INCLUDE + ":")
+env.Append(CPPPATH = UART_INCLUDE + ":")
+env.Append(CPPPATH = DEBUGSERVER_INCLUDE + ":")
+env.Append(CPPPATH = SPISLAVECLUSTER_INCLUDE + ":")
+
+# debug infrastructure..
+env.Append(CPPPATH = C_HOME + "/debugger/doval/include:" + C_HOME + "/debugger/doval/antlr3Cruntime/build/include:" + C_HOME + "/debugger/spi_common/include:" + C_HOME + "/debugger/gpb/include:" )
+env.Append(CPPPATH = C_HOME + "/tlbs/include/")
+
+
+#===================================================================================================================
+# AJIT debug monitor  
+#-------------------------------------------------------------------------------------------------------------------
+MONITOR_LLIBS = ' Tlbs Sysmem MemArray Bootmem Console rt PipeHandlerDebugPthreads monitorLogger BitVectors Common uarch_debug_utils gpb SPICommon Common doval antlr3c fpu CharClientServer rt '  + ' uart_interface  processor_link '  + libriffa + ' m DebugServer SockPipes pthread  readline Tlbs '  
+
+MONITOR_LIBPATHS = ' /usr/lib/ /usr/local/lib/ ' +  C_HOME + '/common/lib ' +  C_HOME + '/debugger/gpb/lib ' + C_HOME + '/debugger/spi_common/lib ' +  AHIR_LIBPATH + ' ' + FUNCTIONLIB_PATH + ' '  + DEBUG_UTILS_LIB + ' ' + DOVAL_HOME  + ' ' + ANTLR_PATH + ' ' +  MONITOR_LOGGER_LIB + ' ' + DEBUG_UTILS_LIB + ' '+ ' '  + CONSOLE_LIB + ' ' + BOOTMEM_LIB + ' ' + SYSMEM_LIB + ' ' + MEMARRAY_LIB + ' ' + ' ' + PROC_LINK_LIB  + ' ' + RIFFA_LIB + ' ' + CHARSERVER_LIB + ' ' +  UART_LIB  + ' ' + DEBUGSERVER_LIB + ' ' + C_HOME  + '/tlbs/lib ' 
+
+env.Program('./bin/ajit_debug_monitor', Split('src/ajit_debug_monitor.c'), CCFLAGS=' -pthread -g -DUSE_PIPE_HANDLER ' ,LINKFLAGS='-g  ', LIBS=Split(MONITOR_LLIBS), LIBPATH=Split(MONITOR_LIBPATHS))
+
