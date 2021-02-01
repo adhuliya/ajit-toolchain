@@ -1,0 +1,30 @@
+$system test_bed $library sys_test_bed
+   $in 
+    $pipe  RIFFA_to_CPU
+   $out 
+    $pipe  CPU_to_RIFFA
+{ 
+	$instance aggregator_inst
+		sys_aggregator: aggregator	
+
+	$instance debug_stub_inst
+		sys_debug_stub: debug_stub	
+
+	$instance serial_stub_inst
+		sys_serial_stub: serial_stub	
+
+	$instance debug_spi_slave_inst
+		chip_debug_spi_slave: debug_spi_slave	
+
+	$instance serial_spi_slave_inst
+		chip_serial_spi_slave: serial_spi_slave	
+
+	$instance chip_reset_pmode_stub_inst
+		chip_reset_pmode_stub: reset_pmode_stub	
+
+	$instance chip_interrupt_stub_inst
+		chip_interrupt_stub: interrupt_stub	
+
+	$instance chip_stub_inst
+		sys_chip_stub: chip_stub	
+} 

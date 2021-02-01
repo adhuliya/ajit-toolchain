@@ -1,0 +1,951 @@
+// Virtual circuit produced from Aa description by Aa2VC 
+// $pipe  AFB_TO_AHB_COMMAND : $uint<73>  $depth 2  $p2p 
+// can point into 
+
+// in scope  top-level
+$pipe [AFB_TO_AHB_COMMAND] 73 $depth 2  $p2p 
+// $pipe  AHB_TO_AFB_RESPONSE : $uint<33>  $depth 2  $p2p 
+// can point into  mempool
+
+// in scope  top-level
+$pipe [AHB_TO_AFB_RESPONSE] 33 $depth 2  $p2p 
+// load store constants for object default_mem_pool
+$constant $W[default_mem_pool_base_address] : $int<1> := _b0
+$memoryspace [memory_space_1] {$capacity 1
+$datawidth 8
+$addrwidth 1
+$maxaccesswidth 8
+// $storage  default_mem_pool : $array[1] $of $uint<8> // memory space index = 1  base address = 0  word size = 8
+// can point into  mempool
+
+// in scope  top-level
+$object [default_mem_pool] : $array[1] $of $int<8>
+}
+$module [get_simplified_ahb_command] {
+
+$out rw:$int<8>
+// can point into  mempool
+ transfer_size:$int<8>
+// can point into  mempool
+ byte_address:$int<64>
+// can point into  mempool
+ write_data:$int<32>
+// can point into  mempool
+
+// pipe-declarations for block %get_simplified_ahb_command
+//  file ./.Aa//linked.opt.aa, line 7
+$CP { // begin control-path 
+::[assign_stmt_18] {
+// start:  	command := AFB_TO_AHB_COMMAND
+
+//  file ./.Aa//linked.opt.aa, line 12
+// Source expression
+// AFB_TO_AHB_COMMAND
+$T[RPIPE_AFB_TO_AHB_COMMAND_17_sample_start_] 
+$T[RPIPE_AFB_TO_AHB_COMMAND_17_sample_completed_] 
+$T[RPIPE_AFB_TO_AHB_COMMAND_17_update_start_] 
+$T[RPIPE_AFB_TO_AHB_COMMAND_17_update_completed_] 
+;;[RPIPE_AFB_TO_AHB_COMMAND_17_Sample] { // pipe read sample
+$T [rr] $T [ra] 
+}
+;;[RPIPE_AFB_TO_AHB_COMMAND_17_Update] { // pipe read update
+$T [cr] $T [ca] 
+}
+RPIPE_AFB_TO_AHB_COMMAND_17_sample_start_ &-> (RPIPE_AFB_TO_AHB_COMMAND_17_Sample)
+RPIPE_AFB_TO_AHB_COMMAND_17_sample_completed_ <-& (RPIPE_AFB_TO_AHB_COMMAND_17_Sample)
+RPIPE_AFB_TO_AHB_COMMAND_17_update_start_ <-& (RPIPE_AFB_TO_AHB_COMMAND_17_sample_completed_)
+RPIPE_AFB_TO_AHB_COMMAND_17_update_start_ &-> (RPIPE_AFB_TO_AHB_COMMAND_17_Update)
+RPIPE_AFB_TO_AHB_COMMAND_17_update_completed_ <-& (RPIPE_AFB_TO_AHB_COMMAND_17_Update)
+// Target expression
+// (as target) command
+// start: WAR dependencies for command
+// done: WAR dependencies for command
+// end:  	command := AFB_TO_AHB_COMMAND
+
+// barrier: 	command := AFB_TO_AHB_COMMAND
+
+// load-store dependencies..
+// pipe read/write dependencies for pipe AFB_TO_AHB_COMMAND
+// read-dependencies for pipe AFB_TO_AHB_COMMAND
+// write-dependencies for pipe AFB_TO_AHB_COMMAND
+// signal dependencies for AFB_TO_AHB_COMMAND
+}
+::[assign_stmt_23_to_assign_stmt_53] {
+// start:  	lock_bus_1 := ( $slice command 72 72 ) 
+
+//  file ./.Aa//linked.opt.aa, line 13
+// Source expression
+// ( $slice command 72 72 ) 
+$T[slice_22_sample_start_] 
+$T[slice_22_sample_completed_] 
+$T[slice_22_update_start_] 
+$T[slice_22_update_completed_] 
+// command
+// start: Forward dependencies from command to transition slice_22_sample_start_
+// done: Forward dependencies from command to transition slice_22_sample_start_
+;;[slice_22_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[slice_22_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+slice_22_sample_start_ &-> (slice_22_Sample)
+slice_22_sample_completed_ <-& (slice_22_Sample)
+slice_22_sample_completed_ &-> ($null)
+slice_22_update_start_ &-> (slice_22_Update)
+slice_22_update_completed_ <-& (slice_22_Update)
+// Target expression
+// (as target) lock_bus_1
+// start: WAR dependencies for lock_bus_1
+// done: WAR dependencies for lock_bus_1
+// end:  	lock_bus_1 := ( $slice command 72 72 ) 
+
+// start:  	rw_1 := ( $slice command 71 71 ) 
+
+//  file ./.Aa//linked.opt.aa, line 14
+// Source expression
+// ( $slice command 71 71 ) 
+$T[slice_26_sample_start_] 
+$T[slice_26_sample_completed_] 
+$T[slice_26_update_start_] 
+$T[slice_26_update_completed_] 
+// command
+// start: Forward dependencies from command to transition slice_26_sample_start_
+// done: Forward dependencies from command to transition slice_26_sample_start_
+;;[slice_26_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[slice_26_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+slice_26_sample_start_ &-> (slice_26_Sample)
+slice_26_sample_completed_ <-& (slice_26_Sample)
+slice_26_sample_completed_ &-> ($null)
+slice_26_update_start_ &-> (slice_26_Update)
+slice_26_update_completed_ <-& (slice_26_Update)
+// Target expression
+// (as target) rw_1
+// start: WAR dependencies for rw_1
+// done: WAR dependencies for rw_1
+// end:  	rw_1 := ( $slice command 71 71 ) 
+
+// start:  	transfer_size_1 := ( $slice command 70 68 ) 
+
+//  file ./.Aa//linked.opt.aa, line 15
+// Source expression
+// ( $slice command 70 68 ) 
+$T[slice_31_sample_start_] 
+$T[slice_31_sample_completed_] 
+$T[slice_31_update_start_] 
+$T[slice_31_update_completed_] 
+// command
+// start: Forward dependencies from command to transition slice_31_sample_start_
+// done: Forward dependencies from command to transition slice_31_sample_start_
+;;[slice_31_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[slice_31_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+slice_31_sample_start_ &-> (slice_31_Sample)
+slice_31_sample_completed_ <-& (slice_31_Sample)
+slice_31_sample_completed_ &-> ($null)
+slice_31_update_start_ &-> (slice_31_Update)
+slice_31_update_completed_ <-& (slice_31_Update)
+// Target expression
+// (as target) transfer_size_1
+// start: WAR dependencies for transfer_size_1
+// done: WAR dependencies for transfer_size_1
+// end:  	transfer_size_1 := ( $slice command 70 68 ) 
+
+// start:  	addr_36 := ( $slice command 67 32 ) 
+
+//  file ./.Aa//linked.opt.aa, line 16
+// Source expression
+// ( $slice command 67 32 ) 
+$T[slice_36_sample_start_] 
+$T[slice_36_sample_completed_] 
+$T[slice_36_update_start_] 
+$T[slice_36_update_completed_] 
+// command
+// start: Forward dependencies from command to transition slice_36_sample_start_
+// done: Forward dependencies from command to transition slice_36_sample_start_
+;;[slice_36_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[slice_36_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+slice_36_sample_start_ &-> (slice_36_Sample)
+slice_36_sample_completed_ <-& (slice_36_Sample)
+slice_36_sample_completed_ &-> ($null)
+slice_36_update_start_ &-> (slice_36_Update)
+slice_36_update_completed_ <-& (slice_36_Update)
+// Target expression
+// (as target) addr_36
+// start: WAR dependencies for addr_36
+// done: WAR dependencies for addr_36
+// end:  	addr_36 := ( $slice command 67 32 ) 
+
+// start:  	write_data := ( $slice command 31 0 ) 
+
+//  file ./.Aa//linked.opt.aa, line 17
+// Source expression
+// ( $slice command 31 0 ) 
+$T[slice_40_sample_start_] 
+$T[slice_40_sample_completed_] 
+$T[slice_40_update_start_] 
+$T[slice_40_update_completed_] 
+// command
+// start: Forward dependencies from command to transition slice_40_sample_start_
+// done: Forward dependencies from command to transition slice_40_sample_start_
+;;[slice_40_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[slice_40_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+slice_40_sample_start_ &-> (slice_40_Sample)
+slice_40_sample_completed_ <-& (slice_40_Sample)
+slice_40_sample_completed_ &-> ($null)
+slice_40_update_start_ &-> (slice_40_Update)
+slice_40_update_completed_ <-& (slice_40_Update)
+// Target expression
+// (as target) write_data
+// write_data
+// write to interface object
+// start: WAR dependencies for write_data
+// done: WAR dependencies for write_data
+// write_data
+// write to interface object
+// end:  	write_data := ( $slice command 31 0 ) 
+
+// start:  	rw := ($bitcast ($uint<8>) rw_1 )
+
+//  file ./.Aa//linked.opt.aa, line 18
+// Source expression
+// ($bitcast ($uint<8>) rw_1 )
+$T[type_cast_44_sample_start_] 
+$T[type_cast_44_sample_completed_] 
+$T[type_cast_44_update_start_] 
+$T[type_cast_44_update_completed_] 
+// rw_1
+// start: Forward dependencies from rw_1 to transition type_cast_44_sample_start_
+type_cast_44_sample_start_ <-& (slice_26_update_completed_)
+// done: Forward dependencies from rw_1 to transition type_cast_44_sample_start_
+;;[type_cast_44_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[type_cast_44_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+type_cast_44_sample_start_ &-> (type_cast_44_Sample)
+type_cast_44_sample_completed_ <-& (type_cast_44_Sample)
+type_cast_44_sample_completed_ &-> ($null)
+type_cast_44_update_start_ &-> (type_cast_44_Update)
+type_cast_44_update_completed_ <-& (type_cast_44_Update)
+// Target expression
+// (as target) rw
+// rw
+// write to interface object
+// start: WAR dependencies for rw
+// done: WAR dependencies for rw
+// rw
+// write to interface object
+// end:  	rw := ($bitcast ($uint<8>) rw_1 )
+
+// start:  	transfer_size := ($bitcast ($uint<8>) transfer_size_1 )
+
+//  file ./.Aa//linked.opt.aa, line 19
+// Source expression
+// ($bitcast ($uint<8>) transfer_size_1 )
+$T[type_cast_48_sample_start_] 
+$T[type_cast_48_sample_completed_] 
+$T[type_cast_48_update_start_] 
+$T[type_cast_48_update_completed_] 
+// transfer_size_1
+// start: Forward dependencies from transfer_size_1 to transition type_cast_48_sample_start_
+type_cast_48_sample_start_ <-& (slice_31_update_completed_)
+// done: Forward dependencies from transfer_size_1 to transition type_cast_48_sample_start_
+;;[type_cast_48_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[type_cast_48_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+type_cast_48_sample_start_ &-> (type_cast_48_Sample)
+type_cast_48_sample_completed_ <-& (type_cast_48_Sample)
+type_cast_48_sample_completed_ &-> ($null)
+type_cast_48_update_start_ &-> (type_cast_48_Update)
+type_cast_48_update_completed_ <-& (type_cast_48_Update)
+// Target expression
+// (as target) transfer_size
+// transfer_size
+// write to interface object
+// start: WAR dependencies for transfer_size
+// done: WAR dependencies for transfer_size
+// transfer_size
+// write to interface object
+// end:  	transfer_size := ($bitcast ($uint<8>) transfer_size_1 )
+
+// start:  	byte_address := ($bitcast ($uint<64>) addr_36 )
+
+//  file ./.Aa//linked.opt.aa, line 20
+// Source expression
+// ($bitcast ($uint<64>) addr_36 )
+$T[type_cast_52_sample_start_] 
+$T[type_cast_52_sample_completed_] 
+$T[type_cast_52_update_start_] 
+$T[type_cast_52_update_completed_] 
+// addr_36
+// start: Forward dependencies from addr_36 to transition type_cast_52_sample_start_
+type_cast_52_sample_start_ <-& (slice_36_update_completed_)
+// done: Forward dependencies from addr_36 to transition type_cast_52_sample_start_
+;;[type_cast_52_Sample] { // unary expression 
+$T [rr] $T [ra] // (split) unary operation
+}
+;;[type_cast_52_Update] { // unary expression 
+$T [cr] $T [ca] //(split) unary operation
+}
+type_cast_52_sample_start_ &-> (type_cast_52_Sample)
+type_cast_52_sample_completed_ <-& (type_cast_52_Sample)
+type_cast_52_sample_completed_ &-> ($null)
+type_cast_52_update_start_ &-> (type_cast_52_Update)
+type_cast_52_update_completed_ <-& (type_cast_52_Update)
+// Target expression
+// (as target) byte_address
+// byte_address
+// write to interface object
+// start: WAR dependencies for byte_address
+// done: WAR dependencies for byte_address
+// byte_address
+// write to interface object
+// end:  	byte_address := ($bitcast ($uint<64>) addr_36 )
+
+// load-store dependencies..
+}
+} // end control-path
+$DP { // begin data-path 
+// constant-object-declarations for block %get_simplified_ahb_command
+//  file ./.Aa//linked.opt.aa, line 7
+// 	command := AFB_TO_AHB_COMMAND
+
+//  file ./.Aa//linked.opt.aa, line 12
+// command
+$W[command_18] : $int<73>
+// 	lock_bus_1 := ( $slice command 72 72 ) 
+
+//  file ./.Aa//linked.opt.aa, line 13
+// lock_bus_1
+$W[lock_bus_1_23] : $int<1>
+// 	rw_1 := ( $slice command 71 71 ) 
+
+//  file ./.Aa//linked.opt.aa, line 14
+// rw_1
+$W[rw_1_27] : $int<1>
+// 	transfer_size_1 := ( $slice command 70 68 ) 
+
+//  file ./.Aa//linked.opt.aa, line 15
+// transfer_size_1
+$W[transfer_size_1_32] : $int<3>
+// 	addr_36 := ( $slice command 67 32 ) 
+
+//  file ./.Aa//linked.opt.aa, line 16
+// addr_36
+$W[addr_36_37] : $int<36>
+// 	write_data := ( $slice command 31 0 ) 
+
+//  file ./.Aa//linked.opt.aa, line 17
+// write_data
+// 	rw := ($bitcast ($uint<8>) rw_1 )
+
+//  file ./.Aa//linked.opt.aa, line 18
+// rw
+// 	transfer_size := ($bitcast ($uint<8>) transfer_size_1 )
+
+//  file ./.Aa//linked.opt.aa, line 19
+// transfer_size
+// 	byte_address := ($bitcast ($uint<64>) addr_36 )
+
+//  file ./.Aa//linked.opt.aa, line 20
+// byte_address
+// 	command := AFB_TO_AHB_COMMAND
+
+//  file ./.Aa//linked.opt.aa, line 12
+// AFB_TO_AHB_COMMAND
+$ioport $in [RPIPE_AFB_TO_AHB_COMMAND_17_inst] (AFB_TO_AHB_COMMAND) (command_18) 
+// 	lock_bus_1 := ( $slice command 72 72 ) 
+
+//  file ./.Aa//linked.opt.aa, line 13
+// ( $slice command 72 72 ) 
+[:] [slice_22_inst] (command_18 72 72) (lock_bus_1_23) 
+$buffering  $out slice_22_inst lock_bus_1_23 1
+$delay slice_22_inst 1
+// 	rw_1 := ( $slice command 71 71 ) 
+
+//  file ./.Aa//linked.opt.aa, line 14
+// ( $slice command 71 71 ) 
+[:] [slice_26_inst] (command_18 71 71) (rw_1_27) 
+$buffering  $out slice_26_inst rw_1_27 1
+$delay slice_26_inst 1
+// 	transfer_size_1 := ( $slice command 70 68 ) 
+
+//  file ./.Aa//linked.opt.aa, line 15
+// ( $slice command 70 68 ) 
+[:] [slice_31_inst] (command_18 70 68) (transfer_size_1_32) 
+$buffering  $out slice_31_inst transfer_size_1_32 1
+$delay slice_31_inst 1
+// 	addr_36 := ( $slice command 67 32 ) 
+
+//  file ./.Aa//linked.opt.aa, line 16
+// ( $slice command 67 32 ) 
+[:] [slice_36_inst] (command_18 67 32) (addr_36_37) 
+$buffering  $out slice_36_inst addr_36_37 1
+$delay slice_36_inst 1
+// 	write_data := ( $slice command 31 0 ) 
+
+//  file ./.Aa//linked.opt.aa, line 17
+// ( $slice command 31 0 ) 
+[:] [slice_40_inst] (command_18 31 0) (write_data) 
+$buffering  $out slice_40_inst write_data 1
+$delay slice_40_inst 1
+// 	rw := ($bitcast ($uint<8>) rw_1 )
+
+//  file ./.Aa//linked.opt.aa, line 18
+// ($bitcast ($uint<8>) rw_1 )
+# := [type_cast_44_inst] (rw_1_27) (rw)   
+$buffering  $out type_cast_44_inst rw 1
+$delay type_cast_44_inst 1
+// 	transfer_size := ($bitcast ($uint<8>) transfer_size_1 )
+
+//  file ./.Aa//linked.opt.aa, line 19
+// ($bitcast ($uint<8>) transfer_size_1 )
+# := [type_cast_48_inst] (transfer_size_1_32) (transfer_size)   
+$buffering  $out type_cast_48_inst transfer_size 1
+$delay type_cast_48_inst 1
+// 	byte_address := ($bitcast ($uint<64>) addr_36 )
+
+//  file ./.Aa//linked.opt.aa, line 20
+// ($bitcast ($uint<64>) addr_36 )
+# := [type_cast_52_inst] (addr_36_37) (byte_address)   
+$buffering  $out type_cast_52_inst byte_address 1
+$delay type_cast_52_inst 1
+} // end data-path
+// 	command := AFB_TO_AHB_COMMAND
+
+//  file ./.Aa//linked.opt.aa, line 12
+// AFB_TO_AHB_COMMAND
+RPIPE_AFB_TO_AHB_COMMAND_17_inst <=> (assign_stmt_18/RPIPE_AFB_TO_AHB_COMMAND_17_Sample/rr assign_stmt_18/RPIPE_AFB_TO_AHB_COMMAND_17_Update/cr) (assign_stmt_18/RPIPE_AFB_TO_AHB_COMMAND_17_Sample/ra assign_stmt_18/RPIPE_AFB_TO_AHB_COMMAND_17_Update/ca)
+// 	lock_bus_1 := ( $slice command 72 72 ) 
+
+//  file ./.Aa//linked.opt.aa, line 13
+// command
+// ( $slice command 72 72 ) 
+slice_22_inst <=> (assign_stmt_23_to_assign_stmt_53/slice_22_Sample/rr assign_stmt_23_to_assign_stmt_53/slice_22_Update/cr) (assign_stmt_23_to_assign_stmt_53/slice_22_Sample/ra assign_stmt_23_to_assign_stmt_53/slice_22_Update/ca)
+// 	rw_1 := ( $slice command 71 71 ) 
+
+//  file ./.Aa//linked.opt.aa, line 14
+// command
+// ( $slice command 71 71 ) 
+slice_26_inst <=> (assign_stmt_23_to_assign_stmt_53/slice_26_Sample/rr assign_stmt_23_to_assign_stmt_53/slice_26_Update/cr) (assign_stmt_23_to_assign_stmt_53/slice_26_Sample/ra assign_stmt_23_to_assign_stmt_53/slice_26_Update/ca)
+// 	transfer_size_1 := ( $slice command 70 68 ) 
+
+//  file ./.Aa//linked.opt.aa, line 15
+// command
+// ( $slice command 70 68 ) 
+slice_31_inst <=> (assign_stmt_23_to_assign_stmt_53/slice_31_Sample/rr assign_stmt_23_to_assign_stmt_53/slice_31_Update/cr) (assign_stmt_23_to_assign_stmt_53/slice_31_Sample/ra assign_stmt_23_to_assign_stmt_53/slice_31_Update/ca)
+// 	addr_36 := ( $slice command 67 32 ) 
+
+//  file ./.Aa//linked.opt.aa, line 16
+// command
+// ( $slice command 67 32 ) 
+slice_36_inst <=> (assign_stmt_23_to_assign_stmt_53/slice_36_Sample/rr assign_stmt_23_to_assign_stmt_53/slice_36_Update/cr) (assign_stmt_23_to_assign_stmt_53/slice_36_Sample/ra assign_stmt_23_to_assign_stmt_53/slice_36_Update/ca)
+// 	write_data := ( $slice command 31 0 ) 
+
+//  file ./.Aa//linked.opt.aa, line 17
+// command
+// ( $slice command 31 0 ) 
+slice_40_inst <=> (assign_stmt_23_to_assign_stmt_53/slice_40_Sample/rr assign_stmt_23_to_assign_stmt_53/slice_40_Update/cr) (assign_stmt_23_to_assign_stmt_53/slice_40_Sample/ra assign_stmt_23_to_assign_stmt_53/slice_40_Update/ca)
+// 	rw := ($bitcast ($uint<8>) rw_1 )
+
+//  file ./.Aa//linked.opt.aa, line 18
+// rw_1
+// ($bitcast ($uint<8>) rw_1 )
+type_cast_44_inst <=> (assign_stmt_23_to_assign_stmt_53/type_cast_44_Sample/rr assign_stmt_23_to_assign_stmt_53/type_cast_44_Update/cr) (assign_stmt_23_to_assign_stmt_53/type_cast_44_Sample/ra assign_stmt_23_to_assign_stmt_53/type_cast_44_Update/ca)
+// 	transfer_size := ($bitcast ($uint<8>) transfer_size_1 )
+
+//  file ./.Aa//linked.opt.aa, line 19
+// transfer_size_1
+// ($bitcast ($uint<8>) transfer_size_1 )
+type_cast_48_inst <=> (assign_stmt_23_to_assign_stmt_53/type_cast_48_Sample/rr assign_stmt_23_to_assign_stmt_53/type_cast_48_Update/cr) (assign_stmt_23_to_assign_stmt_53/type_cast_48_Sample/ra assign_stmt_23_to_assign_stmt_53/type_cast_48_Update/ca)
+// 	byte_address := ($bitcast ($uint<64>) addr_36 )
+
+//  file ./.Aa//linked.opt.aa, line 20
+// addr_36
+// ($bitcast ($uint<64>) addr_36 )
+type_cast_52_inst <=> (assign_stmt_23_to_assign_stmt_53/type_cast_52_Sample/rr assign_stmt_23_to_assign_stmt_53/type_cast_52_Update/cr) (assign_stmt_23_to_assign_stmt_53/type_cast_52_Sample/ra assign_stmt_23_to_assign_stmt_53/type_cast_52_Update/ca)
+}
+$module [global_storage_initializer_] {
+
+
+// pipe-declarations for block %global_storage_initializer_
+//  file ./.Aa//linked.opt.aa, line 22
+$CP { // begin control-path 
+} // end control-path
+$DP { // begin data-path 
+// constant-object-declarations for block %global_storage_initializer_
+//  file ./.Aa//linked.opt.aa, line 22
+} // end data-path
+}
+$module [mem_load__] {
+$in address:$int<32>
+// can point into  mempool
+
+$out data:$int<8>
+// can point into  mempool
+
+// pipe-declarations for block %mem_load__
+//  file ./.Aa//linked.opt.aa, line 29
+$CP { // begin control-path 
+::[assign_stmt_68] {
+// start:  	data := default_mem_pool[((address * 1 ) + 0 )]
+
+//  file ./.Aa//linked.opt.aa, line 34
+// Source expression
+// default_mem_pool[((address * 1 ) + 0 )]
+$T[array_obj_ref_67_base_address_calculated] 
+$T[array_obj_ref_67_sample_start_] 
+$T[array_obj_ref_67_sample_completed_] 
+$T[array_obj_ref_67_update_start_] 
+$T[array_obj_ref_67_update_completed_] 
+$T[array_obj_ref_67_word_address_calculated] 
+$T[array_obj_ref_67_root_address_calculated] 
+$T[array_obj_ref_67_offset_calculated] 
+$T[array_obj_ref_67_index_resized_0] 
+$T[array_obj_ref_67_index_scaled_0] 
+$T[array_obj_ref_67_index_computed_0] 
+// ((address * 1 ) + 0 )
+// (address * 1 )
+// address
+// start: Forward dependencies from ((address * 1 ) + 0 ) to transition array_obj_ref_67_index_computed_0
+// done: Forward dependencies from ((address * 1 ) + 0 ) to transition array_obj_ref_67_index_computed_0
+;;[array_obj_ref_67_index_resize_0] {
+$T [index_resize_req] $T [index_resize_ack] // resize index to address-width
+}
+array_obj_ref_67_index_computed_0 &-> (array_obj_ref_67_index_resize_0)
+array_obj_ref_67_index_resized_0 <-& (array_obj_ref_67_index_resize_0)
+;;[array_obj_ref_67_index_scale_0] {
+$T [scale_rename_req] $T [scale_rename_ack] // rename 
+}
+array_obj_ref_67_index_resized_0 &-> (array_obj_ref_67_index_scale_0)
+array_obj_ref_67_index_scaled_0 <-& (array_obj_ref_67_index_scale_0)
+;;[array_obj_ref_67_final_index_sum_regn] {
+$T [req] $T [ack] // rename
+}
+array_obj_ref_67_index_scaled_0 &-> (array_obj_ref_67_final_index_sum_regn)
+array_obj_ref_67_offset_calculated <-& (array_obj_ref_67_final_index_sum_regn)
+;;[array_obj_ref_67_base_plus_offset] {
+$T [sum_rename_req] $T [sum_rename_ack] // one gets through 
+}
+array_obj_ref_67_offset_calculated &-> (array_obj_ref_67_base_plus_offset)
+array_obj_ref_67_root_address_calculated <-& (array_obj_ref_67_base_plus_offset)
+;;[array_obj_ref_67_word_addrgen] {
+$T [root_register_req] $T [root_register_ack]
+}
+array_obj_ref_67_root_address_calculated &-> (array_obj_ref_67_word_addrgen)
+array_obj_ref_67_word_address_calculated <-& (array_obj_ref_67_word_addrgen)
+;;[array_obj_ref_67_Sample] {
+||[word_access_start] {
+;;[word_0] {
+$T [rr] $T [ra] 
+}
+}
+}
+;;[array_obj_ref_67_Update] {
+||[word_access_complete] {
+;;[word_0] {
+$T [cr] $T [ca] 
+}
+}
+;;[array_obj_ref_67_Merge] {
+$T [merge_req] $T [merge_ack]
+}
+}
+array_obj_ref_67_sample_start_ <-& (array_obj_ref_67_word_address_calculated)
+array_obj_ref_67_sample_start_ &-> (array_obj_ref_67_Sample)
+array_obj_ref_67_sample_completed_ <-& (array_obj_ref_67_Sample)
+array_obj_ref_67_sample_completed_ &-> ($null)
+array_obj_ref_67_update_start_ &-> (array_obj_ref_67_Update)
+array_obj_ref_67_update_completed_ <-& (array_obj_ref_67_Update)
+// Target expression
+// (as target) data
+// data
+// write to interface object
+// start: WAR dependencies for data
+// done: WAR dependencies for data
+// data
+// write to interface object
+// end:  	data := default_mem_pool[((address * 1 ) + 0 )]
+
+// load-store dependencies..
+}
+} // end control-path
+$DP { // begin data-path 
+// constant-object-declarations for block %mem_load__
+//  file ./.Aa//linked.opt.aa, line 29
+// default_mem_pool[((address * 1 ) + 0 )]
+// 1 
+$constant $W[konst_63_wire_constant] : $int<32> := _b00000000000000000000000000000001// 1
+// 0 
+$constant $W[konst_65_wire_constant] : $int<32> := _b00000000000000000000000000000000// 0
+$constant $W[array_obj_ref_67_resized_base_address] : $int<1> := _b0// 0
+$constant $W[array_obj_ref_67_offset_scale_factor_0] : $int<1> := _b1// 1
+$constant $W[array_obj_ref_67_word_offset_0] : $int<1> := _b0// 0
+// 	data := default_mem_pool[((address * 1 ) + 0 )]
+
+//  file ./.Aa//linked.opt.aa, line 34
+// default_mem_pool[((address * 1 ) + 0 )]
+// (address * 1 )
+$intermediate $W[MUL_u32_u32_64_wire] : $int<32>
+// ((address * 1 ) + 0 )
+$intermediate $W[ADD_u32_u32_66_wire] : $int<32>
+$intermediate $W[ADD_u32_u32_66_resized] : $int<1>
+$intermediate $W[ADD_u32_u32_66_scaled] : $int<1>
+$intermediate $W[array_obj_ref_67_final_offset] : $int<1>
+$intermediate $W[array_obj_ref_67_root_address] : $int<1>
+$W[array_obj_ref_67_word_address_0] : $pointer<memory_space_1>
+$W[array_obj_ref_67_data_0] : $int<8>
+// data
+// 	data := default_mem_pool[((address * 1 ) + 0 )]
+
+//  file ./.Aa//linked.opt.aa, line 34
+// default_mem_pool[((address * 1 ) + 0 )]
+// (address * 1 )
+*[MUL_u32_u32_64_inst] (address konst_63_wire_constant) (MUL_u32_u32_64_wire)   $flowthrough 
+$delay MUL_u32_u32_64_inst 0
+// ((address * 1 ) + 0 )
++[ADD_u32_u32_66_inst] (MUL_u32_u32_64_wire konst_65_wire_constant) (ADD_u32_u32_66_wire)   $flowthrough 
+$delay ADD_u32_u32_66_inst 0
+&/ [array_obj_ref_67_index_0_resize] (ADD_u32_u32_66_wire) (ADD_u32_u32_66_resized) 
+ $flowthrough 
+&/ [array_obj_ref_67_index_0_rename] (ADD_u32_u32_66_resized) (ADD_u32_u32_66_scaled) 
+ $flowthrough 
+&/ [array_obj_ref_67_index_offset] (ADD_u32_u32_66_scaled) (array_obj_ref_67_final_offset) 
+ $flowthrough 
+&/ [array_obj_ref_67_root_address_inst] (array_obj_ref_67_final_offset) (array_obj_ref_67_root_address) 
+ $flowthrough 
+&/ [array_obj_ref_67_addr_0] (array_obj_ref_67_root_address) (array_obj_ref_67_word_address_0) 
+ $flowthrough 
+$load [array_obj_ref_67_load_0] $from memory_space_1 (array_obj_ref_67_word_address_0) (array_obj_ref_67_data_0) 
+$delay array_obj_ref_67_load_0 4
+&/ [array_obj_ref_67_gather_scatter] (array_obj_ref_67_data_0) (data) 
+ $flowthrough 
+} // end data-path
+// 	data := default_mem_pool[((address * 1 ) + 0 )]
+
+//  file ./.Aa//linked.opt.aa, line 34
+// default_mem_pool[((address * 1 ) + 0 )]
+// ((address * 1 ) + 0 )
+// (address * 1 )
+// address
+array_obj_ref_67_index_0_resize <=> (assign_stmt_68/array_obj_ref_67_index_resize_0/index_resize_req) (assign_stmt_68/array_obj_ref_67_index_resize_0/index_resize_ack)
+array_obj_ref_67_index_0_rename <=> (assign_stmt_68/array_obj_ref_67_index_scale_0/scale_rename_req) (assign_stmt_68/array_obj_ref_67_index_scale_0/scale_rename_ack)
+array_obj_ref_67_index_offset <=> (assign_stmt_68/array_obj_ref_67_final_index_sum_regn/req) (assign_stmt_68/array_obj_ref_67_final_index_sum_regn/ack)
+array_obj_ref_67_root_address_inst <=> (assign_stmt_68/array_obj_ref_67_base_plus_offset/sum_rename_req) (assign_stmt_68/array_obj_ref_67_base_plus_offset/sum_rename_ack)
+array_obj_ref_67_addr_0 <=> (assign_stmt_68/array_obj_ref_67_word_addrgen/root_register_req) (assign_stmt_68/array_obj_ref_67_word_addrgen/root_register_ack)
+array_obj_ref_67_gather_scatter <=> (assign_stmt_68/array_obj_ref_67_Update/array_obj_ref_67_Merge/merge_req) (assign_stmt_68/array_obj_ref_67_Update/array_obj_ref_67_Merge/merge_ack)
+array_obj_ref_67_load_0 <=> (assign_stmt_68/array_obj_ref_67_Sample/word_access_start/word_0/rr assign_stmt_68/array_obj_ref_67_Update/word_access_complete/word_0/cr) (assign_stmt_68/array_obj_ref_67_Sample/word_access_start/word_0/ra assign_stmt_68/array_obj_ref_67_Update/word_access_complete/word_0/ca)
+}
+$module [mem_store__] {
+$in address:$int<32>
+// can point into  mempool
+ data:$int<8>
+// can point into  mempool
+
+
+// pipe-declarations for block %mem_store__
+//  file ./.Aa//linked.opt.aa, line 36
+$CP { // begin control-path 
+::[assign_stmt_80] {
+// start:  	default_mem_pool[((address * 1 ) + 0 )] := data
+
+//  file ./.Aa//linked.opt.aa, line 41
+// Source expression
+// data
+// Target expression
+// default_mem_pool[((address * 1 ) + 0 )]
+$T[array_obj_ref_78_sample_start_] 
+$T[array_obj_ref_78_sample_completed_] 
+$T[array_obj_ref_78_update_start_] 
+$T[array_obj_ref_78_update_completed_] 
+$T[array_obj_ref_78_word_address_calculated] 
+$T[array_obj_ref_78_root_address_calculated] 
+$T[array_obj_ref_78_offset_calculated] 
+$T[array_obj_ref_78_index_resized_0] 
+$T[array_obj_ref_78_index_scaled_0] 
+$T[array_obj_ref_78_index_computed_0] 
+// ((address * 1 ) + 0 )
+// (address * 1 )
+// address
+// start: Forward dependencies from ((address * 1 ) + 0 ) to transition array_obj_ref_78_index_computed_0
+// done: Forward dependencies from ((address * 1 ) + 0 ) to transition array_obj_ref_78_index_computed_0
+;;[array_obj_ref_78_index_resize_0] {
+$T [index_resize_req] $T [index_resize_ack] // resize index to address-width
+}
+array_obj_ref_78_index_computed_0 &-> (array_obj_ref_78_index_resize_0)
+array_obj_ref_78_index_resized_0 <-& (array_obj_ref_78_index_resize_0)
+;;[array_obj_ref_78_index_scale_0] {
+$T [scale_rename_req] $T [scale_rename_ack] // rename 
+}
+array_obj_ref_78_index_resized_0 &-> (array_obj_ref_78_index_scale_0)
+array_obj_ref_78_index_scaled_0 <-& (array_obj_ref_78_index_scale_0)
+;;[array_obj_ref_78_final_index_sum_regn] {
+$T [req] $T [ack] // rename
+}
+array_obj_ref_78_index_scaled_0 &-> (array_obj_ref_78_final_index_sum_regn)
+array_obj_ref_78_offset_calculated <-& (array_obj_ref_78_final_index_sum_regn)
+;;[array_obj_ref_78_base_plus_offset] {
+$T [sum_rename_req] $T [sum_rename_ack] // one gets through 
+}
+array_obj_ref_78_offset_calculated &-> (array_obj_ref_78_base_plus_offset)
+array_obj_ref_78_root_address_calculated <-& (array_obj_ref_78_base_plus_offset)
+;;[array_obj_ref_78_word_addrgen] {
+$T [root_register_req] $T [root_register_ack]
+}
+array_obj_ref_78_root_address_calculated &-> (array_obj_ref_78_word_addrgen)
+array_obj_ref_78_word_address_calculated <-& (array_obj_ref_78_word_addrgen)
+;;[array_obj_ref_78_Sample] {
+;;[array_obj_ref_78_Split] {
+$T [split_req] $T [split_ack]
+}
+||[word_access_start] {
+;;[word_0] {
+$T [rr] $T [ra] 
+}
+}
+}
+;;[array_obj_ref_78_Update] {
+||[word_access_complete] {
+;;[word_0] {
+$T [cr] $T [ca] 
+}
+}
+}
+array_obj_ref_78_sample_start_ <-& (array_obj_ref_78_word_address_calculated)
+array_obj_ref_78_sample_start_ &-> (array_obj_ref_78_Sample)
+array_obj_ref_78_sample_completed_ <-& (array_obj_ref_78_Sample)
+array_obj_ref_78_sample_completed_ &-> ($null)
+array_obj_ref_78_update_start_ &-> (array_obj_ref_78_Update)
+array_obj_ref_78_update_completed_ <-& (array_obj_ref_78_Update)
+// start: Forward dependencies from data to transition array_obj_ref_78_sample_start_
+// done: Forward dependencies from data to transition array_obj_ref_78_sample_start_
+// end:  	default_mem_pool[((address * 1 ) + 0 )] := data
+
+// load-store dependencies..
+}
+} // end control-path
+$DP { // begin data-path 
+// constant-object-declarations for block %mem_store__
+//  file ./.Aa//linked.opt.aa, line 36
+// default_mem_pool[((address * 1 ) + 0 )]
+// 1 
+$constant $W[konst_74_wire_constant] : $int<32> := _b00000000000000000000000000000001// 1
+// 0 
+$constant $W[konst_76_wire_constant] : $int<32> := _b00000000000000000000000000000000// 0
+$constant $W[array_obj_ref_78_resized_base_address] : $int<1> := _b0// 0
+$constant $W[array_obj_ref_78_offset_scale_factor_0] : $int<1> := _b1// 1
+$constant $W[array_obj_ref_78_word_offset_0] : $int<1> := _b0// 0
+// 	default_mem_pool[((address * 1 ) + 0 )] := data
+
+//  file ./.Aa//linked.opt.aa, line 41
+// default_mem_pool[((address * 1 ) + 0 )]
+// (address * 1 )
+$intermediate $W[MUL_u32_u32_75_wire] : $int<32>
+// ((address * 1 ) + 0 )
+$intermediate $W[ADD_u32_u32_77_wire] : $int<32>
+$intermediate $W[ADD_u32_u32_77_resized] : $int<1>
+$intermediate $W[ADD_u32_u32_77_scaled] : $int<1>
+$intermediate $W[array_obj_ref_78_final_offset] : $int<1>
+$intermediate $W[array_obj_ref_78_root_address] : $int<1>
+$W[array_obj_ref_78_word_address_0] : $pointer<memory_space_1>
+$W[array_obj_ref_78_data_0] : $int<8>
+// 	default_mem_pool[((address * 1 ) + 0 )] := data
+
+//  file ./.Aa//linked.opt.aa, line 41
+// default_mem_pool[((address * 1 ) + 0 )]
+// (address * 1 )
+*[MUL_u32_u32_75_inst] (address konst_74_wire_constant) (MUL_u32_u32_75_wire)   $flowthrough 
+$delay MUL_u32_u32_75_inst 0
+// ((address * 1 ) + 0 )
++[ADD_u32_u32_77_inst] (MUL_u32_u32_75_wire konst_76_wire_constant) (ADD_u32_u32_77_wire)   $flowthrough 
+$delay ADD_u32_u32_77_inst 0
+&/ [array_obj_ref_78_index_0_resize] (ADD_u32_u32_77_wire) (ADD_u32_u32_77_resized) 
+ $flowthrough 
+&/ [array_obj_ref_78_index_0_rename] (ADD_u32_u32_77_resized) (ADD_u32_u32_77_scaled) 
+ $flowthrough 
+&/ [array_obj_ref_78_index_offset] (ADD_u32_u32_77_scaled) (array_obj_ref_78_final_offset) 
+ $flowthrough 
+&/ [array_obj_ref_78_root_address_inst] (array_obj_ref_78_final_offset) (array_obj_ref_78_root_address) 
+ $flowthrough 
+&/ [array_obj_ref_78_addr_0] (array_obj_ref_78_root_address) (array_obj_ref_78_word_address_0) 
+ $flowthrough 
+$store [array_obj_ref_78_store_0] $to memory_space_1 (array_obj_ref_78_word_address_0 array_obj_ref_78_data_0) 
+$delay array_obj_ref_78_store_0 4
+&/ [array_obj_ref_78_gather_scatter] (data) (array_obj_ref_78_data_0) 
+ $flowthrough 
+} // end data-path
+// 	default_mem_pool[((address * 1 ) + 0 )] := data
+
+//  file ./.Aa//linked.opt.aa, line 41
+// data
+// ((address * 1 ) + 0 )
+// (address * 1 )
+// address
+array_obj_ref_78_index_0_resize <=> (assign_stmt_80/array_obj_ref_78_index_resize_0/index_resize_req) (assign_stmt_80/array_obj_ref_78_index_resize_0/index_resize_ack)
+array_obj_ref_78_index_0_rename <=> (assign_stmt_80/array_obj_ref_78_index_scale_0/scale_rename_req) (assign_stmt_80/array_obj_ref_78_index_scale_0/scale_rename_ack)
+array_obj_ref_78_index_offset <=> (assign_stmt_80/array_obj_ref_78_final_index_sum_regn/req) (assign_stmt_80/array_obj_ref_78_final_index_sum_regn/ack)
+array_obj_ref_78_root_address_inst <=> (assign_stmt_80/array_obj_ref_78_base_plus_offset/sum_rename_req) (assign_stmt_80/array_obj_ref_78_base_plus_offset/sum_rename_ack)
+array_obj_ref_78_addr_0 <=> (assign_stmt_80/array_obj_ref_78_word_addrgen/root_register_req) (assign_stmt_80/array_obj_ref_78_word_addrgen/root_register_ack)
+array_obj_ref_78_gather_scatter <=> (assign_stmt_80/array_obj_ref_78_Sample/array_obj_ref_78_Split/split_req) (assign_stmt_80/array_obj_ref_78_Sample/array_obj_ref_78_Split/split_ack)
+array_obj_ref_78_store_0 <=> (assign_stmt_80/array_obj_ref_78_Sample/word_access_start/word_0/rr assign_stmt_80/array_obj_ref_78_Update/word_access_complete/word_0/cr) (assign_stmt_80/array_obj_ref_78_Sample/word_access_start/word_0/ra assign_stmt_80/array_obj_ref_78_Update/word_access_complete/word_0/ca)
+}
+$module [send_simplified_ahb_response] {
+$in err:$int<8>
+// can point into  mempool
+ read_data:$int<32>
+// can point into  mempool
+
+
+// pipe-declarations for block %send_simplified_ahb_response
+//  file ./.Aa//linked.opt.aa, line 43
+$CP { // begin control-path 
+::[assign_stmt_95] {
+// start:  	to_pipe := (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+
+//  file ./.Aa//linked.opt.aa, line 48
+// Source expression
+// (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+$T[CONCAT_u1_u33_94_sample_start_] 
+$T[CONCAT_u1_u33_94_sample_completed_] 
+$T[CONCAT_u1_u33_94_update_start_] 
+$T[CONCAT_u1_u33_94_update_completed_] 
+// ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  ) 
+// (err != 0 )
+// err
+// read_data
+// start: Forward dependencies from ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  to transition CONCAT_u1_u33_94_sample_start_
+// done: Forward dependencies from ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  to transition CONCAT_u1_u33_94_sample_start_
+// start: Forward dependencies from read_data to transition CONCAT_u1_u33_94_sample_start_
+// done: Forward dependencies from read_data to transition CONCAT_u1_u33_94_sample_start_
+;;[CONCAT_u1_u33_94_Sample] { // binary expression 
+$T [rr] $T [ra]  // (split) binary operation 
+}
+;;[CONCAT_u1_u33_94_Update] { // binary expression 
+$T [cr] $T [ca] // (split) binary operation 
+}
+CONCAT_u1_u33_94_sample_start_ &-> (CONCAT_u1_u33_94_Sample)
+CONCAT_u1_u33_94_sample_completed_ <-& (CONCAT_u1_u33_94_Sample)
+CONCAT_u1_u33_94_sample_completed_ &-> ($null)
+CONCAT_u1_u33_94_update_start_ &-> (CONCAT_u1_u33_94_Update)
+CONCAT_u1_u33_94_update_completed_ <-& (CONCAT_u1_u33_94_Update)
+// Target expression
+// (as target) to_pipe
+// start: WAR dependencies for to_pipe
+// done: WAR dependencies for to_pipe
+// end:  	to_pipe := (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+
+// load-store dependencies..
+}
+::[assign_stmt_98] {
+// start:  	AHB_TO_AFB_RESPONSE := to_pipe
+
+//  file ./.Aa//linked.opt.aa, line 49
+// Source expression
+// to_pipe
+// Target expression
+// (as target) AHB_TO_AFB_RESPONSE
+$T[WPIPE_AHB_TO_AFB_RESPONSE_96_sample_start_] 
+$T[WPIPE_AHB_TO_AFB_RESPONSE_96_sample_completed_] 
+$T[WPIPE_AHB_TO_AFB_RESPONSE_96_update_start_] 
+$T[WPIPE_AHB_TO_AFB_RESPONSE_96_update_completed_] 
+;;[WPIPE_AHB_TO_AFB_RESPONSE_96_Sample] { // pipe write sample-start AHB_TO_AFB_RESPONSE
+$T [req] $T [ack] 
+}
+;;[WPIPE_AHB_TO_AFB_RESPONSE_96_Update] { // pipe write update (complete) AHB_TO_AFB_RESPONSE
+$T [req] $T [ack] 
+}
+WPIPE_AHB_TO_AFB_RESPONSE_96_sample_start_ &-> (WPIPE_AHB_TO_AFB_RESPONSE_96_Sample)
+WPIPE_AHB_TO_AFB_RESPONSE_96_sample_completed_ <-& (WPIPE_AHB_TO_AFB_RESPONSE_96_Sample)
+WPIPE_AHB_TO_AFB_RESPONSE_96_update_start_ <-& (WPIPE_AHB_TO_AFB_RESPONSE_96_sample_completed_)
+WPIPE_AHB_TO_AFB_RESPONSE_96_update_start_ &-> (WPIPE_AHB_TO_AFB_RESPONSE_96_Update)
+WPIPE_AHB_TO_AFB_RESPONSE_96_update_completed_ <-& (WPIPE_AHB_TO_AFB_RESPONSE_96_Update)
+// start: Forward dependencies from to_pipe to transition WPIPE_AHB_TO_AFB_RESPONSE_96_sample_start_
+// done: Forward dependencies from to_pipe to transition WPIPE_AHB_TO_AFB_RESPONSE_96_sample_start_
+// end:  	AHB_TO_AFB_RESPONSE := to_pipe
+
+// barrier: 	AHB_TO_AFB_RESPONSE := to_pipe
+
+// load-store dependencies..
+// pipe read/write dependencies for pipe AHB_TO_AFB_RESPONSE
+// read-dependencies for pipe AHB_TO_AFB_RESPONSE
+// write-dependencies for pipe AHB_TO_AFB_RESPONSE
+// signal dependencies for AHB_TO_AFB_RESPONSE
+}
+} // end control-path
+$DP { // begin data-path 
+// constant-object-declarations for block %send_simplified_ahb_response
+//  file ./.Aa//linked.opt.aa, line 43
+// ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  ) 
+// 0 
+$constant $W[konst_87_wire_constant] : $int<8> := _b00000000// 0
+// ($bitcast ($uint<1>) 1  )
+$constant $W[type_cast_90_wire_constant] : $int<1> := _b1// 1
+// 0 
+$constant $W[konst_91_wire_constant] : $int<1> := _b0// 0
+// 	to_pipe := (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+
+//  file ./.Aa//linked.opt.aa, line 48
+// (err != 0 )
+$intermediate $W[NEQ_u8_u1_88_wire] : $int<1>
+// ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  ) 
+$intermediate $W[MUX_92_wire] : $int<1>
+// to_pipe
+$W[to_pipe_95] : $int<33>
+// 	AHB_TO_AFB_RESPONSE := to_pipe
+
+//  file ./.Aa//linked.opt.aa, line 49
+// AHB_TO_AFB_RESPONSE
+// 	to_pipe := (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+
+//  file ./.Aa//linked.opt.aa, line 48
+// (err != 0 )
+!=[NEQ_u8_u1_88_inst] (err konst_87_wire_constant) (NEQ_u8_u1_88_wire)   $flowthrough 
+$delay NEQ_u8_u1_88_inst 0
+// ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  ) 
+? [MUX_92_inst] (NEQ_u8_u1_88_wire type_cast_90_wire_constant konst_91_wire_constant) (MUX_92_wire)  $flowthrough
+// (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+&&[CONCAT_u1_u33_94_inst] (MUX_92_wire read_data) (to_pipe_95)   
+$buffering  $out CONCAT_u1_u33_94_inst to_pipe_95 1
+$delay CONCAT_u1_u33_94_inst 1
+// 	AHB_TO_AFB_RESPONSE := to_pipe
+
+//  file ./.Aa//linked.opt.aa, line 49
+// AHB_TO_AFB_RESPONSE
+$ioport $out [WPIPE_AHB_TO_AFB_RESPONSE_96_inst]  (to_pipe_95) (AHB_TO_AFB_RESPONSE) 
+} // end data-path
+// 	to_pipe := (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+
+//  file ./.Aa//linked.opt.aa, line 48
+// (( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  )  && read_data)
+// (err != 0 )
+// err
+// ( $mux (err != 0 ) ($bitcast ($uint<1>) 1  )  0  ) 
+// read_data
+CONCAT_u1_u33_94_inst <=> (assign_stmt_95/CONCAT_u1_u33_94_Sample/rr assign_stmt_95/CONCAT_u1_u33_94_Update/cr) (assign_stmt_95/CONCAT_u1_u33_94_Sample/ra assign_stmt_95/CONCAT_u1_u33_94_Update/ca)
+// 	AHB_TO_AFB_RESPONSE := to_pipe
+
+//  file ./.Aa//linked.opt.aa, line 49
+// to_pipe
+// AHB_TO_AFB_RESPONSE
+WPIPE_AHB_TO_AFB_RESPONSE_96_inst <=> (assign_stmt_98/WPIPE_AHB_TO_AFB_RESPONSE_96_Sample/req assign_stmt_98/WPIPE_AHB_TO_AFB_RESPONSE_96_Update/req) (assign_stmt_98/WPIPE_AHB_TO_AFB_RESPONSE_96_Sample/ack assign_stmt_98/WPIPE_AHB_TO_AFB_RESPONSE_96_Update/ack)
+}

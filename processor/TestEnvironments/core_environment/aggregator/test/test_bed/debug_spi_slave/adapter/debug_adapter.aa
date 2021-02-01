@@ -1,0 +1,65 @@
+// get chars from monitor.  ignore non-hex chars
+// and assemble two hex chars into a binary byte.
+$module [getByteFromMonitor] $in () $out (ret_val: $uint<8>) 
+	$is
+{
+	$branchblock[lOop] {
+
+		$merge $entry loopback_h $endmerge
+		h0 := MONITOR_to_DEBUG
+		$volatile $call HexCharToBinary (h0) (x0 is_hex_0)
+		$if (~is_hex_0) $then
+			$place [loopback_h]
+		$endif
+
+		$merge $entry loopback_l $endmerge
+		h1 := MONITOR_to_DEBUG
+		$volatile $call HexCharToBinary (h1) (x1 is_hex_1)
+		$if (~is_hex_1) $then
+			$place [loopback_l]
+		$endif
+		
+	} (x0 => x0 x1 => x1)
+	ret_val := ($concat x0 x1)
+}
+
+// send a pair of chars to monitor.  the byte
+// is converted to a pair of hex chars and sent to the monitor
+$module [sendByteToMonitor] $in (x: $uint<8>) $out ()
+	$is
+{
+	x0 := ($slice x 7 4)
+	x1 := ($slice x 3 0)
+
+	$volatile $call BinaryToHexChar (x0) (c0)
+	$volatile $call BinaryToHexChar (x1) (c1)
+
+	DEBUG_to_MONITOR := c0
+	DEBUG_to_MONITOR := c1
+}
+
+$module [debugAdapterDaemon] $in () $out () $is
+{
+	$branchblock[lOoP] {
+
+		$merge $entry loopback $endmerge
+
+			$call getByteFromMonitor () (c0)
+			$call getByteFromMonitor () (c1)
+			$call getByteFromMonitor () (c2)
+			$call getByteFromMonitor () (c3)
+
+			ENV_to_AJIT_debug_command := ($concat c0 c1 c2 c3)
+			response := AJIT_to_ENV_debug_response
+
+			$split (response 8 8 8 8)
+					(r0 r1 r2 r3)
+			$call sendByteToMonitor (r0) ()
+			$call sendByteToMonitor (r1) ()
+			$call sendByteToMonitor (r2) ()
+			$call sendByteToMonitor (r3) ()
+
+		$place [loopback]
+	}
+}
+

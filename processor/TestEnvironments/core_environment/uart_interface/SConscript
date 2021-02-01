@@ -1,0 +1,14 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS=' -g '
+
+
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+env.Append(CPPPATH = './src/:./include:' + AHIR_RELEASE + '/include:')
+
+# create a library for the console :
+env.Library('./lib/libuart_interface', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+
+

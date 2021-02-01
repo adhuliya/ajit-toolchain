@@ -1,0 +1,2 @@
+A bridge between an SPI-slave and a pair of pipes.
+Contains some glue logic and an SPI-master-stub

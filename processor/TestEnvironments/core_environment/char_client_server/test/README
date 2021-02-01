@@ -1,0 +1,32 @@
+A simple client/server which sort of
+works.
+
+1. Test 1
+	start 
+		../bin/server 9998 
+		../bin/client 9998 
+	as two separate processes.
+
+	Lines typed in client shell will
+	be received by server and reflected
+	back to the client.
+
+2. Test 2
+
+	start 
+		../bin/server 9998 
+
+	and in another shell start
+
+	nc  127.0.0.1 9998
+
+	Now in the nc window you should
+ 	see a prompt
+
+	%
+
+	Type a line after the prompt and the
+	line should get reflected back to the nc
+	window 
+
+	A cheap console.

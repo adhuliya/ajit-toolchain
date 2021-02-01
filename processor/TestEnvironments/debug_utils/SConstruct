@@ -1,0 +1,23 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+AJIT_HOME=os.environ['AJIT_HOME']
+C_HOME=os.environ['AJIT_C_REF_MODEL']
+
+# uart_interface
+UART_INTERFACE_INCLUDE=AJIT_HOME + "/processor/TestEnvironments/core_environment/uart_interface/include"
+
+#AHIR-related
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/include"
+
+env.Append(CPPPATH = "./:")
+env.Append(CPPPATH = UART_INTERFACE_INCLUDE + ":" + PIPE_HANDLER_INCLUDE + ":" + "./include:")
+env.Append(CPPPATH = C_HOME + "/debugger/doval/include:" + C_HOME + "/debugger/doval/antlr3Cruntime/build/include:" + C_HOME + "/debugger/spi_common/include:" + C_HOME + "/debugger/gpb/include:" )
+
+# create a shared library for the environment
+env.Library("./lib/uarch_debug_utils", Glob ('./src/*.c'), CCFLAGS=" -gdwarf-2 -g3 ")
+

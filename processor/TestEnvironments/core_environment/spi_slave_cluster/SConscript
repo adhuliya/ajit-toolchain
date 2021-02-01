@@ -1,0 +1,24 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS=' -g '
+
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AJIT_PROJECT_HOME=os.environ['AJIT_PROJECT_HOME']
+env.Append(CPPPATH = './src/:./include:')
+
+#AHIR-related
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/include"
+PIPE_HANDLER_LIBPATH = AHIR_RELEASE + "/lib"
+PTHREAD_UTILS = AHIR_RELEASE + "/include"
+GNU_PTH_UTILS = AHIR_RELEASE + "/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+CHARSERVER_INCLUDE = AJIT_PROJECT_HOME + "/processor/TestEnvironments/core_environment/char_client_server/include"
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + CHARSERVER_INCLUDE + ":")
+
+# create a library for the console :
+# env.SharedLibrary('./lib/libSpiSlaveCluster', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+env.Library('./lib/libSpiSlaveCluster', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+
+

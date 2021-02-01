@@ -1,0 +1,30 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS=' -g -DNDEBUG '
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+C_HOME=AJIT_HOME + "/processor/C"
+
+env.Append(CPPPATH = "./aa2c:" + C_HOME + "/common/include:")
+env.Append(CPPPATH =  C_HOME + "/mmu_v2/include:")
+
+#AHIR-related
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/include"
+PIPE_HANDLER_LIBPATH = AHIR_RELEASE + "/lib"
+PTHREAD_UTILS = AHIR_RELEASE + "/include"
+GNU_PTH_UTILS = AHIR_RELEASE + "/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:" +
+"./Aa/aa2c:" + "./Aa:")
+
+CACHE_C_INTERFACE_LLIBS=" PipeHandler DcacheAa2C pthread BitVectors "
+LLIBPATHS= PIPE_HANDLER_LIBPATH + " " + " ./lib"
+
+# create a library for the cache :
+#env.SharedLibrary('./lib/libCacheCInterface', Glob('aa2c/*.c'), CCFLAGS=COMPILATION_FLAGS)
+env.Library('./lib/libCacheCInterface', Glob('aa2c/*.c'), CCFLAGS=COMPILATION_FLAGS)
+
+
+

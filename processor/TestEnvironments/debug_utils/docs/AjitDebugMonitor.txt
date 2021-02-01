@@ -1,0 +1,233 @@
+	The AJIT debug monitor utility
+		Madhav Desai
+
+1. Overview
+	The AJIT debug monitor utility uses the
+	hardware debug interface unit in the AJIT
+	processor in order to control execution in 
+	a system which uses the AJIT processor core.
+
+	The architecture of the debug monitor utility is
+	shown in the accompanying figure.  There are two
+	connections from the user side to the processor
+	model which need to be managed.   The first is
+	a debug connection, and the second is a serial
+	I/O connection.
+
+	The AJIT debug monitor utility provides a shell which 
+        serves as the debug connection.
+	
+	The Serial I/O connection with the processor model is routed
+	to a console client over TCP/IP using a specified port.  
+	A utility such as netcat (nc) can be used to setup a 
+	terminal process that  uses this TCP/IP port.
+
+
+2. Synopsys
+
+	The AJIT debug monitor utility is invoked 
+	at the command line 
+
+	ajit_debug_monitor [-H] [-E] [-A] [-u <tty-dev>] [-v] [-c <console-port>]
+
+	The options are
+	-H  : optional, used when the processor core is modeled
+		by a VHDL simulation.
+	-E  : optional, used when the processor core is mapped
+		to an FPGA card with a PCIE interface as the debug
+		connection.
+	-A  : optional, used when the processor core is modeled
+		in C.
+	-u <tty-dev> : optional, when the processor core is 
+		mapped to an FPGA board, with a serial device (tty-dev)
+		being used as the debug connection.
+	-v : optional, print more information about what is going
+		on in the background.  Also do read-after-write checks
+		while downloading a memory map file (see the "m" command
+		described later).
+	-c <console-port> : optional, start console to listen on port
+			console-port.   This option is relevant only 
+			with the -H, -E and -A options.
+		
+
+3. Ajit debug monitor commands
+
+	The AJIT debug monitor provides the user with a command
+	shell.   The command prompt is 
+
+	ajit> 
+
+	For each prompt, the user can supply a command.  The
+	commands are as follows:
+
+	w rst <reset-val>
+		Write reset-val to the 4-bit CPU reset input to
+		the AJIT core.  The value must be a hex value,
+		specified using the 0x format.
+	
+		e.g. 
+			w rst 0x1
+		puts the processor in reset mode, and
+			w rst 0x0
+		brings it out of reset.
+
+	r mode 
+		Read CPU mode.  This is a 4-bit value, and should
+		have one of the following values
+
+		value	meaning	
+		0x0	uninitialized mode
+		0x9     in reset mode.
+		0x2     in normal run mode.
+		0x3     in error mode.
+
+	w ipc <init-pc-val>
+		Set the initial PC at which the processor core starts
+		when it comes out of reset.
+		e.g.
+			w ipc 0x40000000
+		means the when the CPU comes out of reset,  the initial
+		PC is 0x40000000.
+	r ipc
+		returns the value of initial PC.
+
+	w inpc <init-npc-val>
+		Set the initial NPC at which the processor core starts
+		when it comes out of reset.
+		e.g.
+			w inpc 0x40000004
+		means the when the CPU comes out of reset,  the initial
+		NPC is 0x40000004.
+	r inpc
+		returns the value of initial NPC.
+
+	w ipsr <init-psr-val>
+		Set the initial PSR at which the processor core starts
+		when it comes out of reset.
+		e.g.
+			w ipsr 0x10c0
+		means the when the CPU comes out of reset,  the initial
+		PSR is 0x10c0.
+	r ipsr
+		returns the value of initial PSR.
+
+	w psr/wim/tbr/y <hex-value>
+		Set the current value of one of PSR/WIM/TBR/Y registers
+		to hex-value.
+
+		e.g.
+			w wim 0x1 
+		sets the WIM value in the processor core to 0x1.
+
+	r psr/wim/tbr/y 
+		Read the current value of PSR/WIM/TBR/Y registers.
+
+		e.g.
+			r tbr
+		returns the current value of the TBR.
+
+	w asr <asr-id> <asr-value>
+		Set the current value of one of ASR[asr-id] to asr-value.
+
+		e.g.
+			w asr 0x1  0xff
+		sets the value of ASR[0x1]  to 0xff.
+
+	r asr <asr-id>
+		Read the current value of ASR[asr-id] register.
+
+		e.g..
+			r asr 0x1
+		returns the current value of ASR[0x1].
+
+	w iureg <reg-id> <reg-value>
+		Set the current value of one of integer general purpose
+		register [reg-id] to reg-value
+
+		e.g.
+			w iureg 0x7  0xff
+
+		sets the value of R[0x7]  to 0xff.
+
+	r iureg <reg-id>
+		Read the current value of the  integer unit R[reg-id] register.
+
+		e.g..
+			r iureg 0xf
+		returns the current value of R[0xf].
+
+	w fpreg <reg-id> <reg-value>
+		Set the current value of one of floating point general purpose
+		register [reg-id] to reg-value
+
+		e.g.
+			w fpreg 0x7  0x10000000
+
+		sets the value of F[0x7]  to 0x10000000.
+
+	r fpreg <reg-id>
+		Read the current value of the  floating point unit F[reg-id] register.
+
+		e.g..
+			r fpreg 0xf
+		returns the current value of F[0xf].
+
+	w mem <asi-value> <addr-value> <write-value>
+		Write write-value to address addr-value in memory space defined by 
+		asi asi-value.
+
+		e.g.
+			w mem 0xa  0x0 0xffffffff
+		sets the value of mem[0x0] with asi=0xa  to 0xffffffff.
+
+	r mem <asi-value> <addr-value>
+		Read the current value of the  memory (identified by asi) location 
+		addr-value.
+
+		e.g..
+			r mem 0xa 0x0
+		returns the current value of mem[0x0], with memory defined by asi=asi-value.
+
+	m <mmap-file> 
+		load the memory map in mmap-file to the processor
+		memory.
+
+	s <script-file>
+		execute the AJIT debug monitor commands listed in the script-file.
+
+	q
+		quit the monitor.
+
+	h
+		print a help message.
+
+4. Setup
+	We assume that the processor model is set up and ready to use.
+	This means that one of the following situations is present:
+
+	- The processor+system is mapped to an FPGA card, with the debug interface
+		being mapped to PCIE (card must be in PCIE slot, FPGA must
+		be programmed).
+	- The processor+system is mapped to an FPGA card, with the debug interface
+		being mapped to UART (card can be standalone, FPGA must be programmed).
+		The reset switch inputs to the processor on the FPGA card  must be 0.
+	- The processor+system is running in a VHDL simulation.  The debug connection
+		is via a TCP/IP socket.
+	- The processor+system are modeled by a C model (more precisely, an AA2C model).
+		The debug connection is via the AHIR pipe-handler, which is linked
+		to the processor model and the monitor.
+
+
+5. Typical use cycle
+
+	In typical use, one follows the sequence
+
+		put the processor in reset (w rst 0x1)
+		download the memory map (m <mmap-file>)
+		set initial values for pc/npc/psr.
+		release the reset (w rst 0x0)
+		keep checking mode (r mode)
+		on error mode, monitor internal state (r iureg etc...)	
+		quit / go back to reset mode and try again.
+
+

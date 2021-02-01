@@ -1,0 +1,4 @@
+v 3
+file . "serial_spi_stub.vhdl" "20161130102252.000" "20161130155301.396":
+  entity serial_spi_stub at 1( 0) + 0 on 11;
+  architecture stubarch of serial_spi_stub at 23( 821) + 0 on 12;
