@@ -9,7 +9,7 @@
 
 #include<stdint.h>
 #include <pthread.h>
-#include "../../ahir_release/include/pthreadUtils.h"
+#include "pthreadUtils.h"
 
 // SDHC register addresses
 #define ADDR_SDHC_ARG_2                         0xFFFF3300      // 4 BYTES WIDE
@@ -67,7 +67,7 @@ void cardInsert();
 void startSdhcThreads();
 
 // Threads for SDHC control
-//1.monitors data going to and coming from CPU via bridge 
+//1. monitors data going to and coming from CPU via bridge 
 //2. values are stored in sdhc_reg_cpu_view struct 
 //3. Copies the values of sdhc_reg_cpu_view inside
 //	sdhc_reg_internal_view struct using updateRegister function
@@ -106,14 +106,14 @@ typedef struct sdhc_reg_internal_view
 	uint16_t error_intr_signal_enable; 	//0x3A 	
 	uint16_t autoCMD_error_status; 		//0x3C 		
 	uint16_t host_ctrl2; 			//0x3E 			
-	uint64_t capabilities; 			//0x40
+	uint64_t capabilities; 			//0x40 TODO needs to be split to two 32b regs
 	uint32_t max_current_cap; 		//0x48
 	uint32_t res_max_current_cap; 		//0x4C
 	uint16_t force_event_autoCMD_err_stat;	//0x50
 	uint16_t force_event_autoCMD_err_interrupt_stat;	//0x52
 	uint8_t  ADMA_err_status;		//0x54
-	uint64_t ADMA_system_address; 		//0x58
-	__uint128_t preset_value ; 		//0x60
+	uint64_t ADMA_system_address; 		//0x58 TODO needs to be split to two 32b regs
+	__uint128_t preset_value ; 		//0x60 TODO needs to be split to four 32b regs
 	uint16_t shared_bus_control;		//0xE0
 	uint16_t slot_interrupt_status;		//0xFC
  	uint16_t host_controller_version; 	//0xFE 
@@ -157,39 +157,33 @@ typedef struct sdhc_reg_cpu_view
 	uint8_t res_max_current_cap[4]; 	//0x4C
 	uint8_t force_event_autoCMD_err_stat[2];//0x50
 	uint8_t force_event_autoCMD_err_interrupt_stat[2];	//0x52
-	uint8_t ADMA_err_status;		//0x54
+	uint8_t ADMA_err_status;		//0x54 3 byte gap after this
+	uint8_t gap_0[3];
 	uint8_t ADMA_system_address[8]; 	//0x58
-	uint8_t preset_value[16] ; 		//0x60
-	uint8_t shared_bus_control[2];		//0xE0
+	uint8_t preset_value[16] ; 		//0x60 112 byte gap after this
+	uint8_t gap_2[112];
+	uint8_t shared_bus_control[2];		//0xE0 26 byte gap after this
+	uint8_t gap_3[26];
 	uint8_t slot_interrupt_status[2];	//0xFC
  	uint8_t host_controller_version[2]; 	//0xFE 
 }sdhc_reg_cpu_view;
 
-// //Functions for register value manipulations
-// void writeSdhcReg(uint32_t data_in, uint32_t addr, uint8_t byte_mask, 
-// 			sdhc_reg_cpu_view *str, 
-// 			sdhc_reg_internal_view *int_str);
 
-// uint32_t readSdhcReg(uint32_t addr,  
-// 			sdhc_reg_cpu_view *str, 
-// 			sdhc_reg_internal_view *int_str);
+void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
+				sdhc_reg_internal_view *internal_view, uint8_t direction);
 
-// //functions for checking whether an interrupt has to be generated
-// //based on the data received 
-// void checkNormalInterrupts(struct sdhc_reg_internal_view *int_str, 
-// 				struct sdhc_reg_cpu_view *str);
-// void checkErrorInterrupts(struct sdhc_reg_internal_view *int_str, 
-// 				struct sdhc_reg_cpu_view *str);
+uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t bytemask, sdhc_reg_cpu_view *cpu_view,
+					sdhc_reg_internal_view *internal_view, 
+					uint32_t data_in, uint8_t rwbar);
 
-// //For setting what type of response to expect for all commands send to sd card
-// uint8_t checkResponseType(struct sdhc_reg_internal_view *int_str, 
-// 				struct sdhc_reg_cpu_view *str);
+uint32_t readFromsdhcReg(uint32_t addr, sdhc_reg_cpu_view *cpu_view, 
+				sdhc_reg_internal_view *internal_view);
+uint32_t checkAndReadSdhcReg(uint32_t addr, sdhc_reg_cpu_view *cpu_view, 
+				sdhc_reg_internal_view *internal_view);
 
-// //Accumulates the parameters to be inserted in the 48 bit frame
-// // and places them in the required manner
-// void generateCommandForSDCard(struct sdhc_reg_internal_view *int_str);
-// void receiveResponseFromSDCard();
-// char readDataFromSDCard();
-// void writeDataToSDCard(uint64_t inputToSDCard);
+void writeToSdhcReg(uint32_t addr, uint8_t bytemask, sdhc_reg_cpu_view *cpu_view, 
+			sdhc_reg_internal_view *internal_view, uint32_t data_in);
+void checkAndWriteSdhcReg(uint32_t addr, uint8_t byte_mask, sdhc_reg_cpu_view *cpu_view,
+				sdhc_reg_internal_view *internal_view, uint32_t data_in);
 
 #endif

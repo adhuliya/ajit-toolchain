@@ -78,13 +78,58 @@ int main()
 
         startSdhcThreads();
 
-       	printf("\n\n March test for SDHC regs\n\n");
+        printf("\n\n ****** March test for internal regiser sync function ****** \n\n");
 
-        printf("\n------------------------------\n\n");
+        printf("\n----------reading from each reg start ----------\n\n");
 
-        // SDHC interface begin--------------------------------------------------
-
-        uint32_t data=0;
+        printf(" reg value arg2 = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_ARG_2));
+        printf(" reg value blk size = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_BLOCK_SIZE));
+        printf(" reg value blk count = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_BLOCK_COUNT));
+        printf(" reg value arg1 = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_ARG_1));
+        printf(" reg value tx mode = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_TRANSFER_MODE));
+        printf(" reg value register command = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_REGISTER_COMMAND));
+        printf(" reg value response 0 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE0));
+        printf(" reg value response 1 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE1));
+        printf(" reg value response 2 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE2));
+        printf(" reg value response 3 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE3));
+        printf(" reg value response 4 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE4));
+        printf(" reg value response 5 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE5));
+        printf(" reg value response 6 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE6));
+        printf(" reg value response 7 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_RESPONSE7));
+        printf(" reg value buffr data port = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_BUFFER_DATA_PORT));
+        printf(" reg value present state = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_PRESENT_STATE));
+        printf(" reg value host ctrl 1 = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_HOST_CONTROL_1));
+        printf(" reg value power ctrl = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_POWER_CONTROL));
+        printf(" reg value blk gap ctrl = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_BLOCK_GAP_CONTROL));
+        printf(" reg value wakeup trl = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_WAKEUP_CONTROL));
+        printf(" reg value clk ctrl = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_CLOCK_CONTROL));
+        printf(" reg value timeout ctrl = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_TIMEOUT_CONTROL));
+        printf(" reg value software reset = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_SOFTWARE_RESET));
+        printf(" reg value nrml intr status = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_NORMAL_INTR_STATUS));
+        printf(" reg value error_intr_status = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_ERROR_INTR_STATUS));
+        printf(" reg value normal_intr_status_enable = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_NORMAL_INTR_STATUS_EN));
+        printf(" reg value error_intr_status_enable = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_ERROR_INTR_STATUS_EN));
+        printf(" reg value normal_intr_signal_enable = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN));
+        printf(" reg value error_intr_signal_enable = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_ERROR_INTR_SIGNAL_EN));
+        printf(" reg value autoCMD_error_status = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_AUTO_CMD_ERROR_STATUS));
+        printf(" reg value host_ctrl2 = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_HOST_CONTROL_2));
+        printf(" reg value capabilities = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_CAPS));
+        printf(" reg value max_current_cap = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_MAX_CURRENT_CAPS));
+        printf(" reg value res_max_current_cap = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_MAX_CURRENT_CAPS_RES));
+        printf(" reg value force_event_autoCMD_err_stat = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT));
+        printf(" reg value force_event_autoCMD_err_interrupt_stat = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT));
+        printf(" reg value ADMA_err_status = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_ADMA_ERR_STAT));
+        printf(" reg value ADMA_system_address = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_ADMA_SYSTEM_ADDR));
+        printf(" reg value preset_value = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_HOST_PRESET_VALUES));
+        printf(" reg value shared_bus_control = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_SHARED_BUS_CTRL));
+        printf(" reg value slot_interrupt_status = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_SLOT_INTR_STATUS));
+        printf(" reg value host_controller_version = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_HOST_CONTROLLER_VERSION));
+        
+        printf("\n----------reading from each reg done ----------\n\n");
+        printf("\n\n ****** March test for internal regiser sync function done ****** \n\n");
+               
+        printf("\n\n ****** March test for SDHC regs ******\n\n");
+        printf("\n----------writing to each reg start ----------\n\n");
 
         writeToSdhcRegWord(ADDR_SDHC_ARG_2, 0x87654321);
         writeToSdhcRegHword(ADDR_SDHC_BLOCK_SIZE, 0x4321);
@@ -129,7 +174,9 @@ int main()
         writeToSdhcRegHword(ADDR_SDHC_SLOT_INTR_STATUS, 0x4321);
         writeToSdhcRegHword(ADDR_SDHC_HOST_CONTROLLER_VERSION, 0x4321);
 
-        printf("\n----------writing done----------\n\n");
+        printf("\n----------writing to each reg done----------\n\n");
+
+        printf("\n----------reading from each reg start ----------\n\n");
 
         printf(" reg value arg2 = 0x%x\n", readFromSdhcRegWord(ADDR_SDHC_ARG_2));
         printf(" reg value blk size = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_BLOCK_SIZE));
@@ -174,9 +221,9 @@ int main()
         printf(" reg value slot_interrupt_status = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_SLOT_INTR_STATUS));
         printf(" reg value host_controller_version = 0x%x\n", readFromSdhcRegHword(ADDR_SDHC_HOST_CONTROLLER_VERSION));
 
-        printf("\n----------reading done----------\n\n");
+        printf("\n----------reading from each reg done----------\n\n");
 
-        printf("\n--------------end of march test----------------\n\n");
+        printf("\n ****** end of march test ******\n\n");
 
-       	return 0;
+               return 0;
 }
