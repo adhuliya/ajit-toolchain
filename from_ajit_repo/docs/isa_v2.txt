@@ -141,7 +141,7 @@ even number (lowest bit must be 0).
 
 	ADDDCC
 		encoding:  same as ADDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) + rs2(pair), set Z,N
+		rd(pair) <- rs1(pair) + rs2(pair), set Z,N,O,V
 
 	SUBD
 		encoding:  same as SUB, but with Instr[13]=0 (i=0), and Instr[5]=1.
@@ -149,7 +149,7 @@ even number (lowest bit must be 0).
 
 	SUBDCC
 		encoding:  same as SUBCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) - rs2(pair), set Z,N
+		rd(pair) <- rs1(pair) - rs2(pair), set Z,N,O,V
 
 	// shifts
 	SLLD
@@ -179,7 +179,7 @@ even number (lowest bit must be 0).
 		rd(pair) <- rs1(pair) * rs2(pair)
 	UMULDCC
 		encoding:  same as UMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) * rs2(pair), sets Z, Ovflow
+		rd(pair) <- rs1(pair) * rs2(pair), sets Z, N
 
 	SMULD
 		encoding:  same as SMULD, but with Instr[13]=0 (i=0), and Instr[5]=1.
@@ -187,7 +187,7 @@ even number (lowest bit must be 0).
 	SMULDCC
 		encoding:  same as SMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) * rs2(pair) (signed)
-		sets condition codes Z,N,Ovflow
+		sets condition codes Z,N
 
 	UDIVD
 		encoding:  same as UDIV, but with Instr[13]=0 (i=0), and Instr[5]=1.
@@ -196,15 +196,16 @@ even number (lowest bit must be 0).
 	UDIVDCC
 		encoding:  same as UDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) / rs2(pair)
-			sets condition codes Z,Ovflow
+			sets condition codes Z,N
 			note: can generate div-by-zero trap.
 	SDIVD
 		encoding:  same as SDIV, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) / rs2(pair) (signed)
+			note: can generate div-by-zero trap.
 	SDIVDCC
 		encoding:  same as SDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) / rs2(pair) (signed)
-			sets condition codes Z,N,Ovflow
+			sets condition codes Z,N
 			note: can generate div-by-zero trap.
 
 
@@ -214,42 +215,42 @@ even number (lowest bit must be 0).
 		rd(pair) <- rs1(pair) | rs2(pair)
 	ORDCC
 		encoding:  same as ORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) | rs2(pair), sets Z.
+		rd(pair) <- rs1(pair) | rs2(pair), sets Z,N
 	ORDN
 		encoding:  same as ORN, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) | (~rs2(pair))
 	ORDNCC
 		encoding:  same as ORNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) | (~rs2(pair)), sets Z
-		sets Z.
+		rd(pair) <- rs1(pair) | (~rs2(pair)), sets Z,N
+		sets Z,N
 		
 	XORD
 		encoding:  same as XOR, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) ^ rs2(pair)
 	XORDCC
 		encoding:  same as XORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z
-		sets Z.
+		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z,N
+		sets Z,N
 
 	XNORD
 		encoding:  same as XNOR, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) ^ rs2(pair)
 	XNORDCC
 		encoding:  same as XNORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z
+		rd(pair) <- rs1(pair) ^ rs2(pair), sets Z,N
 
 	ANDD
 		encoding:  same as AND, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) . rs2(pair)
 	ANDDCC
 		encoding:  same as ANDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd(pair) <- rs1(pair) . rs2(pair), sets Z
+		rd(pair) <- rs1(pair) . rs2(pair), sets Z,N
 	ANDDN
 		encoding:  same as ANDN, but with Instr[13]=0 (i=0), and Instr[5]=1.
 		rd(pair) <- rs1(pair) . (~rs2(pair))
 	ANDDNCC
 		encoding:  same as ANDNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.
-		rd <- rs1 . (~rs2), sets Z
+		rd <- rs1 . (~rs2), sets Z,N
 
 3. Integer-unit extensions: SIMD instructions
 -------------------------------------------------------
@@ -562,7 +563,8 @@ even number (lowest bit must be 0).
 		op=2, op3=0x34, opf=0x150
 		// add the four half-precision numbers in 
 		// the 64-bit FP register pair rs1, and produce a 
-		// result into the 32-bit FP register 
+		// result into the 32-bit FP register
+		faddreduce16 %f0, %f3
 	
 
 6.  Half precision conversion instructions
@@ -606,12 +608,12 @@ even number (lowest bit must be 0).
 
 			cswap %rs1, %rs2/imm, %rd
 			
-		CSWAPA    rs1, rs2-pair/immediate, rd-pair, asi
+		CSWAPA    rs1, rs2,rd, asi
 			op=3
 			op3= 11 1111
 				(rest of instruction similar to SWAPA)
 
-			cswapa %rs1, %rs2/imm, %rd with asi specified.
+			cswapa %rs1, %rs2, %rd with asi specified.
 
 	The semantics of the instruction (the entire sequence is atomic)
 		TMPVAL = mem[rs1]  (load word, lock system bus)
