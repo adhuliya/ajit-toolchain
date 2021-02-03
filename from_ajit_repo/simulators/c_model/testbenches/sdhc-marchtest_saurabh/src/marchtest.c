@@ -6,8 +6,7 @@
 #include"Ancillary.h"
 #include"marchtest.h"
 
-int ReadWriteSDHCRegister(long int rwbar, long int bytemask, 
-long int phyAdd, uint32_t data)
+int ReadWriteSDHCRegister(long int rwbar, long int bytemask, long int phyAdd, uint32_t data)
 {
   /*Bit 63: rwbar
     Bit 62-59: bytemask
