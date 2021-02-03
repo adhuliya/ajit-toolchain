@@ -15,6 +15,12 @@ if [[ -z $AJIT_CMODEL_DIR ]]; then
   exit 1;
 fi
 
+cd $AJIT_HOME/processor/TestEnvironments
+scons
+
+cd $AJIT_HOME/ajit_debug_monitor
+scons
+
 cd $AJIT_CMODEL_DIR;
 ./build.sh;
 

@@ -182,7 +182,7 @@ int main(int argc, char **argv)
 
 	if(!mode_specified)
 	{
-		fprintf(stderr,"Error: at least one of -H, -E, -A, -u must be specified.\n");
+		fprintf(stderr,"Error: -u <tty-id> must be specified.\n");
 		return(1);
 	}
 

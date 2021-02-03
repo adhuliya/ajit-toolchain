@@ -60,17 +60,6 @@ fi
   AND "scons";
   popd;
 
-  echo -e "\nBuilding console\n";            sleep 1;
-  pushd ./code/console;
-  echo -e "\ncwd: `pwd`\n";
-  AND "scons";
-  popd;
-
-  echo -e "\nBuilding char_client_server\n"; sleep 1;
-  pushd ./code/char_client_server;
-  AND "scons";
-  popd;
-
   echo -e "\nBuilding main c_model code\n";  sleep 1;
   pushd ./code;
   AND "scons";

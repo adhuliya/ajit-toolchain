@@ -1,0 +1,40 @@
+Enumeration template
+
+	ALU 32-bit instructions
+		
+		opcode is in {add, sub, umul, addcc, ..... }
+		rs1 is in    {g0, g1, g2, ....  }
+		rs2 is in    {g0, g1, g2, ... , imm}
+		rd  is in    {g0, ... }
+
+	ALU 64-bit instructions..
+
+	Control transfer
+
+	iu
+
+	fp
+
+	cp
+
+
+	load 
+
+		opcode is in {ld, lda, ldub, lduba, ......}
+		asi is in    {0x9, 0xa, 0xb, ....   }
+		rs1 is in    {g0, g1, g2, ....  }
+		rs2 is in    {g0, g1, g2, ... , imm}
+		rd  is in    {g0, ... }
+
+	loadd
+		opcode is in {ldd, ldda, ....}
+
+	store
+
+	stored
+
+
+	misc
+
+
+	FP

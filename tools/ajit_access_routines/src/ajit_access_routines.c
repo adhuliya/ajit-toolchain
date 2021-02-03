@@ -732,9 +732,7 @@ inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_v
 inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
-
-	// NOTE: byte write.
-	*((uint8_t*)addr) = reg_val;
+	*((uint32_t*)addr) = reg_val;
 }
 
 
@@ -757,8 +755,7 @@ inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
 
-	// NOTE: byte read.
-	uint32_t ret_val = *((uint8_t*) addr);
+	uint32_t ret_val = *((uint32_t*) addr);
 
 	return(ret_val);
 }
