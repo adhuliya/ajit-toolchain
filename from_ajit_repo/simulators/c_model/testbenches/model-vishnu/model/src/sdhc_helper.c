@@ -12,9 +12,11 @@
 #define INTERNAL_TO_CPU 0
 #define CPU_TO_INTERNAL 1
 
-uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t byte_mask, sdhc_reg_cpu_view *cpu_view, 
+uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t byte_mask, 
+                                        sdhc_reg_cpu_view *cpu_view, 
                                         sdhc_reg_internal_view *internal_view,
-                                        uint32_t data_in, uint8_t rwbar)
+                                        uint32_t data_in, 
+                                        uint8_t rwbar)
 {
         uint32_t data_in_masked = 0, ret_val = 0;
         void *dest, *source;
@@ -113,8 +115,11 @@ uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t byte_mask, sdhc_reg_cpu_v
 }
 
 
-void writeToSdhcReg(uint32_t addr, uint8_t byte_mask, sdhc_reg_cpu_view *cpu_view, 
-                        sdhc_reg_internal_view *internal_view, uint32_t data_in)
+void writeToSdhcReg(uint32_t addr, 
+                        uint8_t byte_mask, 
+                        sdhc_reg_cpu_view *cpu_view, 
+                        sdhc_reg_internal_view *internal_view, 
+                        uint32_t data_in)
 {
         read_or_write_sdhc_reg(addr, byte_mask, cpu_view, internal_view, data_in, WRITE);
         syncBothStructs(cpu_view, internal_view, CPU_TO_INTERNAL);
@@ -128,7 +133,8 @@ uint32_t readFromsdhcReg(uint32_t addr, sdhc_reg_cpu_view *cpu_view,
 }
 
 void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view, uint8_t direction)
+                                sdhc_reg_internal_view *internal_view, 
+                                uint8_t direction)
 {
         void *source =  NULL, *dest = NULL;
 
@@ -295,15 +301,19 @@ void syncBothStructs(sdhc_reg_cpu_view *cpu_view,
 
 }
 
-uint32_t checkAndReadSdhcReg(uint32_t addr, sdhc_reg_cpu_view *cpu_view, 
+uint32_t checkAndReadSdhcReg(uint32_t addr, 
+                                sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view)
 {
         syncBothStructs(cpu_view, internal_view, INTERNAL_TO_CPU);
         readFromsdhcReg(addr, cpu_view, internal_view);
 }
 
-void checkAndWriteSdhcReg(uint32_t addr, uint8_t byte_mask, sdhc_reg_cpu_view *cpu_view,
-                                sdhc_reg_internal_view *internal_view, uint32_t data_in)
+void checkAndWriteSdhcReg(uint32_t addr, 
+                                uint8_t byte_mask, 
+                                sdhc_reg_cpu_view *cpu_view,
+                                sdhc_reg_internal_view *internal_view, 
+                                uint32_t data_in)
 {
         writeToSdhcReg(addr, byte_mask, cpu_view, internal_view, data_in);
         syncBothStructs(cpu_view, internal_view, CPU_TO_INTERNAL);
