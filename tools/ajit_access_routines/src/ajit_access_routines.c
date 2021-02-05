@@ -399,6 +399,29 @@ inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t 
 
 inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
 {
+	uint32_t addr_br = ADDR_CONFIG_UART_BAUD_RATE_REGISTER;
+	uint32_t addr_cf = ADDR_CONFIG_CLK_FREQUENCY_REGISTER;
+	if(use_vmap)
+	{
+		*((uint32_t*) addr_br) = baud_rate;
+		*((uint32_t*) addr_cf) = clock_frequency;
+	}
+	else
+	{
+		__ajit_store_word_mmu_bypass__(baud_rate, addr_br);
+		__ajit_store_word_mmu_bypass__(clock_frequency, addr_cf);
+	}
+}
+
+//
+//  This is no longer used.  But the logic could be useful at some future point.
+//  Given the clock freq and baud-rate, this computes the control word (baud-freq, baud-limit)
+//  to be used for setting up the specific UART used in AJIT systems as of 2020.
+//
+// returns 0 on error.
+uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t clock_frequency)
+{
+	uint32_t ret_val = 0;
 
 	// GCD (clk_freq, 16*baud_rate);	
 	uint32_t A = 16*baud_rate; 
@@ -419,17 +442,10 @@ inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_
 		// at this point GCD=B.
 		uint32_t baud_freq = (16*baud_rate)/B;
 		uint32_t baud_limit = (clock_frequency/B)-baud_freq;
-		uint32_t config_value = ((baud_limit & 0xffff) << 12) | (baud_freq & 0xfff);
-
-		uint32_t addr = ADDR_SERIAL_BAUDRATE_CONTROL_REGISTER;
-		if(use_vmap)
-			*((uint32_t*) addr) = config_value;
-		else
-			__ajit_store_word_mmu_bypass__(config_value,addr);
-
-		
+		ret_val = ((baud_limit & 0xffff) << 12) | (baud_freq & 0xfff);
 	}
-	return;
+
+	return(ret_val);
 }
 
 
@@ -732,7 +748,9 @@ inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_v
 inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
-	*((uint32_t*)addr) = reg_val;
+
+	// NOTE: byte write.
+	*((uint8_t*)addr) = reg_val;
 }
 
 
@@ -755,7 +773,8 @@ inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
 
-	uint32_t ret_val = *((uint32_t*) addr);
+	// NOTE: byte read.
+	uint32_t ret_val = *((uint8_t*) addr);
 
 	return(ret_val);
 }

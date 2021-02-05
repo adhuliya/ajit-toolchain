@@ -211,20 +211,19 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 #define ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER 	0xFFFF3000 // AJIT default-interrupt-controller control register (word).
 #define ADDR_TIMER_CONTROL_REGISTER 			0xFFFF3100 // AJIT default-countdown-timer control register (word).
 #define ADDR_SERIAL_CONTROL_REGISTER 			0xFFFF3200 // AJIT default-serial-device control register (word).
+// Note: the next two are byte accesses..
 #define ADDR_SERIAL_TX_REGISTER      			0xFFFF3210 // AJIT default-serial-device transmit register (byte).
 #define ADDR_SERIAL_RX_REGISTER      			0xFFFF3220 // AJIT default-serial-device receive register (byte).
-#define ADDR_SERIAL_BAUDRATE_CONTROL_REGISTER  		0xFFFF3230 // AJIT default-serial-device baud-rate control register (byte).
-#define ADDR_SPI_DATA_REGISTER_LOW                   	0xFFFF3300 // AJIT default-SPI-master data-register low (byte).
-#define ADDR_SPI_DATA_REGISTER_HIGH                  	0xFFFF3304 // AJIT default-SPI-master data-register high (byte).
-#define ADDR_SPI_COMMAND_STATUS_REGISTER             	0xFFFF3308 // AJIT default-SPI-command/status register (byte).
-#define ADDR_SPI_CONFIG_REGISTER                     	0xFFFF330c // AJIT default-SPI-config register (byte).
-#define ADDR_GPIO_DOUT_REGISTER                     	0xFFFF3400 // GPIO DOUT register address.
-#define ADDR_GPIO_DIN_REGISTER                     	0xFFFF3404 // GPIO DIN register address.
+#define ADDR_SPI_DATA_REGISTER_LOW                   	0xFFFF3300 // AJIT default-SPI-master data-register low (word).
+#define ADDR_SPI_DATA_REGISTER_HIGH                  	0xFFFF3304 // AJIT default-SPI-master data-register high (word).
+#define ADDR_SPI_COMMAND_STATUS_REGISTER             	0xFFFF3308 // AJIT default-SPI-command/status register (word).
+#define ADDR_SPI_CONFIG_REGISTER                     	0xFFFF330c // AJIT default-SPI-config register (word).
 
+#define ADDR_GPIO_DOUT_REGISTER                     	0xFFFF3400 // GPIO DOUT register address (word).
+#define ADDR_GPIO_DIN_REGISTER                     	0xFFFF3404 // GPIO DIN register address (word).
 
-// added 
-#define ADDR_GPIO_DOUT_REGISTER				0xFFFF3400
-#define ADDR_GPIO_DIN_REGISTER				0xFFFF3404
+#define ADDR_CONFIG_UART_BAUD_RATE_REGISTER		0xFFFF3408 // Baud-rate of UARTS connected to the system.
+#define ADDR_CONFIG_CLK_FREQUENCY_REGISTER		0xFFFF340c // Clock frequency of the system.
 
 
 
