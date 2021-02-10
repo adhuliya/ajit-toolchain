@@ -171,13 +171,14 @@ typedef struct sdhc_reg_cpu_view
  **
  ** uint32_t changeAddress(uint32_t addr, uint8_t byte_mask);
  **
- ** Args:       addr      - pointer to destination buffer
- **             byte_mask - pointer to source buffer
+ ** Args:       addr      - byte_address of sdhc register
+ **             byte_mask - byte_mask corresponds to
+ **                          positioning of data
  **
  ** Return:     32 bit changed address
  **
- ** Purpose:    change and return the address accessed to the 
- **              absolute value using positioning of bits in 
+ ** Purpose:    change and return the address accessed, to the 
+ **              absolute value, using positioning of bits in 
  **              the byte_mask 
  **
  *******************************************************************/
@@ -214,6 +215,8 @@ void syncBothStructs(sdhc_reg_cpu_view *cpu_view,
  **                              uint8_t rwbar);
  **
  ** Args:       addr            - sdhc byte address.
+ **             byte_mask       - byte_mask corresponds to
+ **                                positioning of data
  **             cpu_view        - pointer to byte-aligned register 
  **                                structure.
  **             internal_view   - pointer to non-aligned register 
@@ -241,6 +244,8 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask,
  **                             sdhc_reg_internal_view *internal_view);
  **
  ** Args:       addr            - sdhc byte address.
+ **             byte_mask       - byte_mask corresponds to
+ **                                positioning of data
  **             cpu_view        - pointer to byte-aligned register 
  **                                structure.
  **             internal_view   - pointer to non-aligned register 
@@ -252,6 +257,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask,
  **
  *******************************************************************/
 uint32_t readFromsdhcReg(uint32_t addr, 
+                                uint8_t byte_mask,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view);
 
@@ -262,6 +268,8 @@ uint32_t readFromsdhcReg(uint32_t addr,
  **                               sdhc_reg_internal_view *internal_view);
  **
  ** Args:       addr            - sdhc byte address.
+ **             byte_mask       - byte_mask corresponds to
+ **                                positioning of data
  **             cpu_view        - pointer to byte-aligned register 
  **                                structure.
  **             internal_view   - pointer to non-aligned register 
@@ -273,7 +281,8 @@ uint32_t readFromsdhcReg(uint32_t addr,
  **              after checking for proper conditions/flags.
  **
  *******************************************************************/
-uint32_t checkAndReadSdhcReg(uint32_t addr, 
+uint32_t checkAndReadSdhcReg(uint32_t addr,
+                                uint8_t byte_mask,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view);
 

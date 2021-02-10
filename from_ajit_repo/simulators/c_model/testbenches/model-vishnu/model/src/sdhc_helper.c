@@ -342,19 +342,39 @@ void writeToSdhcReg(uint32_t addr,
 }
 
 uint32_t checkAndReadSdhcReg(uint32_t addr, 
+                                uint8_t byte_mask,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view)
 {
         syncBothStructs(cpu_view, internal_view, INTERNAL_TO_CPU);
-        readFromsdhcReg(addr, cpu_view, internal_view);
+        readFromsdhcReg(addr, byte_mask, cpu_view, internal_view);
 }
 
 uint32_t readFromsdhcReg(uint32_t addr, 
+                                uint8_t byte_mask,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view)
 {
         // printf("\nData read from register in model: 0x%x\n", addr);
-        return readOrWriteSdhcReg(addr, 0, cpu_view, internal_view, 0, READ);
+        uint32_t return_data;
+        return_data =  readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, 0, READ);
+        switch(byte_mask)
+        {
+        case 1:
+        case 15:
+        case 3:
+                break;
+        case 2:
+                return_data <<= 8;
+                break;
+        case 4:
+        case 12:
+                return_data <<= 16;
+                break;
+        default:
+                break;
+        }
+        return return_data;
 }
 
 void checkAndWriteSdhcReg(uint32_t addr, 

@@ -223,7 +223,7 @@ void sdhcControl()
                         // need to check and write to function
                         break;
                 case READ:
-                        data_out = checkAndReadSdhcReg(addr, &cpu_reg_view, &internal_reg_view);
+                        data_out = checkAndReadSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view);
                         // need to check and READ from function
                         break;
                 default:
