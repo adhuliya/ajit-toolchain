@@ -22,7 +22,7 @@ Reference:
   DEVICE REGISTERS:
         - The register set is 256 bytes in size
         - Their sizes vary between 8, 16, 32, 64 and 128 bits.
-        - List of registers, its size, offset from base address and address defenitions:
+        - List of registers, its size, offset from base address and address definitions:
                 01. Argument 2	 			   (32b)  000h  ADDR_SDHC_ARG_2
                 02. Block size	 			   (16b)  004h  ADDR_SDHC_BLOCK_SIZE
                 03. Block count	 			   (16b)  006h  ADDR_SDHC_BLOCK_COUNT
@@ -38,7 +38,7 @@ Reference:
                 13. Wakeup Control			   (08b)  02Bh  ADDR_SDHC_WAKEUP_CONTROL
                 14. Clock Control			   (16b)  02Ch  ADDR_SDHC_CLOCK_CONTROL
                 15. Timeout Control			   (08b)  02Eh  ADDR_SDHC_TIMEOUT_CONTROL
-                16. Softwrae Reset			   (08b)  02Fh  ADDR_SDHC_SOFTWARE_RESET
+                16. Software Reset			   (08b)  02Fh  ADDR_SDHC_SOFTWARE_RESET
                 17. Normal Interrupt Status		   (16b)  030h  ADDR_SDHC_NORMAL_INTR_STATUS
                 18. Error Interrupt Status		   (16b)  032h  ADDR_SDHC_ERROR_INTR_STATUS
                 19. Normal Interrupt Status Enable	   (16b)  034h  ADDR_SDHC_NORMAL_INTR_STATUS_EN
@@ -48,7 +48,7 @@ Reference:
                 23. Auto CMD Error Status		   (16b)  03Ch  ADDR_SDHC_AUTO_CMD_ERROR_STATUS
                 24. Host Control 2			   (16b)  03Eh  ADDR_SDHC_HOST_CONTROL_2
                 25. Capabilities			   (64b)  040h  ADDR_SDHC_CAPS
-                26. Maximum Current Cpabilities		   (64b)  048h  ADDR_SDHC_MAX_CURRENT_CAPS --> ADDR_SDHC_MAX_CURRENT_CAPS_RES
+                26. Maximum Current Capabilities		   (64b)  048h  ADDR_SDHC_MAX_CURRENT_CAPS --> ADDR_SDHC_MAX_CURRENT_CAPS_RES
                 27. Force Event For Auto CMD Error Status  (16b)  050h  ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT
                 28. Force Event For Error Interrupt Status (16b)  052h  ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT
                 29. ADMA Error Status			   (08b)  054h  ADDR_SDHC_ADMA_ERR_STAT
@@ -68,9 +68,9 @@ Reference:
                                 a set bit indicating a status event maybe  cleared by writing a 1. Writing a 0
                                 to RW1C bit has no effect.
                 RWAC	: read-write, automatic clear register; the host driver requests a host controller
-                                operation by setting the bit. The host controller shal clear the bit automatically
+                                operation by setting the bit. The host controller shall clear the bit automatically
                                 when the operation complete. Writing a 0 to RWAC bit has no effect.
-                HwInit	: hardware intialised; register bits are intialised by firmware. Bits are read-only after
+                HwInit	: hardware initialised; register bits are initialised by firmware. Bits are read-only after
                                 initialisation, and write to these bits are ignored.
                 Rsvd	: reserved; these bits are initialised to zero and writes to them are ignored
                 WO	: write-only register; It is not physically implimented register. Rather, it is a ddress
@@ -150,13 +150,13 @@ void startSdhcThreads()
         internal_reg_view.tx_mode = 0x1234;
         internal_reg_view.command_reg = 0x1234;
         internal_reg_view.response0 = 0x1234;
-        internal_reg_view.response1 = 0x1234;
+        internal_reg_view.response1 = 0x5678;
         internal_reg_view.response2 = 0x1234;
-        internal_reg_view.response3 = 0x1234;
+        internal_reg_view.response3 = 0x5678;
         internal_reg_view.response4 = 0x1234;
-        internal_reg_view.response5 = 0x1234;
+        internal_reg_view.response5 = 0x5678;
         internal_reg_view.response6 = 0x1234;
-        internal_reg_view.response7 = 0x1234;
+        internal_reg_view.response7 = 0x5678;
         internal_reg_view.buffer_data_port = 0x12345678;
         internal_reg_view.present_state = 0x12345678;
         internal_reg_view.host_ctrl1 = 0x12;
@@ -209,6 +209,10 @@ void sdhcControl()
                  */
                 getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
                         &rwbar, &byte_mask, &addr, &data_in);
+                
+                addr = changeAddress(addr, byte_mask);
+
+                // printf("address = 0x%x\n", addr);
 
                 pthread_mutex_lock(&Sdhc_lock);
 
@@ -216,12 +220,11 @@ void sdhcControl()
                 {
                 case WRITE:
                         checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view, data_in);
-                        // need check and write to function
+                        // need to check and write to function
                         break;
                 case READ:
                         data_out = checkAndReadSdhcReg(addr, &cpu_reg_view, &internal_reg_view);
-                        // need check and READ from function
-
+                        // need to check and READ from function
                         break;
                 default:
                         data_out = 0xBAD;

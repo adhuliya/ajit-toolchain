@@ -1,5 +1,4 @@
 //Authors:
-//1. Prof. Madhav Desai
 //2. Saurabh Bansode
 //3. Vishnu Easwaran E
 //Last updated: 21 Dec '20
@@ -7,7 +6,7 @@
 #ifndef _SDHC_H
 #define _SDHC_H
 
-#include<stdint.h>
+#include <stdint.h>
 #include <pthread.h>
 #include "pthreadUtils.h"
 
@@ -116,7 +115,7 @@ typedef struct sdhc_reg_internal_view
         __uint128_t preset_value ; 		//0x60 TODO needs to be split to four 32b regs
         uint16_t shared_bus_control;		//0xE0
         uint16_t slot_interrupt_status;		//0xFC
-         uint16_t host_controller_version; 	//0xFE 
+        uint16_t host_controller_version; 	//0xFE 
 }sdhc_reg_internal_view;
 
 typedef struct sdhc_reg_cpu_view
@@ -165,32 +164,173 @@ typedef struct sdhc_reg_cpu_view
         uint8_t shared_bus_control[2];		//0xE0 26 byte gap after this
         uint8_t gap_2[26];
         uint8_t slot_interrupt_status[2];	//0xFC
-         uint8_t host_controller_version[2]; 	//0xFE 
+        uint8_t host_controller_version[2]; 	//0xFE 
 }sdhc_reg_cpu_view;
 
+/********************************************************************
+ **
+ ** uint32_t changeAddress(uint32_t addr, uint8_t byte_mask);
+ **
+ ** Args:       addr      - pointer to destination buffer
+ **             byte_mask - pointer to source buffer
+ **
+ ** Return:     32 bit changed address
+ **
+ ** Purpose:    change and return the address accessed to the 
+ **              absolute value using positioning of bits in 
+ **              the byte_mask 
+ **
+ *******************************************************************/
+uint32_t changeAddress(uint32_t addr, uint8_t byte_mask);
 
+/********************************************************************
+ **
+ ** void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
+ **                             sdhc_reg_internal_view *internal_view, 
+ **                             uint8_t direction);
+ **
+ ** Args:       cpu_view        - pointer to byte-aligned register 
+ **                                structure
+ **             internal_view   - pointer to non-aligned register 
+ **                                struct
+ **             direction       - specify the direction of copying
+ **             
+ ** Return:     nothing returned
+ **
+ ** Purpose:    copies data between cpu_view and internal-view of 
+ **             registers 
+ **
+ *******************************************************************/
 void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view, 
                                 uint8_t direction);
 
-uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t bytemask, 
+/********************************************************************
+ **
+ ** uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask, 
+ **                              sdhc_reg_cpu_view *cpu_view,
+ **                              sdhc_reg_internal_view *internal_view, 
+ **                              uint32_t data_in, 
+ **                              uint8_t rwbar);
+ **
+ ** Args:       addr            - sdhc byte address.
+ **             cpu_view        - pointer to byte-aligned register 
+ **                                structure.
+ **             internal_view   - pointer to non-aligned register 
+ **                                structure.
+ **             data_in         - incoming data that needs to be
+ **                                written into specified register.
+ **             rwbar           - specifies weather to read or write
+ **             
+ ** Return:     returns the value read, or 0 in case of write.
+ **
+ ** Purpose:    function that read or write to specified address
+ **              and send corresponding responses.
+ **
+ *******************************************************************/
+uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask, 
                                         sdhc_reg_cpu_view *cpu_view,
                                         sdhc_reg_internal_view *internal_view, 
                                         uint32_t data_in, 
                                         uint8_t rwbar);
 
+/********************************************************************
+ **
+ ** uint32_t readFromsdhcReg(uint32_t addr, 
+ **                             sdhc_reg_cpu_view *cpu_view, 
+ **                             sdhc_reg_internal_view *internal_view);
+ **
+ ** Args:       addr            - sdhc byte address.
+ **             cpu_view        - pointer to byte-aligned register 
+ **                                structure.
+ **             internal_view   - pointer to non-aligned register 
+ **             
+ ** Return:     returns data read
+ **
+ ** Purpose:    an internal function for reading a register, 
+ **              without checking any conditions/flags.  
+ **
+ *******************************************************************/
 uint32_t readFromsdhcReg(uint32_t addr, 
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view);
+
+/********************************************************************
+ **
+ ** uint32_t checkAndReadSdhcReg(uint32_t addr, 
+ **                               sdhc_reg_cpu_view *cpu_view, 
+ **                               sdhc_reg_internal_view *internal_view);
+ **
+ ** Args:       addr            - sdhc byte address.
+ **             cpu_view        - pointer to byte-aligned register 
+ **                                structure.
+ **             internal_view   - pointer to non-aligned register 
+ **                                structure.
+ **             
+ ** Return:     returns data read
+ **
+ ** Purpose:    a function for reading a register, 
+ **              after checking for proper conditions/flags.
+ **
+ *******************************************************************/
 uint32_t checkAndReadSdhcReg(uint32_t addr, 
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view);
 
+/********************************************************************
+ **
+ ** void writeToSdhcReg(uint32_t addr, 
+ **                     uint8_t bytemask, 
+ **                     sdhc_reg_cpu_view *cpu_view, 
+ **                     sdhc_reg_internal_view *internal_view, 
+ **                     uint32_t data_in);
+ **
+ ** Args:       addr            - sdhc byte address.
+ **             byte_mask       - byte_mask corresponding to data 
+ **                                position
+ **             cpu_view        - pointer to byte-aligned register 
+ **                                structure.
+ **             internal_view   - pointer to non-aligned register 
+ **                                structure.
+ **             data_in         - incoming data that needs to be
+ **                                written into specified register.
+ **             
+ ** Return:     returns nothing.
+ **
+ ** Purpose:    an internal function for writing to a register,
+ **              without checking any conditions/flags
+ **
+ *******************************************************************/
 void writeToSdhcReg(uint32_t addr, 
                         uint8_t bytemask, 
                         sdhc_reg_cpu_view *cpu_view, 
                         sdhc_reg_internal_view *internal_view, 
                         uint32_t data_in);
+
+/********************************************************************
+ **
+ ** void checkAndWriteSdhcReg(uint32_t addr, 
+ **                             uint8_t byte_mask, 
+ **                             sdhc_reg_cpu_view *cpu_view,
+ **                             sdhc_reg_internal_view *internal_view, 
+ **                             uint32_t data_in);
+ **
+ ** Args:       addr            - sdhc byte address.
+ **             byte_mask       - byte_mask corresponding to data 
+ **                                position
+ **             cpu_view        - pointer to byte-aligned register 
+ **                                structure.
+ **             internal_view   - pointer to non-aligned register 
+ **                                structure.
+ **             data_in         - incoming data that needs to be
+ **                                written into specified register.
+ **             
+ ** Return:     returns nothing.
+ **
+ ** Purpose:    a function for writing to a register,
+ **              after checking for proper conditions/flags.
+ **
+ *******************************************************************/
 void checkAndWriteSdhcReg(uint32_t addr, 
                                 uint8_t byte_mask, 
                                 sdhc_reg_cpu_view *cpu_view,

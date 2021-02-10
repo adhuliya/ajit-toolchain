@@ -65,7 +65,7 @@ TB                  a100                 0001           000b
 			 dwords
 
 
-suggestion: 
+suggestion for testApp: 
 	
 		void writeSdhcReg (uint32_t byte_address_of_reg,
 					uint8_t size_of_reg, uint8_t* bytes)
@@ -75,16 +75,16 @@ suggestion:
 					writeSdhcByte (byte_address_of_reg, bytes[0]);
 					break;
 				case 2:
-					if((byte_address_of_reg & 0x1) == 0)
+					if((byte_address_of_reg & 0x1) == 0) // check if the last bit is 0; even number; multiple of 2
 						writeSdhcHalfWord (byte_address_of_reg, extHWord(bytes,0));
 					else {
-						writeSdhcByte (byte_address_of_reg & 0xfffffffe, bytes[0]);
+						writeSdhcByte (byte_address_of_reg & 0xfffffffe, bytes[0]); // make the last bit 0
 						writeSdhcByte (byte_address_of_reg, bytes[1]);
 					}
 					break;
 				case 4:
-					if((byte_address_of_reg & 0x3) == 0)
-						writeSdhcWord (byte_address_of_reg, extWord(bytes,0));
+					if((byte_address_of_reg & 0x3) == 0) // check if last 2 bits are 0; multiple of 4
+						writeSdhcWord (byte_address_of_reg, extWord(bytes,0)); // args (byte: array, 0: address to start from)
 					else if((byte_address_of_reg & 0x1) == 0)
 					{
 						// split the write into two half-word writes

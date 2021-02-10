@@ -12,125 +12,34 @@
 #define INTERNAL_TO_CPU 0
 #define CPU_TO_INTERNAL 1
 
-uint32_t read_or_write_sdhc_reg(uint32_t addr, uint8_t byte_mask, 
-                                        sdhc_reg_cpu_view *cpu_view, 
-                                        sdhc_reg_internal_view *internal_view,
-                                        uint32_t data_in, 
-                                        uint8_t rwbar)
+// #define DEBUG
+
+uint32_t changeAddress(uint32_t addr, uint8_t byte_mask)
 {
-        uint32_t data_in_masked = 0, ret_val = 0;
-        void *dest, *source;
-
-        if(!rwbar) data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
-
-#ifdef DEBUG
-                printf("Data in masked for %x = %x\n", addr, data_in_masked);
-#endif
-        uint8_t offset = (uint8_t)(addr - (0xFFFFFF & ADDR_SDHC_ARG_2));
-        
-        if ( addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1)
-                                || (addr == (0xFFFFFF & ADDR_SDHC_POWER_CONTROL))
-                                || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_GAP_CONTROL))
-                                || (addr == (0xFFFFFF & ADDR_SDHC_WAKEUP_CONTROL))
-                                || (addr == (0xFFFFFF & ADDR_SDHC_TIMEOUT_CONTROL))
-                                || (addr == (0xFFFFFF & ADDR_SDHC_SOFTWARE_RESET))
-                                || (addr == (0xFFFFFF & ADDR_SDHC_ADMA_ERR_STAT)))
+        switch(byte_mask)
         {
-                uint8_t temp = 0;
-                if (!rwbar) // write
-                {
-                        temp = (uint8_t)getSlice32(data_in_masked, 7, 0);
-                        dest = &cpu_view->argument2[0] + offset;
-                        source = &temp;
-                }
-                else if (rwbar) // read
-                {
-                        dest = &temp;
-                        source = &cpu_view->argument2[0] + offset;
-                }
-                memcpy(dest, source, sizeof(uint8_t));
-                ret_val = (uint32_t)temp;
+        case 0xf:
+        case 0xc:
+        case 0x8:
+                break;
+        case 0x3:
+                addr += sizeof(uint16_t);
+                break;
+        case 0x4:
+                addr += sizeof(uint8_t);
+                break;
+        case 0x2:
+                addr += (2*sizeof(uint8_t));
+                break;
+        case 0x1:
+                addr += (3*sizeof(uint8_t));
+                break;
+        default:
+                break;
         }
-        else if ( (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_COUNT))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_REGISTER_COMMAND))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE0))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE1))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE2))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE3))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE4))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE5))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE6))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE7))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_CLOCK_CONTROL))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_STATUS))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_STATUS))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_STATUS_EN))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_SIGNAL_EN))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_AUTO_CMD_ERROR_STATUS))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_2))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_SHARED_BUS_CTRL))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_SLOT_INTR_STATUS))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROLLER_VERSION)))
-        {
-                uint16_t temp = 0;
-                if (!rwbar) // write
-                {
-                        temp = (uint16_t)getSlice32(data_in_masked, 15, 0);
-                        dest = &cpu_view->argument2[0] + offset;
-                        source = &temp;
-                }
-                else if(rwbar) // read
-                {
-                        dest = &temp;
-                        source = &cpu_view->argument2[0] + offset;
-                }
-                memcpy(dest, source, sizeof(uint16_t));
-                ret_val = (uint32_t)temp;
-        }
-        else
-
-        {
-                uint32_t temp = 0;
-                if(!rwbar) // write
-                {
-                        uint32_t temp = data_in_masked;
-                        dest = &cpu_view->argument2[0] + offset;
-                        source = &temp;
-                }
-                if(rwbar) // read
-                {
-                        dest = &temp;
-                        source = &cpu_view->argument2[0] + offset;
-                }
-                memcpy(dest, source, sizeof(uint32_t));
-                ret_val = temp;
-        }
-        return ret_val;
+        return addr;
 }
 
-
-void writeToSdhcReg(uint32_t addr, 
-                        uint8_t byte_mask, 
-                        sdhc_reg_cpu_view *cpu_view, 
-                        sdhc_reg_internal_view *internal_view, 
-                        uint32_t data_in)
-{
-        read_or_write_sdhc_reg(addr, byte_mask, cpu_view, internal_view, data_in, WRITE);
-        syncBothStructs(cpu_view, internal_view, CPU_TO_INTERNAL);
-}
-
-uint32_t readFromsdhcReg(uint32_t addr, sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view)
-{
-        syncBothStructs(cpu_view, internal_view, INTERNAL_TO_CPU);
-        return read_or_write_sdhc_reg(addr, 0, cpu_view, internal_view, 0, READ);
-}
 
 void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view, 
@@ -169,22 +78,22 @@ void syncBothStructs(sdhc_reg_cpu_view *cpu_view,
                                                 : (source = &cpu_view->response1[0], dest = &internal_view->response1);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response2, dest = &cpu_view->response2[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response2);
+                                                : (source = &cpu_view->response2[0], dest = &internal_view->response2);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response3, dest = &cpu_view->response3[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response3);
+                                                : (source = &cpu_view->response3[0], dest = &internal_view->response3);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response4, dest = &cpu_view->response4[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response4);
+                                                : (source = &cpu_view->response4[0], dest = &internal_view->response4);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response5, dest = &cpu_view->response5[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response5);
+                                                : (source = &cpu_view->response5[0], dest = &internal_view->response5);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response6, dest = &cpu_view->response6[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response6);
+                                                : (source = &cpu_view->response6[0], dest = &internal_view->response6);
         memcpy(dest, source, sizeof(uint16_t));
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response7, dest = &cpu_view->response7[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response7);
+                                                : (source = &cpu_view->response7[0], dest = &internal_view->response7);
         memcpy(dest, source, sizeof(uint16_t));
 
         (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->buffer_data_port, dest = &cpu_view->buffer_data_port[0]) 
@@ -301,12 +210,151 @@ void syncBothStructs(sdhc_reg_cpu_view *cpu_view,
 
 }
 
+uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask, 
+                                        sdhc_reg_cpu_view *cpu_view, 
+                                        sdhc_reg_internal_view *internal_view,
+                                        uint32_t data_in, 
+                                        uint8_t rwbar)
+{
+        uint32_t ret_val = 0;
+        void *dest, *source;
+
+#ifdef DEBUG
+                printf("Data in masked for %x = %x\n", addr, data_in_masked);
+#endif
+        uint8_t offset = (uint8_t)(addr - (0xFFFFFF & ADDR_SDHC_ARG_2));
+        
+        if ( addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1)
+                                || (addr == (0xFFFFFF & ADDR_SDHC_POWER_CONTROL))
+                                || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_GAP_CONTROL))
+                                || (addr == (0xFFFFFF & ADDR_SDHC_WAKEUP_CONTROL))
+                                || (addr == (0xFFFFFF & ADDR_SDHC_TIMEOUT_CONTROL))
+                                || (addr == (0xFFFFFF & ADDR_SDHC_SOFTWARE_RESET))
+                                || (addr == (0xFFFFFF & ADDR_SDHC_ADMA_ERR_STAT)))
+        {
+                uint8_t temp = 0;
+                if (!rwbar) // write
+                {
+                        if(byte_mask & 0x8)
+			{
+				temp  = getSlice32(data_in, 31, 24);
+			}
+			else if (byte_mask & 0x4)
+			{
+				temp  = getSlice32(data_in, 23, 16); 
+			}
+			else if (byte_mask & 0x2)
+			{
+				temp  = getSlice32(data_in, 15,8);
+			}
+			else if(byte_mask & 0x1)
+			{
+				temp  = getSlice32(data_in, 7,0);
+			}
+                        dest = &cpu_view->argument2[0] + offset;
+                        source = &temp;
+                }
+                else if (rwbar) // read
+                {
+                        dest = &temp;
+                        source = &cpu_view->argument2[0] + offset;
+                }
+                memcpy(dest, source, sizeof(uint8_t));
+                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+        }
+        else if ( (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_COUNT))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_REGISTER_COMMAND))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE0))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE1))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE2))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE3))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE4))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE5))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE6))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE7))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_CLOCK_CONTROL))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_STATUS))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_STATUS))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_STATUS_EN))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_STATUS_EN))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_SIGNAL_EN))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_SIGNAL_EN))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_AUTO_CMD_ERROR_STATUS))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_2))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_SHARED_BUS_CTRL))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_SLOT_INTR_STATUS))
+                        || (addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROLLER_VERSION)))
+        {
+                uint16_t temp = 0;
+                if (!rwbar) // write
+                {
+                        if(byte_mask & 0xc)
+			{
+				temp  = getSlice32(data_in, 31, 16);
+			}
+			else if (byte_mask & 0x3)
+			{
+				temp  = getSlice32(data_in, 15, 0); 
+			}
+                        dest = &cpu_view->argument2[0] + offset;
+                        source = &temp;
+                }
+                else if(rwbar) // read
+                {
+                        dest = &temp;
+                        source = &cpu_view->argument2[0] + offset;
+                }
+                memcpy(dest, source, sizeof(uint16_t));
+                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+        }
+        else
+        {
+                uint32_t temp = 0;
+                if(!rwbar) // write
+                {
+                        uint32_t temp = data_in;
+                        dest = &cpu_view->argument2[0] + offset;
+                        source = &temp;
+                }
+                if(rwbar) // read
+                {
+                        dest = &temp;
+                        source = &cpu_view->argument2[0] + offset;
+                }
+                memcpy(dest, source, sizeof(uint32_t));
+                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+        }
+        return ret_val;
+}
+
+
+void writeToSdhcReg(uint32_t addr, 
+                        uint8_t byte_mask, 
+                        sdhc_reg_cpu_view *cpu_view, 
+                        sdhc_reg_internal_view *internal_view, 
+                        uint32_t data_in)
+{
+        readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, data_in, WRITE);
+}
+
 uint32_t checkAndReadSdhcReg(uint32_t addr, 
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view)
 {
         syncBothStructs(cpu_view, internal_view, INTERNAL_TO_CPU);
         readFromsdhcReg(addr, cpu_view, internal_view);
+}
+
+uint32_t readFromsdhcReg(uint32_t addr, 
+                                sdhc_reg_cpu_view *cpu_view, 
+                                sdhc_reg_internal_view *internal_view)
+{
+        // printf("\nData read from register in model: 0x%x\n", addr);
+        return readOrWriteSdhcReg(addr, 0, cpu_view, internal_view, 0, READ);
 }
 
 void checkAndWriteSdhcReg(uint32_t addr, 
@@ -318,3 +366,4 @@ void checkAndWriteSdhcReg(uint32_t addr,
         writeToSdhcReg(addr, byte_mask, cpu_view, internal_view, data_in);
         syncBothStructs(cpu_view, internal_view, CPU_TO_INTERNAL);
 }
+
