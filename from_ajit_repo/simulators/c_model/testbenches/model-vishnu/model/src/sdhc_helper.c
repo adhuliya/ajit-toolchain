@@ -260,7 +260,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
                         source = &cpu_view->argument2[0] + offset;
                 }
                 memcpy(dest, source, sizeof(uint8_t));
-                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+                ret_val = (rwbar == WRITE) ? 0 : (uint32_t)temp;
         }
         else if ( (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_SIZE))
                         || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_COUNT))
@@ -309,7 +309,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
                         source = &cpu_view->argument2[0] + offset;
                 }
                 memcpy(dest, source, sizeof(uint16_t));
-                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+                ret_val = (rwbar == WRITE) ? 0 : (uint32_t)temp;
         }
         else
         {
@@ -326,7 +326,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
                         source = &cpu_view->argument2[0] + offset;
                 }
                 memcpy(dest, source, sizeof(uint32_t));
-                ret_val = (rwbar == 0) ? 0 : (uint32_t)temp;
+                ret_val = (rwbar == WRITE) ? 0 : (uint32_t)temp;
         }
         return ret_val;
 }
@@ -360,16 +360,19 @@ uint32_t readFromsdhcReg(uint32_t addr,
         return_data =  readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, 0, READ);
         switch(byte_mask)
         {
-        case 1:
-        case 15:
-        case 3:
+        case 0b1111:
+        case 0b0011:
+        case 0b0001:
                 break;
-        case 2:
+        case 0b0010:
                 return_data <<= 8;
                 break;
-        case 4:
-        case 12:
+        case 0b1100:
+        case 0b0100:
                 return_data <<= 16;
+                break;
+        case 0b1000:
+                return_data <<= 24;
                 break;
         default:
                 break;
