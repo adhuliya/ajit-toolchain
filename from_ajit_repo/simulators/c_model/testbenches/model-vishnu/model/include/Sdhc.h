@@ -167,6 +167,48 @@ typedef struct sdhc_reg_cpu_view
         uint8_t host_controller_version[2]; 	//0xFE 
 }sdhc_reg_cpu_view;
 
+//following structure contains flags that will be set/cleared
+//upon occurence of certains events
+typedef struct sdhc_flags_for_event{
+        //For normal interrupt status register
+uint8_t NormalInterruptCardRemovalInterrupt;
+uint8_t NormalInterruptCardInsertedInterrupt;
+uint8_t NormalInterruptTransferCompleteInterrupt;
+uint8_t NormalInterruptCommandCompleteInterrupt;
+uint8_t NormalInterruptCommandErrorInterruptBitSet;
+        //For normal interrupt status enable register
+uint8_t NormalInterruptCardRemovalStatusEnable;
+uint8_t NormalInterruptCardInsertedStatusEnable;
+uint8_t NormalInterruptTransferCompleteStatusEnable;
+uint8_t NormalInterruptCommandCompleteStatusEnable; 
+        //For normal interrupt signal enable register
+uint8_t NormalInterruptCardRemovalSignalEnable;
+uint8_t NormalInterruptCardInsertedSignalEnable;
+uint8_t NormalInterruptTransferCompleteSignalEnable;
+uint8_t NormalInterruptCommandCompleteSignalEnable;
+        //For Error interrupt status, status enable 
+        //and signal enable register
+uint16_t ErrorInterruptStatusRegisterSetBits;
+uint16_t ErrorInterruptStatusEnableRegisterSetBits;
+uint16_t ErrorInterruptSignalEnableRegisterSetBits;
+        //For Present State Register 
+uint8_t PresentStateRegisterCMD_Inhibit_CMD;
+uint8_t PresentStateRegisterCMD_Inhibit_DAT;
+uint8_t PresentStateRegisterDATLineActive;
+uint8_t PresentStateRegisterCardInsterted;
+        //For Software Reset register
+uint8_t SoftwareResetForAll;
+        //For Clock Control register
+uint8_t ClockControlInternalClockEnable;                
+uint8_t ClockControlInternalClockStable;
+uint8_t ClockControlSDClockEnable;
+        //For Power Control Register
+uint8_t PowerControlSDBusPower;
+uint8_t PowerControlSDBusVoltageSelect;
+        //for Command Register
+uint8_t CommandRegisterUpperByteWritten;                
+}sdhc_flags_for_event;
+
 /********************************************************************
  **
  ** uint32_t changeAddress(uint32_t addr, uint8_t byte_mask);
