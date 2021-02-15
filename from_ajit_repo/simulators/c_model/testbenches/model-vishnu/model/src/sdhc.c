@@ -211,16 +211,15 @@ void sdhcControl()
                         &rwbar, &byte_mask, &addr, &data_in);
                 
                 addr = changeAddress(addr, byte_mask);
-
-                // printf("address = 0x%x\n", addr);
-
+#ifdef DEBUG
+                printf("address = 0x%x\n", addr);
+#endif
                 pthread_mutex_lock(&Sdhc_lock);
 
                 switch (rwbar)
                 {
                 case WRITE:
                         checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view, data_in);
-                        // need to check and write to function
                         break;
                 case READ:
                         data_out = checkAndReadSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view);

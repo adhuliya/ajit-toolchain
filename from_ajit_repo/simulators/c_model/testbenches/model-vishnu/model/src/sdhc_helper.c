@@ -219,9 +219,6 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
         uint32_t ret_val = 0;
         void *dest, *source;
 
-#ifdef DEBUG
-                printf("Data in masked for %x = %x\n", addr, data_in_masked);
-#endif
         uint8_t offset = (uint8_t)(addr - (0xFFFFFF & ADDR_SDHC_ARG_2));
         
         if ( addr == (0xFFFFFF & ADDR_SDHC_HOST_CONTROL_1)
@@ -266,14 +263,6 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
                         || (addr == (0xFFFFFF & ADDR_SDHC_BLOCK_COUNT))
                         || (addr == (0xFFFFFF & ADDR_SDHC_TRANSFER_MODE))
                         || (addr == (0xFFFFFF & ADDR_SDHC_REGISTER_COMMAND))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE0))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE1))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE2))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE3))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE4))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE5))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE6))
-                        || (addr == (0xFFFFFF & ADDR_SDHC_RESPONSE7))
                         || (addr == (0xFFFFFF & ADDR_SDHC_CLOCK_CONTROL))
                         || (addr == (0xFFFFFF & ADDR_SDHC_NORMAL_INTR_STATUS))
                         || (addr == (0xFFFFFF & ADDR_SDHC_ERROR_INTR_STATUS))
@@ -355,7 +344,10 @@ uint32_t readFromsdhcReg(uint32_t addr,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 sdhc_reg_internal_view *internal_view)
 {
-        // printf("\nData read from register in model: 0x%x\n", addr);
+#ifdef DEBUG
+        printf("\nData read from register in model: 0x%x\n", addr);
+#endif
+
         uint32_t return_data;
         return_data =  readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, 0, READ);
         switch(byte_mask)

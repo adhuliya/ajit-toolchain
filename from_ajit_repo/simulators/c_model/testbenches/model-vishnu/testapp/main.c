@@ -20,7 +20,9 @@ uint32_t appSendCmdAndReceiveResponse(uint32_t addr, uint8_t byte_mask, uint8_t 
         send_cmd = (send_cmd << 32) | data;
 
         write_uint64("peripheral_bridge_to_sdhc_request", send_cmd);
-        // printf("Command send from app = 0x%lx with addr = 0x%x, byte mask = 0x%x, rwbar = %d, data = 0x%x\n", send_cmd, addr, byte_mask, rwbar, data);
+#ifdef DEBUG
+        printf("Command send from app = 0x%lx with addr = 0x%x, byte mask = 0x%x, rwbar = %d, data = 0x%x\n", send_cmd, addr, byte_mask, rwbar, data);
+#endif
         return read_uint32("sdhc_to_peripheral_bridge_response");
 }
 
@@ -123,24 +125,20 @@ void readAllSdhcReg()
         printf(" reg value arg1 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_ARG_1, sizeof(uint32_t)));
         printf(" reg value tx mode = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_TRANSFER_MODE, sizeof(uint16_t)));
         printf(" reg value register command = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_REGISTER_COMMAND, sizeof(uint16_t)));
-        printf(" reg value response 0 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE0, sizeof(uint16_t)));
-        printf(" reg value response 1 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE1, sizeof(uint16_t)));
-        printf(" reg value response 2 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE2, sizeof(uint16_t)));
-        printf(" reg value response 3 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE3, sizeof(uint16_t)));
-        printf(" reg value response 4 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE4, sizeof(uint16_t)));
-        printf(" reg value response 5 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE5, sizeof(uint16_t)));
-        printf(" reg value response 6 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE6, sizeof(uint16_t)));
-        printf(" reg value response 7 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE7, sizeof(uint16_t)));
-        printf(" reg value buffr data port = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_BUFFER_DATA_PORT, sizeof(uint32_t)));
+        printf(" reg value response 0 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE0, sizeof(uint32_t)));
+        printf(" reg value response 2 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE2, sizeof(uint32_t)));
+        printf(" reg value response 4 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE4, sizeof(uint32_t)));
+        printf(" reg value response 6 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_RESPONSE6, sizeof(uint32_t)));
+        printf(" reg value buffer data port = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_BUFFER_DATA_PORT, sizeof(uint32_t)));
         printf(" reg value present state = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_PRESENT_STATE, sizeof(uint32_t)));
         printf(" reg value host ctrl 1 = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_HOST_CONTROL_1, sizeof(uint8_t)));
         printf(" reg value power ctrl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_POWER_CONTROL, sizeof(uint8_t)));
         printf(" reg value blk gap ctrl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_BLOCK_GAP_CONTROL, sizeof(uint8_t)));
         printf(" reg value wakeup trl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_WAKEUP_CONTROL, sizeof(uint8_t)));
-        printf(" reg value clk ctrl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint8_t)));
+        printf(" reg value clk ctrl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t)));
         printf(" reg value timeout ctrl = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_TIMEOUT_CONTROL, sizeof(uint8_t)));
         printf(" reg value software reset = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_SOFTWARE_RESET, sizeof(uint8_t)));
-        printf(" reg value nrml intr status = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t)));
+        printf(" reg value normal intr status = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t)));
         printf(" reg value error_intr_status = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS, sizeof(uint16_t)));
         printf(" reg value normal_intr_status_enable = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t)));
         printf(" reg value error_intr_status_enable = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS_EN, sizeof(uint16_t)));
@@ -183,14 +181,10 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_ARG_1, sizeof(uint32_t), 0x87654321);
         appWriteToSdhcReg(ADDR_SDHC_TRANSFER_MODE, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_REGISTER_COMMAND, sizeof(uint16_t), 0x4321);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE0, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE1, sizeof(uint16_t), 0x4321);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE2, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE3, sizeof(uint16_t), 0x4321);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE4, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE5, sizeof(uint16_t), 0x4321);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE6, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_RESPONSE7, sizeof(uint16_t), 0x4321);
+        appWriteToSdhcReg(ADDR_SDHC_RESPONSE0, sizeof(uint32_t), 0x8765feed);
+        appWriteToSdhcReg(ADDR_SDHC_RESPONSE2, sizeof(uint32_t), 0x8765baad);
+        appWriteToSdhcReg(ADDR_SDHC_RESPONSE4, sizeof(uint32_t), 0x8765dead);
+        appWriteToSdhcReg(ADDR_SDHC_RESPONSE6, sizeof(uint32_t), 0x8765beef);
         appWriteToSdhcReg(ADDR_SDHC_BUFFER_DATA_PORT, sizeof(uint32_t), 0x87654321);
         appWriteToSdhcReg(ADDR_SDHC_PRESENT_STATE, sizeof(uint32_t), 0xfeedbeef);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROL_1, sizeof(uint8_t), 0x12);
