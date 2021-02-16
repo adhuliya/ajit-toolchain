@@ -113,7 +113,6 @@ SDHC_Control:
 #define CPU_TO_INTERNAL 1
 
 sdhc_reg_cpu_view cpu_reg_view = {0};
-sdhc_reg_internal_view internal_reg_view = {0};
 
 /**** Thread declarations ****/
 
@@ -143,53 +142,7 @@ void startSdhcThreads()
         PTHREAD_DECL(sdhcControl);
         PTHREAD_CREATE(sdhcControl);
 
-        internal_reg_view.argument2 = 0x12345678;
-        internal_reg_view.blk_size = 0x1234;
-        internal_reg_view.blk_count = 0x1234;
-        internal_reg_view.argument1 = 0x12345678;
-        internal_reg_view.tx_mode = 0x1234;
-        internal_reg_view.command_reg = 0x1234;
-        internal_reg_view.response0 = 0x1234;
-        internal_reg_view.response1 = 0x5678;
-        internal_reg_view.response2 = 0x1234;
-        internal_reg_view.response3 = 0x5678;
-        internal_reg_view.response4 = 0x1234;
-        internal_reg_view.response5 = 0x5678;
-        internal_reg_view.response6 = 0x1234;
-        internal_reg_view.response7 = 0x5678;
-        internal_reg_view.buffer_data_port = 0x12345678;
-        internal_reg_view.present_state = 0x12345678;
-        internal_reg_view.host_ctrl1 = 0x12;
-        internal_reg_view.pwr_ctrl = 0x12;
-        internal_reg_view.blk_gap_ctrl = 0x12;
-        internal_reg_view.wakeup_ctrl = 0x12;
-        internal_reg_view.clk_ctrl = 0x1234;
-        internal_reg_view.timeout_ctrl = 0x12;
-        internal_reg_view.sw_reset = 0x12;
-        internal_reg_view.normal_intr_status = 0x1234;
-        internal_reg_view.error_intr_status = 0x1234;
-        internal_reg_view.normal_intr_status_enable = 0x1234;
-        internal_reg_view.error_intr_status_enable = 0x1234;
-        internal_reg_view.normal_intr_signal_enable = 0x1234;
-        internal_reg_view.error_intr_signal_enable = 0x1234;
-        internal_reg_view.autoCMD_error_status = 0x1234;
-        internal_reg_view.host_ctrl2 = 0x1234;
-        internal_reg_view.capabilities = 0x12345678;
-        internal_reg_view.max_current_cap = 0x12345678;
-        internal_reg_view.res_max_current_cap = 0x12345678;
-        internal_reg_view.force_event_autoCMD_err_stat = 0x1234;
-        internal_reg_view.force_event_autoCMD_err_interrupt_stat = 0x1234;
-        internal_reg_view.ADMA_err_status = 0x12;
-        internal_reg_view.ADMA_system_address = 0x12345678;
-        internal_reg_view.preset_value = 0x12345678;
-        internal_reg_view.shared_bus_control = 0x1234;
-        internal_reg_view.slot_interrupt_status = 0x1234;
-        internal_reg_view.host_controller_version = 0x1234;
-
-        syncBothStructs(&cpu_reg_view, &internal_reg_view, INTERNAL_TO_CPU);
-
         printf ("Size of CPU view of regs = %ld bytes\n", sizeof(sdhc_reg_cpu_view));
-        printf ("Size of internal view of regs = %ld bytes\n", sizeof(sdhc_reg_internal_view));
 }
 
 void sdhcControl()
@@ -210,7 +163,7 @@ void sdhcControl()
                 getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
                         &rwbar, &byte_mask, &addr, &data_in);
                 
-                addr = changeAddress(addr, byte_mask);
+                addr = getAbsoluteAddress(addr, byte_mask);
 #ifdef DEBUG
                 printf("address = 0x%x\n", addr);
 #endif
@@ -219,11 +172,10 @@ void sdhcControl()
                 switch (rwbar)
                 {
                 case WRITE:
-                        checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view, data_in);
+                        data_out = checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, data_in);
                         break;
                 case READ:
-                        data_out = checkAndReadSdhcReg(addr, byte_mask, &cpu_reg_view, &internal_reg_view);
-                        // need to check and READ from function
+                        data_out = checkAndReadSdhcReg(addr, byte_mask, &cpu_reg_view);
                         break;
                 default:
                         data_out = 0xBAD;

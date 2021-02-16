@@ -224,7 +224,7 @@ uint8_t CommandRegisterUpperByteWritten;
  **              the byte_mask 
  **
  *******************************************************************/
-uint32_t changeAddress(uint32_t addr, uint8_t byte_mask);
+uint32_t getAbsoluteAddress(uint32_t addr, uint8_t byte_mask);
 
 /********************************************************************
  **
@@ -274,8 +274,7 @@ void syncBothStructs(sdhc_reg_cpu_view *cpu_view,
  **
  *******************************************************************/
 uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask, 
-                                        sdhc_reg_cpu_view *cpu_view,
-                                        sdhc_reg_internal_view *internal_view, 
+                                        sdhc_reg_cpu_view *cpu_view, 
                                         uint32_t data_in, 
                                         uint8_t rwbar);
 
@@ -300,8 +299,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t bytemask,
  *******************************************************************/
 uint32_t readFromsdhcReg(uint32_t addr, 
                                 uint8_t byte_mask,
-                                sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view);
+                                sdhc_reg_cpu_view *cpu_view);
 
 /********************************************************************
  **
@@ -325,8 +323,7 @@ uint32_t readFromsdhcReg(uint32_t addr,
  *******************************************************************/
 uint32_t checkAndReadSdhcReg(uint32_t addr,
                                 uint8_t byte_mask,
-                                sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view);
+                                sdhc_reg_cpu_view *cpu_view);
 
 /********************************************************************
  **
@@ -352,10 +349,9 @@ uint32_t checkAndReadSdhcReg(uint32_t addr,
  **              without checking any conditions/flags
  **
  *******************************************************************/
-void writeToSdhcReg(uint32_t addr, 
+uint32_t writeToSdhcReg(uint32_t addr, 
                         uint8_t bytemask, 
                         sdhc_reg_cpu_view *cpu_view, 
-                        sdhc_reg_internal_view *internal_view, 
                         uint32_t data_in);
 
 /********************************************************************
@@ -382,10 +378,9 @@ void writeToSdhcReg(uint32_t addr,
  **              after checking for proper conditions/flags.
  **
  *******************************************************************/
-void checkAndWriteSdhcReg(uint32_t addr, 
+uint32_t checkAndWriteSdhcReg(uint32_t addr, 
                                 uint8_t byte_mask, 
-                                sdhc_reg_cpu_view *cpu_view,
-                                sdhc_reg_internal_view *internal_view, 
+                                sdhc_reg_cpu_view *cpu_view, 
                                 uint32_t data_in);
 
 #endif

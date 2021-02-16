@@ -9,29 +9,26 @@
 #define READ	1
 #define	WRITE	0
 
-#define INTERNAL_TO_CPU 0
-#define CPU_TO_INTERNAL 1
-
 // #define DEBUG
 
-uint32_t changeAddress(uint32_t addr, uint8_t byte_mask)
+uint32_t getAbsoluteAddress(uint32_t addr, uint8_t byte_mask)
 {
         switch(byte_mask)
         {
-        case 0xf:
-        case 0xc:
-        case 0x8:
+        case 0b1111:
+        case 0b1100:
+        case 0b1000:
                 break;
-        case 0x3:
+        case 0b0011:
                 addr += sizeof(uint16_t);
                 break;
-        case 0x4:
+        case 0b0100:
                 addr += sizeof(uint8_t);
                 break;
-        case 0x2:
+        case 0b0010:
                 addr += (2*sizeof(uint8_t));
                 break;
-        case 0x1:
+        case 0b0001:
                 addr += (3*sizeof(uint8_t));
                 break;
         default:
@@ -40,179 +37,8 @@ uint32_t changeAddress(uint32_t addr, uint8_t byte_mask)
         return addr;
 }
 
-
-void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view, 
-                                uint8_t direction)
-{
-        void *source =  NULL, *dest = NULL;
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->argument2, dest = &cpu_view->argument2[0]) 
-                                                : (source = &cpu_view->argument2[0], dest = &internal_view->argument2);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->blk_size, dest = &cpu_view->blk_size[0]) 
-                                                : (source = &cpu_view->blk_size[0], dest = &internal_view->blk_size);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->blk_count, dest = &cpu_view->blk_count[0]) 
-                                                : (source = &cpu_view->blk_count[0], dest = &internal_view->blk_count);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->argument1, dest = &cpu_view->argument1[0]) 
-                                                : (source = &cpu_view->argument1[0], dest = &internal_view->argument1);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->tx_mode, dest = &cpu_view->tx_mode[0]) 
-                                                : (source = &cpu_view->tx_mode[0], dest = &internal_view->tx_mode);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->command_reg, dest = &cpu_view->command_reg[0]) 
-                                                : (source = &cpu_view->command_reg[0], dest = &internal_view->command_reg);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response0, dest = &cpu_view->response0[0]) 
-                                                : (source = &cpu_view->response0[0], dest = &internal_view->response0);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response1, dest = &cpu_view->response1[0]) 
-                                                : (source = &cpu_view->response1[0], dest = &internal_view->response1);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response2, dest = &cpu_view->response2[0]) 
-                                                : (source = &cpu_view->response2[0], dest = &internal_view->response2);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response3, dest = &cpu_view->response3[0]) 
-                                                : (source = &cpu_view->response3[0], dest = &internal_view->response3);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response4, dest = &cpu_view->response4[0]) 
-                                                : (source = &cpu_view->response4[0], dest = &internal_view->response4);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response5, dest = &cpu_view->response5[0]) 
-                                                : (source = &cpu_view->response5[0], dest = &internal_view->response5);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response6, dest = &cpu_view->response6[0]) 
-                                                : (source = &cpu_view->response6[0], dest = &internal_view->response6);
-        memcpy(dest, source, sizeof(uint16_t));
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->response7, dest = &cpu_view->response7[0]) 
-                                                : (source = &cpu_view->response7[0], dest = &internal_view->response7);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->buffer_data_port, dest = &cpu_view->buffer_data_port[0]) 
-                                                : (source = &cpu_view->buffer_data_port[0], dest = &internal_view->buffer_data_port);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->present_state, dest = &cpu_view->present_state[0]) 
-                                                : (source = &cpu_view->present_state[0], dest = &internal_view->present_state);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->host_ctrl1, dest = &cpu_view->host_ctrl1) 
-                                                : (source = &cpu_view->host_ctrl1, dest = &internal_view->host_ctrl1);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->pwr_ctrl, dest = &cpu_view->pwr_ctrl) 
-                                                : (source = &cpu_view->pwr_ctrl, dest = &internal_view->pwr_ctrl);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->blk_gap_ctrl, dest = &cpu_view->blk_gap_ctrl) 
-                                                : (source = &cpu_view->blk_gap_ctrl, dest = &internal_view->blk_gap_ctrl);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->wakeup_ctrl, dest = &cpu_view->wakeup_ctrl) 
-                                                : (source = &cpu_view->wakeup_ctrl, dest = &internal_view->wakeup_ctrl);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->clk_ctrl, dest = &cpu_view->clk_ctrl[0]) 
-                                                : (source = &cpu_view->clk_ctrl[0], dest = &internal_view->clk_ctrl);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->timeout_ctrl, dest = &cpu_view->timeout_ctrl) 
-                                                : (source = &cpu_view->timeout_ctrl, dest = &internal_view->timeout_ctrl);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->sw_reset, dest = &cpu_view->sw_reset) 
-                                                : (source = &cpu_view->sw_reset, dest = &internal_view->sw_reset);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->normal_intr_status, dest = &cpu_view->normal_intr_status[0]) 
-                                                : (source = &cpu_view->normal_intr_status[0], dest = &internal_view->normal_intr_status);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->error_intr_status, dest = &cpu_view->error_intr_status[0]) 
-                                                : (source = &cpu_view->error_intr_status[0], dest = &internal_view->error_intr_status);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->normal_intr_status_enable, dest = &cpu_view->normal_intr_status_enable[0]) 
-                                                : (source = &cpu_view->normal_intr_status_enable[0], dest = &internal_view->normal_intr_status_enable);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->error_intr_status_enable, dest = &cpu_view->error_intr_status_enable[0]) 
-                                                : (source = &cpu_view->error_intr_status_enable[0], dest = &internal_view->error_intr_status_enable);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->normal_intr_signal_enable, dest = &cpu_view->normal_intr_signal_enable[0]) 
-                                                : (source = &cpu_view->normal_intr_signal_enable[0], dest = &internal_view->normal_intr_signal_enable);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->error_intr_signal_enable, dest = &cpu_view->error_intr_signal_enable[0]) 
-                                                : (source = &cpu_view->error_intr_signal_enable[0], dest = &internal_view->error_intr_signal_enable);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->autoCMD_error_status, dest = &cpu_view->autoCMD_error_status[0]) 
-                                                : (source = &cpu_view->autoCMD_error_status[0], dest = &internal_view->autoCMD_error_status);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->host_ctrl2, dest = &cpu_view->host_ctrl2[0]) 
-                                                : (source = &cpu_view->host_ctrl2[0], dest = &internal_view->host_ctrl2);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->capabilities, dest = &cpu_view->capabilities[0]) 
-                                                : (source = &cpu_view->capabilities[0], dest = &internal_view->capabilities);
-        memcpy(dest, source, sizeof(uint64_t));
-        
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->max_current_cap, dest = &cpu_view->max_current_cap[0]) 
-                                                : (source = &cpu_view->max_current_cap[0], dest = &internal_view->max_current_cap);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->res_max_current_cap, dest = &cpu_view->res_max_current_cap[0]) 
-                                                : (source = &cpu_view->res_max_current_cap[0], dest = &internal_view->res_max_current_cap);
-        memcpy(dest, source, sizeof(uint32_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->force_event_autoCMD_err_stat, dest = &cpu_view->force_event_autoCMD_err_stat[0]) 
-                                                : (source = &cpu_view->force_event_autoCMD_err_stat[0], dest = &internal_view->force_event_autoCMD_err_stat);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->force_event_autoCMD_err_interrupt_stat, dest = &cpu_view->force_event_autoCMD_err_interrupt_stat[0]) 
-                                                : (source = &cpu_view->force_event_autoCMD_err_interrupt_stat[0], dest = &internal_view->force_event_autoCMD_err_interrupt_stat);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->ADMA_err_status, dest = &cpu_view->ADMA_err_status) 
-                                                : (source = &cpu_view->ADMA_err_status, dest = &internal_view->ADMA_err_status);
-        memcpy(dest, source, sizeof(uint8_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->ADMA_system_address, dest = &cpu_view->ADMA_system_address[0]) 
-                                                : (source = &cpu_view->ADMA_system_address[0], dest = &internal_view->ADMA_system_address);
-        memcpy(dest, source, sizeof(uint64_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->preset_value, dest = &cpu_view->preset_value[0]) 
-                                                : (source = &cpu_view->preset_value[0], dest = &internal_view->preset_value);
-        memcpy(dest, source, sizeof(__uint128_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->shared_bus_control, dest = &cpu_view->shared_bus_control[0]) 
-                                                : (source = &cpu_view->shared_bus_control[0], dest = &internal_view->shared_bus_control);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->slot_interrupt_status, dest = &cpu_view->slot_interrupt_status[0]) 
-                                                : (source = &cpu_view->slot_interrupt_status[0], dest = &internal_view->slot_interrupt_status);
-        memcpy(dest, source, sizeof(uint16_t));
-
-        (direction == INTERNAL_TO_CPU) ?  (source = &internal_view->host_controller_version, dest = &cpu_view->host_controller_version[0]) 
-                                                : (source = &cpu_view->host_controller_version[0], dest = &internal_view->host_controller_version);
-        memcpy(dest, source, sizeof(uint16_t));
-
-}
-
 uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask, 
-                                        sdhc_reg_cpu_view *cpu_view, 
-                                        sdhc_reg_internal_view *internal_view,
+                                        sdhc_reg_cpu_view *cpu_view,
                                         uint32_t data_in, 
                                         uint8_t rwbar)
 {
@@ -320,36 +146,34 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
         return ret_val;
 }
 
-
-void writeToSdhcReg(uint32_t addr, 
+uint32_t writeToSdhcReg(uint32_t addr, 
                         uint8_t byte_mask, 
                         sdhc_reg_cpu_view *cpu_view, 
-                        sdhc_reg_internal_view *internal_view, 
                         uint32_t data_in)
 {
-        readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, data_in, WRITE);
+        return readOrWriteSdhcReg(addr, byte_mask, cpu_view, data_in, WRITE);
+}
+uint32_t checkAndWriteSdhcReg(uint32_t addr, 
+                                uint8_t byte_mask, 
+                                sdhc_reg_cpu_view *cpu_view, 
+                                uint32_t data_in)
+{
+        return writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
 }
 
-uint32_t checkAndReadSdhcReg(uint32_t addr, 
-                                uint8_t byte_mask,
-                                sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view)
-{
-        syncBothStructs(cpu_view, internal_view, INTERNAL_TO_CPU);
-        readFromsdhcReg(addr, byte_mask, cpu_view, internal_view);
-}
 
 uint32_t readFromsdhcReg(uint32_t addr, 
                                 uint8_t byte_mask,
-                                sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view)
+                                sdhc_reg_cpu_view *cpu_view)
 {
-#ifdef DEBUG
-        printf("\nData read from register in model: 0x%x\n", addr);
-#endif
-
-        uint32_t return_data;
-        return_data =  readOrWriteSdhcReg(addr, byte_mask, cpu_view, internal_view, 0, READ);
+        return readOrWriteSdhcReg(addr, byte_mask, cpu_view, 0, READ);
+}
+uint32_t checkAndReadSdhcReg(uint32_t addr, 
+                                uint8_t byte_mask,
+                                sdhc_reg_cpu_view *cpu_view)
+{
+        uint32_t return_data = readFromsdhcReg(addr, byte_mask, cpu_view);
+        
         switch(byte_mask)
         {
         case 0b1111:
@@ -369,16 +193,10 @@ uint32_t readFromsdhcReg(uint32_t addr,
         default:
                 break;
         }
+
+#ifdef DEBUG
+        printf("\nData returned after a READ: 0x%x\n", addr);
+#endif
+
         return return_data;
 }
-
-void checkAndWriteSdhcReg(uint32_t addr, 
-                                uint8_t byte_mask, 
-                                sdhc_reg_cpu_view *cpu_view,
-                                sdhc_reg_internal_view *internal_view, 
-                                uint32_t data_in)
-{
-        writeToSdhcReg(addr, byte_mask, cpu_view, internal_view, data_in);
-        syncBothStructs(cpu_view, internal_view, CPU_TO_INTERNAL);
-}
-
