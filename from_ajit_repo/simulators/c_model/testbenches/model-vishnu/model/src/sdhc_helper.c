@@ -200,3 +200,60 @@ uint32_t checkAndReadSdhcReg(uint32_t addr,
 
         return return_data;
 }
+
+uint32_t checkPermissionForReadOrWrite(uint32_t addr, uint8_t rwbar,
+ sdhc_reg_cpu_view cpu_reg_view)
+{
+       // fprintf(stderr,"reached checkPermission func, address is 0x%x\r\n",addr);
+        uint8_t insertSigEnabled,removalSigEnabled;
+        addr = 0xFF000000 | addr;
+        switch (addr)
+        {
+        case ADDR_SDHC_NORMAL_INTR_STATUS_EN:
+        return 1;
+        break;
+        
+        case ADDR_SDHC_NORMAL_INTR_SIGNAL_EN:
+        return 1;
+        break;
+
+        case ADDR_SDHC_ERROR_INTR_STATUS_EN:
+        return 1;
+        break;
+        
+        case ADDR_SDHC_ERROR_INTR_SIGNAL_EN:
+        return 1;
+        break;
+
+        default:
+        return 0;
+        break;
+        }
+}
+
+void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar, 
+sdhc_reg_cpu_view *cpu_reg_view, sdhc_flags_for_events *sdhc_flags)
+{
+        addr = 0xFF000000 | addr;
+        fprintf(stderr,"address in setFlags functions is 0x%x\r\n",addr);
+        switch (addr)
+        {
+        case ADDR_SDHC_NORMAL_INTR_STATUS_EN:
+                sdhc_flags->NormalInterruptCardInsertedStatusEnabled = getBit8(cpu_reg_view->normal_intr_status_enable[0],6);
+                sdhc_flags->NormalInterruptCardRemovalStatusEnabled = getBit8(cpu_reg_view->normal_intr_status_enable[0],7);                
+                fprintf(stderr,"1. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
+                fprintf(stderr,"2. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
+        break;
+        
+        case ADDR_SDHC_NORMAL_INTR_SIGNAL_EN:
+                sdhc_flags->NormalInterruptCardInsertedSignalEnabled = getBit8(cpu_reg_view->normal_intr_signal_enable[0],6);
+                sdhc_flags->NormalInterruptCardRemovalSignalEnabled = getBit8(cpu_reg_view->normal_intr_signal_enable[0],7);
+                fprintf(stderr,"3. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
+                fprintf(stderr,"4. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
+        break;
+
+        default:
+                break;
+        }
+}
+

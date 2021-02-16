@@ -113,6 +113,7 @@ SDHC_Control:
 #define CPU_TO_INTERNAL 1
 
 sdhc_reg_cpu_view cpu_reg_view = {0};
+sdhc_flags_for_events sdhc_flags = {0};
 
 /**** Thread declarations ****/
 
@@ -172,7 +173,11 @@ void sdhcControl()
                 switch (rwbar)
                 {
                 case WRITE:
-                        data_out = checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, data_in);
+                        if(checkPermissionForReadOrWrite(addr, WRITE, cpu_reg_view))
+                        {
+                                data_out = checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, data_in);
+                        }
+                        setFlagsForReadWriteOperations(addr, WRITE, &cpu_reg_view, &sdhc_flags);
                         break;
                 case READ:
                         data_out = checkAndReadSdhcReg(addr, byte_mask, &cpu_reg_view);

@@ -72,52 +72,6 @@ void startSdhcThreads();
 //	sdhc_reg_internal_view struct using updateRegister function
 void sdhcControl();
 
-typedef struct sdhc_reg_internal_view
-{
-        uint32_t argument2; 			//0x0
-        uint16_t blk_size; 			//0x4 	
-        uint16_t blk_count; 			//0x6 		
-        uint32_t argument1;			//0x8		
-        uint16_t tx_mode; 			//0xC 		
-        uint16_t command_reg; 			//0xE		
-        uint16_t response0; 			//0x10		
-        uint16_t response1; 			//0x12		
-        uint16_t response2; 			//0x14 		
-        uint16_t response3; 			//0x16 		
-        uint16_t response4; 			//0x18 		
-        uint16_t response5; 			//0x1A		
-        uint16_t response6; 			//0x1C 		
-        uint16_t response7; 			//0x1E	
-        uint32_t buffer_data_port; 		//0x20 
-        uint32_t present_state; 		//0x24 		
-        uint8_t  host_ctrl1;			//0x28
-        uint8_t  pwr_ctrl; 			//0x29 		
-        uint8_t  blk_gap_ctrl; 			//0x2A 		
-        uint8_t  wakeup_ctrl; 			//0x2B
-        uint16_t clk_ctrl; 			//0x2C 		 	
-        uint8_t  timeout_ctrl; 			//0x2E
-        uint8_t  sw_reset; 			//0x2F
-        uint16_t normal_intr_status; 		//0x30 
-        uint16_t error_intr_status; 		//0x32 	
-        uint16_t normal_intr_status_enable; 	//0x34 
-        uint16_t error_intr_status_enable; 	//0x36 
-        uint16_t normal_intr_signal_enable; 	//0x38
-        uint16_t error_intr_signal_enable; 	//0x3A 	
-        uint16_t autoCMD_error_status; 		//0x3C 		
-        uint16_t host_ctrl2; 			//0x3E 			
-        uint64_t capabilities; 			//0x40 TODO needs to be split to two 32b regs
-        uint32_t max_current_cap; 		//0x48
-        uint32_t res_max_current_cap; 		//0x4C
-        uint16_t force_event_autoCMD_err_stat;	//0x50
-        uint16_t force_event_autoCMD_err_interrupt_stat;	//0x52
-        uint8_t  ADMA_err_status;		//0x54
-        uint64_t ADMA_system_address; 		//0x58 TODO needs to be split to two 32b regs
-        __uint128_t preset_value ; 		//0x60 TODO needs to be split to four 32b regs
-        uint16_t shared_bus_control;		//0xE0
-        uint16_t slot_interrupt_status;		//0xFC
-        uint16_t host_controller_version; 	//0xFE 
-}sdhc_reg_internal_view;
-
 typedef struct sdhc_reg_cpu_view
 {
         uint8_t argument2[4];   		//0x0  	
@@ -168,46 +122,45 @@ typedef struct sdhc_reg_cpu_view
 }sdhc_reg_cpu_view;
 
 //following structure contains flags that will be set/cleared
-//upon occurence of certains events
-typedef struct sdhc_flags_for_event{
-        //For normal interrupt status register
-uint8_t NormalInterruptCardRemovalInterrupt;
-uint8_t NormalInterruptCardInsertedInterrupt;
-uint8_t NormalInterruptTransferCompleteInterrupt;
-uint8_t NormalInterruptCommandCompleteInterrupt;
-uint8_t NormalInterruptCommandErrorInterruptBitSet;
-        //For normal interrupt status enable register
-uint8_t NormalInterruptCardRemovalStatusEnable;
-uint8_t NormalInterruptCardInsertedStatusEnable;
-uint8_t NormalInterruptTransferCompleteStatusEnable;
-uint8_t NormalInterruptCommandCompleteStatusEnable; 
-        //For normal interrupt signal enable register
-uint8_t NormalInterruptCardRemovalSignalEnable;
-uint8_t NormalInterruptCardInsertedSignalEnable;
-uint8_t NormalInterruptTransferCompleteSignalEnable;
-uint8_t NormalInterruptCommandCompleteSignalEnable;
-        //For Error interrupt status, status enable 
-        //and signal enable register
-uint16_t ErrorInterruptStatusRegisterSetBits;
-uint16_t ErrorInterruptStatusEnableRegisterSetBits;
-uint16_t ErrorInterruptSignalEnableRegisterSetBits;
-        //For Present State Register 
-uint8_t PresentStateRegisterCMD_Inhibit_CMD;
-uint8_t PresentStateRegisterCMD_Inhibit_DAT;
-uint8_t PresentStateRegisterDATLineActive;
-uint8_t PresentStateRegisterCardInsterted;
-        //For Software Reset register
-uint8_t SoftwareResetForAll;
-        //For Clock Control register
-uint8_t ClockControlInternalClockEnable;                
-uint8_t ClockControlInternalClockStable;
-uint8_t ClockControlSDClockEnable;
-        //For Power Control Register
-uint8_t PowerControlSDBusPower;
-uint8_t PowerControlSDBusVoltageSelect;
-        //for Command Register
-uint8_t CommandRegisterUpperByteWritten;                
-}sdhc_flags_for_event;
+//upon occurence of certains events, written in order of 
+//initialization sequence given in Specification v3.01
+typedef struct sdhc_flags_for_events{
+//Sequence step 1: Card Detection
+        uint8_t NormalInterruptCardRemovalStatusEnabled;
+        uint8_t NormalInterruptCardInsertedStatusEnabled;
+        uint8_t NormalInterruptCardRemovalSignalEnabled;
+        uint8_t NormalInterruptCardInsertedSignalEnabled;
+        uint8_t PresentStateRegisterCardInsterted;
+        uint8_t NormalInterruptCardRemovalInterrupt;
+        uint8_t NormalInterruptCardInsertedInterrupt;
+
+//Sequence step 2: Clock Control
+        uint8_t InternalClockEnableSet;                
+        uint8_t SDCLKFreqSelectSet;
+        uint8_t InternalClockStable;
+        uint8_t SDClockEnableSet;
+        uint8_t SDClockDisabled;
+
+//Sequence step 3: BUS Power Control 
+        uint8_t SDBusVoltageSelectSet;
+        uint8_t SDBusPowerSet;
+
+//Sequence step 4: Bus Width Control
+        uint8_t DataTransferWidthSet;//4-bit mode
+
+//Sequence step 5: Timeout Setting on DAT line        
+        uint8_t DataTimeoutCounterValueSet;
+
+//Sequence step 6: Card Initialization and Identification
+        uint8_t FlagF8;
+        uint8_t R7ResponseReceived;
+        uint8_t PresentStateRegisterCMD_Inhibit_CMD;
+        uint8_t PresentStateRegisterCMD_Inhibit_DAT;
+        uint8_t PresentStateRegisterDATLineActive;
+        uint8_t SoftwareResetForAll;
+        uint8_t CommandRegisterUpperByteWritten;   //cmd_index is written, shoots command to card             
+}sdhc_flags_for_events;
+
 
 /********************************************************************
  **
@@ -226,27 +179,6 @@ uint8_t CommandRegisterUpperByteWritten;
  *******************************************************************/
 uint32_t getAbsoluteAddress(uint32_t addr, uint8_t byte_mask);
 
-/********************************************************************
- **
- ** void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
- **                             sdhc_reg_internal_view *internal_view, 
- **                             uint8_t direction);
- **
- ** Args:       cpu_view        - pointer to byte-aligned register 
- **                                structure
- **             internal_view   - pointer to non-aligned register 
- **                                struct
- **             direction       - specify the direction of copying
- **             
- ** Return:     nothing returned
- **
- ** Purpose:    copies data between cpu_view and internal-view of 
- **             registers 
- **
- *******************************************************************/
-void syncBothStructs(sdhc_reg_cpu_view *cpu_view, 
-                                sdhc_reg_internal_view *internal_view, 
-                                uint8_t direction);
 
 /********************************************************************
  **
@@ -383,4 +315,9 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 uint32_t data_in);
 
+uint32_t checkPermissionForReadOrWrite(uint32_t addr, uint8_t rwbar,
+ sdhc_reg_cpu_view cpu_reg_view);
+
+void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar, 
+sdhc_reg_cpu_view *cpu_reg_view, sdhc_flags_for_events *sdhc_flags);
 #endif

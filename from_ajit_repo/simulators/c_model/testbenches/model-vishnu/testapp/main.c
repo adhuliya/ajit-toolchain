@@ -196,9 +196,9 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_SOFTWARE_RESET, sizeof(uint8_t), 0x34);
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x4321);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x1181);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS_EN, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x8765);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x1181);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_SIGNAL_EN, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_AUTO_CMD_ERROR_STATUS, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROL_2, sizeof(uint16_t), 0x4321);
