@@ -164,6 +164,7 @@ void sdhcControl()
                 getPeripheralAccessCommand("peripheral_bridge_to_sdhc_request",
                         &rwbar, &byte_mask, &addr, &data_in);
                 
+                addr = 0xFF000000 | addr; // reversing truncation of address
                 addr = getAbsoluteAddress(addr, byte_mask);
 #ifdef DEBUG
                 printf("address = 0x%x\n", addr);
