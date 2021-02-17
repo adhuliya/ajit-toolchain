@@ -1,0 +1,5 @@
+Contains all the general data transfer instructions. They are
+
+	1. Integer unit load-store instructions
+	2. Floating point unit load-store instructions
+	3. Coprocessor point unit load-store instructions

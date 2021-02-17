@@ -1,0 +1,8 @@
+SOURCES = page_error_AT3_Valid_1.c
+
+
+RESULTS = 
+m[0x00000300]=0x366
+asi=0x00000004
+m[0x00000400]=0x00001000
+asi=0x00000004

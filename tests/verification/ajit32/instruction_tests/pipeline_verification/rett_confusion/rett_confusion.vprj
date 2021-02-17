@@ -1,0 +1,7 @@
+SOURCES = rett_confusion.s
+
+
+
+RESULTS = 
+g1=0x00000080
+g2=0x5a

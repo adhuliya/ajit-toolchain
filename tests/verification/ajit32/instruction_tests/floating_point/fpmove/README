@@ -1,0 +1,20 @@
+Floating Point Move Instructions
+================================
+fmovs	=>	Move
+fnegs	=>	Negate
+fabss	=>	Absolute Value
+
+=================================
+Essentially all instruction copies contents from souce to dest
+but, fnegs compliments the sign bit and fabss clears the sign bit
+
+note:-
+=====
+	To transfer multiple-precision value between f-registers, one "fmovs"
+	instruction required per word to be transfered.
+
+	If source and destination registers are diffrent, a double-precision
+	negation (absolute value) is performed by and "fnegs" ("fabss") and an
+	"fmovs" instruction. similerly quad-precision, will have "fnegs"
+	("fabss") followed by 3 "fmovs" instructions. If souce and destination
+	are same then no need of "fmovs" instruction for any precision.

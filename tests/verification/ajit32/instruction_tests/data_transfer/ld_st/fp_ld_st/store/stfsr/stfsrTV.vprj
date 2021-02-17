@@ -1,0 +1,13 @@
+SOURCES = stfsrTV.s
+
+
+
+RESULTS = 
+g1 = 0x00000080
+o0 = 0x110
+o1 = 0x00000004
+fpsr = 0x0000000A
+m[0x4] = 0x0000000A
+asi = 0x0A
+psr = 0x10C0
+g2 = 0x00000002

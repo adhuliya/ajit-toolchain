@@ -1,0 +1,13 @@
+SOURCES = SMULCC.s
+
+
+
+RESULTS = 
+g1 = 0x80
+i0 = 0xE0
+l0 = 0x00
+l1 = 0x00
+i1 = 0x04000E0
+l2 = 0xFFFFFFFA
+l3 = 0xFFFFFFFF
+i2 = 0x08000E0

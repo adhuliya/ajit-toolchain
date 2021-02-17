@@ -1,0 +1,7 @@
+SOURCES = BranchOnCoprocessorCC_cp_enabled.s
+
+
+RESULTS =
+g1 = 0x00000080
+g2 = 0x10
+

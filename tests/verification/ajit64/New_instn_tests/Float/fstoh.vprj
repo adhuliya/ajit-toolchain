@@ -1,0 +1,6 @@
+SOURCES = fstoh.s
+
+RESULTS = 
+f0=0x3f8ccccc
+f1=0x3c66
+

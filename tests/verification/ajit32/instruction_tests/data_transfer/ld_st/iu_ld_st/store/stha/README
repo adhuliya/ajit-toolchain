@@ -1,0 +1,5 @@
+Instruction : STHA
+Details :
+Stores the lower half-word from the register into alternate memory.
+
+sthaTV - test cases for trap conditions

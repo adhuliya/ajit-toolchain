@@ -1,0 +1,7 @@
+SOURCES = PTE_with_ET3_level0.s
+
+RESULTS = 
+m[0x00000300]=0x73
+asi=0x00000004
+g3=0xcc1
+g1=0xBAD

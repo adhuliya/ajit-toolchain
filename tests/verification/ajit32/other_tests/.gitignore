@@ -1,0 +1,10 @@
+compiled/
+output/
+log/
+*c.txt
+*log.txt
+*.log
+log/
+trace_files/
+Log.txt
+Results.txt

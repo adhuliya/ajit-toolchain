@@ -1,0 +1,5 @@
+Floating Point Subtract Instructions
+====================================
+fsubs	=>	Subtract Single
+fsubd	=>	Subtract Double
+fsubq	=>	Subtract Quad
