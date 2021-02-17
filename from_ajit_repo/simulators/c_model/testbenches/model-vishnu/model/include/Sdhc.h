@@ -316,8 +316,9 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
                                 uint32_t data_in);
 
 uint32_t checkPermissionForReadOrWrite(uint32_t addr, uint8_t rwbar,
- sdhc_reg_cpu_view cpu_reg_view);
+                                        sdhc_reg_cpu_view cpu_reg_view);
 
 void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar, 
-sdhc_reg_cpu_view *cpu_reg_view, sdhc_flags_for_events *sdhc_flags);
+                                        sdhc_reg_cpu_view *cpu_reg_view, 
+                                        sdhc_flags_for_events *sdhc_flags);
 #endif

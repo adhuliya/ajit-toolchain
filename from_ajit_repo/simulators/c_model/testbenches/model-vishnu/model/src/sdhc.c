@@ -48,7 +48,7 @@ Reference:
                 23. Auto CMD Error Status		   (16b)  03Ch  ADDR_SDHC_AUTO_CMD_ERROR_STATUS
                 24. Host Control 2			   (16b)  03Eh  ADDR_SDHC_HOST_CONTROL_2
                 25. Capabilities			   (64b)  040h  ADDR_SDHC_CAPS
-                26. Maximum Current Capabilities		   (64b)  048h  ADDR_SDHC_MAX_CURRENT_CAPS --> ADDR_SDHC_MAX_CURRENT_CAPS_RES
+                26. Maximum Current Capabilities           (64b)  048h  ADDR_SDHC_MAX_CURRENT_CAPS --> ADDR_SDHC_MAX_CURRENT_CAPS_RES
                 27. Force Event For Auto CMD Error Status  (16b)  050h  ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERRSTAT
                 28. Force Event For Error Interrupt Status (16b)  052h  ADDR_SDHC_FORCE_EVENT_AUTOCMD_ERR_INTRSTAT
                 29. ADMA Error Status			   (08b)  054h  ADDR_SDHC_ADMA_ERR_STAT
@@ -73,7 +73,7 @@ Reference:
                 HwInit	: hardware initialised; register bits are initialised by firmware. Bits are read-only after
                                 initialisation, and write to these bits are ignored.
                 Rsvd	: reserved; these bits are initialised to zero and writes to them are ignored
-                WO	: write-only register; It is not physically implimented register. Rather, it is a ddress
+                WO	: write-only register; It is not physically implimented register. Rather, it is an address
                                 at which registers can be written.
         - Details of each register is described in the corresponding switch..case instance in SDHC_Control
 
@@ -174,10 +174,7 @@ void sdhcControl()
                 switch (rwbar)
                 {
                 case WRITE:
-                        if(checkPermissionForReadOrWrite(addr, WRITE, cpu_reg_view))
-                        {
-                                data_out = checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, data_in);
-                        }
+                        data_out = checkAndWriteSdhcReg(addr, byte_mask, &cpu_reg_view, data_in);
                         setFlagsForReadWriteOperations(addr, WRITE, &cpu_reg_view, &sdhc_flags);
                         break;
                 case READ:

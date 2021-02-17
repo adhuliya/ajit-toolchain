@@ -158,7 +158,16 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 uint32_t data_in)
 {
-        return writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
+        uint32_t ret_val =0;
+        if (addr == ADDR_SDHC_NORMAL_INTR_STATUS_EN
+                | addr == ADDR_SDHC_NORMAL_INTR_SIGNAL_EN
+                | addr == ADDR_SDHC_ERROR_INTR_STATUS_EN
+                | addr == ADDR_SDHC_ERROR_INTR_SIGNAL_EN)
+        {
+                ret_val = writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
+        }
+
+        return ret_val;
 }
 
 
@@ -201,37 +210,9 @@ uint32_t checkAndReadSdhcReg(uint32_t addr,
         return return_data;
 }
 
-uint32_t checkPermissionForReadOrWrite(uint32_t addr, uint8_t rwbar,
- sdhc_reg_cpu_view cpu_reg_view)
-{
-       // fprintf(stderr,"reached checkPermission func, address is 0x%x\r\n",addr);
-        uint8_t insertSigEnabled, removalSigEnabled;
-        switch (addr)
-        {
-        case ADDR_SDHC_NORMAL_INTR_STATUS_EN:
-                return 1;
-                break;
-        
-        case ADDR_SDHC_NORMAL_INTR_SIGNAL_EN:
-                return 1;
-                break;
-
-        case ADDR_SDHC_ERROR_INTR_STATUS_EN:
-                return 1;
-                break;
-        
-        case ADDR_SDHC_ERROR_INTR_SIGNAL_EN:
-                return 1;
-                break;
-
-        default:
-                return 0;
-                break;
-        }
-}
-
 void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar, 
-sdhc_reg_cpu_view *cpu_reg_view, sdhc_flags_for_events *sdhc_flags)
+                                        sdhc_reg_cpu_view *cpu_reg_view, 
+                                        sdhc_flags_for_events *sdhc_flags)
 {
         fprintf(stderr,"address in setFlags functions is 0x%x\r\n",addr);
         switch (addr)
