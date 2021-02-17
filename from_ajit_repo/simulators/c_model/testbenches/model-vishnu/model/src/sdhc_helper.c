@@ -5,10 +5,14 @@
 #include "Device_utils.h"
 #include "Ancillary.h"
 #include "Sdhc.h"
+#include "pthreadUtils.h"
+#include "Pipes.h"
+#include "pipeHandler.h"
 
 #define READ	1
 #define	WRITE	0
-
+#define SDHC_IRL 11
+uint8_t SDHC_INT_OUT;
 // #define DEBUG
 
 uint32_t getAbsoluteAddress(uint32_t addr, uint8_t byte_mask)
@@ -117,6 +121,7 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
 			}
                         dest = &cpu_view->argument2[0] + offset;
                         source = &temp;
+                        
                 }
                 else if(rwbar) // read
                 {
@@ -143,6 +148,10 @@ uint32_t readOrWriteSdhcReg(uint32_t addr, uint8_t byte_mask,
                 memcpy(dest, source, sizeof(uint32_t));
                 ret_val = (rwbar == WRITE) ? 0 : (uint32_t)temp;
         }
+#ifdef DEBUG
+              fprintf(stderr,"lower byte of NISEn register is: 0x%x\r\n",cpu_view->normal_intr_status_enable[0]);
+              fprintf(stderr,"upper byte of NISEn register is: 0x%x\r\n",cpu_view->normal_intr_status_enable[1]);
+#endif 
         return ret_val;
 }
 
@@ -166,7 +175,11 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
         {
                 ret_val = writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
         }
-
+        else if (addr == ADDR_SDHC_PRESENT_STATE)
+        {
+               ret_val=0;
+        }
+        
         return ret_val;
 }
 
@@ -214,25 +227,84 @@ void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar,
                                         sdhc_reg_cpu_view *cpu_reg_view, 
                                         sdhc_flags_for_events *sdhc_flags)
 {
+#ifdef DEBUG
         fprintf(stderr,"address in setFlags functions is 0x%x\r\n",addr);
+#endif        
         switch (addr)
         {
         case ADDR_SDHC_NORMAL_INTR_STATUS_EN:
                 sdhc_flags->NormalInterruptCardInsertedStatusEnabled = getBit8(cpu_reg_view->normal_intr_status_enable[0],6);
                 sdhc_flags->NormalInterruptCardRemovalStatusEnabled = getBit8(cpu_reg_view->normal_intr_status_enable[0],7);                
-                fprintf(stderr,"1. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
-                fprintf(stderr,"2. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
+                fprintf(stderr,"NI_StatusEnableCardInsertion flag set during write o/p is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
+                fprintf(stderr,"NI_StatusEnableCardRemoval flag set during write o/p is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
         break;
         
         case ADDR_SDHC_NORMAL_INTR_SIGNAL_EN:
                 sdhc_flags->NormalInterruptCardInsertedSignalEnabled = getBit8(cpu_reg_view->normal_intr_signal_enable[0],6);
                 sdhc_flags->NormalInterruptCardRemovalSignalEnabled = getBit8(cpu_reg_view->normal_intr_signal_enable[0],7);
-                fprintf(stderr,"3. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
-                fprintf(stderr,"4. flag set is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
+                fprintf(stderr,"NI_SignalEnableCardInserted flag set during write o/p is: 0x%x\r\n",sdhc_flags->NormalInterruptCardInsertedStatusEnabled);
+                fprintf(stderr,"NI_SignalEnableCardRemoval flag set during write o/p is: 0x%x\r\n",sdhc_flags->NormalInterruptCardRemovalStatusEnabled);
         break;
 
+        case ADDR_SDHC_PRESENT_STATE:
+                sdhc_flags->PresentStateRegisterCardInsterted = getBit8(cpu_reg_view->present_state[2],0);
+                fprintf(stderr,"PSR: flag set during write o/p is: 0x%x\r\n",sdhc_flags->PresentStateRegisterCardInsterted);        
         default:
                 break;
         }
+}
+
+//if any bits in normal_intr_signal_en reg are set, they are 
+//to be compared with the bits of normal_intr_stat reg and,
+//if both are 1, interrupt has to be generated for that bit
+void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
+                                sdhc_flags_for_events *sdhc_flags)
+{	
+        cpu_reg_view->normal_intr_status[0] = (cpu_reg_view->normal_intr_status_enable[0]) & 0xFF;//7:0
+        cpu_reg_view->normal_intr_status[1] = (cpu_reg_view->normal_intr_status_enable[1]) & 0x1F;//upper byte's 5:0
+        
+        // To find which bit of the normal_interrrupt_status_enable register
+	// has been set and reflect those in normal_interrupt_status register
+
+	uint16_t intr_flag=0;
+        //card insertion check
+	if ( (cpu_reg_view->present_state[2]>>0) & 0x1 )
+	{	
+                sdhc_flags->NormalInterruptCardInsertedInterrupt=1;
+		uint8_t norm_intr_stat_val = getBit8(cpu_reg_view->normal_intr_status[0],6);
+		uint8_t norm_intr_sig_en_val = getBit8(cpu_reg_view->normal_intr_signal_enable[0],6);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+	}
+        //card removal check
+	else if ( ((cpu_reg_view->present_state[2]>>0) & 0x1) == 0)
+	{
+		sdhc_flags->NormalInterruptCardRemovalInterrupt=1;
+		uint8_t norm_intr_stat_val = getBit8(cpu_reg_view->normal_intr_status[0],7);
+		uint8_t norm_intr_sig_en_val = getBit8(cpu_reg_view->normal_intr_signal_enable[0],7);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+	}
+	//checks for error interrupts
+        else if ( (cpu_reg_view->normal_intr_status[1]>>7) & 0x1)
+	{
+		intr_flag=1; 
+	}
+	//	TODO: more checks for other interrupts sources to be added
+
+	switch (intr_flag)
+	{
+	case 1:
+		SDHC_INT_OUT=SDHC_IRL;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+		break;
+	case 0:
+		//de-asserts the interrupt that may have been generated earlier
+		SDHC_INT_OUT = 0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+		break;
+	default:	
+		SDHC_INT_OUT = 0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+		break;
+	}
 }
 

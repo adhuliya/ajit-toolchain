@@ -160,20 +160,13 @@ void readAllSdhcReg()
 }
 int main()
 {
-
         startSdhcThreads();
-
-        printf("\n\n ****** March test for internal register sync function ****** \n\n");
-
-        printf("\n----------reading from each reg start ----------\n\n");
+        printf("\n----------reading initial values of all registers ----------\n\n");
 
         readAllSdhcReg();
         
-        printf("\n----------reading from each reg done ----------\n\n");
-        printf("\n\n ****** March test for internal register sync function done ****** \n\n");
-               
         printf("\n\n ****** March test for SDHC regs ******\n\n");
-        printf("\n----------writing to each reg start ----------\n\n");
+        printf("\n----------writing values to each register----------\n\n");
 
         appWriteToSdhcReg(ADDR_SDHC_ARG_2, sizeof(uint32_t), 0x87654321);
         appWriteToSdhcReg(ADDR_SDHC_BLOCK_SIZE, sizeof(uint16_t), 0x8765);
@@ -196,9 +189,9 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_SOFTWARE_RESET, sizeof(uint8_t), 0x34);
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x1181);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0xDBc1);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS_EN, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x1181);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x11c1);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_SIGNAL_EN, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_AUTO_CMD_ERROR_STATUS, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROL_2, sizeof(uint16_t), 0x4321);
@@ -214,13 +207,11 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_SLOT_INTR_STATUS, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROLLER_VERSION, sizeof(uint16_t), 0x8765);
 
-        printf("\n----------writing to each reg done----------\n\n");
+        printf("\n----------Writes to each register done----------\n\n");
 
-        printf("\n----------reading from each reg start ----------\n\n");
+        printf("\n----------Reading the written values from each register ----------\n\n");
 
         readAllSdhcReg();
-
-        printf("\n----------reading from each reg done----------\n\n");
 
         printf("\n ****** end of march test ******\n\n");
 

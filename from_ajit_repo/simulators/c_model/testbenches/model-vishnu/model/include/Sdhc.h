@@ -62,15 +62,16 @@ void sdhcInitialState();
 //physically inserted in the Slot and will change the necessary
 //bits of internal registers.
 void cardInsert();
-
+void cardRemoval();
+void asyncListenerForSdCard();
 void startSdhcThreads();
 
 // Threads for SDHC control
 //1. monitors data going to and coming from CPU via bridge 
-//2. values are stored in sdhc_reg_cpu_view struct 
-//3. Copies the values of sdhc_reg_cpu_view inside
-//	sdhc_reg_internal_view struct using updateRegister function
+//2. Deals with interrupts and other operations based on the flags set/cleared
+//   during read/write operations
 void sdhcControl();
+void sdhcInterruptsAndFlagsHandling();
 
 typedef struct sdhc_reg_cpu_view
 {
@@ -321,4 +322,10 @@ uint32_t checkPermissionForReadOrWrite(uint32_t addr, uint8_t rwbar,
 void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar, 
                                         sdhc_reg_cpu_view *cpu_reg_view, 
                                         sdhc_flags_for_events *sdhc_flags);
+
+//if any bits in normal_intr_signal_en reg are set, they are 
+//to be compared with the bits of normal_intr_stat reg and,
+//if both are 1, interrupt has to be generated for that bit
+void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
+                                        sdhc_flags_for_events *sdhc_flags);                                     
 #endif
