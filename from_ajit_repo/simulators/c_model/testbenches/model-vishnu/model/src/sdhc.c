@@ -152,7 +152,7 @@ void startSdhcThreads()
         PTHREAD_CREATE(sdhcControl);
         PTHREAD_DECL(sdhcInterruptsAndFlagsHandling);
         PTHREAD_CREATE(sdhcInterruptsAndFlagsHandling);
-        writeToSdhcReg(ADDR_SDHC_CAPS,0b1111,&cpu_reg_view,0x1000A8A);
+        writeToSdhcReg(ADDR_SDHC_CAPS,0b1111,&cpu_reg_view,0x100328A);
         printf ("Size of CPU view of regs = %ld bytes\n", sizeof(sdhc_reg_cpu_view));
 }
 

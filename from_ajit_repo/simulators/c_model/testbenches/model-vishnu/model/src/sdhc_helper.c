@@ -175,10 +175,12 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
         {
                 ret_val = writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
         }
+        
         else if (addr == ADDR_SDHC_PRESENT_STATE)
         {
                 ret_val=0;
         }
+
         else if (addr == ADDR_SDHC_NORMAL_INTR_STATUS)
         {
                 uint8_t mask=0,count=0;
@@ -195,6 +197,16 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
                 fprintf(stderr,"Value inside NIS reg after interrupt deassertion: 0x%x\r\n",cpu_view->normal_intr_status[0]);
 #endif
                 ret_val=0;
+        }
+
+        else if (addr == ADDR_SDHC_CLOCK_CONTROL)
+        {
+                if((data_in>>16) & 0x1)
+                {//setting internal clock stable and SD clock enable bit once internal clock is enabled
+                        data_in |= 3UL<<17;
+                }
+                ret_val = writeToSdhcReg(addr, byte_mask, cpu_view, data_in);
+
         }
         
         return ret_val;
@@ -267,6 +279,14 @@ void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar,
         case ADDR_SDHC_PRESENT_STATE:
                 sdhc_flags->PresentStateRegisterCardInsterted = getBit8(cpu_reg_view->present_state[2],0);
                 fprintf(stderr,"PSR: flag set during write o/p is: 0x%x\r\n",sdhc_flags->PresentStateRegisterCardInsterted);        
+        
+        case ADDR_SDHC_CLOCK_CONTROL:
+                sdhc_flags->InternalClockEnableSet = getBit8(cpu_reg_view->clk_ctrl[0],0);
+                sdhc_flags->InternalClockStable = getBit8(cpu_reg_view->clk_ctrl[0],1);
+                sdhc_flags->SDClockEnableSet = getBit8(cpu_reg_view->clk_ctrl[0],2);
+                fprintf(stderr,"ClockCtrl:Internal Clock Enabled flag set during write o/p is: 0x%x\r\n",sdhc_flags->InternalClockEnableSet); 
+                fprintf(stderr,"ClockCtrl:Internal Clock Stable flag set during write o/p is: 0x%x\r\n",sdhc_flags->InternalClockStable);                       
+                fprintf(stderr,"ClockCtrl:SD Clock Enable flag set during write o/p is: 0x%x\r\n",sdhc_flags->SDClockEnableSet);                       
         default:
                 break;
         }

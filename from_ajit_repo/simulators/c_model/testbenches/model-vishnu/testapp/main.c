@@ -185,7 +185,7 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_POWER_CONTROL, sizeof(uint8_t), 0x34);
         appWriteToSdhcReg(ADDR_SDHC_BLOCK_GAP_CONTROL, sizeof(uint8_t), 0x56);
         appWriteToSdhcReg(ADDR_SDHC_WAKEUP_CONTROL, sizeof(uint8_t), 0x78);
-        appWriteToSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t), 0x8765);
+        appWriteToSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t), 0x0000);
         appWriteToSdhcReg(ADDR_SDHC_TIMEOUT_CONTROL, sizeof(uint8_t), 0x12);
         appWriteToSdhcReg(ADDR_SDHC_SOFTWARE_RESET, sizeof(uint8_t), 0x34);
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x0000);
@@ -214,7 +214,8 @@ int main()
 
         readAllSdhcReg();
         printf("\n\t ****** end of march test ******\n\n");
-        printf("\t Sequence step 1:\r\n");
+//      STEP1: SD Card Detection        
+        printf("\t\t #### SEQUENCE STEP 1 ####\r\n");
         printf("# Enabling card insertion and removal interrupts\r\n");
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x00C0);
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x00C0);
@@ -222,6 +223,43 @@ int main()
         printf("# Clearing card insertion interrupt\r\n");        
         appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x40);
         printf("\t Value of Normal Intr Status reg. after clearing interrupt = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t)));
-        printf("\t End of sequence step 1:\r\n");        
+        printf("\t\t #### End of SEQUENCE STEP 1 ####\r\n");  
+//      STEP2: SD Clock Control        
+        printf("\t\t #### SEQUENCE STEP 2 ####\r\n");
+        uint32_t CapsValue = appReadFromSdhcReg(ADDR_SDHC_CAPS, sizeof(uint32_t));
+        printf("Reading Capabilities register : 0x%x\n", CapsValue);
+        uint32_t BaseClockFreq = (CapsValue >> 8) & 0xFF;
+        printf("Base Clock Frequency in the Capabilities register is : %d MHz\n", BaseClockFreq);  
+        uint32_t SupportedVoltageRange = (CapsValue >> 24) & 0x7;
+        switch(SupportedVoltageRange)
+        {
+        case 1:
+        printf("Supported voltage range in the Capabilities register is 3.3V,value of bits 26-24 is : 0x%x\n", SupportedVoltageRange);            
+        break;
+        case 2: 
+        printf("Supported voltage range in the Capabilities register is 3.0V,value of bits 26-24 is : 0x%x\n", SupportedVoltageRange);
+        break;
+        case 4:
+        printf("Supported voltage range in the Capabilities register is 1.8V,value of bits 26-24 is : 0x%x\n", SupportedVoltageRange);        
+        break;
+        case 6:
+        printf("Supported voltage ranges in the Capabilities register are 3.3 and 3.0V,value of bits 26-24 is : 0x%x\n", SupportedVoltageRange);        
+        break;        
+        }  
+        printf("Writing the SD clock Frequency bits in the Clock Control Register\r\n");
+        uint8_t SDCLKFreqSelectClockControl=0, divisor=0;
+        if (BaseClockFreq==50)
+        {
+                SDCLKFreqSelectClockControl=0x00;
+                divisor = 1;   
+        }
+        printf("SDFreqSel is: 0x%x.\r\nFrequency of SDCLK pin will be:%dMhz\r\n",SDCLKFreqSelectClockControl,(BaseClockFreq/divisor));
+        uint16_t DataToClockControlRegister=0;
+        DataToClockControlRegister=(SDCLKFreqSelectClockControl<<8) | ((divisor) & 0x1);
+        printf("Data written in clock control register is: 0x%x\r\n",DataToClockControlRegister);
+        appWriteToSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t), DataToClockControlRegister);
+        uint32_t datareadfromclkctrl = appReadFromSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t));
+        printf("Data inside clock control register is: 0x%x\r\n",datareadfromclkctrl);
+        printf("\t\t #### End of SEQUENCE STEP 2 ####\r\n");  
         return 0;
 }
