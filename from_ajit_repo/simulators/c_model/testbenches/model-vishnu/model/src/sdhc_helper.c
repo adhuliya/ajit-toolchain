@@ -167,7 +167,7 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
                                 sdhc_reg_cpu_view *cpu_view, 
                                 uint32_t data_in)
 {
-        uint32_t ret_val =0;
+        uint32_t ret_val = 0;
         if (addr == ADDR_SDHC_NORMAL_INTR_STATUS_EN
                 | addr == ADDR_SDHC_NORMAL_INTR_SIGNAL_EN
                 | addr == ADDR_SDHC_ERROR_INTR_STATUS_EN
@@ -177,7 +177,24 @@ uint32_t checkAndWriteSdhcReg(uint32_t addr,
         }
         else if (addr == ADDR_SDHC_PRESENT_STATE)
         {
-               ret_val=0;
+                ret_val=0;
+        }
+        else if (addr == ADDR_SDHC_NORMAL_INTR_STATUS)
+        {
+                uint8_t mask=0,count=0;
+                data_in = data_in >>16;
+#ifdef DEBUG    
+                fprintf(stderr,"Value inside NIS reg before interrupt deassertion: 0x%x\r\n",cpu_view->normal_intr_status[0]);
+#endif
+                for(int i=0;i<8;i++)
+                { mask = data_in>>i;
+                        if(mask) { count=i; } 
+                cpu_view->normal_intr_status[0] &= ~(1 << count);
+                }                
+#ifdef DEBUG
+                fprintf(stderr,"Value inside NIS reg after interrupt deassertion: 0x%x\r\n",cpu_view->normal_intr_status[0]);
+#endif
+                ret_val=0;
         }
         
         return ret_val;
@@ -193,9 +210,9 @@ uint32_t readFromsdhcReg(uint32_t addr,
 uint32_t checkAndReadSdhcReg(uint32_t addr, 
                                 uint8_t byte_mask,
                                 sdhc_reg_cpu_view *cpu_view)
-{
+{       
         uint32_t return_data = readFromsdhcReg(addr, byte_mask, cpu_view);
-        
+
         switch(byte_mask)
         {
         case 0b1111:
@@ -213,6 +230,7 @@ uint32_t checkAndReadSdhcReg(uint32_t addr,
                 return_data <<= 24;
                 break;
         default:
+        return_data=0;
                 break;
         }
 
@@ -259,29 +277,32 @@ void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar,
 //if both are 1, interrupt has to be generated for that bit
 void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
                                 sdhc_flags_for_events *sdhc_flags)
-{	
-        cpu_reg_view->normal_intr_status[0] = (cpu_reg_view->normal_intr_status_enable[0]) & 0xFF;//7:0
-        cpu_reg_view->normal_intr_status[1] = (cpu_reg_view->normal_intr_status_enable[1]) & 0x1F;//upper byte's 5:0
-        
-        // To find which bit of the normal_interrrupt_status_enable register
-	// has been set and reflect those in normal_interrupt_status register
-
+{
 	uint16_t intr_flag=0;
         //card insertion check
-	if ( (cpu_reg_view->present_state[2]>>0) & 0x1 )
+	if ( (cpu_reg_view->present_state[2]) & 0x1 )
 	{	
-                sdhc_flags->NormalInterruptCardInsertedInterrupt=1;
-		uint8_t norm_intr_stat_val = getBit8(cpu_reg_view->normal_intr_status[0],6);
+		uint8_t norm_intr_stat_en_val = getBit8(cpu_reg_view->normal_intr_status_enable[0],6);
 		uint8_t norm_intr_sig_en_val = getBit8(cpu_reg_view->normal_intr_signal_enable[0],6);
-		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_en_val);
+                if (intr_flag && (sdhc_flags->NormalInterruptCardInsertedInterrupt!=1))
+                {
+                cpu_reg_view->normal_intr_status[0] |= 1<<6;// updates interrupt register
+                sdhc_flags->NormalInterruptCardInsertedInterrupt=1;//sets a flag
+                }
+                
 	}
         //card removal check
-	else if ( ((cpu_reg_view->present_state[2]>>0) & 0x1) == 0)
+	else if (  ((cpu_reg_view->present_state[2]) & 0x1) == 0 )
 	{
-		sdhc_flags->NormalInterruptCardRemovalInterrupt=1;
-		uint8_t norm_intr_stat_val = getBit8(cpu_reg_view->normal_intr_status[0],7);
+		uint8_t norm_intr_stat_en_val = getBit8(cpu_reg_view->normal_intr_status_enable[0],7);
 		uint8_t norm_intr_sig_en_val = getBit8(cpu_reg_view->normal_intr_signal_enable[0],7);
-		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_val);
+		intr_flag = (norm_intr_sig_en_val & norm_intr_stat_en_val);
+                if (intr_flag && (sdhc_flags->NormalInterruptCardRemovalInterrupt!=1))
+                {
+                cpu_reg_view->normal_intr_status[0] |= 1<<7;// updates interrupt register
+		sdhc_flags->NormalInterruptCardRemovalInterrupt=1;
+                }
 	}
 	//checks for error interrupts
         else if ( (cpu_reg_view->normal_intr_status[1]>>7) & 0x1)
@@ -290,14 +311,28 @@ void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
 	}
 	//	TODO: more checks for other interrupts sources to be added
 
-	switch (intr_flag)
+	switch (intr_flag)//notifies CPU about interrupt
 	{
 	case 1:
-		SDHC_INT_OUT=SDHC_IRL;
+		
+                if (cpu_reg_view->normal_intr_status[0]!=0)
+                {
+                SDHC_INT_OUT=SDHC_IRL;
 		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
-		break;
+#ifdef DEBUG                
+                fprintf(stderr,"Value of SDHC_INT_OUT is:%d\r\n",SDHC_INT_OUT);
+#endif
+                }
+                else
+                {
+                SDHC_INT_OUT=0;
+		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
+#ifdef DEBUG
+                fprintf(stderr,"Value of SDHC_INT_OUT is:%d\r\n",SDHC_INT_OUT);
+#endif
+                }
+                break;
 	case 0:
-		//de-asserts the interrupt that may have been generated earlier
 		SDHC_INT_OUT = 0;
 		write_uint8("SDHC_to_IRC_INT",SDHC_INT_OUT);
 		break;
@@ -308,3 +343,20 @@ void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
 	}
 }
 
+void checkErrorInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
+                          struct sdhc_flags_for_events *sdhc_flags)
+{
+	uint8_t lower8ErrorStatusBits = cpu_reg_view->error_intr_status[0] & 0xFF;
+        uint8_t upper3ErrorStatusBits = cpu_reg_view->error_intr_status[1] & 0x7;
+        if ((lower8ErrorStatusBits & upper3ErrorStatusBits)!=0)
+        {
+                cpu_reg_view->normal_intr_status[1] |= 1<<7;
+                sdhc_flags->ErrorInterrupt = 1;
+        }
+	//TODO : individual cases for each possibility to be added as the model progresses
+	/*uint8_t lowerErrorSignalEnableBits = getSlice8(cpu_reg_view->error_intr_signal_enable[0],8,0);
+        uint8_t upperErrorSignalEnableBits = getSlice8(cpu_reg_view->error_intr_signal_enable[1],8,0);
+	uint8_t lowerErrorStatusEnableBits = getSlice8(cpu_reg_view->error_intr_status_enable[0],8,0);
+        uint8_t upperErrorStatusEnableBits = getSlice8(cpu_reg_view->error_intr_status_enable[1],8,0);*/
+        
+}

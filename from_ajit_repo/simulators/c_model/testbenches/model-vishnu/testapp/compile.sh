@@ -6,6 +6,7 @@ gcc -o run \
         ../model/common/src/Ancillary.c \
         ../model/src/sdhc_helper.c \
         ../model/src/sdhc.c \
+	../model/src/sd.c \
         -I ../model/include/ \
         -I ../model/common/include \
         -I $AHIR_RELEASE/include \

@@ -6,7 +6,7 @@
 #include "pipeHandler.h"
 #include "Ancillary.h"
 #include "Sdhc.h"
-
+#include "sd.h"
 #define READ 1
 #define WRITE 0
 
@@ -161,12 +161,13 @@ void readAllSdhcReg()
 int main()
 {
         startSdhcThreads();
-        printf("\n----------reading initial values of all registers ----------\n\n");
+        startSdCardThreads();
+        printf("\n\t----------reading initial values of all registers ----------\n\n");
 
-        readAllSdhcReg();
+         readAllSdhcReg();
         
-        printf("\n\n ****** March test for SDHC regs ******\n\n");
-        printf("\n----------writing values to each register----------\n\n");
+        printf("\n\t ****** March test for SDHC regs started ******\n\n");
+        printf("\n\t----------writing values to each register----------\n\n");
 
         appWriteToSdhcReg(ADDR_SDHC_ARG_2, sizeof(uint32_t), 0x87654321);
         appWriteToSdhcReg(ADDR_SDHC_BLOCK_SIZE, sizeof(uint16_t), 0x8765);
@@ -187,11 +188,11 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_CLOCK_CONTROL, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_TIMEOUT_CONTROL, sizeof(uint8_t), 0x12);
         appWriteToSdhcReg(ADDR_SDHC_SOFTWARE_RESET, sizeof(uint8_t), 0x34);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x4321);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x0000);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0xDBc1);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x0000);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_STATUS_EN, sizeof(uint16_t), 0x8765);
-        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x11c1);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x0000);
         appWriteToSdhcReg(ADDR_SDHC_ERROR_INTR_SIGNAL_EN, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_AUTO_CMD_ERROR_STATUS, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROL_2, sizeof(uint16_t), 0x4321);
@@ -206,14 +207,21 @@ int main()
         appWriteToSdhcReg(ADDR_SDHC_SHARED_BUS_CTRL, sizeof(uint16_t), 0x8765);
         appWriteToSdhcReg(ADDR_SDHC_SLOT_INTR_STATUS, sizeof(uint16_t), 0x4321);
         appWriteToSdhcReg(ADDR_SDHC_HOST_CONTROLLER_VERSION, sizeof(uint16_t), 0x8765);
-
+        
         printf("\n----------Writes to each register done----------\n\n");
 
         printf("\n----------Reading the written values from each register ----------\n\n");
 
         readAllSdhcReg();
-
-        printf("\n ****** end of march test ******\n\n");
-
+        printf("\n\t ****** end of march test ******\n\n");
+        printf("\t Sequence step 1:\r\n");
+        printf("# Enabling card insertion and removal interrupts\r\n");
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS_EN, sizeof(uint16_t), 0x00C0);
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_SIGNAL_EN, sizeof(uint16_t), 0x00C0);
+        printf("\t Value of Normal Intr Status reg. after interrupt is generated in Model= 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t)));
+        printf("# Clearing card insertion interrupt\r\n");        
+        appWriteToSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t), 0x40);
+        printf("\t Value of Normal Intr Status reg. after clearing interrupt = 0x%x\n", appReadFromSdhcReg(ADDR_SDHC_NORMAL_INTR_STATUS, sizeof(uint16_t)));
+        printf("\t End of sequence step 1:\r\n");        
         return 0;
 }

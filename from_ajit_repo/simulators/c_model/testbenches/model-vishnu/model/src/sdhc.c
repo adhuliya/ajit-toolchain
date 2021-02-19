@@ -103,7 +103,7 @@ SDHC_Control:
 #include "Device_utils.h"
 
 #include "Sdhc.h"
-
+#include "sd.h"
 // #define DEBUG
 
 #define READ	1
@@ -130,7 +130,10 @@ pthread_mutex_t Sdhc_lock = PTHREAD_MUTEX_INITIALIZER;
 void registerSdhcPipes()
 {
         register_port("SDHC_to_IRC_INT",8,1);
+        register_port("SDCARD_to_SDHC",8,1);
 	set_pipe_is_written_into("SDHC_to_IRC_INT");
+	set_pipe_is_read_from("SDCARD_to_SDHC");
+
         //pipes between system bus and SDHC device
         int depth=1;
 
@@ -149,37 +152,26 @@ void startSdhcThreads()
         PTHREAD_CREATE(sdhcControl);
         PTHREAD_DECL(sdhcInterruptsAndFlagsHandling);
         PTHREAD_CREATE(sdhcInterruptsAndFlagsHandling);
+        writeToSdhcReg(ADDR_SDHC_CAPS,0b1111,&cpu_reg_view,0x1000A8A);
         printf ("Size of CPU view of regs = %ld bytes\n", sizeof(sdhc_reg_cpu_view));
 }
 
-void asyncListenerForSdCard()
+void asyncListenerForSdCard(sdhc_reg_cpu_view *cpu_reg_view)
 {
-        while (1)
-	{
-		uint8_t signalFromSdCard = read_uint8("SDCARD_TO_SDHC");
-		if(signalFromSdCard) 
-                { 
-                        cardInsert();
-                }
-                else if(signalFromSdCard == 0)
-                {
-                        cardRemoval();
-                }
-        }        	
-}
 
-void cardInsert()
-{
-	//setting bits 16,17,18 of PSR indicates that card is inserted 
-	//and detected 
-	cpu_reg_view.present_state[2]=0x7;
-}
-
-void cardRemoval()
-{
-        //clears bit 16 and 18 of PSR
-        cpu_reg_view.present_state[2]=0x2;
-}
+	int signalFromSdCard=1;//hard-coded
+//        signalFromSdCard = read_uint8("SDCARD_TO_SDHC");
+	if(signalFromSdCard) 
+        { 
+        cpu_reg_view->present_state[2]=0x7;
+        exit;
+        }
+        else if(signalFromSdCard == 0)
+        {
+        cpu_reg_view->present_state[2]=0x2;
+        exit;
+        }        
+}        	
 
 void sdhcControl()
 {
@@ -232,7 +224,10 @@ void sdhcInterruptsAndFlagsHandling()
 {
         while (1)
         {
-                checkNormalInterrupts(&cpu_reg_view, &sdhc_flags);               
+                
+                asyncListenerForSdCard(&cpu_reg_view);
+                checkNormalInterrupts(&cpu_reg_view, &sdhc_flags);  
+                checkErrorInterrupts(&cpu_reg_view, &sdhc_flags);           
         }
         
 }

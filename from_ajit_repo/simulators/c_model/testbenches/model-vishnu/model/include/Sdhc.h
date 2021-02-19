@@ -57,13 +57,6 @@
 //register pipes/signals used by the SDHC
 void registerSdhcPipes();
 void sdhcInitialState();
-
-//this function will imitate the action of a SD card being
-//physically inserted in the Slot and will change the necessary
-//bits of internal registers.
-void cardInsert();
-void cardRemoval();
-void asyncListenerForSdCard();
 void startSdhcThreads();
 
 // Threads for SDHC control
@@ -122,6 +115,13 @@ typedef struct sdhc_reg_cpu_view
         uint8_t host_controller_version[2]; 	//0xFE 
 }sdhc_reg_cpu_view;
 
+//this function will imitate the action of a SD card being
+//physically inserted in the Slot and will change the necessary
+//bits of internal registers.
+void cardInsert(sdhc_reg_cpu_view *cpu_reg_view);
+void cardRemoval(sdhc_reg_cpu_view *cpu_reg_view);
+void asyncListenerForSdCard(sdhc_reg_cpu_view *cpu_reg_view);
+
 //following structure contains flags that will be set/cleared
 //upon occurence of certains events, written in order of 
 //initialization sequence given in Specification v3.01
@@ -134,6 +134,7 @@ typedef struct sdhc_flags_for_events{
         uint8_t PresentStateRegisterCardInsterted;
         uint8_t NormalInterruptCardRemovalInterrupt;
         uint8_t NormalInterruptCardInsertedInterrupt;
+        uint8_t ErrorInterrupt;
 
 //Sequence step 2: Clock Control
         uint8_t InternalClockEnableSet;                
@@ -326,6 +327,9 @@ void setFlagsForReadWriteOperations(uint32_t addr, uint8_t rwbar,
 //if any bits in normal_intr_signal_en reg are set, they are 
 //to be compared with the bits of normal_intr_stat reg and,
 //if both are 1, interrupt has to be generated for that bit
-void checkNormalInterrupts(struct sdhc_reg_cpu_view *cpu_reg_view,
-                                        sdhc_flags_for_events *sdhc_flags);                                     
+void checkNormalInterrupts(sdhc_reg_cpu_view *cpu_reg_view,
+                           sdhc_flags_for_events *sdhc_flags);    
+
+void checkErrorInterrupts(sdhc_reg_cpu_view *cpu_reg_view,
+                          sdhc_flags_for_events *sdhc_flags);                                                                         
 #endif
