@@ -1,0 +1,194 @@
+Entered iterate: 2000
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4770960
+Total time (secs): 12.213658
+Iterations/Sec   : 163.751111
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3  -fschedule-insns -fschedule-insns2 -frename-registers 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 163.751111 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3  -fschedule-insns -fschedule-insns2 -frename-registers  / STATIC
+
+
+Updated April 24, 2018.
+-------------------------
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4808089
+Total time (secs): 12.308708
+Iterations/Sec   : 162.486593
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3  -fschedule-insns -fschedule-insns2 -frename-registers 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 162.486593 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3  -fschedule-insns -fschedule-insns2 -frename-registers  / STATIC
+
+
+Updated January 10, 2019.
+-------------------------
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4762800
+Total time (secs): 12.192768
+Iterations/Sec   : 164.031662
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3  
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 164.031662 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3   / STATIC
+
+Updated January 11, 2019.
+-------------------------
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4615098
+Total time (secs): 11.814651
+Iterations/Sec   : 169.281346
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 169.281346 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+Updated January 30, 2019.
+-------------------------
+CoreMark Size    : 666
+Total ticks      : 4503620
+Total time (secs): 11.529267
+Iterations/Sec   : 173.471563
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 173.471563 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+
+Updated July 25, 2019.
+-------------------------
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4407134
+Total time (secs): 11.282263
+Iterations/Sec   : 177.269400
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 177.269400 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+
+January 5, 2021
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290278
+Total time (secs): 10.983112
+Iterations/Sec   : 182.097757
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.097757 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+
+January 15, 2021.
+
+2K performance run parameters for coremark.                                                                        
+CoreMark Size    : 666                                                                                             
+Total ticks      : 4290276                                                                                         
+Total time (secs): 10.983107                                                                                       
+Iterations/Sec   : 182.097842                                                                                      
+Iterations       : 2000                                                                                            
+Compiler version : sparc-linux-gcc 4.7.4                                                                           
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm                            
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.097842 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+January 17, 2021.
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290271
+Total time (secs): 10.983094
+Iterations/Sec   : 182.098054
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.098054 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+January 27, 2021.
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4289950
+Total time (secs): 10.982272
+Iterations/Sec   : 182.111680
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.111680 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+

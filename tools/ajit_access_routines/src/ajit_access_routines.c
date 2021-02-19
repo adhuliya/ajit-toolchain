@@ -89,6 +89,23 @@ inline uint64_t __ajit_get_clock_time()
 	return(ret_val);
 }
 
+//
+// Assumes that roll-over never happens.
+//   I think that is a reasonable assumption.
+//   Unless we send something on a deep space
+//   probe.
+//
+void __ajit_sleep__(uint32_t clock_cycles)
+{
+	uint64_t curr_time = __ajit_get_clock_time();
+	uint64_t end_time = curr_time + clock_cycles;
+
+	while(curr_time < end_time)
+	{
+		curr_time = __ajit_get_clock_time();
+	}
+	return;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  MMU related stuff
@@ -396,23 +413,6 @@ inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t 
 	__ajit_serial_set_baudrate_inner__ (1, baud_rate, clock_frequency);
 }
 
-
-inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
-{
-	uint32_t addr_br = ADDR_CONFIG_UART_BAUD_RATE_REGISTER;
-	uint32_t addr_cf = ADDR_CONFIG_CLK_FREQUENCY_REGISTER;
-	if(use_vmap)
-	{
-		*((uint32_t*) addr_br) = baud_rate;
-		*((uint32_t*) addr_cf) = clock_frequency;
-	}
-	else
-	{
-		__ajit_store_word_mmu_bypass__(baud_rate, addr_br);
-		__ajit_store_word_mmu_bypass__(clock_frequency, addr_cf);
-	}
-}
-
 //
 //  This is no longer used.  But the logic could be useful at some future point.
 //  Given the clock freq and baud-rate, this computes the control word (baud-freq, baud-limit)
@@ -442,10 +442,26 @@ uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t cloc
 		// at this point GCD=B.
 		uint32_t baud_freq = (16*baud_rate)/B;
 		uint32_t baud_limit = (clock_frequency/B)-baud_freq;
-		ret_val = ((baud_limit & 0xffff) << 12) | (baud_freq & 0xfff);
+		ret_val = ((baud_limit & 0xffff) << 16) | (baud_freq & 0xfff);
 	}
 
 	return(ret_val);
+}
+
+
+inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
+{
+	uint32_t addr_brcw = ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER;
+	uint32_t baud_control_word = calculate_baud_control_word_for_uart (baud_rate, clock_frequency);
+
+	if(use_vmap)
+	{
+		*((uint32_t*) addr_brcw) = baud_control_word;
+	}
+	else
+	{
+		__ajit_store_word_mmu_bypass__(baud_control_word, addr_brcw);
+	}
 }
 
 

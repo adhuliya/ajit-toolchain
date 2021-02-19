@@ -1,0 +1,55 @@
+=======================================================
+Measured Nov. 24, 2020
+	prior to memory path
+	optimizations.
+
+Starting                                                                                                           
+1K: err=0 t=0.091311 seconds                                                                                       
+4K: err=0 t=0.363854 seconds                                                                                       
+16K: err=0 t=1.454045 seconds                                                                                      
+64K: err=0 t=5.814811 seconds                                                                                      
+Done  
+
+With instructions uncached.
+Starting
+1K: err=0 t=0.092808 seconds
+4K: err=0 t=0.365353 seconds
+16K: err=0 t=1.455544 seconds
+64K: err=0 t=5.816311 seconds
+Done
+
+=======================================================
+Measured Jan 15, 2021.
+	after 1st round of mem path
+	improvements.
+Starting                                                                                                           
+1K: err=0 t=0.083418 seconds                                                                                       
+4K: err=0 t=0.332368 seconds                                                                                       
+16K: err=0 t=1.328188 seconds                                                                                      
+64K: err=0 t=5.311466 seconds                                                                                      
+Done  
+
+=======================================================
+
+Measured Jan 17, 2021.
+	after 2nd round of mem path
+	improvements.
+
+Starting                                                                                                           
+1K: err=0 t=0.078151 seconds                                                                                       
+4K: err=0 t=0.311374 seconds                                                                                       
+16K: err=0 t=1.244279 seconds                                                                                      
+64K: err=0 t=4.975899 seconds                                                                                      
+Done      
+
+	About a 16% reduction in 
+	execution time.
+
+
+with instruction uncached.
+1K: err=0 t=0.079374 seconds
+4K: err=0 t=0.312598 seconds
+16K: err=0 t=1.245503 seconds
+64K: err=0 t=4.977124 seconds
+
+=======================================================

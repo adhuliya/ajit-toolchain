@@ -1,0 +1,18 @@
+memory_tests/
+	memory system tests including mmu
+
+misc_tests/
+	misc.
+
+performance_tests/
+	these are tests to gauge the performance of
+	the machine.
+
+serial_tests/
+	serial interface tests
+
+timer_tests/
+	timer tests.
+
+stress_tests/
+	extreme cases

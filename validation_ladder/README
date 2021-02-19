@@ -1,0 +1,11 @@
+Functional and characterization tests for the AJIT processor.
+
+basic_tests/
+	basic checks.
+
+benchmarks/
+	standard benchmarks.
+
+linux/
+	linux boot + applications etc.
+

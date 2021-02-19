@@ -48,6 +48,10 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 //   (Thus, if the clock is 100mhz, 1 tick is 2.56 micro-seconds).
 // 
 inline uint64_t __ajit_get_clock_time();
+//
+// sleep for specified number of clock cycles.
+//
+void __ajit_sleep__(uint32_t clock_cycles);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,8 +226,7 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 #define ADDR_GPIO_DOUT_REGISTER                     	0xFFFF3400 // GPIO DOUT register address (word).
 #define ADDR_GPIO_DIN_REGISTER                     	0xFFFF3404 // GPIO DIN register address (word).
 
-#define ADDR_CONFIG_UART_BAUD_RATE_REGISTER		0xFFFF3408 // Baud-rate of UARTS connected to the system.
-#define ADDR_CONFIG_CLK_FREQUENCY_REGISTER		0xFFFF340c // Clock frequency of the system.
+#define ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER		0xFFFF3408 // Baud-rate control word for UARTS in the system.
 
 
 

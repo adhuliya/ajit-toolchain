@@ -1,0 +1,9 @@
+#!/bin/bash
+./basic_tests/memory_tests/mem_copy/clean.sh
+./basic_tests/memory_tests/all_kinds_mem/clean.sh
+./basic_tests/memory_tests/mem_with_context_switches/clean.sh
+./basic_tests/memory_tests/context_switches/clean.sh
+./basic_tests/memory_tests/mem_copy_uncached/clean.sh
+./basic_tests/memory_tests/mem_copy_without_cache_conflicts/clean.sh
+./benchmarks/flops20/clean.sh
+./benchmarks/dhrystone/clean.sh

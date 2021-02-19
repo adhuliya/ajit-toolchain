@@ -1,0 +1,140 @@
+
+HiFromAjit
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290278
+Total time (secs): 10.983112
+Iterations/Sec   : 182.097757
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.097757 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit
+
+
+HiFromAjit
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290276
+Total time (secs): 10.983107
+Iterations/Sec   : 182.097842
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.097842 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit
+
+
+HiFromAjit
+
+
+   FLOPS C Program (Double Precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1     -0.00000000      0.5200     26.9231
+     2      0.00000000      0.3200     21.8750
+     3     -0.00000000      0.4900     34.6939
+     4     -0.00000000      0.5100     29.4118
+     5     -0.00000000      0.9800     29.5918
+     6      0.00000000      0.7400     39.1892
+     7     -0.00000000      0.9300     12.9032
+     8      0.00000000      0.8000     37.5000
+
+   Iterations      =   32000000
+   NullTime (usec) =     0.0000
+   MFLOPS(1)       =    24.8804
+   MFLOPS(2)       =    21.8391
+   MFLOPS(3)       =    29.3763
+   MFLOPS(4)       =    35.8268
+
+Starting
+1K: err=1 t=0.072246 seconds
+4K: err=1 t=0.282118 seconds
+16K: err=1 t=1.121499 seconds
+Starting
+1K: err=0 t=0.072245 seconds
+4K: err=0 t=0.282118 seconds
+16K: err=0 t=1.121499 seconds
+Starting
+1K: err=0 t=0.072245 seconds
+4K: err=0 t=0.282118 seconds
+16K: err=0 t=1.121634 seconds
+64K: err=1 t=4.479699 seconds
+Done
+Starting
+1K: err=0 t=0.078848 seconds
+4K: err=0 t=0.307890 seconds
+16K: err=0 t=1.224083 seconds
+64K: err=1 t=4.888856 seconds
+Done
+Starting
+1K: err=0 t=0.072246 seconds
+4K: err=0 t=0.282118 seconds
+16K: err=0 t=1.121634 seconds
+64K: err=1 t=4.479699 seconds
+Done
+Starting
+1K: err=0 t=0.072245 seconds
+4K: err=0 t=0.282118 seconds
+16K: err=0 t=1.121634 seconds
+64K: err=1 t=4.479699 seconds
+Done
+Starting
+1K: err=0 t=0.072245 seconds
+4K: err=0 t=0.282118 seconds
+16K: err=0 t=1.121634 seconds
+64K: err=1 t=4.479699 seconds
+Done
+þÿStarting
+1K: err=0 t=0.002073 seconds
+4K: err=0 t=0.008074 seconds
+16K: err=0 t=0.032097 seconds
+64K: err=1 t=0.128189 seconds
+Done
+
+HiFromAjit
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290271
+Total time (secs): 10.983094
+Iterations/Sec   : 182.098054
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.098054 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit
+
+Starting
+1K: err=0 t=0.066149 seconds
+4K: err=0 t=0.258328 seconds
+16K: err=0 t=1.027065 seconds
+64K: err=1 t=4.101893 seconds
+Done
