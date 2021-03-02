@@ -1,0 +1,230 @@
+
+CONTENTS:
+
+	(1) 	Introduction
+	(2)	Obtaining a cross-compiler toolchain for sparc V8	
+	(3)	Compiling the Ajit_linux kernel source and generating an image for Ajit processor
+	(4)	Running the kernel image on the C model of Ajit processor
+	(5)	Navigating through the kernel source code, and modifying it
+	(6)	Viewing, modifying and saving buildroot configurations
+	(7)	Viewing, modifying and saving linux kernel configurations
+
+
+
+----------------------------------------------------------------------
+ (1) Introduction
+----------------------------------------------------------------------
+
+To generate an image of linux kernel that can boot on the Ajit processor,
+we need the following :
+
+	1. A cross-toolchain (cross compiler, assembler, debugger etc)
+	2. Linux kernel source code
+	3. Linux kernel configurations
+	4. Build configurations
+	5. A filesystem image
+
+We use Buildroot (http://buildroot.uclibc.org/downloads/manual/manual.html)
+for generating a cross toolchain, obtaining a filesystem image,
+and compiling the kernel sources to generate an image.
+We're using Buildroot version 2014.08.
+
+
+	* The linux kernel sources for the Ajit processor (created by modifying 
+	the original linux kernel V.3.16.1) are present in folder Ajit_linux_3.16.1.
+	Buildroot uses these sources to build the kernel image. Buildroot makes a copy
+	of this code in the build folder, before compiling.
+	
+
+	* Buildroot configurations for the Ajit processor are stored in 
+	Ajit_buildroot_configs/configs/Ajit_defconfig
+	and the linux kernel configurations are stored in 
+	Ajit_buildroot_configs/board/Ajit_minimal_linux_kernel.config
+	SEE section IV and V for modifying these configurations.
+
+	* The filesystem is RAM-based (initramfs). The contents of
+	folder Ajit_buildroot_configs/board/rootfs_overlay/ are
+	overlayed onto a default directory structure 
+	that goes into the filesystem image.
+
+
+----------------------------------------------------------------------
+ (2)  Obtaining a cross-compiler toolchain for Sparc V8
+----------------------------------------------------------------------
+	
+	To obtain a cross compiler toolchain  we can use a default
+	configuration file present in buildroot for sparc v8. 
+		
+		$cd buildroot-2014.08
+		$make qemu_sparc_ss10_defconfig
+		$make
+
+	This will download all packages over teh internet and can take a long
+	time (upto 20-30 minutes). (If you already have a working buildroot
+	area elsewhere, you can skip this step by copying the contents of 
+	'/dl' (downloads) folder in buildroot from the existing buildroot area.)
+	At the end of this step we get a working cross compiler toolchain. 
+	The cross compiler binaries (sparc-buildroot-linux-uclibc-gcc, as, ld etc) 
+	are present in folder:
+	
+		buildroot-2014.08/output/host/usr/bin.  
+	
+	Add this location to your system's PATH variable to use the cross
+	compiler binaries outside buildroot.
+
+
+---------------------------------------------------------------------------------------------
+ (3)  Compiling the Ajit_linux kernel source and generating an image for Ajit processor :
+---------------------------------------------------------------------------------------------
+
+	1.	Untar the buildroot archive:
+		This produces a directory called buildroot-2014.08/
+		
+		$ tar -zxvf  buildroot-2014.08.tar.gz
+
+
+	2.	Buildroot configurations for a minimal linux kernel
+		and using a RAM-based filesystem (initramfs)
+		are stored in a directory Ajit_buildroot_configs. 
+		Point out these configurations to buildroot:
+
+		$ cd buildroot-2014.08
+		$ export BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs
+
+		type 'make help' to check if Ajit_defconfig is listed at the end. 
+
+	
+	3.	Get buildroot to download all packages and build. Requires an internet
+		connection. This may take 20-30 minutes. 
+		
+		(Note : Buildroot stores the downloaded packages in buildroot-2014.08/dl folder.
+		So, if you ever need to relocate or copy an existing buildroot directory,
+		copy the contents of the dl folder and run 'make' to save time
+		that would have been spent in downloading the packages over the internet.)
+		
+		$ make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
+		$ make
+
+		This should succeed without errors and build a kernel executable:
+		buildroot-2014.08/output/images/vmlinux
+
+----------------------------------------------------------------------
+ (4)  Running the kernel image on the C model of Ajit processor :
+----------------------------------------------------------------------
+	
+	1. The kernel executable (vmlinux) is generated at the end of step (I)
+	in folder buildroot-2014.08/output/images/
+
+	We need to combine this executable, and an executable for the
+	bootloader into a single memory map that can be read by the
+	processor model.
+
+	
+	(Updated 15 Sept 2016, Neha Karanjkar)
+	
+	**** There is a single script for 
+	compiling the kernel sources, the bootloader code
+	and generating a memory map by combining the two.
+
+	To run the script:
+
+	--------------------------------------
+	$ cd <AJIT-REPOSITORY-HOME>/os/Ajit_linux/
+	$ ./GeneratememMapForAjit.sh
+	--------------------------------------
+	
+	See the script for details about each step.
+	
+
+	To run the processor model
+	with the generated memory map file:
+	
+	$ <processor-executable> <memory-map-file>
+
+
+
+
+------------------------------------------------------------------------------
+ (5)	Navigating through the kernel source code, modifying and saving it
+------------------------------------------------------------------------------
+	This section assumes you are using vim or gvim editor with cscope.
+	Similar code navigation plugins may exist for other editors.
+
+	First, generate a cscope database of all symbols in the kernel:
+	$ cd  Ajit_linux_3.16.1
+	$ arch=sparc make cscope
+
+	Add the cscope database in vim. Open the vim editor and type command : 
+		:cs add <complete_path_of_Ajit_linux_3.16.1>/cscope.out <complete_path_of_Ajit_linux_3.16.1>/
+	
+	To find a symbol (variable or function name etc)
+	inside vim, use the following command :
+		:cs find <type> <symbol-name>
+	Where type can be :
+		c: Find functions calling this function
+		d: Find functions called by this function
+		e: Find this egrep pattern
+		f: Find this file
+		g: Find this definition
+		i: Find files #including this file
+		s: Find this C symbol
+		t: Find this text string
+
+	-----------------------------------
+	Saving modifications to the kernel:
+	-----------------------------------
+	If you make any modifications to the kernel code, it may be necessary to 
+	sync the modified code manually with the copy of the code inside buildroot's 
+	working directory. We do this using rsync.
+	A script "do_rsync.sh" is provided for this.
+	Check if the folder paths in this script are correct before using.
+
+	------------------------------------
+	Modifying the kernel's device tree 
+	and generating a device tree blob to 
+	be included in the kernel :
+	------------------------------------
+	Refer : Ajit_linux_3.16.1/arch/sparc/Ajit/device_tree/README
+
+
+	
+----------------------------------------------------------------------
+(6)	Viewing, modifying and saving buildroot configurations
+----------------------------------------------------------------------
+
+		$ cd buildroot-2014.08
+		$ make Ajit_defconfig
+		$ make menuconfig
+
+	This will open up a gui editor in which the configurations can be viewed and changed.
+	Upon clicking 'save', the new configurations are saved in <linux>/.config file.
+	Rerun make to use the new configurations.
+	To save the new configurations permanently, overwriting Ajit_defconfig, 
+	select Save on gui, exit gui and run 
+	$ make savedefconfig BR2_DEFCONFIG=<full path of this folder>/Ajit_buildroot_configs/configs/Ajit_defconfig
+
+----------------------------------------------------------------------
+(7)	Viewing, modifying and saving linux kernel configurations
+----------------------------------------------------------------------
+	
+	The linux kernel configurations used by 'make'
+	are stored in:
+	
+	Ajit_linux/Ajit_buildroot_configs/board/Ajit_minimal_linux_kernel.config
+
+	Similar to the above step, to modify linux kernel configs, 
+	navigate to buildroot's working directpry and run
+		
+		$ make linux-menuconfig
+	
+	To save the modified configuration (overwriting original) run
+		$ make linux-update-config 
+
+	re-run make after any changes to configurations
+
+
+
+
+
+
+

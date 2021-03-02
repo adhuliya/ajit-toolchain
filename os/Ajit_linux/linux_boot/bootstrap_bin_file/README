@@ -1,0 +1,2 @@
+Do not commit a new bin file until you have confirmed
+that it boots successfully on the processor.

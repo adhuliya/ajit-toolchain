@@ -1,0 +1,6 @@
+
+   linux-code
+        architecture-independent-code
+
+	architecture-dependent-code
+		arch/sparc/
