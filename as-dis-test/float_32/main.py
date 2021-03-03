@@ -334,10 +334,7 @@ def check_statistics():
 
 if __name__=="__main__":
     init_statistics()
-    main_asm = open('main.s', 'w')
-  #  main_asm.write('! All possible register combinations for misc instructions\n')
-  #  main_asm.write('! Author : Prajwal Kamble\n')
-  #  main_asm.write('! 9 Feb 2021\n\n\n')                    
+    main_asm = open('main.s', 'w')              
     main_asm.writelines(generate_reg_instrs())
     main_asm.close()
     check_statistics()

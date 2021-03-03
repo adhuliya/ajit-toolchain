@@ -5,3 +5,18 @@ To run the tests in each directory -
 1. python main.py #generates the assembly file and tests for occurences of each instruction and register.
 2. python as.py   #assembles and diassembles the previously generated file.
 3. python compare.py main.dis.s # copares the assembled and disassembled files. 
+
+
+The structire is as follows -
+
+
+1. float_32   - All 32 bit floating point instructions.
+2. float_64   - All 64 bit floating point instructions.
+3. int_alu_32 - All 32 bit arithmatic ang logical instructions.
+4. int_alu_64 - All 64 bit arithmatic ang logical instructions.
+5. ld_st      - All memory instructions - load, store, swap for 32 and 64 bit. (for iu, cp and fp).
+6. misc       - All other miscellaneous instructions as given in the sparc v8 manial.
+(TODO) 7. Synthetic  - Instructions given in sparc v8 manual Appendix A pg.85, table A1. 
+
+
+NOTE - Does not include control transfer instructions as they accept only one operand of one type, which has been previously tested. 
