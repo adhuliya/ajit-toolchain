@@ -1,0 +1,10 @@
+/bitfile: 29 Jan 2021/                                                                                               
+Starting                                                                                       
+Done initialising array                                                                        
+1K: err=0 t=0.154414 seconds
+  1MB in 0.154414 seconds,
+  6.47MB/second                                                                   
+4K: err=0 t=0.603747 seconds                                                                   
+16K: err=0 t=2.400967 seconds                                                                  
+64K: err=0 t=9.589497 seconds                                                                  
+Done                                                                                           

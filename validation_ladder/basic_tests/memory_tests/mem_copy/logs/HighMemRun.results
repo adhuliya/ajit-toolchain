@@ -1,0 +1,21 @@
+Starting
+Done initialising array
+1K: err=0 t=0.153740 seconds
+4K: err=0 t=0.603056 seconds
+16K: err=0 t=2.400211 seconds
+64K: err=0 t=9.588830 seconds
+Done
+Starting
+Done initialising array
+1K: err=0 t=0.154412 seconds
+4K: err=0 t=0.603747 seconds
+16K: err=0 t=2.400966 seconds
+64K: err=0 t=9.589493 seconds
+Done
+Starting
+Done initialising array
+1K: err=0 t=0.154413 seconds
+4K: err=0 t=0.603748 seconds
+16K: err=0 t=2.400968 seconds
+64K: err=0 t=9.589491 seconds
+Done

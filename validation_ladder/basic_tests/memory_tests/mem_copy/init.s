@@ -3,7 +3,7 @@
 _start:
 	! stack..
 	set 0xfff01000, %sp
-        set 0xfff01100, %fp
+  set 0xfff01100, %fp
 
 	set 0x1, %l0		! window 0 is marked invalid...  we start at window 7
 	wr %l0, 0x0, %wim	!

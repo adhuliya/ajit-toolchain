@@ -1,5 +1,8 @@
-A test which checks the following types of
-memory accesses using a simple march algorithm.
-	- to cacheable pages
-	- to non-cacheable pages
-	- bypasses.
+A test which copies a block of data
+from one location to the other for
+1KB, 4KB, 16K and 64K block size
+
+Usage: 
+	1. Source the bin-utils required for AJIT processor.
+	2. Compile the program by running compile.sh script
+	3. For using with the hardware setup, see the HW_README.

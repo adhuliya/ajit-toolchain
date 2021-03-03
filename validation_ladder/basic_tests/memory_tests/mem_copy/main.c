@@ -12,7 +12,7 @@ int main()
 	ee_printf("Starting\n");
 
 	init_src_array();
-
+	ee_printf("Done initialising array\n");
 	int err = 0;
 	int i;
 	double t;
@@ -33,6 +33,5 @@ int main()
 
 	return(1);
 }
-
 
 
