@@ -1,4 +1,4 @@
-Write routines that check the performanace of
+Write routines that check the performance of
 the processor, for the 3 types of data locations
 accessed:
 	1. cached

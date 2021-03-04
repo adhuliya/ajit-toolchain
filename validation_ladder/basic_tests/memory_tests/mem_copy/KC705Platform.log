@@ -1,0 +1,18 @@
+********************************************
+Date: 2 March 2021
+Bitfile date: 28 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705
+********************************************
+
+
+Starting
+Done initialising array
+1K: err=0 t=0.153740 seconds
+4K: err=0 t=0.603056 seconds
+16K: err=0 t=2.400211 seconds
+64K: err=0 t=9.588830 seconds
+Done
+
+	//	Observation: For 1MB (4KiloBytes * 256), it takes 0.153740 seconds
+	//	Therefore, Bandwidth is 6.5 MBPS

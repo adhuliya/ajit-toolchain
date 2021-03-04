@@ -1,9 +1,6 @@
-A test which copies blocks of data
-from one location to the other and 
-gives back the time taken to perform
-this operation. 
-The memory locations however are 
-marked as uncached (see vmap.txt)
+Application that performs 4 context switches,
+and times the difference taken for said 4 context
+switches and returns the avg time taken.
 
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
