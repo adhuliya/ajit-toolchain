@@ -3,4 +3,5 @@ rm -f *.mmap* *.hex
 rm -rf sparc-*
 rm -f *.aux *.elf *.obj* *.vars
 rm -f *.wtrace* *.trace 
-rm -f __gen*.s
+rm -f __gen*.s boot*
+rm -f *copy_asm.s
