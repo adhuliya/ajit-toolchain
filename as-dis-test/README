@@ -19,4 +19,4 @@ The structire is as follows -
 (TODO) 7. Synthetic  - Instructions given in sparc v8 manual Appendix A pg.85, table A1. 
 
 
-NOTE - Does not include control transfer instructions as they accept only one operand of one type, which has been previously tested. 
+NOTE - Does not include control transfer instructions (except rett and jmpl) as they accept only one operand of one type (label), which has been previously tested. 
