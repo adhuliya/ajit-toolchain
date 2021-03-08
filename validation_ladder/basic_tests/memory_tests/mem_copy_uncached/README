@@ -8,7 +8,7 @@ marked as uncached (see vmap.txt)
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
 
-	Bitfile Generation date: 28 Jan 2021 
+	Bitfile Generation date: 30 Jan 2021 
 
 Usage for the KC705 Platform: 
 	1. Source the bin-utils required for AJIT processor.

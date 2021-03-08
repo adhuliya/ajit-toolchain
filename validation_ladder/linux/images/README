@@ -1,0 +1,14 @@
+This directory contains a reference Linux image 
+which demonstartes the Linux porting completed for 
+AJIT processor.
+
+This directory has following files:
+	
+bootstrap.bin
+	The bootstrap.bin file needs to be written to
+	the SPI-FLASH memory present on the KC705 FPGA 
+	card ( MT25-QL128_x1_x2_x4 )using Vivado Tool.
+
+AJIT-Linux_Boot_on_KC705.log
+	This is a log file that captures the Linux boot
+	on AJIT Processor running on KC705 FPGA Board.	
