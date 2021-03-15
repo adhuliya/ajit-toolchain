@@ -1,2 +1,0 @@
-0x00000000 | 0x00000000000000000000000000000000 | unimp 0x00000000 #;|  #;| # UNIMP const22 #;| Unimplemented  #;| op2 = 0 #;| See Section B31 on page 137 of the Sparc V8 manual.
-0x003FFFFF | 0x00000000001111111111111111111111 | unimp 0x003FFFFF #;|  #;| # UNIMP const22 #;| Unimplemented  #;| op2 = 0 #;| See Section B31 on page 137 of the Sparc V8 manual.

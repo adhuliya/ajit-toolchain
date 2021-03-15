@@ -1,8 +1,0 @@
-0x0B400000 | 0x00001011010000000000000000000000 | cb23 0x00000000 #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x0B7FFFFF | 0x00001011011111111111111111111111 | cb23 0x003FFFFF #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x2B400000 | 0x00101011010000000000000000000000 | cb23 0x00000000 #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x2B7FFFFF | 0x00101011011111111111111111111111 | cb23 0x003FFFFF #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x0B400000 | 0x00001011010000000000000000000000 | cb23,a 0x00000000 #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x0B7FFFFF | 0x00001011011111111111111111111111 | cb23,a 0x003FFFFF #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x2B400000 | 0x00101011010000000000000000000000 | cb23,a 0x00000000 #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x2B7FFFFF | 0x00101011011111111111111111111111 | cb23,a 0x003FFFFF #;|  #;| # CB23 disp22 #;| CCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.

@@ -1,2 +1,0 @@
-ERROR: Range for bitfield "rs2" exceeds maximum.  Max #bits: 5, Given #bits: 6
-

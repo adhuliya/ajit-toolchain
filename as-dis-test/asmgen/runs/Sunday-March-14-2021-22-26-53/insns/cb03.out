@@ -1,8 +1,0 @@
-0x16800000 | 0x00010110100000000000000000000000 | cb03 0x00000000 #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x16BFFFFF | 0x00010110101111111111111111111111 | cb03 0x003FFFFF #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x36800000 | 0x00110110100000000000000000000000 | cb03 0x00000000 #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x36BFFFFF | 0x00110110101111111111111111111111 | cb03 0x003FFFFF #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x16800000 | 0x00010110100000000000000000000000 | cb03,a 0x00000000 #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x16BFFFFF | 0x00010110101111111111111111111111 | cb03,a 0x003FFFFF #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x36800000 | 0x00110110100000000000000000000000 | cb03,a 0x00000000 #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
-0x36BFFFFF | 0x00110110101111111111111111111111 | cb03,a 0x003FFFFF #;|  #;| # CB03 disp22 #;| CCC Branch on Unordered or Equal  #;| op2 = 1010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.

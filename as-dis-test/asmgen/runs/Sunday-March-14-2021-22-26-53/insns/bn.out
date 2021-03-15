@@ -1,8 +1,0 @@
-0x00000000 | 0x00000000000000000000000000000000 | bn 0x00000000 #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x003FFFFF | 0x00000000001111111111111111111111 | bn 0x003FFFFF #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x20000000 | 0x00100000000000000000000000000000 | bn 0x00000000 #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x203FFFFF | 0x00100000001111111111111111111111 | bn 0x003FFFFF #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x00000000 | 0x00000000000000000000000000000000 | bn,a 0x00000000 #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x003FFFFF | 0x00000000001111111111111111111111 | bn,a 0x003FFFFF #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x20000000 | 0x00100000000000000000000000000000 | bn,a 0x00000000 #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x203FFFFF | 0x00100000001111111111111111111111 | bn,a 0x003FFFFF #;|  #;| # BN disp22 #;| Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

@@ -1,2 +1,0 @@
-0x40000000 | 0x01000000000000000000000000000000 | call 0x00000000 #;|  #;| # CALL disp30 #;| Call and Link  #;| op = 01 #;| See Section B24 on page 125 of the Sparc V8 manual.
-0x7FFFFFFF | 0x01111111111111111111111111111111 | call 0x3FFFFFFF #;|  #;| # CALL disp30 #;| Call and Link  #;| op = 01 #;| See Section B24 on page 125 of the Sparc V8 manual.
