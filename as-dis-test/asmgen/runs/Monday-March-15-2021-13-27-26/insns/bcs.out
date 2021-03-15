@@ -1,0 +1,8 @@
+0x0B400000 | 0x00001011010000000000000000000000 | bcs 0x00000000 #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0B7FFFFF | 0x00001011011111111111111111111111 | bcs 0x003FFFFF #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2B400000 | 0x00101011010000000000000000000000 | bcs 0x00000000 #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2B7FFFFF | 0x00101011011111111111111111111111 | bcs 0x003FFFFF #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0B400000 | 0x00001011010000000000000000000000 | bcs,a 0x00000000 #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0B7FFFFF | 0x00001011011111111111111111111111 | bcs,a 0x003FFFFF #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2B400000 | 0x00101011010000000000000000000000 | bcs,a 0x00000000 #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2B7FFFFF | 0x00101011011111111111111111111111 | bcs,a 0x003FFFFF #;|  #;| # BCS disp22 #;| Branch on Carry Set (Less than, Unsigned)  #;| op2 = 0101, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

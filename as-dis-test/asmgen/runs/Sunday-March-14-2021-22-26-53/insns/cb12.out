@@ -1,0 +1,8 @@
+0x04800000 | 0x00000100100000000000000000000000 | cb12 0x00000000 #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x04BFFFFF | 0x00000100101111111111111111111111 | cb12 0x003FFFFF #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x24800000 | 0x00100100100000000000000000000000 | cb12 0x00000000 #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x24BFFFFF | 0x00100100101111111111111111111111 | cb12 0x003FFFFF #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x04800000 | 0x00000100100000000000000000000000 | cb12,a 0x00000000 #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x04BFFFFF | 0x00000100101111111111111111111111 | cb12,a 0x003FFFFF #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x24800000 | 0x00100100100000000000000000000000 | cb12,a 0x00000000 #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x24BFFFFF | 0x00100100101111111111111111111111 | cb12,a 0x003FFFFF #;|  #;| # CB12 disp22 #;| CCC Branch on Less or Greater  #;| op2 = 0010, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.

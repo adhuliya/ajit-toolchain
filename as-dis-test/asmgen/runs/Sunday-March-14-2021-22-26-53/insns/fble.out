@@ -1,0 +1,8 @@
+0x1B400000 | 0x00011011010000000000000000000000 | fble 0x00000000 #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1B7FFFFF | 0x00011011011111111111111111111111 | fble 0x003FFFFF #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3B400000 | 0x00111011010000000000000000000000 | fble 0x00000000 #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3B7FFFFF | 0x00111011011111111111111111111111 | fble 0x003FFFFF #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1B400000 | 0x00011011010000000000000000000000 | fble,a 0x00000000 #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1B7FFFFF | 0x00011011011111111111111111111111 | fble,a 0x003FFFFF #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3B400000 | 0x00111011010000000000000000000000 | fble,a 0x00000000 #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3B7FFFFF | 0x00111011011111111111111111111111 | fble,a 0x003FFFFF #;|  #;| # FBLE disp22 #;| FCC Branch on Less or Equal  #;| op2 = 1101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

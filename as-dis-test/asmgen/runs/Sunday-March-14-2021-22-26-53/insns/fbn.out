@@ -1,0 +1,8 @@
+0x00000000 | 0x00000000000000000000000000000000 | fbn 0x00000000 #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x003FFFFF | 0x00000000001111111111111111111111 | fbn 0x003FFFFF #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x20000000 | 0x00100000000000000000000000000000 | fbn 0x00000000 #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x203FFFFF | 0x00100000001111111111111111111111 | fbn 0x003FFFFF #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x00000000 | 0x00000000000000000000000000000000 | fbn,a 0x00000000 #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x003FFFFF | 0x00000000001111111111111111111111 | fbn,a 0x003FFFFF #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x20000000 | 0x00100000000000000000000000000000 | fbn,a 0x00000000 #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x203FFFFF | 0x00100000001111111111111111111111 | fbn,a 0x003FFFFF #;|  #;| # FBN disp22 #;| FCC Branch Never  #;| op2 = 0000, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

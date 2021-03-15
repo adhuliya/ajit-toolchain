@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/code/src/python/new-cg.py", line 1971, in <module>
+    main()
+  File "/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/code/src/python/new-cg.py", line 1966, in main
+    new_il = expand_all_insns (il)
+  File "/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/code/src/python/new-cg.py", line 1830, in expand_all_insns
+    out_insns_lst = expand_insn (insn)
+  File "/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/code/src/python/new-cg.py", line 1378, in expand_insn
+    do_final_expansion (insn)
+  File "/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/code/src/python/new-cg.py", line 1733, in do_final_expansion
+    oclst.append (bf[out_bitlst_out_opc_lst_at])
+IndexError: list index out of range

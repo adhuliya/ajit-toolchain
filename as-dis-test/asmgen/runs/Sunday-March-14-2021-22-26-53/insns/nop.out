@@ -1,0 +1,1 @@
+0x01000000 | 0x00000001000000000000000000000000 | nop  #;|  #;| # NOP imm22 #;| No Operation, argument is ignored.  #;| op2 = 100 #;| See Section B10 on page 105 of the Sparc V8 manual.

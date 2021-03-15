@@ -1,0 +1,8 @@
+0x0D800000 | 0x00001101100000000000000000000000 | fbg 0x00000000 #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0DBFFFFF | 0x00001101101111111111111111111111 | fbg 0x003FFFFF #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2D800000 | 0x00101101100000000000000000000000 | fbg 0x00000000 #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2DBFFFFF | 0x00101101101111111111111111111111 | fbg 0x003FFFFF #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0D800000 | 0x00001101100000000000000000000000 | fbg,a 0x00000000 #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0DBFFFFF | 0x00001101101111111111111111111111 | fbg,a 0x003FFFFF #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2D800000 | 0x00101101100000000000000000000000 | fbg,a 0x00000000 #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2DBFFFFF | 0x00101101101111111111111111111111 | fbg,a 0x003FFFFF #;|  #;| # FBG disp22 #;| FCC Branch on Greater  #;| op2 = 0110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

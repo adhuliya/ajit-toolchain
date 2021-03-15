@@ -1,0 +1,10 @@
+ ldsb %g0, %g0, %g0
+ ldsb %g0, %g1, %g0
+ ldsb %g0, %g2, %g0
+ ldsb %g0, %g3, %g0
+ ldsb %g0, %g4, %g0
+ ldsb %g0, %g5, %g0
+ ldsb %g0, %g6, %g0
+ ldsb %g0, %g7, %g0
+ ldsb %g0, %o0, %g0
+ ldsb %g0, %o1, %g0

@@ -1,0 +1,18 @@
+   1              	        .file           "."
+   2              	        .section        ".text"
+   3              	        .align 4
+   4              	        .psize          0,200
+   5              	        .global main
+   6              	        .type   main, #function
+   7              	main:
+   8 0000 01000000 	        nop
+   9 0004 00000000 		 unimp 0x00000000
+  10 0008 003FFFFF 		 unimp 0x003FFFFF
+  11 000c 01000000 	        nop
+  12              	        .ident  "GCC: (Buildroot 2014.08) 4.7.4"
+  13              	        .section  .note.GNU-stack,"",@progbits
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 .
+/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/runs/Monday-March-15-2021-13-27-26/asms/unimp.s:7      .text:0000000000000000 main
+
+NO UNDEFINED SYMBOLS

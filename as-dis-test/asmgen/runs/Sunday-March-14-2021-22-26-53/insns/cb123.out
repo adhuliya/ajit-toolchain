@@ -1,0 +1,8 @@
+0x02400000 | 0x00000010010000000000000000000000 | cb123 0x00000000 #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x027FFFFF | 0x00000010011111111111111111111111 | cb123 0x003FFFFF #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x22400000 | 0x00100010010000000000000000000000 | cb123 0x00000000 #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x227FFFFF | 0x00100010011111111111111111111111 | cb123 0x003FFFFF #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0000 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x02400000 | 0x00000010010000000000000000000000 | cb123,a 0x00000000 #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x027FFFFF | 0x00000010011111111111111111111111 | cb123,a 0x003FFFFF #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x22400000 | 0x00100010010000000000000000000000 | cb123,a 0x00000000 #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.
+0x227FFFFF | 0x00100010011111111111111111111111 | cb123,a 0x003FFFFF #;|  #;| # CB123 disp22 #;| CCC Branch on Not Equal  #;| op2 = 0001, a = 0001 #;| See Section B23 on page 123 of the Sparc V8 manual.

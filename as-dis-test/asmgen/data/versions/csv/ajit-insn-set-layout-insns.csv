@@ -1,0 +1,253 @@
+"Opcode","Field that will use the value in next column","Value","Operation","Insn_Category","Format Index","Processing Status","Privilege
+(0 – no, 1 – yes, 2 – if ref’d ASR is privileged)"
+"LDSB","op3",001001,"Load Signed Byte","Load/Store","B1.1|B1.2","raw",0
+"LDSH","op3",001010,"Load Signed Halfword","Load/Store","B1.1|B1.2","raw",0
+"LDUB","op3",000001,"Load Unsigned Byte","Load/Store","B1.1|B1.2","raw",0
+"LDUH","op3",000010,"Load Unsigned Halfword","Load/Store","B1.1|B1.2","raw",0
+"LD","op3",000000,"Load Word","Load/Store","B1.1|B1.2","raw",0
+"LDD","op3",000011,"Load Doubleword","Load/Store","B1.1|B1.2","raw",0
+"LDSBA†","op3",011001,"Load Signed Byte from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDSHA†","op3",011010,"Load Signed Halfword from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDUBA†","op3",010001,"Load Unsigned Byte from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDUHA†","op3",010010,"Load Unsigned Halfword from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDA†","op3",010000,"Load Word from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDDA†","op3",010011,"Load Doubleword from Alternate space","Load/Store","B1.1|B1.2","raw",1
+"LDF","op3",100000,"Load Floating-point Register","Load/Store","B2.1|B2.2","raw",0
+"LDDF","op3",100011,"Load Double Floating-point Register","Load/Store","B2.1|B2.2","raw",0
+"LDFSR","op3",100001,"Load Floating-point State Register","Load/Store","B2.1|B2.2","raw",0
+"LDC","op3",110000,"Load Coprocessor Register","Load/Store","B3.1|B3.2","raw",0
+"LDDC","op3",110011,"Load Double Coprocessor Register","Load/Store","B3.1|B3.2","raw",0
+"LDCSR ","op3",110001,"Load Coprocessor State Register","Load/Store","B3.1|B3.2","raw",0
+"STB","op3",000101,"Store Byte","Load/Store","B4.1|B4.2","raw",0
+"STH","op3",000110,"Store Halfword","Load/Store","B4.1|B4.2","raw",0
+"ST","op3",000100,"Store Word","Load/Store","B4.1|B4.2","raw",0
+"STD","op3",000111,"Store Doubleword","Load/Store","B4.1|B4.2","raw",0
+"STBA†","op3",010101,"Store Byte into Alternate space","Load/Store","B4.1|B4.2","raw",1
+"STHA†","op3",010110,"Store Halfword into Alternate space","Load/Store","B4.1|B4.2","raw",1
+"STA†","op3",010100,"Store Word into Alternate space","Load/Store","B4.1|B4.2","raw",1
+"STDA† ","op3",010111,"Store Doubleword into Alternate space","Load/Store","B4.1|B4.2","raw",1
+"STF","op3",100100,"Store Floating-point","Load/Store","B5.1|B5.2","raw",0
+"STDF","op3",100111,"Store Double Floating-point","Load/Store","B5.1|B5.2","raw",0
+"STFSR","op3",100101,"Store Floating-point State Register","Load/Store","B5.1|B5.2","raw",0
+"STDFQ† ","op3",100110,"Store Double Floating-point deferred-trap Queue","Load/Store","B5.1|B5.2","raw",1
+"STC","op3",110100,"Store Coprocessor","Load/Store","B6.1|B6.2","raw",0
+"STDC","op3",110111,"Store Double Coprocessor","Load/Store","B6.1|B6.2","raw",0
+"STCSR","op3",110101,"Store Coprocessor State Register","Load/Store","B6.1|B6.2","raw",0
+"STDCQ†","op3",110110,"Store Double Coprocessor Queue","Load/Store","B6.1|B6.2","raw",1
+"LDSTUB","op3",001101,"Atomic Load-Store Unsigned Byte","Load/Store","B7.1|B7.2","raw",0
+"LDSTUBA† ","op3",011101,"Atomic Load-Store Unsigned Byte into Alternate space","Load/Store","B7.1|B7.2","raw",1
+"SWAP","op3",001111,"SWAP register with memory","Load/Store","B8.1|B8.2","raw",0
+"SWAPA† ","op3",011111,"SWAP register with Alternate space memory","Load/Store","B8.1|B8.2","raw",1
+"SETHI",,,"Set High-Order 22 bits","Integer Arith","B9.1","raw",0
+"NOP",,,"No Operation","Integer Arith","B10.1","raw",0
+"AND","op3",000001,"And","Integer Arith","B11.1|B11.2","raw",0
+"ANDcc","op3",010001,"And and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"ANDN","op3",000101,"And Not","Integer Arith","B11.1|B11.2","raw",0
+"ANDNcc","op3",010101,"And Not and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"OR","op3",000010,"Inclusive Or","Integer Arith","B11.1|B11.2","raw",0
+"ORcc","op3",010010,"Inclusive Or and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"ORN","op3",000110,"Inclusive Or Not","Integer Arith","B11.1|B11.2","raw",0
+"ORNcc","op3",010110,"Inclusive Or Not and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"XOR","op3",000011,"Exclusive Or","Integer Arith","B11.1|B11.2","raw",0
+"XORcc","op3",010011,"Exclusive Or and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"XNOR","op3",000111,"Exclusive Nor","Integer Arith","B11.1|B11.2","raw",0
+"XNORcc","op3",010111,"Exclusive Nor and modify icc","Integer Arith","B11.1|B11.2","raw",0
+"SLL","op3",100101,"Shift Left Logical","Integer Arith","B12.1|B12.2","raw",0
+"SRL","op3",100110,"Shift Right Logical","Integer Arith","B12.1|B12.2","raw",0
+"SRA","op3",100111,"Shift Right Arithmetic","Integer Arith","B12.1|B12.2","raw",0
+"ADD","op3",000000,"Add","Integer Arith","B13.1|B13.2","raw",0
+"ADDcc","op3",010000,"Add and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"ADDX","op3",001000,"Add with Carry","Integer Arith","B13.1|B13.2","raw",0
+"ADDXcc","op3",011000,"Add with Carry and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"TADDcc","op3",100000,"Tagged Add and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"TADDccTV","op3",100010,"Tagged Add, modify icc and Trap on Overflow","Integer Arith","B13.1|B13.2","raw",0
+"SUB","op3",000100,"Subtract","Integer Arith","B13.1|B13.2","raw",0
+"SUBcc","op3",010100,"Subtract and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"SUBX","op3",001100,"Subtract with Carry","Integer Arith","B13.1|B13.2","raw",0
+"SUBXcc","op3",011100,"Subtract with Carry and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"TSUBcc","op3",100001,"Tagged Subtract and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"TSUBccTV","op3",100011,"Tagged Subtract, modify icc and Trap on Overflow","Integer Arith","B13.1|B13.2","raw",0
+"MULScc","op3",100100,"Multiply Step and modify icc","Integer Arith","B17.1|B17.2","raw",0
+"UMUL","op3",001010,"Unsigned Integer Multiply","Integer Arith","B13.1|B13.2","raw",0
+"SMUL","op3",001011,"Signed Integer Multiply","Integer Arith","B13.1|B13.2","raw",0
+"UMULcc","op3",011010,"Unsigned Integer Multiply and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"SMULcc","op3",011011,"Signed Integer Multiply and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"UDIV","op3",001110,"Unsigned Integer Divide","Integer Arith","B13.1|B13.2","raw",0
+"SDIV","op3",001111,"Signed Integer Divide","Integer Arith","B13.1|B13.2","raw",0
+"UDIVcc","op3",011110,"Unsigned Integer Divide and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"SDIVcc","op3",011111,"Signed Integer Divide and modify icc","Integer Arith","B13.1|B13.2","raw",0
+"SAVE","op3",111100,"Save caller’s window","Integer Arith","B13.1|B13.2","raw",0
+"RESTORE","op3",111101,"Restore caller’s window","Integer Arith","B13.1|B13.2","raw",0
+"BA","cond",1000,"Branch Always","Control Transfer","B21.1","raw",0
+"BN","cond",0000,"Branch Never","Control Transfer","B21.1","raw",0
+"BNE","cond",1001,"Branch on Not Equal","Control Transfer","B21.1","raw",0
+"BE","cond",0001,"Branch on Equal","Control Transfer","B21.1","raw",0
+"BG","cond",1010,"Branch on Greater","Control Transfer","B21.1","raw",0
+"BLE","cond",0010,"Branch on Less or Equal","Control Transfer","B21.1","raw",0
+"BGE","cond",1011,"Branch on Greater or Equal","Control Transfer","B21.1","raw",0
+"BL","cond",0011,"Branch on Less","Control Transfer","B21.1","raw",0
+"BGU","cond",1100,"Branch on Greater Unsigned","Control Transfer","B21.1","raw",0
+"BLEU","cond",0100,"Branch on Less or Equal Unsigned","Control Transfer","B21.1","raw",0
+"BCC","cond",1101,"Branch on Carry Clear (Greater than or Equal, Unsigned)","Control Transfer","B21.1","raw",0
+"BCS","cond",0101,"Branch on Carry Set (Less than, Unsigned)","Control Transfer","B21.1","raw",0
+"BPOS","cond",1110,"Branch on Positive","Control Transfer","B21.1","raw",0
+"BNEG","cond",0110,"Branch on Negative","Control Transfer","B21.1","raw",0
+"BVC","cond",1111,"Branch on Overflow Clear","Control Transfer","B21.1","raw",0
+"BVS","cond",0111,"Branch on Overflow Set","Control Transfer","B21.1","raw",0
+"FBA","cond",1000,"Branch Always","Control Transfer","B22.1","raw",0
+"FBN","cond",0000,"Branch Never","Control Transfer","B22.1","raw",0
+"FBU","cond",0111,"Branch on Unordered","Control Transfer","B22.1","raw",0
+"FBG","cond",0110,"Branch on Greater","Control Transfer","B22.1","raw",0
+"FBUG","cond",0101,"Branch on Unordered or Greater","Control Transfer","B22.1","raw",0
+"FBL","cond",0100,"Branch on Less","Control Transfer","B22.1","raw",0
+"FBUL","cond",0011,"Branch on Unordered or Less","Control Transfer","B22.1","raw",0
+"FBLG","cond",0010,"Branch on Less or Greater","Control Transfer","B22.1","raw",0
+"FBNE","cond",0001,"Branch on Not Equal","Control Transfer","B22.1","raw",0
+"FBE","cond",1001,"Branch on Equal","Control Transfer","B22.1","raw",0
+"FBUE","cond",1010,"Branch on Unordered or Equal","Control Transfer","B22.1","raw",0
+"FBGE","cond",1011,"Branch on Greater or Equal","Control Transfer","B22.1","raw",0
+"FBUGE","cond",1100,"Branch on Unordered or Greater or Equal","Control Transfer","B22.1","raw",0
+"FBLE","cond",1101,"Branch on Less or Equal","Control Transfer","B22.1","raw",0
+"FBULE","cond",1110,"Branch on Unordered or Less or Equal","Control Transfer","B22.1","raw",0
+"FBO","cond",1111,"Branch on Ordered","Control Transfer","B22.1","raw",0
+"CBA","cond",1000,,"Control Transfer","B23.1","raw",0
+"CBN","cond",0000,,"Control Transfer","B23.1","raw",0
+"CB3","cond",0111,,"Control Transfer","B23.1","raw",0
+"CB2","cond",0110,,"Control Transfer","B23.1","raw",0
+"CB23","cond",0101,,"Control Transfer","B23.1","raw",0
+"CB1","cond",0100,,"Control Transfer","B23.1","raw",0
+"CB13","cond",0011,,"Control Transfer","B23.1","raw",0
+"CB12","cond",0010,,"Control Transfer","B23.1","raw",0
+"CB123","cond",0001,,"Control Transfer","B23.1","raw",0
+"CB0","cond",1001,,"Control Transfer","B23.1","raw",0
+"CB03","cond",1010,,"Control Transfer","B23.1","raw",0
+"CB02","cond",1011,,"Control Transfer","B23.1","raw",0
+"CB023","cond",1100,,"Control Transfer","B23.1","raw",0
+"CB01","cond",1101,,"Control Transfer","B23.1","raw",0
+"CB013","cond",1110,,"Control Transfer","B23.1","raw",0
+"CB012","cond",1111,,"Control Transfer","B23.1","raw",0
+"CALL","op",01,"Call and Link","Control Transfer","B24.1","raw",0
+"JMPL","op3",111000,"Jump and Link","Control Transfer","B11.1|B11.2","raw",0
+"RETT","op3",111001,"Return from Trap","Control Transfer","B26.1|B26.2","raw",1
+"TA","cond",1000,"Trap Always","Control Transfer","B27.1|B27.2","raw",0
+"TN","cond",0000,"Trap Never","Control Transfer","B27.1|B27.2","raw",0
+"TNE","cond",1001,"Trap on Not Equal","Control Transfer","B27.1|B27.2","raw",0
+"TE","cond",0001,"Trap on Equal","Control Transfer","B27.1|B27.2","raw",0
+"TG","cond",1010,"Trap on Greater","Control Transfer","B27.1|B27.2","raw",0
+"TLE","cond",0010,"Trap on Less or Equal","Control Transfer","B27.1|B27.2","raw",0
+"TGE","cond",1011,"Trap on Greater or Equal","Control Transfer","B27.1|B27.2","raw",0
+"TL","cond",0011,"Trap on Less","Control Transfer","B27.1|B27.2","raw",0
+"TGU","cond",1100,"Trap on Greater Unsigned","Control Transfer","B27.1|B27.2","raw",0
+"TLEU","cond",0100,"Trap on Less or Equal Unsigned","Control Transfer","B27.1|B27.2","raw",0
+"TCC","cond",1101,"Trap on Carry Clear (Greater than or Equal, Unsigned)","Control Transfer","B27.1|B27.2","raw",0
+"TCS","cond",0101,"Trap on Carry Set (Less Than, Unsigned)","Control Transfer","B27.1|B27.2","raw",0
+"TPOS","cond",1110,"Trap on Positive","Control Transfer","B27.1|B27.2","raw",0
+"TNEG","cond",0110,"Trap on Negative","Control Transfer","B27.1|B27.2","raw",0
+"TVC","cond",1111,"Trap on Overflow Clear","Control Transfer","B27.1|B27.2","raw",0
+"TVS","cond",0111,"Trap on Overflow Set","Control Transfer","B27.1|B27.2","raw",0
+"RDY","op3",101000,"Read Y Register",,"B28.1","raw",0
+"RDASR‡","op3",101000,"Read Ancillary State Register (reserved)",,"B28.1","raw",2
+"RDASR‡","op3",101000,"(implementation-dependent)",,"B28.1","raw",2
+"RDPSR†","op3",101001,"Read Processor State Register",,"B28.1","raw",1
+"RDWIM†","op3",101010,"Read Window Invalid Mask Register",,"B28.1","raw",1
+"RDTBR†","op3",101011,"Read Trap Base Register",,"B28.1","raw",1
+"WRY","op3",110000,"Write Y Register",,"B29.1|B29.2","raw",0
+"WRASR‡","op3",110000,"Write Ancillary State Register (reserved)",,"B29.1|B29.2","raw",2
+"WRASR‡","op3",110000,"(implementation-dependent)",,"B29.1|B29.2","raw",2
+"WRPSR†","op3",110001,"Write Processor State Register",,"B29.1|B29.2","raw",1
+"WRWIM†","op3",110010,"Write Window Invalid Mask Register",,"B29.1|B29.2","raw",1
+"WRTBR†","op3",110011,"Write Trap Base Register",,"B29.1|B29.2","raw",1
+"STBAR","op3",101000,"Store Barrier",,"B30.1","raw",0
+"UNIMP","op2",0,"Unimplemented",,"B31.1","raw",0
+"FLUSH","op3",111011,"Flush Instruction Memory",,"B32.1|B32.2","raw",0
+"FPop1","op3",110100,"Floating Point Operate",,"B33.1","raw",0
+"FPop2","op3",110101,"Floating Point Operate",,"B33.2","raw",0
+"FiTOs","opf",11000100,"Convert Integer to Single",,"B33.3","raw",0
+"FiTOd","opf",11001000,"Convert Integer to Double",,"B33.3","raw",0
+"FiTOq","opf",11001100,"Convert Integer to Quad",,"B33.3","raw",0
+"FsTOi","opf",11010001,"Convert Single to Integer",,"B33.3","raw",0
+"FdTOi","opf",11010010,"Convert Double to Integer",,"B33.3","raw",0
+"FqTOi","opf",11010011,"Convert Quad to Integer",,"B33.3","raw",0
+"FsTOd","opf",11001001,"Convert Single to Double",,"B33.3","raw",0
+"FsTOq","opf",11001101,"Convert Single to Quad",,"B33.3","raw",0
+"FdTOs","opf",11000110,"Convert Double to Single",,"B33.3","raw",0
+"FdTOq","opf",11001110,"Convert Double to Quad",,"B33.3","raw",0
+"FqTOs","opf",11000111,"Convert Quad to Single",,"B33.3","raw",0
+"FqTOd","opf",11001011,"Convert Quad to Double",,"B33.3","raw",0
+"FMOVs","opf",1,"Move",,"B33.3","raw",0
+"FNEGs","opf",101,"Negate",,"B33.3","raw",0
+"FABSs","opf",1001,"Absolute Value",,"B33.3","raw",0
+"FSQRTs","opf",101001,"Square Root Single",,"B33.3","raw",0
+"FSQRTd","opf",101010,"Square Root Double",,"B33.3","raw",0
+"FSQRTq","opf",101011,"Square Root Quad",,"B33.3","raw",0
+"FADDs","opf",1000001,"Add Single",,"B33.4","raw",0
+"FADDd","opf",1000010,"Add Double",,"B33.4","raw",0
+"FADDq","opf",1000011,"Add Quad",,"B33.4","raw",0
+"FSUBs","opf",1000101,"Subtract Single",,"B33.4","raw",0
+"FSUBd","opf",1000110,"Subtract Double",,"B33.4","raw",0
+"FSUBq","opf",1000111,"Subtract Quad",,"B33.4","raw",0
+"FMULs","opf",1001001,"Multiply Single",,"B33.4","raw",0
+"FMULd","opf",1001010,"Multiply Double",,"B33.4","raw",0
+"FMULq","opf",1001011,"Multiply Quad",,"B33.4","raw",0
+"FsMULd","opf",1101001,"Multiply Single to Double",,"B33.4","raw",0
+"FdMULq","opf",1101110,"Multiply Double to Quad",,"B33.4","raw",0
+"FDIVs","opf",1001101,"Divide Single",,"B33.4","raw",0
+"FDIVd","opf",1001110,"Divide Double",,"B33.4","raw",0
+"FDIVq","opf",1001111,"Divide Quad",,"B33.4","raw",0
+"FCMPs","opf",1010001,"Compare Single",,"B33.5","raw",0
+"FCMPd","opf",1010010,"Compare Double",,"B33.5","raw",0
+"FCMPq","opf",1010011,"Compare Quad",,"B33.5","raw",0
+"FCMPEs","opf",1010101,"Compare Single and Exception if Unordered",,"B33.5","raw",0
+"FCMPEd","opf",1010110,"Compare Double and Exception if Unordered",,"B33.5","raw",0
+"FCMPEq","opf",1010111,"Compare Quad and Exception if Unordered",,"B33.5","raw",0
+"CPop1","opc",110110,"Coprocessor Operate",,"B34.1","raw",0
+"CPop2","opc",110111,"Coprocessor Operate",,"B34.2","raw",0
+"ADDD","op3",000000,"AJIT ADD","Integer Arith","AJ1.1","raw",0
+"ADDDcc","op3",010000,"AJIT Add and modify icc","Integer Arith","AJ1.1","raw",0
+"SUB","op3",000100,"Subtract","Integer Arith","AJ1.1","raw",0
+"SUBcc","op3",010100,"Subtract and modify icc","Integer Arith","AJ1.1","raw",0
+"SLL","op3",100101,"Shift Left Logical","Integer Arith","AJ2.1|AJ2.2","raw",0
+"SRL","op3",100110,"Shift Right Logical","Integer Arith","AJ2.1|AJ2.2","raw",0
+"SRA","op3",100111,"Shift Right Arithmetic","Integer Arith","AJ2.1|AJ2.2","raw",0
+"UMUL","op3",001010,"Unsigned Integer Multiply","Integer Arith","AJ1.1","raw",0
+"SMUL","op3",001011,"Signed Integer Multiply","Integer Arith","AJ1.1","raw",0
+"UMULcc","op3",011010,"Unsigned Integer Multiply and modify icc","Integer Arith","AJ1.1","raw",0
+"SMULcc","op3",011011,"Signed Integer Multiply and modify icc","Integer Arith","AJ1.1","raw",0
+"UDIV","op3",001110,"Unsigned Integer Divide","Integer Arith","AJ1.1","raw",0
+"SDIV","op3",001111,"Signed Integer Divide","Integer Arith","AJ1.1","raw",0
+"UDIVcc","op3",011110,"Unsigned Integer Divide and modify icc","Integer Arith","AJ1.1","raw",0
+"SDIVcc","op3",011111,"Signed Integer Divide and modify icc","Integer Arith","AJ1.1","raw",0
+"OR","op3",000010,"Inclusive Or","Integer Arith","AJ1.1","raw",0
+"ORcc","op3",010010,"Inclusive Or and modify icc","Integer Arith","AJ1.1","raw",0
+"ORN","op3",000110,"Inclusive Or Not","Integer Arith","AJ1.1","raw",0
+"ORNcc","op3",010110,"Inclusive Or Not and modify icc","Integer Arith","AJ1.1","raw",0
+"XORcc","op3",010011,"Exclusive Or and modify icc","Integer Arith","AJ1.1","raw",0
+"XNOR","op3",000111,"Exclusive Nor","Integer Arith","AJ1.1","raw",0
+"XNORcc","op3",010111,"Exclusive Nor and modify icc","Integer Arith","AJ1.1","raw",0
+"AND","op3",000001,"And","Integer Arith","AJ1.1","raw",0
+"ANDcc","op3",010001,"And and modify icc","Integer Arith","AJ1.1","raw",0
+"ANDN","op3",000101,"And Not","Integer Arith","AJ1.1","raw",0
+"ANDNcc","op3",010101,"And Not and modify icc","Integer Arith","AJ1.1","raw",0
+"VADDD8","op3",000000,"AJIT ADD; i[13] = 0, i[5:6] = 2, i[7:9] = 001","Integer Arith","AJ3.1","raw",0
+"VADDD16","op3",000000,"AJIT ADD; i[13] = 0, i[5:6] = 2, i[7:9] = 010","Integer Arith","AJ3.2","raw",0
+"VADDD32","op3",000000,"AJIT ADD; i[13] = 0, i[5:6] = 2, i[7:9] = 100","Integer Arith","AJ3.3","raw",0
+"VSUBD8","op3",000000,"AJIT SUB; i[13] = 0, i[5:6] = 2, i[7:9] = 001","Integer Arith","AJ3.1","raw",0
+"VSUBD16","op3",000000,"AJIT SUB; i[13] = 0, i[5:6] = 2, i[7:9] = 010","Integer Arith","AJ3.2","raw",0
+"VSUBD32","op3",000000,"AJIT SUB; i[13] = 0, i[5:6] = 2, i[7:9] = 100","Integer Arith","AJ3.3","raw",0
+"VUMULD8","op3",000000,"AJIT UMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 001","Integer Arith","AJ3.1","raw",0
+"VUMULD16","op3",000000,"AJIT UMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 010","Integer Arith","AJ3.2","raw",0
+"VUMULD32","op3",000000,"AJIT UMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 100","Integer Arith","AJ3.3","raw",0
+"VSMULD8","op3",000000,"AJIT SMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 001","Integer Arith","AJ3.1","raw",0
+"VSMULD16","op3",000000,"AJIT SMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 010","Integer Arith","AJ3.2","raw",0
+"VSMULD32","op3",000000,"AJIT SMUL; i[13] = 0, i[5:6] = 2, i[7:9] = 100","Integer Arith","AJ3.3","raw",0
+"ORDBYTER","op3",111010,"AJIT ORDBYTER",,"AJ4.1","raw",0
+"ANDDBYTER","op3",111110,"AJIT ANDDBYTER",,"AJ4.1","raw",0
+"XORDBYTER","op3",111011,"AJIT XORDBYTER",,"AJ4.1","raw",0
+"ZBYTEDPOS","op3",111011,"AJIT ZBYTEDPOS",,"AJ5.1|AJ5.2","raw",0
+"VFADD","opf",101000010,"AJIT VFADD",,"AJ6.1","raw",0
+"VFSUB","opf",101000110,"AJIT VFSUB",,"AJ6.1","raw",0
+"VFMUL","opf",101001010,"AJIT AFMUL",,"AJ6.1","raw",0
+"VFDIV","opf",101001110,"AJIT AVFDIV",,"AJ6.1","raw",0
+"VFSQRT","opf",100101010,"AJIT VFSQRT",,"AJ6.1","raw",0
+"CSWAP64","op3",101111,"AJIT CSWAP64",,"AJ7.1|AJ7.2","raw",0
+"CSWAP64A","op3",111111,"AJIT CSWAP64A",,"AJ7.1|AJ7.2","raw",0

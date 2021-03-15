@@ -1,0 +1,28 @@
+   1              	        .file           "."
+   2              	        .section        ".text"
+   3              	        .align 4
+   4              	        .psize          0,200
+   5              	        .global main
+   6              	        .type   main, #function
+   7              	main:
+   8 0000 01000000 	        nop
+   9 0004 07800000 		 fbul 0x00000000
+  10 0008 07800000 		 fbul 0x003FFFFF
+****  Warning:FP branch in delay slot
+  11 000c 07800000 		 fbul 0x00000000
+****  Warning:FP branch in delay slot
+  12 0010 07800000 		 fbul 0x003FFFFF
+****  Warning:FP branch in delay slot
+  13 0014 27800000 		 fbul,a 0x00000000
+****  Warning:FP branch in delay slot
+  14 0018 27800000 		 fbul,a 0x003FFFFF
+  15 001c 27800000 		 fbul,a 0x00000000
+  16 0020 27800000 		 fbul,a 0x003FFFFF
+  17 0024 01000000 	        nop
+  18              	        .ident  "GCC: (Buildroot 2014.08) 4.7.4"
+  19              	        .section  .note.GNU-stack,"",@progbits
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 .
+/lindata/My-work/Professional/iitb/development/isa-v2-branch/ajit-toolchain/as-dis-test/asmgen/runs/Monday-March-15-2021-13-27-26/asms/fbul.s:7      .text:0000000000000000 main
+
+NO UNDEFINED SYMBOLS

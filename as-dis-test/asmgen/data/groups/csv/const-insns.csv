@@ -1,0 +1,187 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+STBA,op3,010101,i,000001,Store Byte into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stba,3,rd,rs1,sign_ext (simm13),,end
+STHA,op3,010110,i,000001,Store Halfword into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stha,3,rd,rs1,sign_ext (simm13),,end
+STA,op3,010100,i,000001,Store Word into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,sta,3,rd,rs1,sign_ext (simm13),,end
+STDA ,op3,010111,i,000001,Store Doubleword into Alternate space,95,B4,Load/Store,1,op34,raw,1,,rrn,stda ,3,rd,rs1,sign_ext (simm13),,end
+SETHI,op2,100,,,Set High-Order 22 bits,104,B9,Integer Arith,2,op22,raw,0,"const22, %hi (value)",nr,sethi,2,imm22,rd,,,end
+NOP,op2,100,,,"No Operation, argument is ignored.",105,B10,Integer Arith,2,op23,raw,1,special case of SETHI with rd = 0 and imm22=0,n,nop,1,imm22,,,,end
+BA,op2,1000,a,0000,Branch Always,119,B21,Control Transfer,3,op21,raw,0,,n,ba,1,disp22,,,,end
+BN,op2,0000,a,0000,Branch Never,119,B21,Control Transfer,3,op21,raw,0,,n,bn,1,disp22,,,,end
+BNE,op2,1001,a,0000,Branch on Not Equal,119,B21,Control Transfer,3,op21,raw,0,,n,bne,1,disp22,,,,end
+BE,op2,0001,a,0000,Branch on Equal,119,B21,Control Transfer,3,op21,raw,0,,n,be,1,disp22,,,,end
+BG,op2,1010,a,0000,Branch on Greater,119,B21,Control Transfer,3,op21,raw,0,,n,bg,1,disp22,,,,end
+BLE,op2,0010,a,0000,Branch on Less or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,ble,1,disp22,,,,end
+BGE,op2,1011,a,0000,Branch on Greater or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,bge,1,disp22,,,,end
+BL,op2,0011,a,0000,Branch on Less,119,B21,Control Transfer,3,op21,raw,0,,n,bl,1,disp22,,,,end
+BGU,op2,1100,a,0000,Branch on Greater Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,bgu,1,disp22,,,,end
+BLEU,op2,0100,a,0000,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,bleu,1,disp22,,,,end
+BCC,op2,1101,a,0000,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,bcc,1,disp22,,,,end
+BCS,op2,0101,a,0000,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,bcs,1,disp22,,,,end
+BPOS,op2,1110,a,0000,Branch on Positive,119,B21,Control Transfer,3,op21,raw,0,,n,bpos,1,disp22,,,,end
+BNEG,op2,0110,a,0000,Branch on Negative,119,B21,Control Transfer,3,op21,raw,0,,n,bneg,1,disp22,,,,end
+BVC,op2,1111,a,0000,Branch on Overflow Clear,119,B21,Control Transfer,3,op21,raw,0,,n,bvc,1,disp22,,,,end
+BVS,op2,0111,a,0000,Branch on Overflow Set,119,B21,Control Transfer,3,op21,raw,0,,n,bvs,1,disp22,,,,end
+FBA,op2,1000,a,0000,FCC Branch Always,121,B22,Control Transfer,3,op21,raw,0,,n,fba,1,disp22,,,,end
+FBN,op2,0000,a,0000,FCC Branch Never,121,B22,Control Transfer,3,op21,raw,0,,n,fbn,1,disp22,,,,end
+FBU,op2,0111,a,0000,FCC Branch on Unordered,121,B22,Control Transfer,3,op21,raw,0,,n,fbu,1,disp22,,,,end
+FBG,op2,0110,a,0000,FCC Branch on Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fbg,1,disp22,,,,end
+FBUG,op2,0101,a,0000,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fbug,1,disp22,,,,end
+FBL,op2,0100,a,0000,FCC Branch on Less,121,B22,Control Transfer,3,op21,raw,0,,n,fbl,1,disp22,,,,end
+FBUL,op2,0011,a,0000,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,op21,raw,0,,n,fbul,1,disp22,,,,end
+FBLG,op2,0010,a,0000,FCC Branch on Less or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fblg,1,disp22,,,,end
+FBNE,op2,0001,a,0000,FCC Branch on Not Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbne,1,disp22,,,,end
+FBE,op2,1001,a,0000,FCC Branch on Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbe,1,disp22,,,,end
+FBUE,op2,1010,a,0000,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbue,1,disp22,,,,end
+FBGE,op2,1011,a,0000,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbge,1,disp22,,,,end
+FBUGE,op2,1100,a,0000,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbuge,1,disp22,,,,end
+FBLE,op2,1101,a,0000,FCC Branch on Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fble,1,disp22,,,,end
+FBULE,op2,1110,a,0000,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbule,1,disp22,,,,end
+FBO,op2,1111,a,0000,FCC Branch on Ordered,121,B22,Control Transfer,3,op21,raw,0,,n,fbo,1,disp22,,,,end
+CBA,op2,1000,a,0000,CCC Branch Always,123,B23,Control Transfer,3,op21,raw,0,,n,cba,1,disp22,,,,end
+CBN,op2,0000,a,0000,CCC Branch Never,123,B23,Control Transfer,3,op21,raw,0,,n,cbn,1,disp22,,,,end
+CB3,op2,0111,a,0000,CCC Branch on Unordered,123,B23,Control Transfer,3,op21,raw,0,,n,cb3,1,disp22,,,,end
+CB2,op2,0110,a,0000,CCC Branch on Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb2,1,disp22,,,,end
+CB23,op2,0101,a,0000,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb23,1,disp22,,,,end
+CB1,op2,0100,a,0000,CCC Branch on Less,123,B23,Control Transfer,3,op21,raw,0,,n,cb1,1,disp22,,,,end
+CB13,op2,0011,a,0000,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,op21,raw,0,,n,cb13,1,disp22,,,,end
+CB12,op2,0010,a,0000,CCC Branch on Less or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb12,1,disp22,,,,end
+CB123,op2,0001,a,0000,CCC Branch on Not Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb123,1,disp22,,,,end
+CB0,op2,1001,a,0000,CCC Branch on Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb0,1,disp22,,,,end
+CB03,op2,1010,a,0000,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb03,1,disp22,,,,end
+CB02,op2,1011,a,0000,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb02,1,disp22,,,,end
+CB023,op2,1100,a,0000,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb023,1,disp22,,,,end
+CB01,op2,1101,a,0000,CCC Branch on Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb01,1,disp22,,,,end
+CB013,op2,1110,a,0000,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb013,1,disp22,,,,end
+CB012,op2,1111,a,0000,CCC Branch on Ordered,123,B23,Control Transfer,3,op21,raw,0,,n,cb012,1,disp22,,,,end
+CALL,op,01,,,Call and Link,125,B24,Control Transfer,3,op1,raw,0,,n,call,1,disp30,,,,end
+UNIMP,op2,0,,,Unimplemented,137,B31,,6,op25,raw,1,,n,unimp,1,const22,,,,end
+LDSB,op3,001001,i,000001,Load Signed Byte,90,B1,Load/Store,1,op35,raw,0,,rnr,ldsb,3,rs1,sign_ext (simm13),rd,,end
+LDSH,op3,001010,i,000001,Load Signed Halfword,90,B1,Load/Store,1,op35,raw,0,,rnr,ldsh,3,rs1,sign_ext (simm13),rd,,end
+LDUB,op3,000001,i,000001,Load Unsigned Byte,90,B1,Load/Store,1,op35,raw,0,,rnr,ldub,3,rs1,sign_ext (simm13),rd,,end
+LDUH,op3,000010,i,000001,Load Unsigned Halfword,90,B1,Load/Store,1,op35,raw,0,,rnr,lduh,3,rs1,sign_ext (simm13),rd,,end
+LD,op3,000000,i,000001,Load Word,90,B1,Load/Store,1,op35,raw,0,,rnr,ld,3,rs1,sign_ext (simm13),rd,,end
+LDD,op3,000011,i,000001,Load Doubleword,90,B1,Load/Store,1,op35,raw,0,,rnr,ldd,3,rs1,sign_ext (simm13),rd,,end
+LDF,op3,100000,i,000001,Load Floating-point Register,92,B2,Load/Store,1,op35,raw,0,,rnf,ldf,3,rs1,sign_ext (simm13),rd=fprd,,end
+LDDF,op3,100011,i,000001,Load Double Floating-point Register,92,B2,Load/Store,1,op35,raw,0,,rnf,lddf,3,rs1,sign_ext (simm13),rd=fprd,,end
+LDFSR,op3,100001,i,000001,Load Floating-point State Register,92,B2,Load/Store,1,op35,raw,0,,rng,ldfsr,3,rs1,sign_ext (simm13),rd=%fsr,,end
+LDC,op3,110000,i,000001,Load Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,ldc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDDC,op3,110011,i,000001,Load Double Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,lddc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDCSR ,op3,110001,i,000001,Load Coprocessor State Register,94,B3,Load/Store,1,op35,raw,0,,rng,ldcsr,3,rs1,sign_ext (simm13),rd=%csr,,end
+STB,op3,000101,i,000001,Store Byte,95,B4,Load/Store,1,op35,raw,0,,rrn,stb,3,rd,rs1,sign_ext (simm13),,end
+STH,op3,000110,i,000001,Store Halfword,95,B4,Load/Store,1,op35,raw,0,,rrn,sth,3,rd,rs1,sign_ext (simm13),,end
+ST,op3,000100,i,000001,Store Word,95,B4,Load/Store,1,op35,raw,0,,rrn,st,3,rd,rs1,sign_ext (simm13),,end
+STD,op3,000111,i,000001,Store Doubleword,95,B4,Load/Store,1,op35,raw,0,,rrn,std,3,rd,rs1,sign_ext (simm13),,end
+STF,op3,100100,i,000001,Store Floating-point,97,B5,Load/Store,1,op35,raw,0,,frn,stf,3,rd=fprd,rs1,sign_ext (simm13),,end
+STDF,op3,100111,i,000001,Store Double Floating-point,97,B5,Load/Store,1,op35,raw,0,,frn,stdf,3,rd=fprd,rs1,sign_ext (simm13),,end
+STFSR,op3,100101,i,000001,Store Floating-point State Register,97,B5,Load/Store,1,op35,raw,0,,grn,stfsr,3,rd=%fsr,rs1,sign_ext (simm13),,end
+STDFQ ,op3,100110,i,000001,Store Double Floating-point deferred-trap Queue,97,B5,Load/Store,1,op35,raw,0,,grn,stdfq ,3,rd=%fq,rs1,sign_ext (simm13),,end
+STC,op3,110100,i,000001,Store Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STDC,op3,110111,i,000001,Store Double Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stdc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STCSR,op3,110101,i,000001,Store Coprocessor State Register,99,B6,Load/Store,1,op35,raw,0,,grn,stcsr,3,rd=%csr,rs1,sign_ext (simm13),,end
+STDCQ,op3,110110,i,000001,Store Double Coprocessor Queue,99,B6,Load/Store,1,op35,raw,0,,grn,stdcq,3,rd=%cq,rs1,sign_ext (simm13),,end
+LDSTUB,op3,001101,i,000001,Atomic Load-Store Unsigned Byte,101,B7,Load/Store,1,op35,raw,0,,rnr,ldstub,3,rs1,sign_ext (simm13),rd,,end
+AND,op3,000001,i,000001,And,106,B11,Integer Arith,2,op32,raw,0,,rnr,and,3,rs1,sign_ext (simm13),rd,,end
+ANDcc,op3,010001,i,000001,And and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,andcc,3,rs1,sign_ext (simm13),rd,,end
+ANDN,op3,000101,i,000001,And Not,106,B11,Integer Arith,2,op32,raw,0,,rnr,andn,3,rs1,sign_ext (simm13),rd,,end
+ANDNcc,op3,010101,i,000001,And Not and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,andncc,3,rs1,sign_ext (simm13),rd,,end
+OR,op3,000010,i,000001,Inclusive Or,106,B11,Integer Arith,2,op32,raw,0,,rnr,or,3,rs1,sign_ext (simm13),rd,,end
+ORcc,op3,010010,i,000001,Inclusive Or and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,orcc,3,rs1,sign_ext (simm13),rd,,end
+ORN,op3,000110,i,000001,Inclusive Or Not,106,B11,Integer Arith,2,op32,raw,0,,rnr,orn,3,rs1,sign_ext (simm13),rd,,end
+ORNcc,op3,010110,i,000001,Inclusive Or Not and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,orncc,3,rs1,sign_ext (simm13),rd,,end
+XOR,op3,000011,i,000001,Exclusive Or,106,B11,Integer Arith,2,op32,raw,0,,rnr,xor,3,rs1,sign_ext (simm13),rd,,end
+XORcc,op3,010011,i,000001,Exclusive Or and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,xorcc,3,rs1,sign_ext (simm13),rd,,end
+XNOR,op3,000111,i,000001,Exclusive Nor,106,B11,Integer Arith,2,op32,raw,0,,rnr,xnor,3,rs1,sign_ext (simm13),rd,,end
+XNORcc,op3,010111,i,000001,Exclusive Nor and modify icc,106,B11,Integer Arith,2,op32,raw,0,,rnr,xnorcc,3,rs1,sign_ext (simm13),rd,,end
+SLL,op3,100101,i,000001,Shift Left Logical,107,B12,Integer Arith,2,op32,raw,0,,rnr,sll,3,rs1,sign_ext (simm13),rd,,end
+SRL,op3,100110,i,000001,Shift Right Logical,107,B12,Integer Arith,2,op32,raw,0,,rnr,srl,3,rs1,sign_ext (simm13),rd,,end
+SRA,op3,100111,i,000001,Shift Right Arithmetic,107,B12,Integer Arith,2,op32,raw,0,,rnr,sra,3,rs1,sign_ext (simm13),rd,,end
+ADD,op3,000000,i,000001,Add,108,B13,Integer Arith,2,op32,raw,0,,rnr,add,3,rs1,sign_ext (simm13),rd,,end
+ADDcc,op3,010000,i,000001,Add and modify icc,108,B13,Integer Arith,2,op32,raw,0,,rnr,addcc,3,rs1,sign_ext (simm13),rd,,end
+ADDX,op3,001000,i,000001,Add with Carry,108,B13,Integer Arith,2,op32,raw,0,,rnr,addx,3,rs1,sign_ext (simm13),rd,,end
+ADDXcc,op3,011000,i,000001,Add with Carry and modify icc,108,B13,Integer Arith,2,op32,raw,0,,rnr,addxcc,3,rs1,sign_ext (simm13),rd,,end
+TADDcc,op3,100000,i,000001,Tagged Add and modify icc,109,B14,Integer Arith,2,op32,raw,0,,rnr,taddcc,3,rs1,sign_ext (simm13),rd,,end
+TADDccTV,op3,100010,i,000001,"Tagged Add, modify icc and Trap on Overflow",109,B14,Integer Arith,2,op32,raw,0,,rnr,taddcctv,3,rs1,sign_ext (simm13),rd,,end
+SUB,op3,000100,i,000001,Subtract,110,B15,Integer Arith,2,op32,raw,0,,rnr,sub,3,rs1,sign_ext (simm13),rd,,end
+SUBcc,op3,010100,i,000001,Subtract and modify icc,110,B15,Integer Arith,2,op32,raw,0,,rnr,subcc,3,rs1,sign_ext (simm13),rd,,end
+SUBX,op3,001100,i,000001,Subtract with Carry,110,B15,Integer Arith,2,op32,raw,0,,rnr,subx,3,rs1,sign_ext (simm13),rd,,end
+SUBXcc,op3,011100,i,000001,Subtract with Carry and modify icc,110,B15,Integer Arith,2,op32,raw,0,,rnr,subxcc,3,rs1,sign_ext (simm13),rd,,end
+TSUBcc,op3,100001,i,000001,Tagged Subtract and modify icc,111,B16,Integer Arith,2,op32,raw,0,,rnr,tsubcc,3,rs1,sign_ext (simm13),rd,,end
+TSUBccTV,op3,100011,i,000001,"Tagged Subtract, modify icc and Trap on Overflow",111,B16,Integer Arith,2,op32,raw,0,,rnr,tsubcctv,3,rs1,sign_ext (simm13),rd,,end
+MULScc,op3,100100,i,000001,Multiply Step and modify icc,112,B17,Integer Arith,2,op32,raw,0,,rnr,mulscc,3,rs1,sign_ext (simm13),rd,,end
+UMUL,op3,001010,i,000001,Unsigned Integer Multiply,113,B18,Integer Arith,2,op32,raw,0,,rnr,umul,3,rs1,sign_ext (simm13),rd,,end
+SMUL,op3,001011,i,000001,Signed Integer Multiply,113,B18,Integer Arith,2,op32,raw,0,,rnr,smul,3,rs1,sign_ext (simm13),rd,,end
+UMULcc,op3,011010,i,000001,Unsigned Integer Multiply and modify icc,113,B18,Integer Arith,2,op32,raw,0,,rnr,umulcc,3,rs1,sign_ext (simm13),rd,,end
+SMULcc,op3,011011,i,000001,Signed Integer Multiply and modify icc,113,B18,Integer Arith,2,op32,raw,0,,rnr,smulcc,3,rs1,sign_ext (simm13),rd,,end
+UDIV,op3,001110,i,000001,Unsigned Integer Divide,115,B19,Integer Arith,2,op32,raw,0,,rnr,udiv,3,rs1,sign_ext (simm13),rd,,end
+SDIV,op3,001111,i,000001,Signed Integer Divide,115,B19,Integer Arith,2,op32,raw,0,,rnr,sdiv,3,rs1,sign_ext (simm13),rd,,end
+UDIVcc,op3,011110,i,000001,Unsigned Integer Divide and modify icc,115,B19,Integer Arith,2,op32,raw,0,,rnr,udivcc,3,rs1,sign_ext (simm13),rd,,end
+SDIVcc,op3,011111,i,000001,Signed Integer Divide and modify icc,115,B19,Integer Arith,2,op32,raw,0,,rnr,sdivcc,3,rs1,sign_ext (simm13),rd,,end
+SAVE,op3,111100,i,000001,Save caller’s window,117,B20,Integer Arith,2,op32,raw,0,,rnr,save,3,rs1,sign_ext (simm13),rd,,end
+RESTORE,op3,111101,i,000001,Restore caller’s window,117,B20,Integer Arith,2,op32,raw,0,,rnr,restore,3,rs1,sign_ext (simm13),rd,,end
+BA,op2,1000,a,0001,Branch Always,119,B21,Control Transfer,3,op21,raw,0,,n,"ba,a",1,disp22,,,,end
+BN,op2,0000,a,0001,Branch Never,119,B21,Control Transfer,3,op21,raw,0,,n,"bn,a",1,disp22,,,,end
+BNE,op2,1001,a,0001,Branch on Not Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"bne,a",1,disp22,,,,end
+BE,op2,0001,a,0001,Branch on Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"be,a",1,disp22,,,,end
+BG,op2,1010,a,0001,Branch on Greater,119,B21,Control Transfer,3,op21,raw,0,,n,"bg,a",1,disp22,,,,end
+BLE,op2,0010,a,0001,Branch on Less or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"ble,a",1,disp22,,,,end
+BGE,op2,1011,a,0001,Branch on Greater or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"bge,a",1,disp22,,,,end
+BL,op2,0011,a,0001,Branch on Less,119,B21,Control Transfer,3,op21,raw,0,,n,"bl,a",1,disp22,,,,end
+BGU,op2,1100,a,0001,Branch on Greater Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,"bgu,a",1,disp22,,,,end
+BLEU,op2,0100,a,0001,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,"bleu,a",1,disp22,,,,end
+BCC,op2,1101,a,0001,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,"bcc,a",1,disp22,,,,end
+BCS,op2,0101,a,0001,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,"bcs,a",1,disp22,,,,end
+BPOS,op2,1110,a,0001,Branch on Positive,119,B21,Control Transfer,3,op21,raw,0,,n,"bpos,a",1,disp22,,,,end
+BNEG,op2,0110,a,0001,Branch on Negative,119,B21,Control Transfer,3,op21,raw,0,,n,"bneg,a",1,disp22,,,,end
+BVC,op2,1111,a,0001,Branch on Overflow Clear,119,B21,Control Transfer,3,op21,raw,0,,n,"bvc,a",1,disp22,,,,end
+BVS,op2,0111,a,0001,Branch on Overflow Set,119,B21,Control Transfer,3,op21,raw,0,,n,"bvs,a",1,disp22,,,,end
+FBA,op2,1000,a,0001,FCC Branch Always,121,B22,Control Transfer,3,op21,raw,0,,n,"fba,a",1,disp22,,,,end
+FBN,op2,0000,a,0001,FCC Branch Never,121,B22,Control Transfer,3,op21,raw,0,,n,"fbn,a",1,disp22,,,,end
+FBU,op2,0111,a,0001,FCC Branch on Unordered,121,B22,Control Transfer,3,op21,raw,0,,n,"fbu,a",1,disp22,,,,end
+FBG,op2,0110,a,0001,FCC Branch on Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fbg,a",1,disp22,,,,end
+FBUG,op2,0101,a,0001,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fbug,a",1,disp22,,,,end
+FBL,op2,0100,a,0001,FCC Branch on Less,121,B22,Control Transfer,3,op21,raw,0,,n,"fbl,a",1,disp22,,,,end
+FBUL,op2,0011,a,0001,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,op21,raw,0,,n,"fbul,a",1,disp22,,,,end
+FBLG,op2,0010,a,0001,FCC Branch on Less or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fblg,a",1,disp22,,,,end
+FBNE,op2,0001,a,0001,FCC Branch on Not Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbne,a",1,disp22,,,,end
+FBE,op2,1001,a,0001,FCC Branch on Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbe,a",1,disp22,,,,end
+FBUE,op2,1010,a,0001,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbue,a",1,disp22,,,,end
+FBGE,op2,1011,a,0001,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbge,a",1,disp22,,,,end
+FBUGE,op2,1100,a,0001,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbuge,a",1,disp22,,,,end
+FBLE,op2,1101,a,0001,FCC Branch on Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fble,a",1,disp22,,,,end
+FBULE,op2,1110,a,0001,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbule,a",1,disp22,,,,end
+FBO,op2,1111,a,0001,FCC Branch on Ordered,121,B22,Control Transfer,3,op21,raw,0,,n,"fbo,a",1,disp22,,,,end
+CBA,op2,1000,a,0001,CCC Branch Always,123,B23,Control Transfer,3,op21,raw,0,,n,"cba,a",1,disp22,,,,end
+CBN,op2,0000,a,0001,CCC Branch Never,123,B23,Control Transfer,3,op21,raw,0,,n,"cbn,a",1,disp22,,,,end
+CB3,op2,0111,a,0001,CCC Branch on Unordered,123,B23,Control Transfer,3,op21,raw,0,,n,"cb3,a",1,disp22,,,,end
+CB2,op2,0110,a,0001,CCC Branch on Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb2,a",1,disp22,,,,end
+CB23,op2,0101,a,0001,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb23,a",1,disp22,,,,end
+CB1,op2,0100,a,0001,CCC Branch on Less,123,B23,Control Transfer,3,op21,raw,0,,n,"cb1,a",1,disp22,,,,end
+CB13,op2,0011,a,0001,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,op21,raw,0,,n,"cb13,a",1,disp22,,,,end
+CB12,op2,0010,a,0001,CCC Branch on Less or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb12,a",1,disp22,,,,end
+CB123,op2,0001,a,0001,CCC Branch on Not Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb123,a",1,disp22,,,,end
+CB0,op2,1001,a,0001,CCC Branch on Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb0,a",1,disp22,,,,end
+CB03,op2,1010,a,0001,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb03,a",1,disp22,,,,end
+CB02,op2,1011,a,0001,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb02,a",1,disp22,,,,end
+CB023,op2,1100,a,0001,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb023,a",1,disp22,,,,end
+CB01,op2,1101,a,0001,CCC Branch on Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb01,a",1,disp22,,,,end
+CB013,op2,1110,a,0001,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb013,a",1,disp22,,,,end
+CB012,op2,1111,a,0001,CCC Branch on Ordered,123,B23,Control Transfer,3,op21,raw,0,,n,"cb012,a",1,disp22,,,,end
+JMPL,op3,111000,i,000001,Jump and Link,126,B25,Control Transfer,3,op32,raw,0,,rnr,jmpl,3,rs1,sign_ext (simm13),rd,,end
+RETT,op3,111001,i,000001,Return from Trap,127,B26,Control Transfer,3,op44,raw,0,,rn,rett,2,rs1,sign_ext (simm13),,,end
+TA,op3,111010,i,000001,Trap Always,129,B27,Control Transfer,3,op38,raw,0,,rn,ta,2,rs1,sign_ext (simm13),,,end
+TN,op3,111010,i,000001,Trap Never,129,B27,Control Transfer,3,op38,raw,0,,rn,tn,2,rs1,sign_ext (simm13),,,end
+TNE,op3,111010,i,000001,Trap on Not Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tne,2,rs1,sign_ext (simm13),,,end
+TE,op3,111010,i,000001,Trap on Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,te,2,rs1,sign_ext (simm13),,,end
+TG,op3,111010,i,000001,Trap on Greater,129,B27,Control Transfer,3,op38,raw,0,,rn,tg,2,rs1,sign_ext (simm13),,,end
+TLE,op3,111010,i,000001,Trap on Less or Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tle,2,rs1,sign_ext (simm13),,,end
+TGE,op3,111010,i,000001,Trap on Greater or Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tge,2,rs1,sign_ext (simm13),,,end
+TL,op3,111010,i,000001,Trap on Less,129,B27,Control Transfer,3,op38,raw,0,,rn,tl,2,rs1,sign_ext (simm13),,,end
+TGU,op3,111010,i,000001,Trap on Greater Unsigned,129,B27,Control Transfer,3,op38,raw,0,,rn,tgu,2,rs1,sign_ext (simm13),,,end
+TLEU,op3,111010,i,000001,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,op38,raw,0,,rn,tleu,2,rs1,sign_ext (simm13),,,end
+TCC,op3,111010,i,000001,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,op38,raw,0,,rn,tcc,2,rs1,sign_ext (simm13),,,end
+TCS,op3,111010,i,000001,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,op38,raw,0,,rn,tcs,2,rs1,sign_ext (simm13),,,end
+TPOS,op3,111010,i,000001,Trap on Positive,129,B27,Control Transfer,3,op38,raw,0,,rn,tpos,2,rs1,sign_ext (simm13),,,end
+TNEG,op3,111010,i,000001,Trap on Negative,129,B27,Control Transfer,3,op38,raw,0,,rn,tneg,2,rs1,sign_ext (simm13),,,end
+TVC,op3,111010,i,000001,Trap on Overflow Clear,129,B27,Control Transfer,3,op38,raw,0,,rn,tvc,2,rs1,sign_ext (simm13),,,end
+TVS,op3,111010,i,000001,Trap on Overflow Set,129,B27,Control Transfer,3,op38,raw,0,,rn,tvs,2,rs1,sign_ext (simm13),,,end
+FLUSH,op3,111011,i,000001,Flush Instruction Memory,138,B32,Load/Store,1,op44,raw,0,,rn,flush,2,rs1,sign_ext (simm13),,,end

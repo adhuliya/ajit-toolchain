@@ -1,0 +1,8 @@
+0x02400000 | 0x00000010010000000000000000000000 | be 0x00000000 #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x027FFFFF | 0x00000010011111111111111111111111 | be 0x003FFFFF #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x22400000 | 0x00100010010000000000000000000000 | be 0x00000000 #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x227FFFFF | 0x00100010011111111111111111111111 | be 0x003FFFFF #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x02400000 | 0x00000010010000000000000000000000 | be,a 0x00000000 #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x027FFFFF | 0x00000010011111111111111111111111 | be,a 0x003FFFFF #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x22400000 | 0x00100010010000000000000000000000 | be,a 0x00000000 #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x227FFFFF | 0x00100010011111111111111111111111 | be,a 0x003FFFFF #;|  #;| # BE disp22 #;| Branch on Equal  #;| op2 = 0001, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

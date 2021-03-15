@@ -1,0 +1,13 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+RDY,op3,101000,,,Read Y Register,131,B28,State Register,4,op41,raw,0,rs1=0,ar,rd,2,rs1=%y,rd,,,end
+RDASR‡,op3,101000,,,Read Ancillary State Register (reserved),131,B28,State Register,4,op41,raw,0,"Rs = 1 … 15, causes undefined results",ar,rd,2,rs1=rs1,rd,,,end
+RDASR‡,op3,101000,,,(implementation-dependent),131,B28,State Register,4,op41,raw,0,Stbar = rdasr with rd=0 and rs1=15,ar,rd,2,rs1=rs1,rd,,,end
+RDPSR,op3,101001,,,Read Processor State Register,131,B28,State Register,4,op41,raw,2,,gr,rd,2,rs1=%psr,rd,,,end
+RDWIM,op3,101010,,,Read Window Invalid Mask Register,131,B28,State Register,4,op41,raw,2,,gr,rd,2,rs1=%wim,rd,,,end
+RDTBR,op3,101011,,,Read Trap Base Register,131,B28,State Register,4,op41,raw,1,,gr,rd,2,rs1=%tbr,rd,,,end
+WRY,op3,110000,,,Write Y Register,133,B29,State Register,4,op41,raw,1,rd=0,rra,wry,3,rs1,rs2,rd=%y,,end
+WRASR‡,op3,110000,,,Write Ancillary State Register (reserved),133,B29,State Register,4,op41,raw,1,"Rs = 1 … 15, causes undefined results",rra,wrasr‡,3,rs1,rs2,rd=rd,,end
+WRASR‡,op3,110000,,,(implementation-dependent),133,B29,State Register,4,op41,raw,0,,rra,wrasr‡,3,rs1,rs2,rd=rd,,end
+WRPSR,op3,110001,,,Write Processor State Register,133,B29,State Register,4,op41,raw,2,,rrg,wrpsr,3,rs1,rs2,rd=%psr,,end
+WRWIM,op3,110010,,,Write Window Invalid Mask Register,133,B29,State Register,4,op41,raw,2,,rrg,wrwim,3,rs1,rs2,rd=%wim,,end
+WRTBR,op3,110011,,,Write Trap Base Register,133,B29,State Register,4,op41,raw,1,,rrg,wrtbr,3,rs1,rs2,rd=%tbr,,end

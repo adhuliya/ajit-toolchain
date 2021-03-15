@@ -1,0 +1,8 @@
+0x0D800000 | 0x00001101100000000000000000000000 | bneg 0x00000000 #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0DBFFFFF | 0x00001101101111111111111111111111 | bneg 0x003FFFFF #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2D800000 | 0x00101101100000000000000000000000 | bneg 0x00000000 #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2DBFFFFF | 0x00101101101111111111111111111111 | bneg 0x003FFFFF #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0D800000 | 0x00001101100000000000000000000000 | bneg,a 0x00000000 #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x0DBFFFFF | 0x00001101101111111111111111111111 | bneg,a 0x003FFFFF #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2D800000 | 0x00101101100000000000000000000000 | bneg,a 0x00000000 #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x2DBFFFFF | 0x00101101101111111111111111111111 | bneg,a 0x003FFFFF #;|  #;| # BNEG disp22 #;| Branch on Negative  #;| op2 = 0110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

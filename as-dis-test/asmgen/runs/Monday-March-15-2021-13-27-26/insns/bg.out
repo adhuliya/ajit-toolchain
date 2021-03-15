@@ -1,0 +1,8 @@
+0x16800000 | 0x00010110100000000000000000000000 | bg 0x00000000 #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x16BFFFFF | 0x00010110101111111111111111111111 | bg 0x003FFFFF #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x36800000 | 0x00110110100000000000000000000000 | bg 0x00000000 #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x36BFFFFF | 0x00110110101111111111111111111111 | bg 0x003FFFFF #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x16800000 | 0x00010110100000000000000000000000 | bg,a 0x00000000 #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x16BFFFFF | 0x00010110101111111111111111111111 | bg,a 0x003FFFFF #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x36800000 | 0x00110110100000000000000000000000 | bg,a 0x00000000 #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x36BFFFFF | 0x00110110101111111111111111111111 | bg,a 0x003FFFFF #;|  #;| # BG disp22 #;| Branch on Greater  #;| op2 = 1010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

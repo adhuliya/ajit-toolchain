@@ -1,0 +1,8 @@
+0x12400000 | 0x00010010010000000000000000000000 | fbe 0x00000000 #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x127FFFFF | 0x00010010011111111111111111111111 | fbe 0x003FFFFF #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x32400000 | 0x00110010010000000000000000000000 | fbe 0x00000000 #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x327FFFFF | 0x00110010011111111111111111111111 | fbe 0x003FFFFF #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x12400000 | 0x00010010010000000000000000000000 | fbe,a 0x00000000 #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x127FFFFF | 0x00010010011111111111111111111111 | fbe,a 0x003FFFFF #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x32400000 | 0x00110010010000000000000000000000 | fbe,a 0x00000000 #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x327FFFFF | 0x00110010011111111111111111111111 | fbe,a 0x003FFFFF #;|  #;| # FBE disp22 #;| FCC Branch on Equal  #;| op2 = 1001, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

@@ -1,0 +1,8 @@
+0x04800000 | 0x00000100100000000000000000000000 | ble 0x00000000 #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x04BFFFFF | 0x00000100101111111111111111111111 | ble 0x003FFFFF #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x24800000 | 0x00100100100000000000000000000000 | ble 0x00000000 #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x24BFFFFF | 0x00100100101111111111111111111111 | ble 0x003FFFFF #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x04800000 | 0x00000100100000000000000000000000 | ble,a 0x00000000 #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x04BFFFFF | 0x00000100101111111111111111111111 | ble,a 0x003FFFFF #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x24800000 | 0x00100100100000000000000000000000 | ble,a 0x00000000 #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x24BFFFFF | 0x00100100101111111111111111111111 | ble,a 0x003FFFFF #;|  #;| # BLE disp22 #;| Branch on Less or Equal  #;| op2 = 0010, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

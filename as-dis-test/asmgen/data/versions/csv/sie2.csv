@@ -1,0 +1,3 @@
+"Opcode","Format type","Format Value","Other field","Value","Operation","Sparc V8 Manual main description page","Sparc V8 Manual main description Chapter reference","Insn Category","Insn Category Index","Format Index","Processing Status","Privilege","Notes","ASM Rator Syntax","Num Args","ASM Arg 1","ASM Arg 2","ASM Arg 3","ASM Arg 4","END"
+"LDSB","op3",001001,"i",000000,"Load Signed Byte",90,"B1","Load/Store",1,"op40","raw",0,,"ldsb",3,"rs1","rs2","rd",,"end"
+"SETHI","op2",100,,,"Set High-Order 22 bits",104,"B9","Integer Arith",2,"op22","raw",0,,"sethi",2,"imm22","rd",,,"end"

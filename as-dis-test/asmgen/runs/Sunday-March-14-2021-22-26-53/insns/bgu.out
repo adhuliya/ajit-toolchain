@@ -1,0 +1,8 @@
+0x1B000000 | 0x00011011000000000000000000000000 | bgu 0x00000000 #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x1B3FFFFF | 0x00011011001111111111111111111111 | bgu 0x003FFFFF #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x3B000000 | 0x00111011000000000000000000000000 | bgu 0x00000000 #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x3B3FFFFF | 0x00111011001111111111111111111111 | bgu 0x003FFFFF #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x1B000000 | 0x00011011000000000000000000000000 | bgu,a 0x00000000 #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x1B3FFFFF | 0x00011011001111111111111111111111 | bgu,a 0x003FFFFF #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x3B000000 | 0x00111011000000000000000000000000 | bgu,a 0x00000000 #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
+0x3B3FFFFF | 0x00111011001111111111111111111111 | bgu,a 0x003FFFFF #;|  #;| # BGU disp22 #;| Branch on Greater Unsigned  #;| op2 = 1100, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

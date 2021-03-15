@@ -1,0 +1,8 @@
+0x0FC00000 | 0x00001111110000000000000000000000 | fbu 0x00000000 #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0FFFFFFF | 0x00001111111111111111111111111111 | fbu 0x003FFFFF #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2FC00000 | 0x00101111110000000000000000000000 | fbu 0x00000000 #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2FFFFFFF | 0x00101111111111111111111111111111 | fbu 0x003FFFFF #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0FC00000 | 0x00001111110000000000000000000000 | fbu,a 0x00000000 #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x0FFFFFFF | 0x00001111111111111111111111111111 | fbu,a 0x003FFFFF #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2FC00000 | 0x00101111110000000000000000000000 | fbu,a 0x00000000 #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x2FFFFFFF | 0x00101111111111111111111111111111 | fbu,a 0x003FFFFF #;|  #;| # FBU disp22 #;| FCC Branch on Unordered  #;| op2 = 0111, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

@@ -1,0 +1,16 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+LDC,op3,110000,i,000000,Load Coprocessor Register,94,B3,Load/Store,1,op40,raw,0,,rrc,ldc,3,rs1,rs2,rd=cprd,,end
+LDDC,op3,110011,i,000000,Load Double Coprocessor Register,94,B3,Load/Store,1,op40,raw,0,,rrc,lddc,3,rs1,rs2,rd=cprd,,end
+LDCSR ,op3,110001,i,000000,Load Coprocessor State Register,94,B3,Load/Store,1,op40,raw,0,,rrc,ldcsr,3,rs1,rs2,rd=%csr,,end
+STC,op3,110100,i,000000,Store Coprocessor,99,B6,Load/Store,1,op40,raw,0,,crr,stc,3,rd=cprd,rs1,rs2,,end
+STDC,op3,110111,i,000000,Store Double Coprocessor,99,B6,Load/Store,1,op40,raw,0,,crr,stdc,3,rd=cprd,rs1,rs2,,end
+STCSR,op3,110101,i,000000,Store Coprocessor State Register,99,B6,Load/Store,1,op40,raw,0,,crr,stcsr,3,rd=%csr,rs1,rs2,,end
+STDCQ,op3,110110,i,000000,Store Double Coprocessor Queue,99,B6,Load/Store,1,op40,raw,1,,crr,stdcq,3,rd=%cq,rs1,rs2,,end
+LDC,op3,110000,i,000001,Load Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,ldc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDDC,op3,110011,i,000001,Load Double Coprocessor Register,94,B3,Load/Store,1,op35,raw,0,,rnc,lddc,3,rs1,sign_ext (simm13),rd=cprd,,end
+LDCSR ,op3,110001,i,000001,Load Coprocessor State Register,94,B3,Load/Store,1,op35,raw,0,,rng,ldcsr,3,rs1,sign_ext (simm13),rd=%csr,,end
+STDFQ ,op3,100110,i,000001,Store Double Floating-point deferred-trap Queue,97,B5,Load/Store,1,op35,raw,0,,grn,stdfq ,3,rd=%fq,rs1,sign_ext (simm13),,end
+STC,op3,110100,i,000001,Store Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STDC,op3,110111,i,000001,Store Double Coprocessor,99,B6,Load/Store,1,op35,raw,0,,crn,stdc,3,rd=cprd,rs1,sign_ext (simm13),,end
+STCSR,op3,110101,i,000001,Store Coprocessor State Register,99,B6,Load/Store,1,op35,raw,0,,grn,stcsr,3,rd=%csr,rs1,sign_ext (simm13),,end
+STDCQ,op3,110110,i,000001,Store Double Coprocessor Queue,99,B6,Load/Store,1,op35,raw,0,,grn,stdcq,3,rd=%cq,rs1,sign_ext (simm13),,end

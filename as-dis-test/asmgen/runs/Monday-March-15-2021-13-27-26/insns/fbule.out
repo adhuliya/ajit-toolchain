@@ -1,0 +1,8 @@
+0x1F800000 | 0x00011111100000000000000000000000 | fbule 0x00000000 #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1FBFFFFF | 0x00011111101111111111111111111111 | fbule 0x003FFFFF #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3F800000 | 0x00111111100000000000000000000000 | fbule 0x00000000 #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3FBFFFFF | 0x00111111101111111111111111111111 | fbule 0x003FFFFF #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1F800000 | 0x00011111100000000000000000000000 | fbule,a 0x00000000 #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x1FBFFFFF | 0x00011111101111111111111111111111 | fbule,a 0x003FFFFF #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3F800000 | 0x00111111100000000000000000000000 | fbule,a 0x00000000 #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
+0x3FBFFFFF | 0x00111111101111111111111111111111 | fbule,a 0x003FFFFF #;|  #;| # FBULE disp22 #;| FCC Branch on Unordered or Less or Equal  #;| op2 = 1110, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
