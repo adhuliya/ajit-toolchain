@@ -1,0 +1,170 @@
+\documentclass[a4paper,12pt,twoside]{report}
+% include all the required packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{epstopdf}
+\usepackage{setspace}
+\usepackage{varioref}
+\usepackage{vmargin}
+\usepackage{import}
+\usepackage{array,multirow}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage[none]{hyphenat}
+\usepackage{algorithmicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+\usepackage{textcomp}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes}
+
+\lstset{basicstyle=\ttfamily,breaklines=true}
+% For the table in appendix
+\renewcommand{\arraystretch}{1.5}
+
+% set the page size and margins
+\setpapersize{A4}
+%\setmarginsrb{leftmargin}{topmargin}{rightmargin}{bottommargin}{headheight}{headsep}{footheight}{footskip}
+\setmarginsrb{20mm}{15mm}{20mm}{22mm}{3mm}{12mm}{3mm}{10mm}
+
+% Set the line spacing to 1.5
+\linespread{1.25}
+
+% disable the hyperlinks
+\usepackage[breaklinks]{hyperref}
+\hypersetup{
+	colorlinks,%
+	citecolor=black,%
+	filecolor=black,%
+	linkcolor=black,%
+	urlcolor=black
+}
+
+% custom headers and footers
+\usepackage{fancyhdr}
+
+\fancypagestyle{plain}{%
+	\fancyhead{}
+	%\fancyhf{} % clear all header and footer fields
+	\fancyfoot[L]{} % except the center
+	\fancyfoot[C]{\thepage} % except the center
+	\fancyfoot[R]{} % except the center
+	\renewcommand{\headrulewidth}{0pt}
+	}
+
+\fancypagestyle{normal}{%
+	\fancyfoot{} % Delete current footer settings
+	%\fancyhf{} %clear all fields
+	\fancyhead[RO,LE]{\thepage}
+	\fancyhead[RE]{{\nouppercase{\leftmark}}}
+	\fancyhead[LO]{{\nouppercase{\rightmark}}}
+}
+
+\fancypagestyle{titlepages}{%
+	\fancyhf{} % clear all header and footer fields
+	\fancyfoot[C]{\thepage} % except the center
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}}
+
+% Written by
+\author{Titto Thomas}
+
+\pagestyle{normal} % applying header and footer
+
+% paragraph seperation
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.5em}
+
+\newcommand{\forceindent}{\leavevmode{\parindent=2em\indent}}
+
+% adjust the spacing
+\raggedbottom
+
+% remove the spacing between itemize
+\setlist{nosep}
+
+\usepackage[ backend=biber, style=ieee, sorting=none ]{biblatex} %ydnt: Sort by year (descending), name, title.
+\addbibresource{References/references.bib}
+
+\DefineBibliographyStrings{english}{%
+	bibliography = {References},% name the bibliography properly
+}
+%------------------------------------------------------------------------
+\begin{document}
+	
+% standard IITB report title page
+\include{TitlePage/TitlePage}
+
+%------------------------------------------------------------------------
+% Declaration.
+\include{Declaration/Declaration}
+
+%------------------------------------------------------------------------
+% Acknowledgement.
+\include{Acknowledgement/Acknowledgement}
+
+%------------------------------------------------------------------------
+% Abstract.
+\include{Abstract/Abstract}
+
+%-------------------------------------------------------------------------
+% Table of contents & List of figures
+\tableofcontents
+\thispagestyle{titlepages}
+
+\listoffigures
+\thispagestyle{titlepages}
+
+\pagebreak
+\pagenumbering{arabic}
+%-------------------------------------------------------------------------
+% chapter 1 : Introduction
+\chapter{Introduction}
+\
+% Start adding page numbers from here
+\setcounter{page}{1}
+\input{Introduction/Introduction}
+
+%-------------------------------------------------------------------------
+% chapter 2
+\chapter{Debug solutions for microprocessors}
+\input{Debug/Debug}
+
+%-------------------------------------------------------------------------
+% chapter 3
+\chapter{System Architecture}
+\input{SysArch/SysArch}
+
+%-------------------------------------------------------------------------
+% chapter 4
+\chapter{Implementation \& validation}
+\input{Implementation/Implementation}
+
+%-------------------------------------------------------------------------
+% chapter 6
+\chapter{Conclusion \& Future work}
+\input{Conclusion/Conclusion}
+
+%-------------------------------------------------------------------------
+% Appendix.
+\input{AppendixI/AppendixI}
+\input{AppendixII/AppendixII}
+\input{AppendixIII/AppendixIII}
+
+%-------------------------------------------------------------------------
+% Bibliography.
+\printbibliography[heading=bibintoc]
+
+%-------------------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------------------

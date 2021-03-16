@@ -1,0 +1,18 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+Import('COMPILATION_FLAGS')
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+env.Append(CPPPATH = './src/:./include:')
+
+FUNCTIONLIB_INCLUDE=AHIR_RELEASE + "/functionLibrary/include"
+env.Append(CPPPATH = FUNCTIONLIB_INCLUDE + ":")
+
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/pipeHandler/include"
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":")
+
+
+#env.SharedLibrary('./lib/libCommon', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+env.Library('./lib/libCommon', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+

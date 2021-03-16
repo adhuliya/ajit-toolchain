@@ -1,0 +1,22 @@
+% XCircuit output "fp_packet.tex" for LaTeX input from fp_packet.eps
+\def\putbox#1#2#3#4{\makebox[0in][l]{\makebox[#1][l]{}\raisebox{\baselineskip}[0in][0in]{\raisebox{#2}[0in][0in]{\scalebox{#3}{#4}}}}}
+\def\rightbox#1{\makebox[0in][r]{#1}}
+\def\centbox#1{\makebox[0in]{#1}}
+\def\topbox#1{\raisebox{-0.60\baselineskip}[0in][0in]{#1}}
+\def\midbox#1{\raisebox{-0.20\baselineskip}[0in][0in]{#1}}
+   \scalebox{1}{
+   \normalsize
+   \parbox{7.66667in}{
+   \includegraphics[scale=1]{fp_packet.eps}\\
+   % translate x=960 y=150 scale 0.38
+   \putbox{7.47in}{1.09in}{1.20}{0}%
+   \putbox{6.06in}{1.09in}{1.20}{4}%
+   \putbox{5.47in}{1.09in}{1.20}{5}%
+   \putbox{4.89in}{1.09in}{1.20}{6}%
+   \putbox{0.14in}{1.09in}{1.20}{15}%
+   \putbox{2.31in}{0.09in}{1.20}{unused}%
+   \putbox{5.47in}{0.09in}{1.20}{fsr}%
+   \putbox{6.56in}{0.09in}{1.20}{reg\_id}%
+   } % close 'parbox'
+   } % close 'scalebox'
+   \vspace{-\baselineskip} % this is not necessary, but looks better
