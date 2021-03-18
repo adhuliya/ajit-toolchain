@@ -37,16 +37,19 @@ similar steps without creating docker images.
       If you are using docker, this build is saved
       in an image named `ajit_build`.
       This image contains the whole of the ajit build,
-      and hence is nearly 5 GB or more in size.
+      and hence maybe many GBs in size.
 
 After this stage you can use the whole of Ajit Toolchain
-from the created image or directory from the current folder
-if not using docker.
+from the created docker image;
+And in case of a local setup you can use the system from
+the directory housing the built system (which we refer
+to as `AJIT_HOME`)
 
 3. "ajit\_tools" (Optional):
    To reduce the docker image size, the third step 
-   removes unnecessary files (from "ajit\_build" image 
-   and only keeps the installed files necessary for someone interested
+   removes intermediate files (from "ajit\_build" image 
+   and keeps the installed files necessary.
+   This is useful for someone interested
    in using the Ajit Toolchain (vs its development).
    If you are using docker, this is done in the image
    `ajit_tools` (this image is generally less than
@@ -104,6 +107,13 @@ reference to a well tested system environment.
 To cleanup the local system setup use,
 
     ./clean.sh;
+
+You can also call the above script from inside
+`ajit_build_dev` image container to clean the
+whole ajit build. 
+
+To cleanup a sub-build in the Ajit toolchain,
+read the script to see which sub-scripts it invokes.
 
 
 ## Setup environment to start using the toolchain
