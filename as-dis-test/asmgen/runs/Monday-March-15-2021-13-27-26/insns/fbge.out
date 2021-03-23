@@ -1,8 +1,0 @@
-0x16C00000 | 0x00010110110000000000000000000000 | fbge 0x00000000 #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x16FFFFFF | 0x00010110111111111111111111111111 | fbge 0x003FFFFF #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x36C00000 | 0x00110110110000000000000000000000 | fbge 0x00000000 #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x36FFFFFF | 0x00110110111111111111111111111111 | fbge 0x003FFFFF #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x16C00000 | 0x00010110110000000000000000000000 | fbge,a 0x00000000 #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x16FFFFFF | 0x00010110111111111111111111111111 | fbge,a 0x003FFFFF #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x36C00000 | 0x00110110110000000000000000000000 | fbge,a 0x00000000 #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x36FFFFFF | 0x00110110111111111111111111111111 | fbge,a 0x003FFFFF #;|  #;| # FBGE disp22 #;| FCC Branch on Greater or Equal  #;| op2 = 1011, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

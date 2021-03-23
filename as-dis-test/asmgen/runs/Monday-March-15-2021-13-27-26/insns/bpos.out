@@ -1,8 +1,0 @@
-0x1F800000 | 0x00011111100000000000000000000000 | bpos 0x00000000 #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1FBFFFFF | 0x00011111101111111111111111111111 | bpos 0x003FFFFF #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3F800000 | 0x00111111100000000000000000000000 | bpos 0x00000000 #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FBFFFFF | 0x00111111101111111111111111111111 | bpos 0x003FFFFF #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1F800000 | 0x00011111100000000000000000000000 | bpos,a 0x00000000 #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1FBFFFFF | 0x00011111101111111111111111111111 | bpos,a 0x003FFFFF #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3F800000 | 0x00111111100000000000000000000000 | bpos,a 0x00000000 #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FBFFFFF | 0x00111111101111111111111111111111 | bpos,a 0x003FFFFF #;|  #;| # BPOS disp22 #;| Branch on Positive  #;| op2 = 1110, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

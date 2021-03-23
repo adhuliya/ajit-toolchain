@@ -17,57 +17,57 @@
 # use this mode.  We have a list of all the SPARC and AJIT operations.
 #####
 
-MASTERTOPDIR=/lindata/My-work/Professional/iitb/development
-BRANCHTOPDIR=${MASTERTOPDIR}/isa-v2-branch
-ASMGENTOPDIR=${BRANCHTOPDIR}/ajit-toolchain/as-dis-test/asmgen
-ASMGENBINDIR=${ASMGENTOPDIR}/bin
-ASMGENSRCDIR=${ASMGENTOPDIR}/code/python
-ASMGENDATADIR=${ASMGENTOPDIR}/data
-ASMGENRUNDIR=${ASMGENTOPDIR}/runs
+# MASTERTOPDIR=/lindata/My-work/Professional/iitb/development
+# BRANCHTOPDIR=${MASTERTOPDIR}/isa-v2-branch
+# ASMGENTOPDIR=${BRANCHTOPDIR}/ajit-toolchain/as-dis-test/asmgen
+# ASMGENBINDIR=${ASMGENTOPDIR}/bin
+# ASMGENSRCDIR=${ASMGENTOPDIR}/code/python
+# ASMGENDATADIR=${ASMGENTOPDIR}/data
+# ASMGENRUNDIR=${ASMGENTOPDIR}/runs
 
-AJITTOOLSTOPDIR=${MASTERTOPDIR}/../build/buildroot-2014.08
-AJITTOOLSOUTDIR=${AJITTOOLSTOPDIR}/output/host
-AJITTOOLSBINDIR=${AJITTOOLSOUTDIR}/usr/bin
-AJITTOOLSPREFIX=sparc-buildroot-linux-uclibc
+# AJITTOOLSTOPDIR=${MASTERTOPDIR}/../build/buildroot-2014.08
+# AJITTOOLSOUTDIR=${AJITTOOLSTOPDIR}/output/host
+# AJITTOOLSBINDIR=${AJITTOOLSOUTDIR}/usr/bin
+# AJITTOOLSPREFIX=sparc-buildroot-linux-uclibc
 
-# Tools
-# Insn generator tool
-INSNGEN=${ASMGENSRCDIR}/opcode-generator.py
-ASMTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-as
-ASMTOOLARGS=-Av8
-ODTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-objdump
-ODTOOLARGS="-d -z"
+# # Tools
+# # Insn generator tool
+# INSNGEN=${ASMGENSRCDIR}/opcode-generator.py
+# ASMTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-as
+# ASMTOOLARGS=-Av8
+# ODTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-objdump
+# ODTOOLARGS="-d -z"
 
-# Data files
-INSNLST=${ASMGENDATADIR}/the-insns.lst
-INSNDATA=${ASMGENDATADIR}/all-insns.csv
-INSNFMTS=${ASMGENDATADIR}/all-formats.csv
+# # Data files
+# INSNLST=${ASMGENDATADIR}/the-insns.lst
+# INSNDATA=${ASMGENDATADIR}/all-insns.csv
+# INSNFMTS=${ASMGENDATADIR}/all-formats.csv
 
-RUNDATE=$(date +%A-%B-%d-%Y-%H-%M-%S)
-RUNDIR=${ASMGENRUNDIR}/${RUNDATE}
-RUNLOG=${RUNDIR}/run.log
+# RUNDATE=$(date +%A-%B-%d-%Y-%H-%M-%S)
+# RUNDIR=${ASMGENRUNDIR}/${RUNDATE}
+# RUNLOG=${RUNDIR}/run.log
 
-# Colour variables
-RED="\033[1;31m"
-GREEN="\033[1;32m"
-NOCOLOR="\033[0m"
-GREENONYELLOW="\033[1;32;1;43m"
-YELLOWONRED="\033[1;33;0;41m"
-YELLOWONGREEN="\033[1;33;1;42m"
-REDONGREEN="\033[1;31;1;42m"
+# # Colour variables
+# RED="\033[1;31m"
+# GREEN="\033[1;32m"
+# NOCOLOR="\033[0m"
+# GREENONYELLOW="\033[1;32;1;43m"
+# YELLOWONRED="\033[1;33;0;41m"
+# YELLOWONGREEN="\033[1;33;1;42m"
+# REDONGREEN="\033[1;31;1;42m"
 
-OKCOLOR=${GREENONYELLOW}
-FAILCOLOR=${YELLOWONRED}
-RUNCOLOR=${REDONGREEN}
-OKMESG="${OKCOLOR}[ OK ]${NOCOLOR}"
-FAILMESG="${FAILCOLOR}[FAIL]${NOCOLOR}"
-DONEMESG="${OKCOLOR}[Done]${NOCOLOR}"
-BLDERRMESG="${FAILCOLOR}[Build ERROR]${NOCOLOR}"
-CPERRMESG="${FAILCOLOR}[Copy ERROR]${NOCOLOR}"
+# OKCOLOR=${GREENONYELLOW}
+# FAILCOLOR=${YELLOWONRED}
+# RUNCOLOR=${REDONGREEN}
+# OKMESG="${OKCOLOR}[ OK ]${NOCOLOR}"
+# FAILMESG="${FAILCOLOR}[FAIL]${NOCOLOR}"
+# DONEMESG="${OKCOLOR}[Done]${NOCOLOR}"
+# BLDERRMESG="${FAILCOLOR}[Build ERROR]${NOCOLOR}"
+# CPERRMESG="${FAILCOLOR}[Copy ERROR]${NOCOLOR}"
 
-# Misc. variables
-STARTTIME=
-ENDTIME=
+# # Misc. variables
+# STARTTIME=
+# ENDTIME=
 
 function print_sym_val ()
 {
@@ -87,8 +87,123 @@ function print_sym_val ()
 
 function setup ()
 {
+    MASTERTOPDIR=/lindata/My-work/Professional/iitb/development
+    BRANCHTOPDIR=${MASTERTOPDIR}/isa-v2-branch
+    ASMGENTOPDIR=${BRANCHTOPDIR}/ajit-toolchain/as-dis-test/asmgen
+    ASMGENBINDIR=${ASMGENTOPDIR}/bin
+    ASMGENSRCDIR=${ASMGENTOPDIR}/code/python
+    ASMGENDATADIR=${ASMGENTOPDIR}/data
+    ASMGENRUNDIR=${ASMGENTOPDIR}/runs
+
+    AJITTOOLSTOPDIR=${MASTERTOPDIR}/../build/buildroot-2014.08
+    AJITTOOLSOUTDIR=${AJITTOOLSTOPDIR}/output/host
+    AJITTOOLSBINDIR=${AJITTOOLSOUTDIR}/usr/bin
+    AJITTOOLSPREFIX=sparc-buildroot-linux-uclibc
+
+    # Tools
+    # Insn generator tool
+    INSNGEN=${ASMGENSRCDIR}/opcode-generator.py
+    ASMTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-as
+    ASMTOOLARGS=-Av8
+    ODTOOL=${AJITTOOLSBINDIR}/${AJITTOOLSPREFIX}-objdump
+    ODTOOLARGS="-d -z"
+
+    # Data files
+    INSNLST=${ASMGENDATADIR}/the-insns.lst
+    INSNDATA=${ASMGENDATADIR}/all-insns.csv
+    INSNFMTS=${ASMGENDATADIR}/all-formats.csv
+
+    RUNDATE=$(date +%A-%B-%d-%Y-%H-%M-%S)
+    RUNDIR=${ASMGENRUNDIR}/${RUNDATE}
+    RUNLOG=${RUNDIR}/run.log
+
+    # Colour variables
+    RED="\033[1;31m"
+    GREEN="\033[1;32m"
+    NOCOLOR="\033[0m"
+    GREENONYELLOW="\033[1;32;1;43m"
+    YELLOWONRED="\033[1;33;0;41m"
+    YELLOWONGREEN="\033[1;33;1;42m"
+    REDONGREEN="\033[1;31;1;42m"
+
+    OKCOLOR=${GREENONYELLOW}
+    FAILCOLOR=${YELLOWONRED}
+    RUNCOLOR=${REDONGREEN}
+    OKMESG="${OKCOLOR}[ OK ]${NOCOLOR}"
+    FAILMESG="${FAILCOLOR}[FAIL]${NOCOLOR}"
+    DONEMESG="${OKCOLOR}[Done]${NOCOLOR}"
+    BLDERRMESG="${FAILCOLOR}[Build ERROR]${NOCOLOR}"
+    CPERRMESG="${FAILCOLOR}[Copy ERROR]${NOCOLOR}"
+
+    # Processing states of the script
+    DOLISTINSTRUCTIONS=0
+    DOINSNEXPANSION=0
+    DOASMGENERATION=0
+    DOOBJGENERATION=0
+    DODISASMGENERATION=0
+    DOCOMPARISON=0
+    
+    # Misc. variables
+    STARTTIME=
+    ENDTIME=
+
+    # Now do the main setup
+    process_options $*
+    
     STARTTIME=$(date +%s)
     [ ! -d ${RUNDIR} ] && mkdir -p ${RUNDIR}
+}
+
+function process_options ()
+{
+    local args=$*
+    local optstr=":vhliaodc"
+    local argvar                # where we collect the argument
+
+    printf "II == %-40s: \"%s\"\n" "Processing command line" "$args"
+    DOLISTINSTRUCTIONS=1
+    DOINSNEXPANSION=1
+    DOASMGENERATION=1
+    DOOBJGENERATION=1
+    DODISASMGENERATION=1
+    DOCOMPARISON=1
+
+    # Option      Meaning
+    # h           Help
+    # l           Stop after listing instructions
+    # i           Stop after expanding instructions
+    # a           Stop after ASM generation
+    # o           Stop after assembling files to OBJ files
+    # d           Stop after disassembling OBJ files
+    # c           Stop after comparing
+    while getopts $optstr argvar $args
+    do
+        case $argvar in
+            "h") script_help;              exit;;
+	    "l") DOLISTINSTRUCTIONS=0; continue;;
+	    "i") DOINSNEXPANSION=0;    continue;;
+	    "a") DOASMGENERATION=0;    continue;;
+	    "o") DOOBJGENERATION=0;    continue;;
+	    "d") DODISASMGENERATION=0; continue;;
+	    "c") DOCOMPARISON=0;       continue;;
+            *) printf "Unknown option: %s\n" $OPTARG; exit;;
+        esac
+    done
+    printf "Done.\n"
+}
+
+function script_help ()
+{
+    printf "Command line options\n"
+    printf "   -h   This brief help.\n"
+    printf "   -l   Do instructions listing.\n"
+    printf "   -i   Do instructions expansion.\n"
+    printf "   -a   Do ASM generation.\n"
+    printf "   -o   Do assembling of files to OBJ files.\n"
+    printf "   -d   Do disassembling of OBJ files.\n"
+    printf "   -c   Do comparisons.\n"
+
+    return;
 }
 
 function ui_header ()
@@ -162,6 +277,20 @@ function insn_list ()
     mv /tmp/a ${INSNLST}
 }
 
+# function print_and_record ()
+# {
+#     local m=$1
+    
+#     printf "Generating instruction #%03d: %-15s ... " ${count} ${insn}
+#     printf "Generating instruction #%03d: %-15s ... " ${count} ${insn}                        >> ${RUNLOG}
+#     printf "   Status is: ERROR.\n" | tee -a ${RUNLOG}
+#     printf "   Status is: Done. \n" | tee -a ${RUNLOG}
+#     printf "   Command used was: " ${count} ${insn}                                           >> ${RUNLOG}
+#     printf "${INSNGEN} -i ${INSNDATA} -f ${INSNFMTS} -e ${insn} > ${outfile} 2> ${errfile}\n" >> ${RUNLOG}
+#     printf "=== Instruction details generated: %03d ok and %03d failed.\n" ${ok} ${failed}
+#     printf "=== Instruction details generated: %03d ok and %03d failed.\n" ${ok} ${failed}  >> ${RUNLOG}
+# }
+
 function insn_gen ()
 {
     count=0
@@ -178,19 +307,21 @@ function insn_gen ()
         
         printf "Generating instruction #%03d: %-15s ... " ${count} ${insn}
         printf "Generating instruction #%03d: %-15s ... " ${count} ${insn}                        >> ${RUNLOG}
-        printf "   Command is: " ${count} ${insn}                                                 >> ${RUNLOG}
-        printf "${INSNGEN} -i ${INSNDATA} -f ${INSNFMTS} -e ${insn} > ${outfile} 2> ${errfile}\n" >> ${RUNLOG}
 
         ${INSNGEN} -i ${INSNDATA} -f ${INSNFMTS} -e ${insn} > ${outfile} 2> ${errfile}
         
         if [ -s ${errfile} ];
         then
-            printf "   Status is: ERROR.\n" | tee -a ${RUNLOG}
+            # printf "   Status is: ERROR.\n" | tee -a ${RUNLOG}
+            printf "   ERROR.\n" | tee -a ${RUNLOG}
             failed=$(expr ${failed} + 1)
         else
-            printf "   Status is: Done. \n" | tee -a ${RUNLOG}
+            # printf "   Status is: Done. \n" | tee -a ${RUNLOG}
+            printf "   Done. \n" | tee -a ${RUNLOG}
             ok=$(expr ${ok} + 1)
         fi
+        printf "   Command used was: " ${count} ${insn}                                           >> ${RUNLOG}
+        printf "${INSNGEN} -i ${INSNDATA} -f ${INSNFMTS} -e ${insn} > ${outfile} 2> ${errfile}\n" >> ${RUNLOG}
     done
 
     printf "\r"
@@ -198,40 +329,42 @@ function insn_gen ()
     printf "=== Instruction details generated: %03d ok and %03d failed.\n" ${ok} ${failed}  >> ${RUNLOG}
 }
 
-function make_asm ()
-{
-    count=0
-    ok=0
-    failed=0
-    asmdir=${RUNDIR}/asms
-    [ ! -d ${asmdir} ] && mkdir -p ${asmdir}
+# function make_asm ()
+# {
+#     count=0
+#     ok=0
+#     failed=0
+#     asmdir=${RUNDIR}/asms
+#     [ ! -d ${asmdir} ] && mkdir -p ${asmdir}
     
-    for insn in $(cat ${INSNLST})
-    do
-        infile=${asmdir}/../insns/${insn}.out
-        outfile=${asmdir}/${insn}.s
-        errfile=${asmdir}/${insn}.err
-        count=$(expr $count + 1)
-        printf "Generating    ASM file |%-15s| from insn List file |%-15s| ... " $(basename ${outfile}) $(basename ${infile}) | \
-	    tee -a ${RUNLOG}
-        genoutheader                                                               > ${outfile}
-        cat $infile | awk -F\| '{printf ("\t%s\n", gensub (" #;", "", "g", $3))}' >> ${outfile} 2> ${errfile}
-        genouttail                                                                >> ${outfile}
+#     for insn in $(cat ${INSNLST})
+#     do
+#         infile=${asmdir}/../insns/${insn}.out
+#         outfile=${asmdir}/${insn}.s
+#         errfile=${asmdir}/${insn}.err
+# 	outname=$(basename ${outfile})
+# 	inname=$(basename ${infile})
+#         count=$(expr $count + 1)
+#         printf "Generating    ASM file |%-16s| from insn List file |%-20s| ... " ${outname} ${inname} | \
+# 	    tee -a ${RUNLOG}
+#         genoutheader                                                               > ${outfile}
+#         cat $infile | awk -F\| '{printf ("\t%s\n", gensub (" #;", "", "g", $3))}' >> ${outfile} 2> ${errfile}
+#         genouttail                                                                >> ${outfile}
 
-        if [ -s ${errfile} ];
-        then
-            printf "   Status is: ERROR.\n" | tee -a ${RUNLOG}
-            failed=$(expr ${failed} + 1)
-        else
-            printf "   Status is: Done. \n" | tee -a ${RUNLOG}
-            ok=$(expr ${ok} + 1)
-        fi
-    done
+#         if [ -s ${errfile} ];
+#         then
+#             printf "   Status is: ERROR.\n" | tee -a ${RUNLOG}
+#             failed=$(expr ${failed} + 1)
+#         else
+#             printf "   Status is: Done. \n" | tee -a ${RUNLOG}
+#             ok=$(expr ${ok} + 1)
+#         fi
+#     done
     
-    printf "\r"
-    printf "=== ASM code for Instructions generated: %03d ok and %03d failed.\n" ${ok} ${failed}
-    printf "=== ASM code for Instructions generated: %03d ok and %03d failed.\n" ${ok} ${failed} >> ${RUNLOG}
-}
+#     printf "\r"
+#     printf "=== ASM code for Instructions generated: %03d ok and %03d failed.\n" ${ok} ${failed}
+#     printf "=== ASM code for Instructions generated: %03d ok and %03d failed.\n" ${ok} ${failed} >> ${RUNLOG}
+# }
 
 function process_asms ()
 {
@@ -265,13 +398,15 @@ function process_asms ()
 	asmname=$(basename ${asmfile})
         
         count=$(expr $count + 1)
-	printf "Generating    OBJ file |%-15s| from insn    ASM file |%-15s| ... " ${objname} ${asmname} | \
-		    tee -a ${RUNLOG}
+	# printf "Generating    OBJ file |%-16s| from insn    ASM file |%-20s| ... " ${objname} ${asmname} | \
+	# 	    tee -a ${RUNLOG}
+	printf "%-20s to %-20s ... " ${asmname} ${objname} | tee -a ${RUNLOG}
         ${ASMTOOL} ${ASMTOOLARGS} -ahls=${lstfile} ${asmfile} -o ${objfile} 2> ${errfile}
         retval=$?
-        [ -s ${errfile} ] && printf "ERROR.\r" || printf "Done.\r"
+        [ -s ${errfile} ]  && printf "ERROR.\n" || printf "Done.\n"
         ([ -s ${errfile} ] && printf "ERROR.\n" || printf "Done.\n") >> ${RUNLOG}
-        [ -s ${errfile} ] && objfailed=$(expr ${objfailed} + 1) || objok=$(expr ${objok} + 1)
+        [ -s ${errfile} ]  && objfailed=$(expr ${objfailed} + 1) || objok=$(expr ${objok} + 1)
+        printf "   Command is: ${ASMTOOL} ${ASMTOOLARGS} -ahls=${lstfile} ${asmfile} -o ${objfile} 2> ${errfile}\n" >> ${RUNLOG}
     done
     printf "\r                                                                                \r"
     printf "=== OBJ code for Instructions generated: %03d ok and %03d failed.\n" ${objok} ${objfailed}
@@ -290,12 +425,14 @@ function process_asms ()
                # resfile=${resdir}/${insn}.res
                
                count=$(expr $count + 1)
-               printf "Disassembling OBJ file |%-15s| to        DISASM file |%-15s| ... " ${objname} ${asmname} | \
-		   tee -a ${RUNLOG}
+               # printf "Disassembling OBJ file |%-16s| to        DISASM file |%-20s| ... " ${objname} ${asmname} | \
+	       # 	   tee -a ${RUNLOG}
+               printf "%-20s to %-20s ... " ${objname} ${asmname} | tee -a ${RUNLOG}
                ${ODTOOL} ${ODTOOLARGS} ${objfile} > ${disfile} 2> ${disfile}.err
                [ -s ${disfile}.err ] && printf "ERROR.\r" || printf "Done.\r"
                ([ -s ${disfile}.err ] && printf "ERROR.\n" || printf "Done.\n") >> ${RUNLOG}
                [ -s ${disfile}.err ] && disfailed=$(expr ${disfailed} + 1) || disok=$(expr ${disok} + 1)
+               printf "   Command is: ${ODTOOL} ${ODTOOLARGS} ${objfile} > ${disfile} 2> ${disfile}.err\n" >> ${RUNLOG}
            done
            printf "\r                                                                                \r"
            printf "=== DISASSEMBLY for Instructions generated: %03d ok and %03d failed.\n" ${disok} ${disfailed}
@@ -310,13 +447,18 @@ function process_asms ()
                # lstfile=${objdir}/${insn}.lst
                # disfile=${disdir}/${insn}.dis.s
                # resfile=${resdir}/${insn}.res
+	       lstname=$(basename ${lstfile})
+	       disname=$(basename ${disfile})
                
                count=$(expr $count + 1)
-               printf "Comparing ASM-OBJ machine code with OBJ-ASM machine code for insn: %s ...\n" ${insn} | tee -a ${RUNLOG}
-               printf "          ASM Listing file: %s\n" ${lstfile}                                         | tee -a ${RUNLOG}
-               printf "          DISASM file     : %s\n" ${disfile}                                         | tee -a ${RUNLOG}
-               printf "\rComparing ASM-OBJ machine code with OBJ-ASM machine code for insn: %s ..." ${insn}
+               # printf "Comparing ASM-OBJ machine code with OBJ-ASM machine code for insn: %s ...\n" ${insn} | tee -a ${RUNLOG}
+               # printf "          ASM Listing file: %s\n" ${lstfile}                                         | tee -a ${RUNLOG}
+               # printf "          DISASM file     : %s\n" ${disfile}                                         | tee -a ${RUNLOG}
+               # printf "\rComparing ASM-OBJ machine code with OBJ-ASM machine code for insn: %s ..." ${insn}
 
+               printf "%-20s: List file opcodes %-20s == DisAsm file opcodes %-20s : "   \
+		      ${insn} ${lstname} ${disname}                                    | tee -a ${RUNLOG}
+	       
                grep "^  *" ${lstfile}                                                            | \
                    sed -e "s/              */      /"                                            | \
                    awk -F"	" '{n=patsplit ($1, f, "[0-9a-fA-F]+");                            \
@@ -330,8 +472,9 @@ function process_asms ()
                    sort                                                                            > /tmp/zz.tmp
                join -t\| -a 1 -a 2 -j 1 -o 1.1,2.1,1.2,2.2 /tmp/yy.tmp /tmp/zz.tmp               | \
                    awk -F\| '{if ($1 == $2) r="PASS"; else r="FAIL"; printf ("%s|%s|%s|%s|%s\n", $1, $2, $3, $4, r)}' > ${resfile}
-               printf "\r                                                                                \r"
-               # printf "=== STATIC CHECK for instruction \"%s\" generated.\n" ${insn}
+
+	       grep FAIL ${resfile}
+	       ([ $? == 0 ] && printf "FAIL.\n" || printf "PASS.\n") | tee -a ${RUNLOG}
                printf "=== STATIC CHECK for instruction \"%s\" generated.\n" ${insn} | tee -a ${RUNLOG}
            done
            printf "=== Result files for each instruction are in: %s.\n" ${resdir} | tee -a ${RUNLOG}
@@ -370,7 +513,7 @@ function do_process_asms ()
 	asmname=$(basename ${asmfile})
         
         count=$(expr $count + 1)
-	printf "Generating    OBJ file |%-15s| from insn    ASM file |%-15s| ... " ${objname} ${asmname} | \
+	printf "Generating    OBJ file |%-16s| from insn    ASM file |%-20s| ... " ${objname} ${asmname} | \
 		    tee -a ${RUNLOG}
         ${ASMTOOL} ${ASMTOOLARGS} -ahls=${lstfile} ${asmfile} -o ${objfile} 2> ${errfile}
         retval=$?
@@ -378,7 +521,7 @@ function do_process_asms ()
         [ -s ${errfile} ] && objfailed=$(expr ${objfailed} + 1) || objok=$(expr ${objok} + 1)
         if [ $retval == 0 ];
         then
-            printf "Disassembling OBJ file |%-15s| to        DISASM file |%-15s| ... " ${objname} ${asmname} | \
+            printf "Disassembling OBJ file |%-16s| to        DISASM file |%-20s| ... " ${objname} ${asmname} | \
 		tee -a ${RUNLOG}
             ${ODTOOL} ${ODTOOLARGS} ${objfile} > ${disfile} 2> ${disfile}.err
             retval=$?
@@ -392,7 +535,7 @@ function do_process_asms ()
                 printf "          DISASM file     : %s\n" ${disfile}                                         >> ${RUNLOG}
                 printf "Comparing ASM-OBJ machine code with OBJ-ASM machine code for insn: %s ...\n" ${insn}
 
-                grep "^  *" ${lstfile}                                                            | \
+                grep "${insn}" ${lstfile}                                                         | \
                     sed -e "s/              */      /"                                            | \
                     awk -F"	" '{n=patsplit ($1, f, "[0-9a-fA-F]+");                              \
                            if (n >= 3)                                                              \
@@ -400,9 +543,20 @@ function do_process_asms ()
                                       f[3],                                                         \
                                       gensub("^[       ][      ]*", "", "g", $2))}'               | \
                     sort                                                                            > /tmp/yy.tmp
-                grep "^  *" ${disfile}                                                            | \
+                # grep "^  *" ${lstfile}                                                            | \
+                #     sed -e "s/              */      /"                                            | \
+                #     awk -F"	" '{n=patsplit ($1, f, "[0-9a-fA-F]+");                              \
+                #            if (n >= 3)                                                              \
+                #               printf ("%s|%s\n",                                                    \
+                #                       f[3],                                                         \
+                #                       gensub("^[       ][      ]*", "", "g", $2))}'               | \
+                #     sort                                                                            > /tmp/yy.tmp
+                grep "${insn}" ${disfile}                                                         | \
                     awk -F"	" '{printf ("%s|%s\n", toupper(gensub (" ", "", "g", $2)), $3)}'  | \
                     sort                                                                            > /tmp/zz.tmp
+                # grep "^  *" ${disfile}                                                            | \
+                #     awk -F"	" '{printf ("%s|%s\n", toupper(gensub (" ", "", "g", $2)), $3)}'  | \
+                #     sort                                                                            > /tmp/zz.tmp
                 join -t\| -a 1 -a 2 -j 1 -o 1.1,2.1,1.2,2.2 /tmp/yy.tmp /tmp/zz.tmp               | \
                     awk -F\| '{if ($1 == $2) r="PASS"; else r="FAIL"; printf ("%s|%s|%s|%s|%s\n", $1, $2, $3, $4, r)}' > ${resfile}
 		print_status ${insn} ${resfile}
@@ -442,24 +596,38 @@ function cleanup ()
 
 function main ()
 {
-    setup
+    setup $*
     print_setup
 
-    printf "\n"
-    ui_header RUNCOLOR "Listing the instructions."
-    insn_list
+    if [ ${DOLISTINSTRUCTIONS} == 1 ];
+    then
+	printf "\n"
+	ui_header RUNCOLOR "Listing the instructions."
+	insn_list
+    fi
 
-    printf "\n"
-    ui_header RUNCOLOR "Generating all instruction patterns."
-    insn_gen
+    if [ ${DOINSNEXPANSION} == 1 ];
+    then
+	printf "\n"
+	ui_header RUNCOLOR "Generating all instruction patterns."
+	insn_gen
+    fi
 
-    printf "\n"
-    ui_header RUNCOLOR "Generating ASM test files."
-    make_asm
+    if [ ${DOASMGENERATION} == 1 ];
+    then
+	printf "\n"
+	ui_header RUNCOLOR "Generating ASM test files."
+	make_asm
+    fi
 
-    printf "\n"
-    ui_header RUNCOLOR "Processing ASM test files."
-    do_process_asms
+    if [ ${DOOBJGENERATION} == 1 ]    || \
+       [ ${DODISASMGENERATION} == 1 ] || \
+       [ ${DOCOMPARISON} == 1 ];
+    then
+	printf "\n"
+	ui_header RUNCOLOR "Processing ASM test files."
+	do_process_asms
+    fi
 
     cleanup
 }

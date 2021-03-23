@@ -1,8 +1,0 @@
-0x12000000 | 0x00010010000000000000000000000000 | ba 0x00000000 #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x123FFFFF | 0x00010010001111111111111111111111 | ba 0x003FFFFF #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x32000000 | 0x00110010000000000000000000000000 | ba 0x00000000 #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x323FFFFF | 0x00110010001111111111111111111111 | ba 0x003FFFFF #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x12000000 | 0x00010010000000000000000000000000 | ba,a 0x00000000 #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x123FFFFF | 0x00010010001111111111111111111111 | ba,a 0x003FFFFF #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x32000000 | 0x00110010000000000000000000000000 | ba,a 0x00000000 #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x323FFFFF | 0x00110010001111111111111111111111 | ba,a 0x003FFFFF #;|  #;| # BA disp22 #;| Branch Always  #;| op2 = 1000, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

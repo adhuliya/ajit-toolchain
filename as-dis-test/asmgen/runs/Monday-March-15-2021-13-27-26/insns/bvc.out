@@ -1,8 +1,0 @@
-0x1FC00000 | 0x00011111110000000000000000000000 | bvc 0x00000000 #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1FFFFFFF | 0x00011111111111111111111111111111 | bvc 0x003FFFFF #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FC00000 | 0x00111111110000000000000000000000 | bvc 0x00000000 #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FFFFFFF | 0x00111111111111111111111111111111 | bvc 0x003FFFFF #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0000 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1FC00000 | 0x00011111110000000000000000000000 | bvc,a 0x00000000 #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x1FFFFFFF | 0x00011111111111111111111111111111 | bvc,a 0x003FFFFF #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FC00000 | 0x00111111110000000000000000000000 | bvc,a 0x00000000 #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.
-0x3FFFFFFF | 0x00111111111111111111111111111111 | bvc,a 0x003FFFFF #;|  #;| # BVC disp22 #;| Branch on Overflow Clear  #;| op2 = 1111, a = 0001 #;| See Section B21 on page 119 of the Sparc V8 manual.

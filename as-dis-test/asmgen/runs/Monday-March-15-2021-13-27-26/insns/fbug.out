@@ -1,8 +1,0 @@
-0x0B400000 | 0x00001011010000000000000000000000 | fbug 0x00000000 #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x0B7FFFFF | 0x00001011011111111111111111111111 | fbug 0x003FFFFF #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x2B400000 | 0x00101011010000000000000000000000 | fbug 0x00000000 #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x2B7FFFFF | 0x00101011011111111111111111111111 | fbug 0x003FFFFF #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0000 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x0B400000 | 0x00001011010000000000000000000000 | fbug,a 0x00000000 #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x0B7FFFFF | 0x00001011011111111111111111111111 | fbug,a 0x003FFFFF #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x2B400000 | 0x00101011010000000000000000000000 | fbug,a 0x00000000 #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.
-0x2B7FFFFF | 0x00101011011111111111111111111111 | fbug,a 0x003FFFFF #;|  #;| # FBUG disp22 #;| FCC Branch on Unordered or Greater  #;| op2 = 0101, a = 0001 #;| See Section B22 on page 121 of the Sparc V8 manual.

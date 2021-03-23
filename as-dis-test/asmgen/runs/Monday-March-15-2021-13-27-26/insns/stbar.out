@@ -1,1 +1,0 @@
-0x8143C000 | 0x10000001010000111100000000000000 | stbar  #;|  #;| # STBAR  #;| Store Barrier  #;| op3 = 101000 #;| See Section B30 on page 136 of the Sparc V8 manual.
