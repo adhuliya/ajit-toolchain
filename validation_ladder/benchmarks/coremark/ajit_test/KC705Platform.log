@@ -1,0 +1,30 @@
+********************************************
+Date: 25 March 2021
+Bitfile date: 30 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705 FPGA
+********************************************
+
+Coremark Benchmark Program
+
+HiFromAjit
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4287287
+Total time (secs): 10.975455
+Iterations/Sec   : 182.224796
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.224796 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  /C
+
+ByeFromAjit
+

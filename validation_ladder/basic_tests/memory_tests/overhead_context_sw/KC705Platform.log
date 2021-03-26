@@ -10,7 +10,9 @@ Finished
 March-time in Ticks within a context is 47478410                                               
 Finished       
 
-Overhead for context switching: 216 ticks for 25 
-context switches.  
+Overhead for context switching: 216 ticks(552.96 microseconds)
+for 25 context switches. 
+Per context switch, that's about 22 us.
+
 
 

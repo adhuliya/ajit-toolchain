@@ -1,14 +1,4 @@
-A test that demonstrates a case of DCACHE LOAD BYPASS MISS :
-CPU requests data, DCACHE lookup and MMU translations are skipped.
-
-Requested data supplied to CPU.
-
-Time taken for same operation but having the data already present in 
-cache has advantage in terms of speed. 
-See ../dcache_load_hit/KC705Platform.log for comparison.
-
-The arrays are stored in distinct cache lines to avoid cache conflicts. 
-Data locations accessed are marked as bypass.(see vmap.txt)
+Implements the Coremark benchmark program.
 
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
