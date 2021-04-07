@@ -969,11 +969,11 @@ def do_generate (bitfld, insn, arglst):
     theval = -1                 # Does not make sense here :-(.
     if (bf_nbits <= max_list_length_bits):
         num_vals = pow (2, bf_nbits)
-        print ("===       {m:17s}: {v}".format (m="Num values",   v=num_vals))
+        # print ("===       {m:17s}: {v}".format (m="Num values",   v=num_vals))
         for i in range (num_vals):
             useval = (i << bf_end)
             out_opc_lst.append (useval)
-            print ("===          {m:14s}: {i:02d}/{v:032b}/{v1}".format (m="Generated value", i=i, v=useval, v1=useval))
+            # print ("===          {m:14s}: {i:02d}/{v:032b}/{v1}".format (m="Generated value", i=i, v=useval, v1=useval))
     else:
         print ("ERROR: Range for bitfield \"{n}\" exceeds maximum.  Max #bits: {m}, Given #bits: {g}".
                format (n=bf_name, m=max_list_length_bits, g=bf_nbits))
@@ -1138,9 +1138,9 @@ def analyse_args (bitfld, insn):
     bf_name  = bitfld [bit_field_name_at]
     bf_type  = bitfld [bit_field_val_type_at]
 
-    print ("=== {m:20s}: {v}".format (m="Bit field", v=bitfld))
-    print ("===    {m:20s}: {v}".format (m="Name", v=bf_name))
-    print ("===    {m:20s}: {v}".format (m="Type", v=bf_type))
+    # print ("=== {m:20s}: {v}".format (m="Bit field", v=bitfld))
+    # print ("===    {m:20s}: {v}".format (m="Name", v=bf_name))
+    # print ("===    {m:20s}: {v}".format (m="Type", v=bf_type))
 
     if ((bf_name == "op3")    or   # Don't bother  checking for arguments
         (bf_name == "op2")    or   # if the  bit field  itself is  not an
@@ -1155,7 +1155,7 @@ def analyse_args (bitfld, insn):
         (bf_type == "given")  or
         False):                    # False: Identity of disjunction! 
         thelst = [argnum, bf_name, argstr, "", argstr, [], []]
-        print ("===    {m:20s}: {v}".format (m="Analysed list if not arg", v=pp.pformat (thelst)))
+        # print ("===    {m:20s}: {v}".format (m="Analysed list if not arg", v=pp.pformat (thelst)))
         return thelst
     
     num_args = insn [insn_asm_num_args_at]
@@ -1170,10 +1170,10 @@ def analyse_args (bitfld, insn):
 
     argnum = -1
 
-    print ("===    {m:20s}: {v}".format (m="Args list of INSN", v=pp.pformat (theargs)))
-    print ("===    {m:20s}: {v}".format (m="#Args of INSN",     v=num_args))
-    print ("===    {m:20s}: {v}".format (m="Range of #Args",    v=range (int (num_args, 10))))
-    print ("===    {m:20s}: {v}".format (m="Arg type is",       v=arg_type))
+    # print ("===    {m:20s}: {v}".format (m="Args list of INSN", v=pp.pformat (theargs)))
+    # print ("===    {m:20s}: {v}".format (m="#Args of INSN",     v=num_args))
+    # print ("===    {m:20s}: {v}".format (m="Range of #Args",    v=range (int (num_args, 10))))
+    # print ("===    {m:20s}: {v}".format (m="Arg type is",       v=arg_type))
     for i in range (int (num_args, 10)):
         if   (bf_name == theargs[i]):
             argnum   = (i + 1)
@@ -1184,7 +1184,7 @@ def analyse_args (bitfld, insn):
             
             # [argnum, bf_name, argname, argtype, argstr, argvallst, reglsttouse]
             thelst = [argnum, bf_name, argstr, arg_type[argnum - 1], argstr, [], reglst]
-            print ("===    {m:20s}: {v}".format (m="Analysed list normal", v=pp.pformat (thelst)))
+            # print ("===    {m:20s}: {v}".format (m="Analysed list normal", v=pp.pformat (thelst)))
             break
 
     if (argnum == -1):    
@@ -1200,14 +1200,14 @@ def analyse_args (bitfld, insn):
                     
                     # [argnum, bf_name, argname, argtype, argstr, argvallst, reglsttouse]
                     thelst = [argnum, bf_name, argstr, arg_type[argnum - 1], argsplits[1], [], reglst]
-                    print ("===    {m:20s}: {v}".format (m="Analysed list split needed", v=pp.pformat (thelst)))
+                    # print ("===    {m:20s}: {v}".format (m="Analysed list split needed", v=pp.pformat (thelst)))
                     break
-                else:
-                    print ("===    {m:20s}: ({a} != {b}) {v}".
-                           format (m="(argsplits[0]) != (bf_name)", a=theargs[i], b=bf_name, v=pp.pformat (thelst)))
-            else:
-                print ("===    {m:20s}: (theargs[{i}] = {t}) {v}".
-                       format (m="list split theargs", i=i, t=theargs[i], v=pp.pformat (thelst)))
+            #     else:
+            #         print ("===    {m:20s}: ({a} != {b}) {v}".
+            #                format (m="(argsplits[0]) != (bf_name)", a=theargs[i], b=bf_name, v=pp.pformat (thelst)))
+            # else:
+            #     print ("===    {m:20s}: (theargs[{i}] = {t}) {v}".
+            #            format (m="list split theargs", i=i, t=theargs[i], v=pp.pformat (thelst)))
             
     if (argnum == -1):    
         for i in range (int (num_args, 10)):
@@ -1229,15 +1229,15 @@ def analyse_args (bitfld, insn):
                 
                 # [argnum, bf_name, argname, argtype, argstr, argvallst, reglsttouse]
                 thelst = [argnum, bf_name, argstr, arg_type[argnum - 1], argstr, [], reglst]
-                print ("===    {m:20s}: {v}".format (m="Analysed list immediate", v=pp.pformat (thelst)))
+                # print ("===    {m:20s}: {v}".format (m="Analysed list immediate", v=pp.pformat (thelst)))
                 break
-            else:
-                print ("===    {m:20s}: (theargs[{i}] = {t}) {v}".
-                       format (m="immediate theargs", i=i, t=theargs[i], v=pp.pformat (thelst)))
+            # else:
+            #     print ("===    {m:20s}: (theargs[{i}] = {t}) {v}".
+            #            format (m="immediate theargs", i=i, t=theargs[i], v=pp.pformat (thelst)))
             
     call_depth = call_depth - 1
 
-    print ("===    {m:20s}: {v}".format (m="Returning list", v=pp.pformat (thelst)))
+    # print ("===    {m:20s}: {v}".format (m="Returning list", v=pp.pformat (thelst)))
     return thelst
 
 def get_reg_rname (regno):
@@ -1320,23 +1320,23 @@ def expand_bit_field (bitfld, insn):
     
     if (bf_val_type == "generate"):
         retlst = do_generate (bitfld, insn, args_lst)
-        print ("=== {m:20s}: {v}".format (m="Returned Generate is", v=pp.pformat (retlst)))
+        # print ("=== {m:20s}: {v}".format (m="Returned Generate is", v=pp.pformat (retlst)))
        
     if (bf_val_type == "given"):
         retlst = do_given (bitfld, insn, args_lst)
-        print ("=== {m:20s}: {v}".format (m="Returned Given is", v=retlst))
+        # print ("=== {m:20s}: {v}".format (m="Returned Given is", v=retlst))
     
     if (bf_val_type == "range"):
         retlst = do_range (bitfld, insn, args_lst)
-        print ("=== {m:20s}: {v}".format (m="Returned Range is", v=retlst))
+        # print ("=== {m:20s}: {v}".format (m="Returned Range is", v=retlst))
     
     if (bf_val_type == "set"):
         retlst = do_set (bitfld, insn, args_lst)
-        print ("=== {m:20s}: {v}".format (m="Returned Set is", v=retlst))
+        # print ("=== {m:20s}: {v}".format (m="Returned Set is", v=retlst))
     
     if (bf_val_type == "lookup"):
         retlst = do_lookup (bitfld, insn, args_lst)
-        print ("=== {m:20s}: {v}".format (m="Returned Lookup is", v=retlst))
+        # print ("=== {m:20s}: {v}".format (m="Returned Lookup is", v=retlst))
 
     if (args_lst != []):
         bitlst = [ args_lst [arg_detail_argnum_at],
@@ -1791,17 +1791,17 @@ def do_final_expansion (insn):
     oclst = []
 
     for bf in bit_fields:
-        print ("=== Bitfield: {b}".format (b=pp.pformat(bf)))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_is_arg_num_at,  v=bf[out_bitlst_is_arg_num_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_bf_name_at,     v=bf[out_bitlst_bf_name_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_bf_val_type_at, v=bf[out_bitlst_bf_val_type_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_out_opc_lst_at, v=bf[out_bitlst_out_opc_lst_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_reg_val_lst_at, v=bf[out_bitlst_reg_val_lst_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_given_val_at,   v=bf[out_bitlst_given_val_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_asm_name_at,    v=bf[out_bitlst_asm_name_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_arg_type_at,    v=bf[out_bitlst_arg_type_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_asm_arg_str_at, v=bf[out_bitlst_asm_arg_str_at]))
-        print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_argval_lst_at,  v=bf[out_bitlst_argval_lst_at]))
+        # print ("=== Bitfield: {b}".format (b=pp.pformat(bf)))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_is_arg_num_at,  v=bf[out_bitlst_is_arg_num_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_bf_name_at,     v=bf[out_bitlst_bf_name_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_bf_val_type_at, v=bf[out_bitlst_bf_val_type_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_out_opc_lst_at, v=bf[out_bitlst_out_opc_lst_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_reg_val_lst_at, v=bf[out_bitlst_reg_val_lst_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_given_val_at,   v=bf[out_bitlst_given_val_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_asm_name_at,    v=bf[out_bitlst_asm_name_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_arg_type_at,    v=bf[out_bitlst_arg_type_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_asm_arg_str_at, v=bf[out_bitlst_asm_arg_str_at]))
+        # print ("===   BF[{i:d}] = {v}".format (i=out_bitlst_argval_lst_at,  v=bf[out_bitlst_argval_lst_at]))
         oclst.append (bf[out_bitlst_out_opc_lst_at])
 
     fe = build_list_of_opcodes (insn, oclst, bit_fields, [], 0)

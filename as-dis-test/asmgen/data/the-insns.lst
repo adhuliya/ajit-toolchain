@@ -51,8 +51,8 @@ cba
 cbn
 cpop1
 cpop2
-cswapd
-cswapda
+cswap
+cswapa
 fabss
 faddd
 faddq

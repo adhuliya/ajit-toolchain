@@ -34,6 +34,6 @@ op59,7,3,op,31,30,2,3,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5
 op60,6,3,op,31,30,2,3,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,1,given,simm13,12,0,13,,range,,,,,,,,,,,,,,,,,,,32
 op61,8,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,6,7,0,given,ajitx,5,5,1,1,given,rs2,4,0,5,,generate,,,,,,,32
 op62,6,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,1,given,simm13,12,0,13,,range,,,,,,,,,,,,,,,,,,,32
-op63,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,1,lookup,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
-op64,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,2,lookup,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
-op65,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,4,lookup,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
+op63,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,1,given,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
+op64,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,2,given,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
+op65,9,3,op,31,30,2,2,given,rd,29,25,5,,generate,op3,24,19,6,,lookup,rs1,18,14,5,,generate,i,13,13,1,0,given,UNUSED,12,10,3,0,given,type,9,7,3,4,given,ajitx,6,5,2,2,given,rs2,4,0,5,,generate,32
