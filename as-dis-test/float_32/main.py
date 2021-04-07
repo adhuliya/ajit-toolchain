@@ -37,84 +37,84 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fadds %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fadds  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['faddd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('faddd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('faddd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_quad:
         statistics_generated['faddq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('faddq %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('faddq  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_all:
         statistics_generated['fsubs'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fsubs %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fsubs  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['fsubd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fsubd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fsubd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_quad:
         statistics_generated['fsubq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fsubq %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fsubq  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_all:
         statistics_generated['fmuls'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fmuls %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fmuls  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['fmuld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fmuld %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fmuld  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_quad:
         statistics_generated['fmulq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fmulq %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fmulq  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_all:
         statistics_generated['fdivs'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fdivs %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fdivs  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['fdivd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fdivd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fdivd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_quad:
         statistics_generated['fdivq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('fdivq %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('fdivq  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutation_single:
         for per1 in double_regs:
@@ -122,7 +122,7 @@ def generate_reg_instrs():
             statistics_generated[per[0]] += 1
             statistics_generated[per[1]] += 1
             statistics_generated[per1] += 1
-            instrs.append('fsmuld %' + per[0] + ', %' + per[1] + ', %' + per1 + '\n')
+            instrs.append('fsmuld  %' + per[0] + ', %' + per[1] + ', %' + per1 + '\n')
 
     for per in permutation_double:
         for per1 in quad_reg:
@@ -130,162 +130,162 @@ def generate_reg_instrs():
             statistics_generated[per[0]] += 1
             statistics_generated[per[1]] += 1
             statistics_generated[per1] += 1
-            instrs.append('fdmulq %' + per[0] + ', %' + per[1] + ', %' + per1 + '\n')
+            instrs.append('fdmulq  %' + per[0] + ', %' + per[1] + ', %' + per1 + '\n')
     
     for per in permutation_single:
         statistics_generated['fmovs'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fmovs %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fmovs  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fnegs'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fnegs %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fnegs  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fabss'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fabss %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fabss  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fsqrts'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fsqrts %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fsqrts  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_double:
         statistics_generated['fsqrtd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fsqrtd %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fsqrtd  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_quad:
         statistics_generated['fsqrtq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fsqrtq %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fsqrtq  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fcmps'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmps %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmps  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fcmpes'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmpes %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmpes  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_double:
         statistics_generated['fcmpd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmpd %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmpd  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_double:
         statistics_generated['fcmped'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmped %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmped  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_quad:
         statistics_generated['fcmpq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmpq %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmpq  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_quad:
         statistics_generated['fcmpeq'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fcmpeq %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fcmpeq  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fstoi'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fstoi %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fstoi  %' + per[0] + ', %' + per[1] + '\n')
 
 
     for per in permutation_single:
         statistics_generated['fitos'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fitos %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fitos  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in all_regs:
         for per1 in double_regs:
             statistics_generated['fitod'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fitod %' + per + ', %' + per1 + '\n')
+            instrs.append('fitod  %' + per + ', %' + per1 + '\n')
 
     for per in all_regs:
         for per1 in double_regs:
             statistics_generated['fstod'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fstod %' + per + ', %' + per1 + '\n')
+            instrs.append('fstod  %' + per + ', %' + per1 + '\n')
 
     for per in all_regs:
         for per1 in double_regs:
             statistics_generated['fdtoi'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fdtoi %' + per1 + ', %' + per + '\n')
+            instrs.append('fdtoi  %' + per1 + ', %' + per + '\n')
 
     for per in all_regs:
         for per1 in double_regs:
             statistics_generated['fdtos'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fdtos %' + per1 + ', %' + per + '\n')
+            instrs.append('fdtos  %' + per1 + ', %' + per + '\n')
 
     for per in all_regs:
         for per1 in quad_reg:
             statistics_generated['fitoq'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fitoq %' + per + ', %' + per1 + '\n')
+            instrs.append('fitoq  %' + per + ', %' + per1 + '\n')
 
     for per in all_regs:
         for per1 in quad_reg:
             statistics_generated['fqtoi'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fqtoi %' + per1 + ', %' + per + '\n')
+            instrs.append('fqtoi  %' + per1 + ', %' + per + '\n')
 
     for per in all_regs:
         for per1 in quad_reg:
             statistics_generated['fstoq'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fstoq %' + per + ', %' + per1 + '\n')
+            instrs.append('fstoq  %' + per + ', %' + per1 + '\n')
 
     for per in all_regs:
         for per1 in quad_reg:
             statistics_generated['fqtos'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fqtos %' + per1 + ', %' + per + '\n')
+            instrs.append('fqtos  %' + per1 + ', %' + per + '\n')
 
     for per in double_regs:
         for per1 in quad_reg:
             statistics_generated['fdtoq'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fdtoq %' + per + ', %' + per1 + '\n')
+            instrs.append('fdtoq  %' + per + ', %' + per1 + '\n')
 
     for per in double_regs:
         for per1 in quad_reg:
             statistics_generated['fqtod'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('fqtod %' + per1 + ', %' + per + '\n')
+            instrs.append('fqtod  %' + per1 + ', %' + per + '\n')
 
 
 
@@ -335,6 +335,7 @@ def check_statistics():
 if __name__=="__main__":
     init_statistics()
     main_asm = open('main.s', 'w')              
+    main_asm.writelines("main:\n")
     main_asm.writelines(generate_reg_instrs())
     main_asm.close()
     check_statistics()

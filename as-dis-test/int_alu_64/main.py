@@ -31,189 +31,189 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('addd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('addd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['adddcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('adddcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('adddcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['subd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('subd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('subd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['subdcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('subdcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('subdcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['srld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('srld %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('srld  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['slld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('slld %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('slld  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['srad'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('srad %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('srad  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['umuld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('umuld %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('umuld  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['umuldcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('umuldcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('umuldcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['smuld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('smuld %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('smuld  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['smuldcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('smuldcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('smuldcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['udivd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('udivd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('udivd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['udivdcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('udivdcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('udivdcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['sdivd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('sdivd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('sdivd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     
     for per in permutations:
         statistics_generated['sdivdcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('sdivdcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('sdivdcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['andd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('andd %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('andd  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['anddcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('anddcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('anddcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['anddn'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('anddn %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('anddn  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['anddncc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('anddncc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('anddncc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ord'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('ord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('ord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ordcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('ordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('ordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ordn'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('ordn %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('ordn  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ordncc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('ordncc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('ordncc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['xord'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['xordcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['xnord'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['xnordcc'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
 
     for per in permutations:
@@ -221,144 +221,144 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vaddd16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vaddd32'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsubd8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsubd16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsubd32'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vumuld8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vumuld16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vumuld32'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsmuld8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsmuld16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['vsmuld32'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     for per in permutations:
         statistics_generated['adddreduce8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['adddreduce16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['anddreduce8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     for per in permutations:
         statistics_generated['anddreduce16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ordreduce8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['ordreduce16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     for per in permutations:
         statistics_generated['xordreduce8'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['xordreduce16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnord %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnord  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations:
         statistics_generated['zbytedpos'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('xnordcc %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('xnordcc  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
 
 
@@ -456,7 +456,7 @@ if __name__=="__main__":
     main_asm = open('main.s', 'w')
   #  main_asm.write('! All possible register combinations for misc instructions\n')
   #  main_asm.write('! Author : Prajwal Kamble\n')
-  #  main_asm.write('! 9 Feb 2021\n\n\n')
+    main_asm.write('main:\n')
     main_asm.writelines(generate_reg_instrs())
     main_asm.writelines(generate_imm_instrs())
     main_asm.close()

@@ -35,146 +35,146 @@ def generate_reg_instrs():
         statistics_generated['ldsb'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldsb [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ldsb  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldsh'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldsh [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ldsh  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldub'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldub [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ldub  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['lduh'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('lduh [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('lduh  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ld'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ld [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ld  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldd'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldd [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ldd  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldsba'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldsba [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('ldsba  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldsha'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldsha [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('ldsha  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['lduba'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('lduba [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('lduba  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['lduha'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('lduha [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('lduha  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['lda'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('lda [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('lda  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldda'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldda [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('ldda  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldstub'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldstub [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('ldstub  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['ldstuba'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('ldstuba [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('ldstuba  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['swap'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('swap [%' + per[0] + '], %' + per[1] + '\n')
+        instrs.append('swap  [ %' + per[0] + ' ], %' + per[1] + '\n')
 
     for per in permutations:
         statistics_generated['swapa'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('swapa [%' + per[0] + ']0x20, %' + per[1] + '\n')
+        instrs.append('swapa  [ %' + per[0] + ' ]0x20, %' + per[1] + '\n')
 
 
     for per in permutations:
         statistics_generated['stb'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('stb %' + per[0] + ', [%' + per[1] + ']' + '\n')
+        instrs.append('stb  %' + per[0] + ', [ %' + per[1] + ' ]' + '\n')
 
     for per in permutations:
         statistics_generated['sth'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('sth %' + per[0] + ', [%' + per[1] + ']' + '\n')
+        instrs.append('sth  %' + per[0] + ', [ %' + per[1] + ' ]' + '\n')
 
     for per in permutations:
         statistics_generated['st'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('st %' + per[0] + ', [%' + per[1] + ']' + '\n')
+        instrs.append('st  %' + per[0] + ', [ %' + per[1] + ' ]' + '\n')
 
     for per in permutations:
         statistics_generated['std'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('std %' + per[0] + ', [%' + per[1] + ']' + '\n')
+        instrs.append('std  %' + per[0] + ', [ %' + per[1] + ' ]' + '\n')
 
     for per in permutations:
         statistics_generated['stba'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('stba %' + per[0] + ', [%' + per[1] + ']0x20' + '\n')
+        instrs.append('stba  %' + per[0] + ', [ %' + per[1] + ' ]0x20' + '\n')
 
     for per in permutations:
         statistics_generated['stha'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('stha %' + per[0] + ', [%' + per[1] + ']0x20' + '\n')
+        instrs.append('stha  %' + per[0] + ', [ %' + per[1] + ' ]0x20' + '\n')
 
     for per in permutations:
         statistics_generated['sta'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('sta %' + per[0] + ', [%' + per[1] + ']0x20' + '\n')
+        instrs.append('sta  %' + per[0] + ', [ %' + per[1] + ' ]0x20' + '\n')
 
     for per in permutations:
         statistics_generated['stda'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('stda %' + per[0] + ', [%' + per[1] + ']0x20' + '\n')
+        instrs.append('stda  %' + per[0] + ', [ %' + per[1] + ' ]0x20' + '\n')
 
 
     for per in window_regs:
@@ -182,44 +182,44 @@ def generate_reg_instrs():
             statistics_generated['ld'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('ld [%' + per + '], %' + per1 + '\n')
+            instrs.append('ld  [ %' + per + ' ], %' + per1 + '\n')
 
     for per in window_regs:
         for per1 in float_double:
             statistics_generated['ldd'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('ldd [%' + per + '], %' + per1 + '\n')
+            instrs.append('ldd  [ %' + per + ' ], %' + per1 + '\n')
 
     for per in window_regs:
         statistics_generated['ld'] += 1
         statistics_generated[per] += 1
         statistics_generated[per1] += 1
-        instrs.append('ld [%' + per + '], %fsr' + '\n')
+        instrs.append('ld  [ %' + per + ' ], %fsr' + '\n')
 
     for per in window_regs:
         for per1 in float_single:
             statistics_generated['st'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('st %' + per1 + ', [%' + per + ']' + '\n')
+            instrs.append('st  %' + per1 + ', [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         for per1 in float_double:
             statistics_generated['std'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('std %' + per1 + ', [%' + per + ']' + '\n')
+            instrs.append('std  %' + per1 + ', [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         statistics_generated['st'] += 1
         statistics_generated[per] += 1
-        instrs.append('st %fsr, [%' + per + ']' + '\n')
+        instrs.append('st  %fsr, [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         statistics_generated['std'] += 1
         statistics_generated[per] += 1
-        instrs.append('std %fq, [%' + per + ']' + '\n')
+        instrs.append('std  %fq, [ %' + per + ' ]' + '\n')
 
 
     for per in window_regs:
@@ -227,44 +227,44 @@ def generate_reg_instrs():
             statistics_generated['ld'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('ld [%' + per + '], %' + per1 + '\n')
+            instrs.append('ld  [ %' + per + ' ], %' + per1 + '\n')
 
     for per in window_regs:
         for per1 in cp_double:
             statistics_generated['ldd'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('ldd [%' + per + '], %' + per1 + '\n')
+            instrs.append('ldd  [ %' + per + ' ], %' + per1 + '\n')
 
     for per in window_regs:
         statistics_generated['ld'] += 1
         statistics_generated[per] += 1
         statistics_generated[per1] += 1
-        instrs.append('ld [%' + per + '], %csr' + '\n')
+        instrs.append('ld  [ %' + per + ' ], %csr' + '\n')
 
     for per in window_regs:
         for per1 in cp_single:
             statistics_generated['st'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('st %' + per1 + ', [%' + per + ']' + '\n')
+            instrs.append('st  %' + per1 + ', [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         for per1 in cp_double:
             statistics_generated['std'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('std %' + per1 + ', [%' + per + ']' + '\n')
+            instrs.append('std  %' + per1 + ', [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         statistics_generated['st'] += 1
         statistics_generated[per] += 1
-        instrs.append('st %csr, [%' + per + ']' + '\n')
+        instrs.append('st  %csr, [ %' + per + ' ]' + '\n')
 
     for per in window_regs:
         statistics_generated['std'] += 1
         statistics_generated[per] += 1
-        instrs.append('std %cq, [%' + per + ']' + '\n')
+        instrs.append('std  %cq, [ %' + per + ' ]' + '\n')
 
 
     for per in permutation:
@@ -272,24 +272,34 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('cswap [%' + per[0] + '+ %' + per[1] +'] 0x08, %' + per[2] + '\n')
+        instrs.append('cswap  [ %' + per[0] + '+ %' + per[1] +' ] 0x08, %' + per[2] + '\n')
 
     for per in permutation:
         statistics_generated['cswapa'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('cswapa [%' + per[0] + '+ %' + per [1] + '] 0x0A, %' + per[2] + '\n')
+        instrs.append('cswapa  [ %' + per[0] + '+ %' + per [1] + ' ] 0x0A, %' + per[2] + '\n')
 
     for per in permutation:
         statistics_generated["cswap"] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         instrs.append(
-            'cswap [%' + per[0] + ' +  0x' +
+            'cswap  [ %' + per[0] + ' +  0x' +
             random.choice(hex_digits) + random.choice(hex_digits) +
-            '], %' + per[1] + '\n'
-        ) 
+            ' ], %' + per[1] + '\n')
+
+    for per in permutations:
+        statistics_generated['jmpl'] += 1
+        statistics_generated[per[0]] += 1
+        statistics_generated[per[1]] += 1
+        instrs.append('jmpl  %' + per[0] + ',  %' + per[1]  + '\n')
+
+    for per in window_regs:
+        statistics_generated['rett'] += 1
+        statistics_generated[per] += 1
+        instrs.append('rett  %' + per + '\n') 
 
         #instrs.append('\n\n\n')
 
@@ -338,7 +348,7 @@ if __name__=="__main__":
     main_asm = open('main.s', 'w')
   #  main_asm.write('! All possible register combinations for misc instructions\n')
   #  main_asm.write('! Author : Prajwal Kamble\n')
-  #  main_asm.write('! 9 Feb 2021\n\n\n')
+    main_asm.write('main:\n')
     main_asm.writelines(generate_reg_instrs())
     main_asm.close()
     check_statistics()

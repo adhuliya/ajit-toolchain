@@ -12,7 +12,7 @@ double_reg = ['f2', 'f6', 'f10', 'f14', 'f18', 'f22', 'f26', 'f30']
 singl_reg = ['f3', 'f7', 'f11', 'f15', 'f19', 'f23', 'f27', 'f31']
 all_regs = quad_reg + double_reg + single_reg + singl_reg # all registers in current window
 double_regs = quad_reg + double_reg
-hex_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+hex_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
 
 statistics_generated = {}
 
@@ -36,14 +36,14 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfadd32 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfadd32  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['vfadd16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfadd16 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfadd16  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
 
     for per in permutations_double:
@@ -51,60 +51,60 @@ def generate_reg_instrs():
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfsub32 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfsub32  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
     for per in permutations_double:
         statistics_generated['vfmul32'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfmul16 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfmul16  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     
     for per in permutations_double:
         statistics_generated['vfsub16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfsub16 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfsub16  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
     
     for per in permutations_double:
         statistics_generated['vfmul16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
         statistics_generated[per[2]] += 1
-        instrs.append('vfmul16 %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
+        instrs.append('vfmul16  %' + per[0] + ', %' + per[1] + ', %' + per[2] + '\n')
 
 
     for per in permutation_double:
         statistics_generated['vfhtoi16'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('vfhtoi16 %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('vfhtoi16  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_double:
         statistics_generated['vfi16toh'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('vfi16toh %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('vfi16toh  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in all_regs:
         for per1 in double_regs:
             statistics_generated['faddreduce16'] += 1
             statistics_generated[per] += 1
             statistics_generated[per1] += 1
-            instrs.append('faddreduce16 %' + per1 + ', %' + per + '\n')
+            instrs.append('faddreduce16  %' + per1 + ', %' + per + '\n')
 
     for per in permutation_single:
         statistics_generated['fstoh'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fstoh %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fstoh  %' + per[0] + ', %' + per[1] + '\n')
 
     for per in permutation_single:
         statistics_generated['fhtos'] += 1
         statistics_generated[per[0]] += 1
         statistics_generated[per[1]] += 1
-        instrs.append('fhtos %' + per[0] + ', %' + per[1] + '\n')
+        instrs.append('fhtos  %' + per[0] + ', %' + per[1] + '\n')
 
 
 
@@ -157,7 +157,7 @@ if __name__=="__main__":
     main_asm = open('main.s', 'w')
   #  main_asm.write('! All possible register combinations for misc instructions\n')
   #  main_asm.write('! Author : Prajwal Kamble\n')
-  #  main_asm.write('! 9 Feb 2021\n\n\n')                    
+    main_asm.write('main:\n')                    
     main_asm.writelines(generate_reg_instrs())
     main_asm.close()
     check_statistics()
