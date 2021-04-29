@@ -1,5 +1,5 @@
 import os
-SConscript(['single_core/SConscript'])
+#SConscript(['single_core/SConscript'])
 
 env = Environment(ENV = {'PATH' : os.environ['PATH']})
 
