@@ -9,7 +9,7 @@
 // conflict on the direct-mapped
 // L1 cache.
 uint32_t* src_array  = 0x40044000;
-uint32_t* dest_array = 0x4008c000;
+uint32_t* dest_array = 0x4008e000;
 
 int init_src_array()
 {

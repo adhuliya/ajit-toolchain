@@ -1,0 +1,20 @@
+This program attempts to estimate your systems
+floating-point 'MFLOPS' rating for the FADD, FSUB, 
+FMUL, and FDIV operations based on specific 
+'instruction mixes'. See src/flops.c for more info.
+
+
+	KC705Platform.log file contains output of this 
+	program tested on the KC705 FPGA Platform.
+
+	Bitfile Generation date: 30 Jan 2021 
+
+Usage for the KC705 Platform: 
+	1. Source the bin-utils required for AJIT processor.
+	2. Compile the program by running compile_for_ajit_uclibc.sh 
+		script
+	3. Using the 'run_at_high_mem.s' script 
+		with ajit_debug_monitor will load the memory
+		map of application at high memory and start.
+	4. Use the 'run_from_flash.s' if you are running the
+		application by burning a Bin file in the flash.

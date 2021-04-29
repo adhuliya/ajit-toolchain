@@ -44,7 +44,6 @@ int main ()
 
 	uint32_t t0 = ajit_barebones_clock(); 
 	uint64_t err = mem_march(n_iters);
-
 	int contexts = 1;
 
 	if(!err)
@@ -69,7 +68,6 @@ int main ()
 	}
 
 	uint32_t t1 = ajit_barebones_clock();
-
 	ee_printf ("March-time (ticks,contexts)=%u,%d\n",  (t1 - t0), contexts);
 	if(err)
 		ee_printf ("ERROR\n");

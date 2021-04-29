@@ -1,0 +1,16 @@
+********************************************
+Date: 23 March 2021
+Bitfile date: 30 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705
+********************************************
+
+
+Starting by filling up an array of 256 bytes
+Done initialising array
+For 256 Bytes, time elapsed is t=0.000047 seconds,
+ runs completed: 255, 
+ and err=0
+Done
+
+

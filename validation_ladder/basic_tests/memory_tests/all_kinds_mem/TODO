@@ -1,0 +1,9 @@
+Write routines that check the performance of
+the processor, for the 3 types of data locations
+accessed:
+	1. cached
+	2. uncached
+	3. bypassed
+
+Currently the correctness of memcpy routine inside
+the processor is tested.
