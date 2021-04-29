@@ -1,0 +1,5 @@
+SOURCES = branches.s
+
+RESULTS =
+o1 = 0x38
+o0 = 0x0

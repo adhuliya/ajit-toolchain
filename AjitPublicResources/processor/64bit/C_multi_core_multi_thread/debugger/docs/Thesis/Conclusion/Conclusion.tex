@@ -1,0 +1,7 @@
+% Conclusion of the current work
+
+The AJIT processor attempts to develop a quintessential embedded microprocessor using high level synthesis approaches. This work provides an in-system debugger for the AJIT processor  with powerful debug capabilities and easy-to-use user interface. Users are able to remotely debug the programs running on the AJIT hardware in real time, and can even change the processor state. The complete system is implemented and tested at several levels and is currently being used for Linux kernel development of AJIT processor. The in-system debugger can also be used with the FPGA prototype by connecting it through PCIe Express bus. The hardware modules added as a part of this debugger were heavily used for verification of processor implementations. Finally this debugger will remain as the single point of AJIT processor hardware, to obtain its internal and in-system details and control it externally.
+
+
+\vspace{0.5em}
+\forceindent The next main challenge will be to design the communication interface between the host computer and the target hardware. As a part of another project\cite{scanchainManual} we have developed a JTAG based interface for this purpose, and it will be improved and used for this application. The debugger can also be improved to use multiple communication interfaces to iteract with the hardware and provide flexibility to the end user. By adding support for different RSP interfaces, the users will be able to debug programs from distant computers that are not directly connected with the hardware.

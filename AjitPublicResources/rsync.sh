@@ -1,0 +1,6 @@
+rsync -avz $AJIT_PROJECT_HOME/tools  ./ --exclude "*Backup_Ajit_buildroot_July2015.tar.gz" --exclude "*cross-compiler" --exclude "*glibc"  --exclude "*device_tree" --exclude "*qemu*" --exclude "*.o"  --exclude "*.a"
+rsync -avz $AJIT_PROJECT_HOME/processor/64bit/C_multi_core_multi_thread processor/64bit/   --exclude "*.o" --exclude ".a" 
+rsync -avz $AJIT_PROJECT_HOME/processor/TestEnvironments processor/   --exclude "*.o" --exclude ".a" 
+rsync -avz $AJIT_PROJECT_HOME/processor/verification processor/   --exclude "*.o" --exclude ".a" 
+rsync -avz $AJIT_PROJECT_HOME/processor/validation  processor/   --exclude "*.o" --exclude ".a" 
+rsync -avz $AJIT_PROJECT_HOME/os/kernels/pico os/kernels/  --exclude "*.o" --exclude ".a" 

@@ -1,0 +1,9 @@
+SOURCES = context_switching.c
+
+INCLUDES = 
+
+RESULTS =
+
+g4=0x0E
+g6=0x0D
+g7=0x0C

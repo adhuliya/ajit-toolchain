@@ -1,0 +1,241 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage{epstopdf}
+\usepackage{import}
+\usepackage[none]{hyphenat}
+\usepackage{algorithmicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
+\title{Debugger on micro-architecture Model}
+
+\author{Titto Thomas}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Debugger on the micro-architecture model is an extension of the system designed for ISA-C model. The GDB-server bridge and it’s interface with the hardware has been kept same, just the hardware implementation is changed.
+
+The micro-architecture model described in Aa language is the accurate representation of final hardware. It has four main parts as shown in the figure  : CPU Control Unit (CCU), Thread Execution Unit (TEU) and Memory Interface Unit (MIU). CCU generates the control signals for the other blocks and takes care of exception handling, whereas MIU facilitates all the memory accesses. TEU is the actual processor pipeline that will infinitely fetch and execute instruction until any exceptions occur. The Debug daemon facilitates debugging on AJIT processor with a GDB front end.
+
+\vspace*{1cm}
+
+% Aa model
+\begin{figure}[h!]
+	\centering
+	\def\svgwidth{\textwidth}
+	\import{Figs/AaModel/}{AaModel.tex}
+	\caption{Micro-architecture model}
+	\label{uAmodel}
+\end{figure}
+
+\section{Expected behaviours}
+
+Each of these 3 important blocks need to work in an expected manner for their correct functioning. These expected behaviours are represented in the form of flowcharts in the following sections.
+
+\subsection{Pseudo code : Debug daemon}
+
+\begin{algorithm}
+\caption{Debug daemon}\label{debugger}
+\begin{algorithmic}[1]
+	\Function{Debug\_daemon}{}
+	\While{$ccu\_msg\not=CONNECT\_RQST$}\Comment{Check connect request from CCU}
+	\State $ccu\_msg\gets ccu\_to\_debug\_pipe$	
+	\EndWhile\label{dummy}
+	\While{$gdb\_msg\not=CONNECT\_RQST$}\Comment{Check connect request from GDB}
+	\State $gdb\_msg\gets ENV\_to\_AJIT\_pipe$	
+	\EndWhile\label{dummy}
+	\State $debug\_to\_ccu\_pipe \gets Acknowledge\_OK$
+	\State $AJIT\_to\_ENV\_pipe \gets Acknowledge\_OK$
+	
+	\State $ccu\_msg \gets ccu\_to\_debug\_pipe$
+	\If{(ccu\_msg is valid)}
+		\State Decode ccu\_msg
+		\If{(breakpoint or watchpoint or trap hit)}
+			\State $stored\_PC\gets ccu\_to\_debug\_pipe$	
+			\State $stored\_NPC\gets ccu\_to\_debug\_pipe$
+			\State $stored\_PSR\gets ccu\_to\_debug\_pipe$
+			
+		\EndIf
+		\State $ccu\_to\_gdb\_msg\gets $ Encode the message for GDB
+		\State $AJIT\_to\_ENV\_pipe \gets ccu\_to\_gdb\_msg$
+		\If{(watchpoint(x) hit)}
+			\State $ccu\_to\_gdb\_address\gets $ stored adddress of x
+			\State $AJIT\_to\_ENV\_pipe \gets ccu\_to\_gdb\_address$
+		\EndIf
+	\EndIf
+	
+	\State $gdb\_msg \gets ENV\_to\_AJIT\_pipe$	
+	\If{($gdb\_msg$ is valid)}
+		\State Decode $gdb\_msg$
+		\State $debug\_to\_ccu\_pipe \gets gdb\_msg$
+		\If{(msg\_length = 2)}
+			\State $gdb\_msg\_2 \gets ENV\_to\_AJIT\_pipe$	
+			\State $debug\_to\_ccu\_pipe \gets  gdb\_msg\_2$
+		\EndIf
+		\If{(msg\_length = 3)}
+			\State $gdb\_msg\_3 \gets ENV\_to\_AJIT\_pipe$	
+			\State $debug\_to\_ccu\_pipe \gets  gdb\_msg\_3$
+		\EndIf
+		
+		\If{(PC or NPC or PSR write)}
+			\State $stored\_PC$ or $stored\_NPC$ or $stored\_PSR$ $\gets gdb\_msg\_2$
+		\ElsIf{(watchpoint(x) write)}
+			\State stored adddress of x $\gets gdb\_msg\_2$
+		\ElsIf{(read the memory / register)}
+			\State $ccu\_data \gets ccu\_to\_debug\_pipe$
+			\State $AJIT\_to\_ENV\_pipe \gets ccu\_data$
+		\ElsIf{(CONTINUE or DETACH)}
+			\State $debug\_to\_ccu\_pipe \gets stored\_PC$
+			\State $debug\_to\_ccu\_pipe \gets stored\_NPC$
+			\State $debug\_to\_ccu\_pipe \gets stored\_PSR$
+		\EndIf
+		
+		\If{((set/clear the breakpoint/watchpoint) or (write memory / register))}
+			\State $AJIT\_to\_ENV\_pipe \gets Acknowledge\_OK$
+		\EndIf
+	\EndIf
+	
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\subsection{Pseudo code : CCU}
+\begin{algorithm}
+	\caption{CCU}\label{ccu}
+	\begin{algorithmic}[1]
+		\Function{CPU\_CCU}{}
+			\State $debug\_mode \gets ENABLE$
+			\State Initialize processor
+			\State $ccu\_to\_debug\_pipe \gets CONNECT\_RQST$
+			\While{$debug\_msg \not= Acknowledge\_OK$}\Comment{Establish connection with debugger}
+			\State $debug\_msg\gets debug\_to\_ccu\_pipe$	
+			\EndWhile
+			\State \Call{CCUrespondToGDB}{GDB\_CONNECTED,0}\Comment{Execute GDB commands}
+			\While{1}\Comment{Infinite loop}
+				\State ...
+				\If{(error\_mode)}
+					\State \Call{CCUrespondToGDB}{ERROR\_MODE,0}
+				\EndIf
+				\State ...
+				\If{(trap occured) and ($debug\_mode$ = $ENABLE$)}
+					\State \Call{CCUrespondToGDB}{TRAP,0}
+				\EndIf
+				\State ...
+				\State $pass\_to\_teu \gets 1$
+				\While{$pass\_to\_teu$}
+					\State $ccu\_to\_teu \gets CONTINUE$
+					\State $teu\_msg \gets teu\_to\_ccu\_pipe$\Comment{wait till TEU send back a response}
+					\If{(breakpoint hit) and ($debug\_mode$ = $ENABLE$)}
+						\State \Call{CCUrespondToGDB}{BP\_HIT,reg}
+					
+					\ElsIf{(watchpoint hit) and ($debug\_mode$ = $ENABLE$)}
+						\State \Call{CCUrespondToGDB}{WP\_HIT,reg}
+					\Else
+						\State $pass\_to\_teu \gets 0$
+					\EndIf
+				\EndWhile
+			\EndWhile
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+	\begin{algorithmic}
+		\Function{CCUrespondToGDB}{stop\_reason,reg}
+		\State $debug\_send\_msg \gets $ Encode (stop\_reason,reg) for debugger
+		\State $ccu\_to\_debug\_pipe \gets debug\_send\_msg$
+		\If{( stop\_reason = breakpoint or watchpoint or trap hit)}
+			\State $ccu\_to\_debug\_pipe \gets PC$	
+			\State $ccu\_to\_debug\_pipe \gets NPC$
+			\State $ccu\_to\_debug\_pipe \gets PSR$		
+		\EndIf
+		\State $debug\_msg \gets debug\_to\_ccu\_pipe$
+		\While{$debug\_msg \not= CONTINUE$}\Comment{Execute GDB commands till CONTINUE}
+		\State Decode $debug\_msg$
+		\If{(msg\_length = 2)}
+		\State $debug\_msg\_2 \gets debug\_to\_ccu\_pipe$
+		\EndIf
+		\If{(msg\_length = 3)}
+		\State $debug\_msg\_3 \gets debug\_to\_ccu\_pipe$
+		\EndIf
+		
+		
+		\If{(read register x)}
+			\State $ccu\_to\_debug\_pipe \gets $ content of register x
+		\ElsIf{(write register x)}
+			\State content of register x $\gets debug\_msg\_2$
+		\ElsIf{(read memory)}
+			\State $mem\_address \gets debug\_msg\_2$
+			\State $ccu\_to\_debug\_pipe \gets $ content of $mem\_address$
+		\ElsIf{(write memory)}
+			\State $mem\_address \gets debug\_msg\_2$
+			\State $mem\_data \gets debug\_msg\_3$
+			\State content of $mem\_address \gets mem\_data$
+		\ElsIf{(set breakpoint/watchpoint x)}
+			\State content of breakpoint/watchpoint register x $\gets debug\_msg\_2$
+		\ElsIf{(remove breakpoint/watchpoint x)}
+			\State valid bit of breakpoint/watchpoint register x $\gets 0$
+		\ElsIf{(DETACH)}
+			\State $debug\_mode \gets DISABLE$
+			\State \textbf{break}
+		\EndIf
+		
+		\State $debug\_msg \gets debug\_to\_ccu\_pipe$	
+		\EndWhile
+		
+		\If{($debug\_msg = $ CONTINUE or DETACH)}
+		\State $PC \gets debug\_to\_ccu\_pipe$
+		\State $NPC \gets debug\_to\_ccu\_pipe$
+		\State $PSR \gets debug\_to\_ccu\_pipe$
+		\EndIf
+			
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\newpage
+\subsection{Pseudo code : TEU}
+\begin{algorithm}
+	\caption{TEU}\label{teu}
+	\begin{algorithmic}[1]
+		\Function{CPU\_TEU}{}
+		\While{1}\Comment{Infinite loop}
+			\While{$ccu\_to\_teu\_pipe \not= CONTINUE$}\Comment{Wait till CCU allows}
+			\EndWhile
+			\State ...
+			\If{($fetch\_address = $ content of breakpoint register x)}
+				\State $teu\_to\_ccu\_pipe \gets $ Breakpoint x hit
+				\While{$ccu\_to\_teu\_pipe \not= CONTINUE$}\Comment{Wait till CCU allows}
+				\EndWhile
+			\EndIf
+			\State ...
+			\If{($memory\_address = $ content of watchpoint register x)}
+			\State $teu\_to\_ccu\_pipe \gets $ Watchpoint x hit
+			\While{$ccu\_to\_teu\_pipe \not= CONTINUE$}\Comment{Wait till CCU allows}
+			\EndWhile
+			\EndIf
+			\State ...
+			\If{(trap occured)}
+			\State $teu\_to\_ccu\_pipe \gets $ trap info
+			\While{$ccu\_to\_teu\_pipe \not= CONTINUE$}\Comment{Wait till CCU allows}
+			\EndWhile
+			\EndIf
+		\EndWhile
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\end{document}

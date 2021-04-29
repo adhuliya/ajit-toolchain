@@ -1,0 +1,4 @@
+Common stuff used across different units of the processor.
+Contains routines for bit manipulation.
+
+

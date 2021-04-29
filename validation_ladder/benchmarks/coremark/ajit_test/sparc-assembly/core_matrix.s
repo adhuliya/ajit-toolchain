@@ -663,5 +663,5 @@ matrix_mul_matrix_bitextract:
 	jmp	%i7+8
 	 restore
 	.size	matrix_mul_matrix_bitextract, .-matrix_mul_matrix_bitextract
-	.ident	"GCC: (Buildroot 2014.08-ga33456e-dirty) 4.7.4"
+	.ident	"GCC: (Buildroot 2014.08-g9aeb387) 4.7.4"
 	.section	.note.GNU-stack,"",@progbits

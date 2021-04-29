@@ -1,0 +1,11 @@
+$system debug_spi_stub $library debug_spi_slave_stub
+   $in 
+    $pipe    DEBUG_to_MONITOR
+    $signal  DEBUG_SPI_SLAVE_MOSI
+    $signal  DEBUG_SPI_SLAVE_CLK
+    $signal  DEBUG_SPI_SLAVE_SS_L
+   $out 
+    $pipe    MONITOR_to_DEBUG
+    $signal  DEBUG_SPI_SLAVE_MISO
+{ 
+} 

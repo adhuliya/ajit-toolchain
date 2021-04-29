@@ -1,0 +1,19 @@
+SYS=$(AJIT_PROJECT_HOME)/processor/Aa_v3/sys
+CHIP=$(SYS)/chip
+CORE=$(CHIP)/core
+CPU=$(CORE)/cpu
+PIPES=pipes.aa $(CHIP)/pipes/pipes.aa $(CHIP)/pipes/signals.aa
+
+all: srcs 
+
+srcs:vhdl/chip_serial_spi_slave/serial_spi_slave.vhdl
+
+
+vhdl/chip_serial_spi_slave/serial_spi_slave.vhdl: serial_spi_slave.hsys $(PIPES) 
+	buildHierarchicalModel.py -a chip_core -H  $(PIPES)
+	rm -rf aa2c/*
+
+clean:
+	rm -rf lib/*.a objsw/*.o vhdl/*  aa2c/*.* *.c *.h *.txt *.log
+
+PHONY: all clean tests

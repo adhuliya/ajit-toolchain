@@ -1,0 +1,50 @@
+USAGE:    ./bin/ajit_C_system_model -n <number-of-cpus> -m <mmap-file> [-g -p <gdb-port-number>] [-d -r <results-file> -l <log-file>]  [-w <write-trace-logger-file>] [-S <logger-server-ip> -P <logger-server-port>] 
+   -n <number-of-cpus>     : specifies number-of-cpus in the processor for this test.
+                 : default is 1, maximum is 4.
+   -u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]
+   -m <mmap-file>     : required, specifies memory-map of processor for this test.
+   -b <bp-size>, optional,  branch predictor table size (default=16)
+   -B <bridge-target-configuration optional, sets up memory map at bridge
+   -g, optional, to run the CPU in debug mode.
+   -q <number-of-address-bits>, optional, size of memory is 2**<number-of-address-bits>, default is 32.
+   -p <gdb-port-number>, required with -g, to specify remote debug port.
+   -d  : optional, use if doval utility is to be run...
+   -r <results-file>  : required with -d, specifies expected register/memory values at end of run.
+   -l <log-file>      : required with -d, specifies a log-file of the validation checks.
+   -w <reg-writes-dump>: optional. if specified, a log of all register and memory writes is generated.
+   -S <log-server-ip-addr>  : optional, specifies a logging-server-ip-addr to compare write traces.
+   -P <log-server-ip-port>  : required with -S, specifies a logging-server-port to compare write traces.
+   -c <console-server-port-number>, specify port for console server.
+   -v optional, verbose flag for printing lots of junk.
+   -I <reporting-interval>, optional, for specifying interval at which Instr summary is printed. default is 10000000.
+   -R <randomization-seed>, optional, for randomizing initial memory values (if omitted, memory will be initialized to 0).
+   -i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4
+                                                                         
+EXAMPLE:  
+          ./bin/ajit_C_system_model -m add_test.mmap -d -l add_test.log -r add_test.results -w add_test.wtrace 
+
+
+NOTES
+
+1.  The -B <bridge-targets-file> has been recently added.  The bridge targets file 
+	lists the memory bus targets which consist of either memory (mem) or 
+	peripherals.
+
+	The default bridge targets file for the AJIT C model is the following
+
+	! mem is named lowermem, address range 0x0 to 0xffff2fff
+	! ram format:  ram <ram-name> <min-addr> <max-addr> <permissions (rw)>
+	ram lowermem 0x0 0xffff2fff  0x3	
+	! peripheral format:  peripheral <periph-name> <min-addr> <max-addr> 
+	peripheral irc   0xffff3000 0xffff3008  
+	peripheral timer 0xffff3100 0xffff3108  
+	peripheral serial 0xffff3200 0xffff32ff  
+	ram uppermem 0xffff3300 0xffffffff 0x3
+
+	To add a new peripheral, you will need to either modify the
+	testbench or write a bridge targets file which is then supplied
+	to the testbench using the -B option.
+	
+
+	For adding a peripheral look at the document "AddingPeripheral.txt"
+	in ../devices/documentation

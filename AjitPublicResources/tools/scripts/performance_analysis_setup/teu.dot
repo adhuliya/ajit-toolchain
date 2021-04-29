@@ -1,0 +1,139 @@
+
+// Authors : Piyush P. Soni & Aswin Jith
+
+// for fill colours:
+// http://www.graphviz.org/doc/info/colors.html
+
+digraph {
+
+// for any node between start and end
+node [    fill=cornflowerblue,
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// for start node
+//cpu
+NOBLOCK_CPU_to_ICACHE_command [   color=darkgoldenrod2,
+				fontcolor=navy,
+				label=NOBLOCK_CPU_to_ICACHE_command,
+				shape=box];
+NOBLOCK_CPU_to_ICACHE_command -> ICACHE_to_CPU_response [label=3];
+ICACHE_to_CPU_response -> teu_ifetch_to_idecode [label=3];
+
+teu_ifetch_to_idecode -> teu_idispatch_to_stream_corrector [label=3];
+teu_ifetch_to_idecode -> teu_idispatch_to_loadstore [label=3];
+node [    fill=white,	
+		color=deepskyblue
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+//iunit
+teu_ifetch_to_idecode -> teu_idispatch_to_iunit_exec [label=3];
+teu_ifetch_to_idecode -> teu_idispatch_to_iunit_writeback [label=3];
+teu_ifetch_to_idecode -> noblock_teu_idispatch_to_iunit_register_file_read_access_command [label=3];
+
+teu_idispatch_to_iunit_exec -> iunit_exec_to_writeback [label=3];
+teu_idispatch_to_iunit_exec -> teu_iunit_to_stream_corrector [label=3];
+
+noblock_teu_idispatch_to_iunit_register_file_read_access_command -> iunit_register_file_read_access_response [label=3];
+iunit_register_file_read_access_response -> iunit_exec_to_writeback [label=3];
+iunit_register_file_read_access_response -> teu_iunit_to_stream_corrector [label=3];
+
+teu_iunit_to_stream_corrector -> teu_stream_corrector_to_iunit [label=3];
+teu_iunit_to_stream_corrector -> teu_stream_corrector_to_loadstore [label=3];
+
+teu_stream_corrector_to_loadstore -> teu_loadstore_to_iunit [label=3];
+teu_loadstore_to_iunit -> iunit_register_file_write_access_command [label=3];
+
+teu_stream_corrector_to_iunit -> iunit_register_file_write_access_command [label=3];
+iunit_register_file_write_access_command -> iunit_register_file_write_access_response [label=3];
+teu_idispatch_to_iunit_writeback -> iunit_register_file_write_access_command [label=3];
+
+iunit_exec_to_writeback -> iunit_register_file_write_access_command [label=3];
+
+
+
+node [    fill=white,	
+		color=orchid2
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// fpunit
+teu_ifetch_to_idecode -> teu_idispatch_to_fpunit_exec [label=3];
+teu_ifetch_to_idecode -> teu_idispatch_to_fpunit_writeback [label=3];
+teu_ifetch_to_idecode -> noblock_teu_idispatch_to_fpunit_register_file_read_access_command [label=3];
+
+teu_idispatch_to_fpunit_exec -> fpunit_exec_to_writeback [label=3];
+teu_idispatch_to_fpunit_exec -> teu_fpunit_to_stream_corrector [label=3];
+
+noblock_teu_idispatch_to_fpunit_register_file_read_access_command -> fpunit_register_file_read_access_response [label=3];
+fpunit_register_file_read_access_response -> fpunit_exec_to_writeback [label=3];
+fpunit_register_file_read_access_response -> teu_fpunit_to_stream_corrector [label=3];
+
+teu_fpunit_to_stream_corrector -> teu_stream_corrector_to_fpunit [label=3];
+teu_fpunit_to_stream_corrector -> teu_stream_corrector_to_loadstore [label=3];
+
+teu_stream_corrector_to_loadstore -> teu_loadstore_to_fpunit [label=3];
+teu_loadstore_to_fpunit -> fpunit_register_file_write_access_command [label=3];
+
+teu_stream_corrector_to_fpunit -> fpunit_register_file_write_access_command [label=3];
+fpunit_register_file_write_access_command -> fpunit_register_file_write_access_response [label=3];
+teu_idispatch_to_fpunit_writeback -> fpunit_register_file_write_access_command [label=3];
+
+fpunit_exec_to_writeback -> fpunit_register_file_write_access_command [label=3];
+
+
+
+node [    fill=white,	
+		color=greenyellow
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// cpunit
+teu_ifetch_to_idecode -> teu_idispatch_to_cpunit [label=3];
+teu_idispatch_to_cpunit -> teu_cpunit_to_stream_corrector [label=3];
+teu_cpunit_to_stream_corrector -> teu_stream_corrector_to_loadstore [label=3];
+teu_cpunit_to_stream_corrector -> teu_stream_corrector_to_cpunit [label=3];
+teu_stream_corrector_to_loadstore -> teu_loadstore_to_cpunit [label=3];
+
+node [    fill=white,	
+		color=darkgoldenrod2
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// iretire
+teu_cpunit_to_stream_corrector -> teu_stream_corrector_to_iretire [label=3];
+teu_fpunit_to_stream_corrector -> teu_stream_corrector_to_iretire [label=3];
+teu_idispatch_to_stream_corrector -> teu_stream_corrector_to_iretire [label=3];
+teu_iunit_to_stream_corrector -> teu_stream_corrector_to_iretire [label=3];
+
+teu_idispatch_to_loadstore -> teu_loadstore_to_iretire [label=3];
+teu_stream_corrector_to_loadstore -> teu_loadstore_to_iretire [label=3];
+
+fpunit_register_file_write_access_response -> teu_fpunit_to_iretire [label=3];
+teu_loadstore_to_fpunit -> teu_fpunit_to_iretire [label=3]
+
+iunit_register_file_write_access_response -> teu_iunit_to_iretire [label=3];
+teu_loadstore_to_cpunit -> teu_cpunit_to_iretire [label=3];
+teu_stream_corrector_to_cpunit -> teu_cpunit_to_iretire [label=3];
+teu_idispatch_to_cpunit -> teu_cpunit_to_iretire [label=3];
+
+//////////////////////////////////////////////////////////////
+//// to insert any special node between start and end
+//Step3a [  style=filled,
+//		fillcolor=grey80,
+//		color=grey80,
+//		shape=circle,
+//		fontcolor=navy];
+// for end node
+//End [ shape=rectangle,
+//	color=darkgoldenrod2,
+//	fontcolor=navy];
+//
+//Step3 - > End [label=193];
+}

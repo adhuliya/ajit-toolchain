@@ -1,0 +1,49 @@
+
+// Authors : Piyush P. Soni & Aswin Jith
+
+// for fill colours:
+// http://www.graphviz.org/doc/info/colors.html
+
+digraph {
+
+// for any node between start and end
+node [    fill=cornflowerblue,
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// for start node
+//cpu
+NOBLOCK_CPU_to_ICACHE_command [   color=darkgoldenrod2,
+				fontcolor=navy,
+				label=NOBLOCK_CPU_to_ICACHE_command,
+				shape=box];
+
+teu_ifetch_to_idecode -> noblock_teu_idispatch_to_stream_corrector [label=3];
+node [    fill=white,	
+		color=deepskyblue
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+//iunit
+teu_ifetch_to_idecode -> noblock_teu_idispatch_to_iunit_exec [label=3];
+teu_ifetch_to_idecode -> noblock_teu_idispatch_to_iunit_writeback [label=3];
+// iretire
+noblock_teu_idispatch_to_stream_corrector -> noblock_teu_stream_corrector_to_iretire [label=3];
+
+noblock_teu_idispatch_to_iunit_exec -> noblock_teu_stream_corrector_to_iretire [label=3];
+//////////////////////////////////////////////////////////////
+//// to insert any special node between start and end
+//Step3a [  style=filled,
+//		fillcolor=grey80,
+//		color=grey80,
+//		shape=circle,
+//		fontcolor=navy];
+// for end node
+//End [ shape=rectangle,
+//	color=darkgoldenrod2,
+//	fontcolor=navy];
+//
+//Step3 - > End [label=193];
+}

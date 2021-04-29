@@ -1,0 +1,24 @@
+compileToSparc.py
+
+	a script which will generate an ELF executable and
+	a hex-dump of the ELF executable starting from
+	a set of C and assembly source files.
+
+
+cToSparc.py
+	a wrapper around compileToSparc to compile a single 
+	C file and link it with sparc_stdio library to generate
+	an elf executable and a memory map that can be 
+	read by the processor model. Generates the memory map
+	in a ./output folder.
+	
+	USAGE: 	cToSparc.py <name of C file>
+
+
+asmToSparc.py
+	a wrapper around compileToSparc to assemble a single
+	aseembly file and link it with sparc_stdio. Generates
+	an elf executable and a memory map in ./output folder.
+	
+	USAGE: asmToSparc.py <name of assembly file>
+

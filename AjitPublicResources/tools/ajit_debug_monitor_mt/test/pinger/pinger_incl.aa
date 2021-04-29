@@ -1,0 +1,33 @@
+#define CID 0
+#define TID 0
+#include pinger_base.aa
+
+#define CID 0
+#define TID 1 
+#include pinger_base.aa
+
+#define CID 1
+#define TID 0
+#include pinger_base.aa
+
+#define CID 1
+#define TID 1 
+#include pinger_base.aa
+
+#define CID 2
+#define TID 0
+#include pinger_base.aa
+
+#define CID 2
+#define TID 1 
+#include pinger_base.aa
+
+#define CID 3
+#define TID 0
+#include pinger_base.aa
+
+#define CID 3
+#define TID 1 
+#include pinger_base.aa
+
+

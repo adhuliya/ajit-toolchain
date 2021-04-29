@@ -1,0 +1,15 @@
+Operation of JMPL:
+
+jump_address<- op1+op2
+if(jump_address[1:0] !=0) 
+{
+ 	cause mem_address_not_aligned trap
+}
+else
+{
+	if(rd !=0) r[rd]<- PC
+	PC <-nPC
+	nPC<- jump_address
+}
+
+JMPL can cause a mem_address_not_aligned trap

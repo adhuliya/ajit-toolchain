@@ -192,3 +192,49 @@ Correct operation validated. See readme.txt for run and reporting rules.
 CoreMark 1.0 : 182.111680 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
 
 
+-------------------------------------------------------------------------------------------------
+MEASUREMENT WITH CACHE TURNED OFF (April 23, 2021)
+-------------------------------------------------------------------------------------------------
+
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 26897847
+Total time (secs): 68.858488
+Iterations/Sec   : 29.045076
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 29.045076 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit
+
+-------------------------------------------------------------------------------------------------
+MEASUREMENT WITH CACHE TURNED ON (April 23, 2021)
+-------------------------------------------------------------------------------------------------
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4290206
+Total time (secs): 10.982927
+Iterations/Sec   : 182.100813
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 182.100813 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit
+
+-------------------------------------------------------------------------------------------------

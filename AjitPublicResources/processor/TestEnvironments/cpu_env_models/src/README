@@ -1,0 +1,4 @@
+environment models for the CPU
+	cpu_env_model_v0.c : the environment consists of an external memory and display/keyboard drivers.
+	cpu_env_model_v1.c : the environment includes an Icache, Dcache, Mmu, Main memory, and peripherals.
+	cpu_env_model_v2.c : the environment includes v2 versions of (Icache, Dcache, Mmu), Main memory, and peripherals.

@@ -1,0 +1,3 @@
+SOURCES = ta0.s
+RESULTS =
+g2=0x12345678

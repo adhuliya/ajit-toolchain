@@ -1,0 +1,6 @@
+A test case for the synonym handling setup in the AJIT
+memory subsystem (rlut!).
+
+Three virtual pages are mapped to the same physical page.
+Coherence between the two virtual pages is managed
+by the synonym invalidate mechanism (which uses the RLUT).

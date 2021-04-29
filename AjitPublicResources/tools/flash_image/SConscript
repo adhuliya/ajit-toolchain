@@ -1,0 +1,5 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+env.Program('./bin/mmapToAssy', './src/mmapToAssy.c', CCFLAGS=' -g -I flash_image/include ', LINKFLAGS='-g ')
+env.Program('./bin/mmapToBin', './src/mmapToBin.c', CCFLAGS=' -g -I flash_image/include ', LINKFLAGS='-g ')

@@ -1,0 +1,251 @@
+		The genVampAsm utility
+
+			by
+		 
+                   Madhav Desai.
+
+
+1.Overview
+-----------
+
+	The genVmapAsm utility is used to generate assembly code
+	which generates a page table in memory.  This assembly
+	code can be included in a bare metal program as part of
+	the initialization sequence.   Using this scheme it
+	is possible to provide memory protection and I/O memory
+	mapping.
+
+
+2. Synopsys
+------------
+
+ 	The genVmapAsm utility is invoked as follows
+
+	genVmapAsm <vmap-file> <output-assembly-file>
+
+
+	For example:
+
+	genVmapAsm vmap.txt setup_page_tables.s
+
+	This uses the virtual to physical mapping described
+	in file vmap.txt and generates assembly code in
+	setup_page_tables.s, which  can be used to set up page tables 
+	corresponding to this map.
+
+
+3. Format of input file to genVmapAsm.
+---------------------------------------
+
+	The input file contains a list of page mappings.
+	Each page mapping line has the following format
+
+	<context-id> <virtual-page-address>  <physical-page-address> <page-level> [cacheable-flag]  [acc-code]
+		
+		(note: the cacheable-flag (default=1) and acc-code (default=3) are optional).
+
+
+	For example, the following line 
+
+	! context-id  vpage-addr ppage-addr page-level cacheable acc
+	   0x0         0x0          0x4000  0x3        0x1       0x3
+
+	means that  for context 0, virtual page starting at virtual address 0x0
+        is mapped to physical page starting at physical address 0x4000, with the
+        page size being 4KB (level 3), with this page being cacheable and allowing
+        read/write/execute access in both supervisor and user mode (acc=3).
+
+	The access codes (acc) are as per the SPARC V8 reference MMU manual.
+
+
+3.  Example
+--------------
+
+
+	Lets start with a vmap file  
+	(suppose this  is in file vmap.txt)
+
+!
+! Line beginning with ! is comment line.
+!
+! for context 0
+!
+! 16MB page at 0x0 mapped to 0x0
+! cacheable.
+0x0 0x0 0x0 0x1
+! 256KB page at 0x40000000 mapped
+! to 0x80000, cacheable.
+0x0 0x40000000 0x80000 0x2
+! 256KB page at 0x40040000 mapped
+! to 0xc0000, cacheable.
+0x0 0x40040000 0xc0000 0x2
+! 4KB page at 0xffffe000 mapped to
+! 0xfe000, cacheable.
+0x0 0xffffe000 0xfe000 0x3
+! 4KB page starting at 0xfffff000 is
+! mapped to 0xff000  and this is not
+! cacheable (can be used for I/O)
+0x0 0xfffff000 0xff000 0x3  0x0
+
+	Now run genVmapAsm
+
+	genVmapAsm vmap.txt setup_page_tables.s
+
+	This produces an assembly file called setup_page_tables.s
+
+
+.global page_table_setup
+page_table_setup:
+   set PAGE_TABLE_BASE, %g1
+   !PTD: context=0, index=0, level=0, child_p_addr=0x400, p_addr=0x800
+   ! *(PAGE_TABLE_BASE + 0x800) = ptd(PAGE_TABLE_BASE + 0x400)
+   ! make PTD from 0x400
+   set 0x400, %g4
+   add %g1, %g4, %g4
+   srl %g4, 0x4, %g4
+   or  %g4, 0x1, %g4
+   ! g4 contains PTD 
+   set 0x800, %g5
+   add %g5, %g1, %g3
+   st %g4, [%g3]
+   ! g4 stored into [g3] 
+   !PTE: context=0, index=0, level=1,  ppnr=0x0, p_addr=0x400, cacheable=0x1, acc=0x3
+   ! *(PAGE_TABLE_BASE + 0x400) = 0x8e (pte)
+   set 0x8e, %g2
+   set 0x400, %g5
+   add %g5, %g1, %g3
+   st %g2, [%g3]
+   !PTD: context=0, index=64, level=1, child_p_addr=0x0, p_addr=0x500
+   ! *(PAGE_TABLE_BASE + 0x500) = ptd(PAGE_TABLE_BASE + 0x0)
+   ! make PTD from 0x0
+   set 0x0, %g4
+   add %g1, %g4, %g4
+   srl %g4, 0x4, %g4
+   or  %g4, 0x1, %g4
+   ! g4 contains PTD 
+   set 0x500, %g5
+   add %g5, %g1, %g3
+   st %g4, [%g3]
+   ! g4 stored into [g3] 
+   !PTE: context=0, index=0, level=2,  ppnr=0x80000, p_addr=0x0, cacheable=0x1, acc=0x3
+   ! *(PAGE_TABLE_BASE + 0x0) = 0x808e (pte)
+   set 0x808e, %g2
+   set 0x0, %g5
+   add %g5, %g1, %g3
+   st %g2, [%g3]
+   !PTE: context=0, index=1, level=2,  ppnr=0xc0000, p_addr=0x4, cacheable=0x1, acc=0x3
+   ! *(PAGE_TABLE_BASE + 0x4) = 0xc08e (pte)
+   set 0xc08e, %g2
+   set 0x4, %g5
+   add %g5, %g1, %g3
+   st %g2, [%g3]
+   !PTD: context=0, index=255, level=1, child_p_addr=0x2fc, p_addr=0x7fc
+   ! *(PAGE_TABLE_BASE + 0x7fc) = ptd(PAGE_TABLE_BASE + 0x200)
+   ! make PTD from 0x2fc
+   set 0x200, %g4
+   add %g1, %g4, %g4
+   srl %g4, 0x4, %g4
+   or  %g4, 0x1, %g4
+   ! g4 contains PTD 
+   set 0x7fc, %g5
+   add %g5, %g1, %g3
+   st %g4, [%g3]
+   ! g4 stored into [g3] 
+   !PTD: context=0, index=63, level=2, child_p_addr=0x1f8, p_addr=0x2fc
+   ! *(PAGE_TABLE_BASE + 0x2fc) = ptd(PAGE_TABLE_BASE + 0x100)
+   ! make PTD from 0x1f8
+   set 0x100, %g4
+   add %g1, %g4, %g4
+   srl %g4, 0x4, %g4
+   or  %g4, 0x1, %g4
+   ! g4 contains PTD 
+   set 0x2fc, %g5
+   add %g5, %g1, %g3
+   st %g4, [%g3]
+   ! g4 stored into [g3] 
+   !PTE: context=0, index=62, level=3,  ppnr=0xfe000, p_addr=0x1f8, cacheable=0x1, acc=0x3
+   ! *(PAGE_TABLE_BASE + 0x1f8) = 0xfe8e (pte)
+   set 0xfe8e, %g2
+   set 0x1f8, %g5
+   add %g5, %g1, %g3
+   st %g2, [%g3]
+   !PTE: context=0, index=63, level=3,  ppnr=0xff000, p_addr=0x1fc, cacheable=0x0, acc=0x3
+   ! *(PAGE_TABLE_BASE + 0x1fc) = 0xff0e (pte)
+   set 0xff0e, %g2
+   set 0x1fc, %g5
+   add %g5, %g1, %g3
+   st %g2, [%g3]
+   retl;
+   nop;
+! done: page_table_setup
+! start: set context-table-pointer = PAGE_TABLE_BASE + 0x800
+.global set_context_table_pointer
+set_context_table_pointer:
+   set PAGE_TABLE_BASE, %g1
+   set 0x800, %g5
+   add %g5, %g1, %g2
+   srl  %g2, 0x4, %g2
+   or  %g2, 0x1, %g2
+   set 0x100, %g3
+   sta %g2, [%g3] 0x4
+   retl;
+   nop;
+! done: set  context-table-pointer
+.align 1024
+PAGE_TABLE_BASE: .skip 3072
+
+
+
+3. Using the setup_page_tables.s to create  a startup routine
+---------------------------------------------------------------
+
+	Using the setup_page_tables.s file, we can create a startup
+	routine for our program.
+
+.global _start;
+_start:
+	! stack pointer mapped to 0xffffe000
+	mov -4096, %sp
+	! frame pointer is also at 0xffffe000
+	mov -4096,   %fp
+
+        ! We have 8 windows, and will start at
+	! window 0x7.  Window 0x0 is marked 
+	! as invalid.
+	set 0x1, %l0		
+	wr %l0, 0x0, %wim
+
+	!
+	! trap table is at label trap_table_base
+	!	
+	set	trap_table_base, %l0
+	wr	%l0, 0x0, %tbr
+
+	!
+	! set up virtual -> physical map.
+	!   (this points to code generated by
+	!     genVmapAsm).
+	call page_table_setup 	
+	nop
+
+	!
+	! set up context table pointer
+	!   (this points to code generated by
+	!     genVmapAsm).
+	call set_context_table_pointer
+	nop
+
+	! enable traps.
+	set 0x10E7, %l0	
+	wr %l0, %psr
+
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!!  ENABLE MMU                               !!
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	set 0x1, %o0
+	sta %o0, [%g0] 0x4    
+
+	! jump to your main routine.
+	call main
+	nop
+

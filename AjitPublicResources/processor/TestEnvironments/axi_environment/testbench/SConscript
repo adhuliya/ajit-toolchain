@@ -1,0 +1,59 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+
+#AHIR-related
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+FUNCTIONLIB_INCLUDE = AHIR_RELEASE + "/functionLibrary/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+AA_HOME=AJIT_HOME + "/processor/Aa_v3"
+C_HOME=AJIT_HOME + "/processor/C_reference_model"
+DOVAL_HOME=C_HOME+"/debugger/doval/lib"
+ANTLR_PATH = C_HOME +  "/debugger/doval/antlr3Cruntime/build/lib"
+
+env.Append(CPPPATH = AJIT_HOME + '/os/kernels/pico/include:')
+DEBUG_UTILS_INCLUDE=AJIT_HOME + '/processor/TestEnvironments/debug_utils/include'
+DEBUG_UTILS_LIB=AJIT_HOME + '/processor/TestEnvironments/debug_utils/lib'
+env.Append(CPPPATH = DEBUG_UTILS_INCLUDE + ":./src/:")
+
+#library for modeling the cpu environment.
+C_CPU_INCLUDE = AJIT_HOME + '/processor/C/cpu/include'
+CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/axi_environment/console/lib"
+CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/axi_environment/console/include"
+MEMINTERFACE_LIB=AJIT_HOME+"/processor/TestEnvironments/axi_environment/mem_interface/lib"
+MEMINTERFACE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/axi_environment/mem_interface/include"
+AGGREGATOR_LIB=AJIT_HOME+"/processor/TestEnvironments/axi_environment/aggregator/lib"
+AGGREGATOR_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/axi_environment/aggregator/include"
+PROC_LINK_LIB=AJIT_HOME+"/processor/TestEnvironments/axi_environment/processor_link_axi/lib"
+PROC_LINK_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/axi_environment/processor_link_axi/include"
+
+env.Append(CPPPATH = AHIR_INCLUDE + ":")
+env.Append(CPPPATH = C_CPU_INCLUDE + ":")
+env.Append(CPPPATH = CONSOLE_INCLUDE + ":")
+env.Append(CPPPATH = MEMINTERFACE_INCLUDE + ":")
+env.Append(CPPPATH = AGGREGATOR_INCLUDE + ":")
+env.Append(CPPPATH = PROC_LINK_INCLUDE + ":")
+
+# debug infrastructure..
+env.Append(CPPPATH = C_HOME + "/debugger/doval/include:" + C_HOME + "/debugger/doval/antlr3Cruntime/build/include:" + C_HOME + "/debugger/spi_common/include:" + C_HOME + "/debugger/gpb/include:"  + C_HOME + "/common/include")
+
+
+
+#===================================================================================================================
+# AJIT axi testbench, with sys modeled in FPGA using AXI, DRAM etc.
+#-------------------------------------------------------------------------------------------------------------------
+AXI_LLIBS = 'MemInterface Console rt SockPipes PipeHandlerDebugPthreads BitVectors uarch_debug_utils pthread gpb SPICommon doval antlr3c SockPipes rt Aggregator ProcessorLinkAxi Common m '
+
+AXI_LIBPATHS = ' /usr/local/lib/ ' +  C_HOME + '/common/lib ' + C_HOME + '/memory/lib ' + C_HOME + '/devices/lib ' + C_HOME + '/debugger/gpb/lib ' + C_HOME + '/debugger/spi_common/lib ' +  AHIR_LIBPATH + ' ' + FUNCTIONLIB_PATH + ' ' +  DEBUG_UTILS_LIB + ' ' + DOVAL_HOME  + ' ' + ANTLR_PATH + ' ' +  DEBUG_UTILS_LIB + ' '+ ' '  + CONSOLE_LIB + ' '  + MEMINTERFACE_LIB + ' ' + AGGREGATOR_LIB + ' ' + PROC_LINK_LIB  + ' '  
+
+env.Program('./bin/ajit_axi_test_bench', Split('src/test_uarch_core.c src/timerRoutines.c'), CCFLAGS=' -pthread -g -DUSE_PIPE_HANDLER ' ,LINKFLAGS='-g ', LIBS=Split(AXI_LLIBS), LIBPATH=Split(AXI_LIBPATHS))
+
+#===================================================================================================================
+#executable to check fpga
+# env.Program('./bin/check_fpga', './src/check_fpga.c', CCFLAGS = ' -g ', LIBS=Split(' riffa '), LIBPATH=Split(' /usr/local/lib '))
+

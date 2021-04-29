@@ -1,0 +1,7 @@
+Transcript generated is for 32  nop instruction followed by branch.
+Changes made (apart from the ones pushed in Repo) :
+	-B added to all units in teu
+	pipe depth increased for teu_pipes, iu_pipes, fp_pipes
+
+Command Run:
+	perf.py -t -v transcript_nops_branch_9mar -n 100 -s 100

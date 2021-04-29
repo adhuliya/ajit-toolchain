@@ -1,0 +1,26 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+
+env.Append(CPPPATH = "./:")
+env.Append(CPPPATH = AHIR_INCLUDE + ":" + "./include:")
+
+# create a shared library for the environment
+env.Library("./lib/cpu_env_to_riffa_sockpipes", Glob ('./src/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_SOCKPIPES ")
+VariantDir('objriffa','src',duplicate=0)
+env.Library("./lib/cpu_env_to_riffa_riffa", Glob ('./objriffa/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_RIFFA ")
+
+VariantDir('objGnuPth','src',duplicate=0)
+env.Library("./lib/cpu_env_to_riffa_sockpipes_gnu_pth", Glob ('objGnuPth/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_SOCKPIPES -DUSE_GNUPTH")
+VariantDir('objriffaGnuPth','src',duplicate=0)
+env.Library("./lib/cpu_env_to_riffa_riffa_gnu_pth", Glob ('objriffaGnuPth/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_RIFFA -DUSE_GNUPTH")
+
+VariantDir('objsockpipes_proto_board','src',duplicate=0)
+env.Library("./lib/cpu_env_to_riffa_sockpipes_proto_board", Glob ('./objsockpipes_proto_board/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_SOCKPIPES -D proto_board ")
+VariantDir('objriffa_proto_board','src',duplicate=0)
+env.Library("./lib/cpu_env_to_riffa_riffa_proto_board", Glob ('./objriffa_proto_board/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_RIFFA -D proto_board ")

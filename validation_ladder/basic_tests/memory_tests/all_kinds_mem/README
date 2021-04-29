@@ -3,3 +3,24 @@ memory accesses using a simple march algorithm.
 	- to cacheable pages
 	- to non-cacheable pages
 	- bypasses.
+
+You can decide where to place the text and data
+sections.  In this directory there are two VMAP
+files.
+
+	a. VMAPLOWMEM.TXT
+		place text at 0x0, data start at 0x8000.
+		
+		Compile script is invoked as (assuming 80MHz system):
+
+		./compile_for_ajit_uclibc.sh 0x0 0x8000 VMAPLOWMEM.TXT 80000000
+
+	a. VMAPHIGHMEM.TXT
+		place text at 0x40000000, data start at 0x4008000.
+		
+		Compile script is invoked as (assuming 80MHz system):
+
+		./compile_for_ajit_uclibc.sh 0x40000000 0x40008000 VMAPLOWMEM.TXT 80000000
+
+
+

@@ -100,11 +100,6 @@ time_in_secs:
 	jmp	%o7+8
 	 fdivd	%f8, %f0, %f0
 	.size	time_in_secs, .-time_in_secs
-	.section	.rodata.str1.8,"aMS",@progbits,1
-	.align 8
-.LC2:
-	.asciz	"\nHiFromAjit\n\n"
-	.section	".text"
 	.align 4
 	.global portable_init
 	.type	portable_init, #function
@@ -115,10 +110,6 @@ portable_init:
 	mov	0, %o1
 	call	__ajit_serial_configure__, 0
 	 mov	0, %o2
-	mov	13, %o1
-	sethi	%hi(.LC2), %o0
-	call	__ajit_serial_puts__, 0
-	 or	%o0, %lo(.LC2), %o0
 	sethi	%hi(seed1_volatile), %g1
 	st	%g0, [%g1+%lo(seed1_volatile)]
 	sethi	%hi(seed2_volatile), %g1
@@ -136,9 +127,9 @@ portable_init:
 	jmp	%i7+8
 	 restore
 	.size	portable_init, .-portable_init
-	.section	.rodata.str1.8
+	.section	.rodata.str1.8,"aMS",@progbits,1
 	.align 8
-.LC3:
+.LC2:
 	.asciz	"\nByeFromAjit\n\n"
 	.section	".text"
 	.align 4
@@ -148,9 +139,9 @@ portable_init:
 portable_fini:
 	save	%sp, -96, %sp
 	mov	14, %o1
-	sethi	%hi(.LC3), %o0
+	sethi	%hi(.LC2), %o0
 	call	__ajit_serial_puts__, 0
-	 or	%o0, %lo(.LC3), %o0
+	 or	%o0, %lo(.LC2), %o0
 	stb	%g0, [%i0]
 	jmp	%i7+8
 	 restore
@@ -197,5 +188,5 @@ seed1_volatile:
 	.common	start_time_val,4,4
 	.local	stop_time_val
 	.common	stop_time_val,4,4
-	.ident	"GCC: (Buildroot 2014.08-ga33456e-dirty) 4.7.4"
+	.ident	"GCC: (Buildroot 2014.08-g9aeb387) 4.7.4"
 	.section	.note.GNU-stack,"",@progbits

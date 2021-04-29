@@ -1,0 +1,10 @@
+SOURCES = lduba.s
+
+
+
+RESULTS = 
+g1=0x00000080
+o0=0x68
+o1=0x69
+l1 = 0xA1
+l2 = 0x52

@@ -1,0 +1,16 @@
+// reset, clk are implicit.
+$system debug_stub $library sys_debug_stub 
+	$in
+		$signal	DEBUG_SPI_SLAVE_MISO
+		$signal SYS_CLK	
+
+		$pipe DEBUG_DATA_FROM_AGGREGATOR
+	$out
+	 	$signal	DEBUG_SPI_SLAVE_MOSI
+	 	$signal	DEBUG_SPI_SLAVE_CLK
+	 	$signal	DEBUG_SPI_SLAVE_SS_L
+
+
+		$pipe DEBUG_DATA_TO_AGGREGATOR
+{
+}

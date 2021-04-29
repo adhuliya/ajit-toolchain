@@ -1,0 +1,5 @@
+Instruction : LDDF
+Details :
+Moves a double-word from memory into a floating-point register pair. The more significant word at the effective memory address is moved into the even register. The less significant word (at the effective memory address + 4) is moved into the following odd register.
+
+lddfTV - test cases for trap conditions

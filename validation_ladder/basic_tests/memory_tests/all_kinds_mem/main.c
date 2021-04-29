@@ -4,11 +4,18 @@
 #include "math.h" 
 
 #define TESTLENGTH 1024
+#define NSWEEPS    1024
 
-// mapped to 0x10000
-unsigned int *noncacheable_mem = (unsigned int *) 0x10000; 
-unsigned int *bypass_mem       = (unsigned int *) 0x11000; 
-unsigned int *cacheable_mem    = (unsigned int *) 0x12000; 
+// mapped to VA_DATA_SECTION_START  + 0x10000
+unsigned int *noncacheable_mem = (unsigned int *) (VA_DATA_SECTION_START + 0x2000); 
+unsigned int *bypass_mem       = (unsigned int *) (VA_DATA_SECTION_START + 0x3000); 
+unsigned int *cacheable_mem    = (unsigned int *) (VA_DATA_SECTION_START + 0x4000); 
+
+float convertToSeconds(uint32_t ut)
+{
+	float result = (256.0/CLK_FREQUENCY)*((float) ut);
+	return(result);
+}
 
 int march_test_byte (int bypass_flag, uint8_t* a, int length)
 {
@@ -79,22 +86,57 @@ int main()
 {
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
 
+#ifndef VA_DATA_SECTION_START
+	ee_printf("Error: virtual address of data section not specified\n");		
+	return(1);
+#endif
+
+#ifndef CLK_FREQUENCY
+	ee_printf("Error: virtual clock frequency not specified\n");		
+	return(1);
+#endif
+
 	int err = 0;
-	err = march_test(0,noncacheable_mem,TESTLENGTH/4);
-	if(err)
+	uint32_t t0 = ajit_barebones_clock();
+
+	int I;
+	for(I = 0; I < NSWEEPS; I++)
 	{
-		ee_printf("Error non-cacheable\n");
+		err = march_test(0,noncacheable_mem,TESTLENGTH/4);
+		if(err)
+		{
+			ee_printf("Error non-cacheable\n");
+		}
 	}
-	err = march_test(1,bypass_mem,TESTLENGTH/4);
-	if(err)
+	uint32_t t1 = ajit_barebones_clock();
+	ee_printf("Non-cacheable: Time = %f.\n",  convertToSeconds(t1 - t0));
+
+	
+
+	t0 = ajit_barebones_clock();
+	for(I = 0; I < NSWEEPS; I++)
 	{
-		ee_printf("Error bypass\n");
+		err = march_test(1,bypass_mem,TESTLENGTH/4);
+		if(err)
+		{
+			ee_printf("Error bypass\n");
+		}
 	}
-	err = march_test(0,cacheable_mem,TESTLENGTH/4);
-	if(err)
+	t1 = ajit_barebones_clock();
+	ee_printf("Bypass: Time = %f.\n",  convertToSeconds(t1 - t0));
+
+
+	t0 = ajit_barebones_clock();
+	for(I = 0; I < NSWEEPS; I++)
 	{
-		ee_printf("Error cacheable\n");
+		err = march_test(0,cacheable_mem,TESTLENGTH/4);
+		if(err)
+		{
+			ee_printf("Error cacheable\n");
+		}
 	}
+	t1 = ajit_barebones_clock();
+	ee_printf("Cacheable: Time = %f.\n",  convertToSeconds(t1 - t0));
 
 	err = march_test_byte(0,(uint8_t*) noncacheable_mem,TESTLENGTH);
 	if(err)

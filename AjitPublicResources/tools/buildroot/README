@@ -1,0 +1,203 @@
+------------------------------------------------------------
+CONTENTS:
+------------------------------------------------------------
+
+buildroot-2014.08.tar.gz
+	buildroot source. Untar this file on your system.
+
+AJIT_buildroot_configs
+	buildroot configurations and patches 
+	specific to the AJIT processor
+
+documentation
+	contains documentation on buildroot and 
+	booting Linux kernel to the AJIT processor model
+
+
+--------------------------
+others:
+
+Backup_Ajit_buildroot-2014.08.tar.gz
+	Backup of a buildroot system with a linux kernel
+	that can boot on the Ajit cpu+cache+mmu model.
+	The snapshot was taken on 14 July 2015.
+
+buildroot-2014.08:
+	Buildroot system + linux kernel under
+	development for Ajit processor.
+
+
+
+
+
+
+
+------------------------------------------------------------
+USAGE:
+------------------------------------------------------------
+ 	Untar the buildroot archive:
+   	tar -zxvf  buildroot-2014.08.tar.gz
+	This produces a directory called buildroot-2014.08/
+
+
+
+
+
+-------------------------------------------------------------
+I. OBTAINING A CROSS COMPILER TOOLCHAIN FOR SPARC:
+-------------------------------------------------------------
+	To obtain a cross compiler toolchain  we can use a default
+	configuration file present in buildroot for the sparc v8. 
+		
+		$cd buildroot-2014.08
+		$make qemu_sparc_ss10_defconfig
+		$make
+
+	This will download and build all sources and can take a long
+	time (upto 20-30 minutes).  At the end of this step we get a
+	working cross compiler toolchain. The cross compiler binaries
+	(sparc-buildroot-linux-uclibc-gcc, as, ld etc) 
+	are present in folder:
+	
+		buildroot-2014.08/output/host/usr/bin.  
+	
+	Add this location to your system's PATH variable to use the cross
+	compiler binaries outside buildroot.
+
+
+-------------------------------------------------------------
+II. GENERATING A LINUX KERNEL IMAGE FOR AJIT PROCESSOR:
+-------------------------------------------------------------
+	Buildroot configurations and kernel patches 
+	for a minimal linux kernel supporting 
+	just a keyboard, a tty console and an initramfs
+	are stored in a directory AJIT_buildroot_configs 
+	outside the buildroot-2014.08 directory.
+
+	STEP 1: Point out the configurations for AJIT to buildroot:
+			$ cd buildroot-2014.08
+			$ export BR2_EXTERNAL=<path-to-buildroot>/buildroot/AJIT_buildroot_configs
+		type 'make help' to check if AJIT_defconfig is listed at the end. 
+
+
+	STEP 2:
+		$ make BR2_EXTERNAL=<path-to-buildroot>/AJIT_buildroot_configs AJIT_defconfig
+		$ make
+
+		This will download all sources and compile and may take a long time.
+		 
+	
+	STEP 3: Applying AJIT-specific patches to the kernel:
+		
+		
+		The folder AJIT_buildroot_configs/CODE/buildroot-2014.08/
+		contains additions and changes to the kernel code
+		specific to AJIT. Merge this folder with the 
+		buildroot/buildroot-2014.08 folder, replacing 
+		original files. Touch all files before merging.
+
+
+		$ cd ../AJIT_buildroot_configs/CODE
+		$ find . -exec touch {} \;
+		$ cp -r buildroot-2014.08/ ../../
+
+		
+		Run make again in buildroot top folder.
+		$ cd ../../buildroot-2014.08/	
+		$ make
+
+
+	To RUN the stripped linux version on qemu:
+	$ qemu-system-sparc -kernel ./output/images/vmlinux -nographic 
+	Login as root. password is root
+
+
+
+
+---------------------------------------------------------------------
+NOTE: to modify the device tree and create a device tree blob to be 
+included in the kernel, refer README in folder
+
+AJIT_buildroot_configs/CODE/buildroot-2014.08/output/build/linux-3.16.1/arch/sparc/AJIT/device_tree
+
+---------------------------------------------------------------------
+
+
+----------------------------------------------------------------------
+NOTE: To modify buildroot/kernel configurations for AJIT 
+(assuming II has been executed)
+----------------------------------------------------------------------
+			$ cd buildroot-2014.08
+			$ make AJIT_defconfig
+			$ make menuconfig
+
+		This will open up a gui editor in which the configurations can be changed.
+		To save the new configurations overwriting AJIT_defconfig, 
+		select Save on gui, exit gui and run 
+			
+			$ make savedefconfig BR2_DEFCONFIG=<path-to-buildroot>/AJIT_buildroot_configs/configs/AJIT_defconfig
+		
+		To modify linux kernel configuration run
+			
+			$ make linux-menuconfig
+		
+		To save the modified configuration (overwriting original) run
+			$ make linux-update-config 
+
+		re-run make after any changes to configurations
+		---------------------------------------
+
+
+
+------------------------------------------------------------------------
+NOTE: How to compile the kernel with debugging support for use with gdb:
+------------------------------------------------------------------------
+	$make linux-menuconfig
+
+	go to menu item 'Kernel hacking--->'
+	go to menu 'compile-time checks and compile options -->'
+
+	select 'Compile the kernel with debug info'
+	save this configuration into .config, run make
+
+
+Debugging the linux kernel with Qemu + gdb:
+	1. compile the kernel with debug symbols on (as shown above)
+	
+	2. run the kernel on qemu (the -s flag stops execution for gdb to control it)
+		$ qemu-system-sparc -kernel ./output/images/vmlinux -nographic -s -S
+	
+	3. start gdb in another terminal
+		$ sparc-buildroot-linux-uclibc-gdb vmlinux
+		(gdb) target remote : 1234
+
+	4. insert breakpoints at required places (for example:)
+		(gdb) b head_32.S:119
+		Breakpoint 1 at 0xf0006034: file arch/sparc/kernel/head_32.S, line 119.
+		(gdb)
+
+	5. Use 's'/'n' to step through execution as usual.
+	to examine processor registers in gdb, 
+		(gdb) info registers
+	to print psr value in hex:
+		(gdb) x $psr  
+	to print psr value in decimal:
+		(gdb) p $psr
+
+
+	
+	
+	
+	https://sourceware.org/gdb/onlinedocs/gdb/Registers.html
+
+
+
+
+
+------------------------------------------------------------------------
+
+
+
+For details on Buildroot refer	
+http://buildroot.uclibc.org/downloads/manual/manual.html
+

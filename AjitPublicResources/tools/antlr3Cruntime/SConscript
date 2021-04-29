@@ -1,0 +1,60 @@
+import sys, os, SCons.Script
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+baseDir = Dir("#.").abspath
+
+workDir  = os.path.dirname(os.path.realpath('__file__'))
+
+def runSyscmd(cmd):
+    res = os.system(cmd)
+    # Assumes that if a process doesn't call exit, it was successful
+    if (os.WIFEXITED(res)):
+        code = os.WEXITSTATUS(res)
+        if code != 0:
+            print "Error: return code: " + str(code)
+            if SCons.Script.keep_going_on_error == 0:
+                sys.exit(code)
+
+def ConfigureMake(target, source, env):
+    pkg_name = 'libantlr3c-3.4'  # the name of the package
+
+    buildDir = workDir + "/build"
+    os.chdir(workDir)
+
+    # Untar the source tgz file
+    if not os.path.exists(pkg_name):
+        cmd = 'tar xvf ' + source[0].abspath
+        runSyscmd(cmd)
+
+    # Change to the top of the source tree for building
+    os.chdir(workDir + "/" + pkg_name)
+
+    # See if configure needs to be run. Doesn't check for failed configures
+    if os.path.exists('config.status'):
+        print 'configure is up-to-date'
+    else: 
+        cmd= "./configure --prefix="+buildDir+" --exec-prefix="+buildDir+" "
+
+        #check if this system is 64 bit
+        is_64bits = sys.maxsize > 2**32
+        if (is_64bits) :
+	        cmd= cmd+" --enable-64bit "
+        runSyscmd(cmd)
+
+    # See if make needs to be run.
+    if (os.path.exists(buildDir) and os.path.isfile(buildDir + "/lib/libantlr3c.so")):
+        print 'antlr3c library is present'
+    else:
+        os.chdir(workDir + "/" + pkg_name)
+        # Always run make
+        runSyscmd('make')
+        runSyscmd('make install')
+    
+    os.chdir(baseDir)    # restore the original cwd
+
+    return 0
+
+env.Command(target = workDir+'/build/lib/libantlr3c.so',source = workDir+'/antlr3cDist.tar.gz',action = Action(ConfigureMake),)
+

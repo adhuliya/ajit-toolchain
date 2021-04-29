@@ -383,5 +383,5 @@ fcvtbuf:
 	.size	fcvtbuf, .-fcvtbuf
 	.local	CVTBUF
 	.common	CVTBUF,80,8
-	.ident	"GCC: (Buildroot 2014.08-ga33456e-dirty) 4.7.4"
+	.ident	"GCC: (Buildroot 2014.08-g9aeb387) 4.7.4"
 	.section	.note.GNU-stack,"",@progbits

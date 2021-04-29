@@ -1,0 +1,8 @@
+1. This has the .result, .objdump, .mmap files for the following instructions -
+
+	faddreduce16 
+	fhtos
+	fstoh
+
+
+2. cmodel_errors mentions the errors observed.

@@ -1,0 +1,169 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage{epstopdf}
+\usepackage{import}
+\usepackage[none]{hyphenat}
+\usepackage{algorithmicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
+\title{Debug module in TEU}
+
+\author{Titto Thomas}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The debug module inside TEU will be responsible for storing the information about breakpoints and watchpoints and also informing the stream corrector to stop the program execution.
+
+\vspace*{1cm}
+% Aa model
+\begin{figure}[h!]
+	\centering
+	\def\svgwidth{\textwidth}
+	
+	\hspace*{-0.75cm}
+	\scalebox{0.5}{\import{Figs/}{block.tex}}
+	\caption{TEU debug module architecture}
+	\label{BlockFig}
+\end{figure}
+
+\section{Expected behaviours}
+
+Expected behaviours of the two blocks are represented in the form of pseudo code in the following sections.
+
+\subsection{CCU interface unit}
+The pseudocode is described in the Algorithm \ref{write_daemon} below.
+\begin{algorithm}
+\caption{ccu interface daemon}\label{write_daemon}
+\begin{algorithmic}[1]
+	\Function{write\_debug\_registers\_daemon}{}
+	\While{1}\Comment{Infinite loop}
+	\State $ccu\_debug\_msg\gets ccu\_to\_teu\_debug\_unit\_command$
+	\State command, value $\gets$ Decode ($ccu\_debug\_msg$)
+	
+	\If {(command = update\_breakpoint)}
+		\State break\_point\_reg[reg\_id] $\gets $ value
+	\ElsIf {(command = update\_watchpoint)}
+		\State watch\_point\_reg[reg\_id] $\gets $ value
+	\ElsIf {(command = update\_interrupt) and (prev\_interrupt = FALSE)}
+		\State currnt\_interrupt $\gets $ TRUE
+		\State prev\_interrupt $\gets$ TRUE
+	\Else
+		\State currnt\_interrupt $\gets $ FALSE
+	\EndIf
+	
+	\For{reg\_id \textbf{in} all breakpoints}
+	\State signal\_breakpoint\_reg\_id $\gets$  break\_point\_reg[reg\_id]
+	\EndFor
+	\For{reg\_id \textbf{in} all watchpoints}
+	\State signal\_watchpoint\_reg\_id $\gets$  watch\_point\_reg[reg\_id]
+	\EndFor
+	\State signal\_interrupt $\gets$  currnt\_interrupt
+	
+	\If {(command = valid)}
+		\State $teu\_debug\_unit\_to\_ccu\_response \gets SUCCESS$
+	\EndIf
+	\EndWhile	
+	\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\subsubsection{Inputs}
+The input messages for the daemon will be of the format shown in Fig \ref{write_packet}. The fields could have the values,
+
+\begin{enumerate}
+	
+	\item interrupt : Interrupt the processor execution flow, if this bit is set (kill request from GDB).
+	\item break or watch : 0 is for breakpoint register write and 1 for watchpoint register write.
+	\item set or clear : 0 is for clearing the register and 1 is for setting up a new watchpoint/breakpoint.
+	\item reg\_id : The 2-bit register id.
+	\item watch\_reg\_type : The type of watchpoint register to be set up. Here 1 is for watching just the write access, 2 for read access, 3 is for watching both of them.
+	\item reg\_val : The 32-bit address to be stored in the registers.
+\end{enumerate}
+
+% Aa model
+\begin{figure}[h!]
+	\centering
+	\def\svgwidth{\textwidth}
+	\scalebox{0.75}{\import{Figs/}{write_packet.tex}}
+	\caption{ccu\_to\_teu\_debug\_unit\_command message format}
+	\label{write_packet}
+\end{figure}
+
+\subsubsection{Output}
+The teu\_to\_ccu\_break\_watch\_register\_access\_response contains a single bit indicating if the previous command was successfully executed or not.
+
+The block gives out 4 signals corresponding to current watchpoints (35-bit each), 4 breakpoints (33-bit each), and one corresponding to the interrupt. The formats of these signals are shown in Fig. \ref{active_signal_msg}.
+
+\begin{figure}[h!]
+	\centering
+	\def\svgwidth{\textwidth}
+	\scalebox{0.75}{\import{Figs/}{active_bp_signal.tex}}
+	\scalebox{0.75}{\import{Figs/}{active_wp_signal.tex}}
+	\caption{(a) breakpoint signal format (b) watchpoint signal format}
+	\label{active_signal_msg}
+\end{figure}
+
+\newpage
+\subsection{debug compare unit}
+The unit is split into two parts, one which checks the breakpoints \& interrupt and comparing the watchpoints.
+The pseudocodes are described in the Algorithm \ref{compare_daemon1} and \ref{compare_daemon2} below.
+\begin{algorithm}
+	\caption{breakpoint and interrupt unit}\label{compare_daemon1}
+	\begin{algorithmic}[1]
+		\Function{bp\_and\_intr\_check\_daemon}{}
+		\While{1}\Comment{Infinite loop}
+		\State $idispatch\_msg\gets idispatch\_to\_teu\_debug\_unit$
+		\State $intr\_hit \gets  $ Decode ($idispatch\_msg$)
+		\If {(not $intr\_hit$)}
+			\State $PC, valid \gets $ Decode ($idispatch\_msg$)
+			\State $bp\_hit, reg\_id \gets $ Compare($PC$, valid breakpoint registers)
+		\EndIf
+		
+		\If {($intr\_hit$)}
+			\State $teu\_debug\_unit\_to\_stream\_corrector\_intr \gets$ TRUE
+		\ElsIf {($bp\_hit$ and $valid$)}
+			\State $sc\_msg \gets $ Encode (bp\_hit, reg\_id)
+			\State $teu\_debug\_unit\_to\_stream\_corrector\_bp \gets sc\_msg$
+		\EndIf
+		
+		\EndWhile	
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{watchpoint unit}\label{compare_daemon2}
+	\begin{algorithmic}[1]
+		\Function{wp\_check\_daemon}{}
+		\While{1}\Comment{Infinite loop}
+		\State $iunit\_msg\gets iunit\_to\_teu\_debug\_unit$
+		
+		\State $address, access\_type \gets  $ Decode ($iunit\_msg$)
+		\State $wp\_hit, reg\_id, hit\_type \gets $ Compare($address$, valid breakpoint registers, $access\_type$)
+		
+		\If {($wp\_hit$)}
+		\State $sc\_msg \gets $ Encode (wp\_hit, reg\_id, wp\_hit\_type)
+		\State $teu\_debug\_unit\_to\_stream\_corrector\_wp \gets sc\_msg$
+		\EndIf
+		
+		\EndWhile	
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\end{document}

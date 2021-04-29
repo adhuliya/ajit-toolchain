@@ -1,0 +1,12 @@
+SOURCES = ldsbaTV.s
+
+
+
+RESULTS = 
+g1=0x00000080
+o0=0x8c
+o1=0x8d
+l3=0x00000060
+l1 = 0xFFFFFFA1
+l2 = 0x0
+g2=0x00000001

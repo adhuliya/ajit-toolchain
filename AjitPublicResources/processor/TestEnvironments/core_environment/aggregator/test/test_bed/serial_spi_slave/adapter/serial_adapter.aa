@@ -1,0 +1,61 @@
+// get chars from monitor.  ignore non-hex chars
+// and assemble two hex chars into a binary byte.
+$module [getByteFromSpi] $in () $out (ret_val: $uint<8>) 
+	$is
+{
+	$branchblock[lOop] {
+
+		$merge $entry loopback_h $endmerge
+		h0 := SERIAL_SPI_SLAVE_to_ADAPTER
+		$volatile $call HexCharToBinary (h0) (x0 is_hex_0)
+		$if (~is_hex_0) $then
+			$place [loopback_h]
+		$endif
+
+		$merge $entry loopback_l $endmerge
+		h1 := SERIAL_SPI_SLAVE_to_ADAPTER
+		$volatile $call HexCharToBinary (h1) (x1 is_hex_1)
+		$if (~is_hex_1) $then
+			$place [loopback_l]
+		$endif
+		
+	} (x0 => x0 x1 => x1)
+	ret_val := ($concat x0 x1)
+}
+
+// send a pair of chars to monitor.  the byte
+// is converted to a pair of hex chars and sent to the monitor
+$module [sendByteToSpi] $in (x: $uint<8>) $out ()
+	$is
+{
+	x0 := ($slice x 7 4)
+	x1 := ($slice x 3 0)
+
+	$volatile $call BinaryToHexChar (x0) (c0)
+	$volatile $call BinaryToHexChar (x1) (c1)
+
+	ADAPTER_to_SERIAL_SPI_SLAVE := c0
+	ADAPTER_to_SERIAL_SPI_SLAVE := c1
+}
+
+$module [serialListenOnSpiDaemon] $in () $out () $is
+{
+	$branchblock[lOoP] {
+
+		$merge $entry loopback $endmerge
+			$call getByteFromSpi () (c0)
+			CONSOLE_to_SERIAL_RX := c0
+		$place [loopback]
+	}
+}
+
+$module [serialListenOnSerialDaemon] $in () $out () $is
+{
+	$branchblock[lOoP] {
+		$merge $entry loopback $endmerge
+			x := SERIAL_TX_to_CONSOLE
+			$call sendByteToSpi (x) ()
+		$place [loopback]
+	}
+}
+

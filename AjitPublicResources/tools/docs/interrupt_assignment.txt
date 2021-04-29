@@ -1,0 +1,10 @@
+The interrupt assignment for the timer
+and serial device in the evaluation
+platform are as follows:
+
+	TIMER_IRL 10
+	SERIAL_IRL 12
+
+This may change in the future. For
+the moment this is hardwired into the
+serial and timer device implementations.

@@ -1,0 +1,47 @@
+
+// Authors : Piyush P. Soni & Aswin Jith
+
+// for fill colours:
+// http://www.graphviz.org/doc/info/colors.html
+
+digraph {
+
+// for any node between start and end
+node [    fill=cornflowerblue,
+		fontcolor=black,
+		shape=box,//diamond,
+		style=filled];
+
+// for start node
+teu_idispatch_to_loadstore [   color=darkgoldenrod2,
+				fontcolor=navy,
+				label=teu_idispatch_to_loadstore,
+				shape=box];
+
+
+teu_idispatch_to_loadstore -> NOBLOCK_CPU_to_DCACHE_command [label=290];
+teu_stream_corrector_to_loadstore -> NOBLOCK_CPU_to_DCACHE_command [label=3];
+
+NOBLOCK_CPU_to_DCACHE_command -> DCACHE_to_MMU_addr [label=3];
+NOBLOCK_CPU_to_DCACHE_command -> DCACHE_to_MMU_data [label=3];
+
+DCACHE_to_MMU_data -> AJIT_to_ENV_data [label=3];
+DCACHE_to_MMU_data -> AJIT_to_ENV_addr [label=3];
+DCACHE_to_MMU_addr -> AJIT_to_ENV_data [label=3];
+DCACHE_to_MMU_addr -> AJIT_to_ENV_addr [label=3];
+
+AJIT_to_ENV_addr -> ENV_to_AJIT_data [label=3];
+AJIT_to_ENV_data -> ENV_to_AJIT_data [label=3];
+
+
+ENV_to_AJIT_data -> MMU_to_DCACHE_data [label=3];
+ENV_to_AJIT_data -> MMU_to_DCACHE_flags [label=3];
+
+MMU_to_DCACHE_data -> DCACHE_to_CPU_response [label=3];
+MMU_to_DCACHE_flags -> DCACHE_to_CPU_response [label=3];
+
+DCACHE_to_CPU_response -> teu_loadstore_to_iunit [label=3];
+DCACHE_to_CPU_response -> teu_loadstore_to_fpunit [label=3];
+DCACHE_to_CPU_response -> teu_loadstore_to_cpunit [label=3];
+//DCACHE_to_MMU_addr - > AJIT_to_ENV_addr [label=3];
+}

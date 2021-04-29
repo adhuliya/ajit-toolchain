@@ -1,0 +1,22 @@
+This folder contains simple asm tests for checking I and D caches.
+For running these tests :
+
+1. Compile the processor model with the settings given below.
+(In processor/C/common/include/Ajit_Hardware_Configurations.h )
+	
+	#define USE_DUMMY_MMU		1
+	#define USE_DUMMY_CACHES	0
+	#define ICACHE_ENABLE_CACHING 	1
+	#define DCACHE_ENABLE_CACHING  	1
+	#define ICACHE_NUM_SETS		2
+	#define DCACHE_NUM_SETS		2
+
+
+2. Run do validation script to generate memory map files 
+and run the AJIT vanilla binary with the memory map file 
+so that cache hit/miss information is displayed at the end of simulation.
+Compare the hits/misses with the results given in each *.s file.
+
+Example:
+
+$ AJIT_cpu_cache_mmu_testbench_vanilla compiled/CountHitsMisses/CountHitsMisses.mmap 

@@ -1,0 +1,11 @@
+$system serial_spi_stub $library serial_spi_slave_stub
+   $in 
+    $pipe    ADAPTER_to_SERIAL_SPI_SLAVE
+    $signal  SERIAL_SPI_SLAVE_MOSI
+    $signal  SERIAL_SPI_SLAVE_CLK
+    $signal  SERIAL_SPI_SLAVE_SS_L
+   $out 
+    $pipe    SERIAL_SPI_SLAVE_to_ADAPTER
+    $signal  SERIAL_SPI_SLAVE_MISO
+{ 
+} 

@@ -1,0 +1,20 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+#AHIR related
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+FUNCTIONLIB_INCLUDE = AHIR_RELEASE + "/functionLibrary/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+env.Append(CPPPATH = AJIT_HOME + "/processor/64bit/C/cpu/include:")
+AJIT_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
+env.Append(CPPPATH = AHIR_INCLUDE + ":" +  "./include:")
+
+
+# create a library for monitorLogger
+env.Library("./lib/monitorLogger", Glob ('./src/*.c'), CCFLAGS=" -pthread -g")
+

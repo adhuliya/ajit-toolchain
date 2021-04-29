@@ -1,0 +1,27 @@
+import os
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+env.Append(CPPPATH = './:../../include:../../../common/include:../../../cache/include:')
+
+PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/pipeHandler/include"
+PIPE_HANDLER_LIBPATH = AHIR_RELEASE + "/pipeHandler/lib"
+PTHREAD_UTILS = AHIR_RELEASE + "/pthreadUtils/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":")
+
+
+#float2hex.c
+env.Program('bin/float2hex', './src/float2hex.c', CCFLAGS='-g -DSW',LINKFLAGS='-g ')
+
+#generateMemoryMap_Byte.cpp
+env.Program('bin/generateMemoryMap_Byte', './src/generateMemoryMap_Byte.cpp', CCFLAGS='-g -DSW',LINKFLAGS='-g ')
+
+#generateMemoryMap_Word.cpp
+env.Program('bin/generateMemoryMap_Word', './src/generateMemoryMap_Word.cpp', CCFLAGS='-g -DSW',LINKFLAGS='-g ')
+
+#hex2float.c
+env.Program('bin/hex2float', './src/hex2float.c', CCFLAGS='-g -DSW',LINKFLAGS='-g ')
+
+#calculateBaudControlValues
+env.Program('bin/calculateBaudControlValues', './src/calculateBaudControlValues.c', CCFLAGS='-g -DSW',LINKFLAGS='-g ')

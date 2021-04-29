@@ -1,0 +1,8 @@
+Timer and interrupt controller devices
+
+
+CONTENTS:
+	include	: headers 
+	src	: C files 	
+	lib	: model library gets created here
+	SConscript : build script used by scons

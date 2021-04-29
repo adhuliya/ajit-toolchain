@@ -1,0 +1,8 @@
+SOURCES = PTE_with_ET3_level0.c
+
+INCLUDES = 
+
+RESULTS = 
+
+m[0x00000300]=0x72
+asi=0x00000004

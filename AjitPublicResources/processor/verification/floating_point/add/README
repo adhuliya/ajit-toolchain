@@ -1,0 +1,4 @@
+Floating point add instructions
+==============================
+fadds	=>	floating point add single
+faddd	=>	floating point add double

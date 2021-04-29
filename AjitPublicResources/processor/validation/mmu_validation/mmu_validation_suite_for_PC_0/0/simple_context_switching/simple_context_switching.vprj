@@ -1,0 +1,5 @@
+SOURCES = main.c simple_context_switching.c
+
+RESULTS = 
+g1 = 0xF00
+
