@@ -43,7 +43,7 @@ import string
 import sys
 from data import dict_ld
 from data import dict_st
-with open("ld_st.s", "r") as f:
+with open("main.s", "r") as f:
     code = f.readlines()
     for instr in code:
         inst = instr.rstrip("\n")
@@ -75,20 +75,20 @@ with open("ld_st.s", "r") as f:
                                 print '11' + str(register(data[3])) + item[1] + str(register(data[1])) +'000000000' + str(register(data[2])) 
         for item in lists:
             if item[0] == data[0]: 
-                if (lenght == 5):
+                if (length == 5):
                     imm=data[4].split('x')
                     asi = bin(int(imm[1], 16))[2:].zfill(8)
                     print '11' + str(register(data[1])) + item[1] + str(register(data[2])) + '0' + str(asi) + str(register(data[3])) 
                 elif (length == 3):
                     print '11' + str(register(data[1])) + item[1] + str(register(data[2])) +'00000000000000'
                 elif(length == 4):
-                            if ("x" in data[2]):
-                                if ("A" in data[2]):
-                                    imm=data[2].split('x')
+                            if ("x" in data[3]):
+                                if ("A" in data[3]):
+                                    imm=data[3].split('x')
                                     asi = bin(int(imm[1], 16))[2:].zfill(8)
-                                    print '11' + str(register(data[1])) + item[1] + str(register(data[3])) +'0'+ str(asi)  + '00000'
+                                    print '11' + str(register(data[1])) + item[1] + str(register(data[2])) +'0'+ str(asi)  + '00000'
                                 else:
-                                    imm=data[2].split('x')
+                                    imm=data[3].split('x')
                                     res = bin(int(imm[1], 16))[2:].zfill(13)
                                     print '11' + str(register(data[1])) + item[1] + str(register(data[2])) +'1' + str(res)
                             else:

@@ -79,7 +79,7 @@ import re
 import string
 import sys
 from data import dict_misc
-with open("misc.s", "r") as f:
+with open("main.s", "r") as f:
     code = f.readlines()
     for instr in code:
         inst = instr.rstrip("\n")

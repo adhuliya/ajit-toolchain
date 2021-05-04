@@ -5,7 +5,7 @@ import re
 import string
 import sys
 from data import dict_ct
-with open("control_transfer.s", "r") as f:
+with open("main.s", "r") as f:
     code = f.readlines()
     for instr in code:
         inst = instr.rstrip("\n")
@@ -16,9 +16,9 @@ with open("control_transfer.s", "r") as f:
             an = '1'
         else:
             an ='0'
-
-        conv = str(data[0])
-        data = conv.split(',')
+        if(data[0][0] != 'T'):
+            conv = str(data[0])
+            data = conv.split(',')
 
         if( data[0][0] == 'C'):
             op ='111'
@@ -35,8 +35,8 @@ with open("control_transfer.s", "r") as f:
                             res = bin(int(str(0), 16))[2:].zfill(30)
                             print '01' + str(res)
                         elif("T" in data[0]):
-                            res = bin(int(str(0), 16))[2:].zfill(13)
-                            print '100'+item[1] + '111010' + '000001'+ str(res)
+                            res = bin(int(data[1]))[2:].zfill(7)
+                            print '100'+item[1] + '111010' + '000001000000'+ str(res)
                         else:
                             res = bin(int(str(0), 16))[2:].zfill(22)
                             print '00'+ an  + item[1]+ op  + str(res)

@@ -1,15 +1,7 @@
 import re
 
-#get file object reference to the file
-file = open("ld_st.s", "r")
-#read content of file to string
-data = file.read()
-#get number of occurrences of the substring in the string
-occurrences = data.count("zbytedpos")
-print('Number of occurrences of the word :', occurrences)
-
-with open("data.asm.s", "w") as f1:
-    with open("opcodes.asm.s", "r") as f:
+with open("main.asm.s", "w") as f1:
+    with open("main.asm.s.tmp", "r") as f:
         for lines in f:
             lin=lines.strip("\\n")
             chunks = [lin[i:i+4] for i in range(0, 31, 4)]
