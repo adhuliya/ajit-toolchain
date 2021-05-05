@@ -1,0 +1,17 @@
+Tests for assembler, disaasembler and gdb for all instructions are here.
+The tests are divided into different instruction types, refer paths.ods to check where the tests for each instruction is.
+
+In each directory, the same fromat given below is followed-
+
+1. To run these tests -
+	cd directory
+	source run.sh 
+
+2. The components of each directory -
+	a. data.py - This is a python dictionary, containing a list of all instructions and their corresponding opcodes, and also the number of expected occurences of each intruction after instruction genration.
+	b. coutnt.py - This counts the occurences of all instructions and registers and compares it with the expected output.
+	c. inst_genrate.py -This generates all possible combinations of all instructions given in the data.py dictionary.
+	d. opcodes_generate.py - This reads the .s file and gives the expected object code for all instructions.
+	e. extract.py - This extracts the object code from all the assembled, disassembled and gdb files.
+	f. run.sh - Runs all of the above scripts and compares object codes of all four files ( expected, assembler, disassembler, gdb objectcodes).
+
