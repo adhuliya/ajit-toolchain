@@ -13,6 +13,7 @@ export PATH=$AJIT_PROJECT_HOME/tools/traceCompareServer/bin:$PATH
 export PATH=$AJIT_PROJECT_HOME/tools/genVmapAsm/bin:$PATH
 export PATH=$AJIT_PROJECT_HOME/tools/generateInitVal/bin:$PATH
 export PATH=$AJIT_PROJECT_HOME/tools/vm/bin:$PATH
+export PATH=$AJIT_PROJECT_HOME/simulators/thread_64_aa2c:$PATH
 
 #AHIR-related
 export LD_LIBRARY_PATH=$AHIR_RELEASE/functionLibrary/lib:$LD_LIBRARY_PATH
