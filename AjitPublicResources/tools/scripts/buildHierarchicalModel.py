@@ -253,6 +253,7 @@ def printUsage():
      -u (if uniquification needed)
      -M (if all makefiles needs to be exexcuted)
      -H (if  hsys needs to be expanded)
+     [-J <hsys-file>]*  hsys files to be read before starting walk.
      -C (if  C model needs to be created).
      -D (cc-flags set -gdwarf-2 -g3).
      -O (cc-flags set -O3).
@@ -477,11 +478,13 @@ def main():
     debug_flag = False
     use_gnu_pth = False
 
+    hsys_list = []
+
     uniquify_flag = False
 
     simulator_choice = os.environ.get('AJIT_DEFAULT_VHDL_SIMULATOR')
 
-    opts,args = getopt.getopt(arg_list,'a:I:s:tHCMRDOu')
+    opts,args = getopt.getopt(arg_list,'a:I:s:tHCMRDOuJ:')
     #pdb.set_trace()
     app_name = ""
     c_include_dirs = []
@@ -509,6 +512,9 @@ def main():
         elif option ==  '-H':
            hiersys2c_flag = True
            logInfo("only hsys files will be expanded")
+	elif option == '-J':
+           hsys_list.append(parameter)
+           logInfo("added hsys file " + parameter)
         elif option ==  '-C':
            compile_aa2c_files = True
            logInfo("all aa2c files will be compiled into library")
@@ -555,7 +561,6 @@ def main():
 
     # walk this directory.. note bottom up..
     src_list = []
-    hsys_list = []
 
     # as you walk, execute the makefiles that you
     # see.  This will produce aa2c directories 

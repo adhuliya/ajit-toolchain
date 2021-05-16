@@ -3,8 +3,8 @@
 #include "core_portme.h"
 #include "math.h" 
 
-#define ORDER 1024
-#define REPETITIONS 1024
+#define ORDER 4
+#define REPETITIONS 2
 
 // 
 unsigned int *A = (unsigned int *) 0x40002000; 
@@ -37,7 +37,7 @@ int main()
 {
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
 
-	ee_printf("Start:\n");
+	// ee_printf("Start:\n");
 
 	int I;
 	for(I = 0; I < REPETITIONS; I++)
@@ -46,7 +46,7 @@ int main()
 		writeB();
 		checkA();
 	}
-	ee_printf("done %d\n", I);
+	// ee_printf("done %d\n", I);
 	return (0);
 }
 

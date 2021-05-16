@@ -212,6 +212,7 @@ def help_sec ():
 	print "           The trace file is generated in trace_files/ folder"
 	print "            with extension .long_trace"
 	print "           (CAUTION : A trace file can get very large)"
+	print "      [-E <executable>]:   override the base simulator executable with the one specified"
 	print " ------------------------"
 	print " CLEANUP:"
 	print "      validation_outer_env_v3.py -c PATHS..."
@@ -248,7 +249,7 @@ def main ():
 
 	# options
 	arg_list = sys.argv[1:]
-	opts,args = getopt.getopt(arg_list,'j:t:c,h,A,C,l,s,T,F')
+	opts,args = getopt.getopt(arg_list,'j:t:E:c,h,A,C,l,s,T,F')
 
 	#print " all relative paths = %s" %args
 	if(len(opts)==0 or (opts[0][0]=='-h')):
@@ -269,6 +270,7 @@ def main ():
 	#print "all absolute paths = %s" %args
 
 	
+        executable_path = None
 	for option, parameter in opts : 
 		#print "option = %s" %option; print "parameter = %s" %parameter; print "opts = %s" %opts; print "args = %s" %args; print "arg_list = %s" % arg_list
 		# clear compiled directory
@@ -287,6 +289,9 @@ def main ():
 		if option == '-h' :
 			help_sec ()
 			return 0
+		if option == '-E':
+			executable_path = parameter
+                        print "Info: executable path set to " + executable_path
 						
 		if option == '-j' :
 			jobs = parameter
@@ -316,6 +321,7 @@ def main ():
 	if (not(choice =="-A" or choice=="-C" or choice == "-F")):
 		print "Error : Provide the executable option: '-A' or '-C' or '-F'" 
 		return 1
+
 			
 	if jobs == "" :
 		print "Error in Usage: -j <n-parallel-jobs> not specified."
@@ -325,9 +331,15 @@ def main ():
 		print "Error in Usage: -t <timeout-in-seconds> not specified."
 		return 1
 
+        e_option = " "
+        if executable_path != None:
+                e_option = " -E " + executable_path
+		if not os.path.exists (executable_path):
+			print "Error : terminating validation, cannot find processor executable " + executable_path
+			return 1
 
 	if choice == '-A':
-		if not os.path.exists (path_proc_exec_aa):
+		if (executable_path == None) and not os.path.exists (path_proc_exec_aa):
 			print path_proc_exec_aa
 			print "Error : terminating validation, cannot find processor executable " + path_proc_exec_aa
 			return 1
@@ -335,8 +347,8 @@ def main ():
 		srch_file = path_src_file_list_file_Aa
 		terminal_log = path_term_log_Aa
 
-	if choice == '-F':
-		if not os.path.exists (path_proc_exec_FPGA):
+	elif choice == '-F':
+		if (executable_path == None) and not os.path.exists (path_proc_exec_FPGA):
 			print path_proc_exec_FPGA
 			print "Error : terminating validation, cannot find processor executable " + path_proc_exec_FPGA
 			return 1
@@ -344,8 +356,8 @@ def main ():
 		srch_file = path_src_file_list_file_FPGA
 		terminal_log = path_term_log_FPGA
 	
-	if choice == '-C':
-		if not os.path.exists (path_proc_exec_C):
+	elif choice == '-C':
+		if (executable_path == None) and not os.path.exists (path_proc_exec_C):
 			print path_proc_exec_C
 			print "Error : terminating validation, cannot find processor executable " + path_proc_exec_C
 			return 1
@@ -388,7 +400,7 @@ def main ():
 	jobs = str(jobs)		
 
 	os.system ("time " + "parallel --gnu " + "--timeout " + timeout + " --joblog " + joblog + " -j" + jobs 
-	+ " -a " + srch_file + " python " + path_validation_inner + " " + choice + " " + trace_option + " " + single_stepping_enabled + " "  + generate_detailed_trace + " 2>&1 |" + " tee " + terminal_log)
+	+ " -a " + srch_file + " python " + path_validation_inner + " " + choice + e_option + trace_option + " " + single_stepping_enabled + " "  + generate_detailed_trace + " 2>&1 |" + " tee " + terminal_log)
 	
 
 	# calculate run time and failed cases from

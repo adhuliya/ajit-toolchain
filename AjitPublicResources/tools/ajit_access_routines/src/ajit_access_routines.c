@@ -56,6 +56,32 @@ inline void __ajit_clear_all_gp_registers__()
 }
 
 //
+// This reads the contents of ASR-29.  The four bytes in the
+// return value are
+//  MSB                     LSB
+//  0x52  0x50  <core-id> <thread-id>
+//
+// If the first two bytes are not as indicated, this feature
+// is not supported in the CPU/thread.
+//
+inline uint32_t __ajit_read_core_thread_id_word__()
+{
+        uint32_t retval;
+        __asm__ __volatile__("rd %%asr29, %0 " :  "=r" (retval) : );
+	return(retval);
+}
+
+//
+//  returns core-id and thread-id of the current core.
+//
+void ajit_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id)
+{
+	uint32_t rval = __ajit_read_core_thread_id_word__();
+	*core_id = (rval >> 8) & 0xff;
+	*thread_id = (rval & 0xff);	
+}
+
+//
 // cycle_count_register is ASR30 && ASR31
 //    (the processor has a 64-bit cycle counter which starts
 //      at reset and increments every clock cycle.  The

@@ -24,17 +24,7 @@ import shutil
 import getopt
 import os.path
 import subprocess
-
-
-ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
-validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
-validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
-
-
-# give path of processor executable
-path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
-path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
-path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_vhdl_sim_testbench"
+import pdb
 
 
 # get current directory path
@@ -46,6 +36,21 @@ current_dir = os.getcwd()
 #replace this with a nop
 import fileinput
 import re
+
+ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
+validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
+validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
+
+def setGlobals():
+
+   global path_proc_exec_aa 
+   global path_proc_exec_C 
+   global path_proc_exec_FPGA
+
+   path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
+   path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
+   path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_vhdl_sim_testbench"
+
 def replaceSaveInstructionWithNop(mem_map_file):
 	replaced=False
 	for line in fileinput.input(mem_map_file, inplace=True):
@@ -70,7 +75,7 @@ def execSysCommand(cmd):
 	ret_val = os.system(cmd)
         return(ret_val);
 
-def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace, test_file_string, include_string, result_file, log_file, trace_file, path_test_file_fold, path_srch_file, define_string, enable_reg_write_trace, reg_write_trace):
+def validate (exec_path, fileName, choice, single_stepping_enabled, generate_detailed_trace, test_file_string, include_string, result_file, log_file, trace_file, path_test_file_fold, path_srch_file, define_string, enable_reg_write_trace, reg_write_trace):
 	
 
 	if (generate_detailed_trace == '-T'):
@@ -112,7 +117,7 @@ def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace
 
 	#Aa model
 	if (choice == '-A') :
-		proc_exec = path_proc_exec_aa
+		proc_exec = exec_path
         	if(enable_reg_write_trace):
 		    	print  "Note: executing " + proc_exec + " -d -m " + mem_map_file + " -r " + result_file + " -l " + log_file + " " + trace_option + " " + trace_file + " -w " + aa_reg_write_trace + " " + single_stepping_enabled 
 		    	return_val = subprocess.call ([proc_exec, "-d",  "-m", mem_map_file, "-r", result_file, "-l", log_file, trace_option, trace_file, "-w", aa_reg_write_trace,single_stepping_enabled])
@@ -121,7 +126,7 @@ def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace
 		    	return_val = subprocess.call ([proc_exec, "-d", "-m", mem_map_file, "-r", result_file, "-l", log_file, trace_option, trace_file,single_stepping_enabled])
 	
 	if (choice == '-F') :
-		proc_exec = path_proc_exec_FPGA
+		proc_exec = exec_path
         	if(enable_reg_write_trace):
 		    	print  "Note: executing " + proc_exec + " -M -F -d -m " + mem_map_file + " -r " + result_file + " -l " + log_file + " " + trace_option + " " + trace_file + " -w " + aa_reg_write_trace + " " + single_stepping_enabled 
 		    	return_val = subprocess.call ([proc_exec, "-M", "-F", "-d",  "-m", mem_map_file, "-r", result_file, "-l", log_file, trace_option, trace_file, "-w", aa_reg_write_trace,single_stepping_enabled])
@@ -135,7 +140,7 @@ def validate (fileName, choice, single_stepping_enabled, generate_detailed_trace
 		trace_file=""
 		if(generate_detailed_trace):
 			trace_option ="-v" #the verbose flag enables creation of a long trace in the C model.
-		proc_exec = path_proc_exec_C
+		proc_exec = exec_path
         	if(enable_reg_write_trace):
 		    	print  "Note: executing " + proc_exec + " -d -m -u 64 " + mem_map_file + " -r " + result_file + " -l " + log_file + " " + trace_option + " " + trace_file + " -w " + C_reg_write_trace + " "
 		    	return_val = subprocess.call ([proc_exec, "-d", "-u", "64", "-m", mem_map_file, "-r", result_file, "-l", log_file, trace_option, trace_file, "-w", C_reg_write_trace])
@@ -227,6 +232,8 @@ def get_test_file (path_srch_file) :
 	
 def main ():
 
+	setGlobals()
+
 	# options
 	generate_detailed_trace = ""
 	single_stepping_enabled = ""
@@ -236,8 +243,10 @@ def main ():
     	generate_trace = 0
 	
 	arg_list = sys.argv[1:]
-	opts,args = getopt.getopt(arg_list,'A,C,F,l,s,T')
+	opts,args = getopt.getopt(arg_list,'E:A,C,F,l,s,T')
 	
+        exec_path = None
+        choice  = None
 	for option, parameter in opts :
 		if   option == '-T' :
 			generate_detailed_trace = option
@@ -245,9 +254,29 @@ def main ():
 			single_stepping_enabled = option
 	        elif option == '-l' :
         		generate_trace = 1
-        	else:
-			if(option != '-l'):
-				choice = option
+	        elif option == '-E' :
+			exec_path = parameter
+                        print "Info: override execution path to " + parameter
+		elif option == '-A':
+                     	choice = option 
+		elif option == '-C':
+                     	choice = option 
+		elif option == '-F':
+                     	choice = option 
+
+        if(choice == None):
+		print "ERROR : -A/-C/-F option not provided"
+		return 1
+
+        if(exec_path == None):
+           if(choice == '-A'):
+	      exec_path = path_proc_exec_aa 
+           elif (choice == '-C'):
+	      exec_path = path_proc_exec_C 
+           elif (choice == '-F'):
+	      exec_path = path_proc_exec_FPGA 
+
+        print "Info: execution path is " + exec_path
 
 	path_srch_file = args[0]
 	
@@ -327,7 +356,7 @@ def main ():
 	
 	print "Note: vprj %s has test files : %s" %(path_srch_file, test_file)
 	
-	return_val = validate (fileName, choice, single_stepping_enabled, generate_detailed_trace, test_file_string, include_string, path_result_file, 
+	return_val = validate (exec_path, fileName, choice, single_stepping_enabled, generate_detailed_trace, test_file_string, include_string, path_result_file, 
 	path_log_file, path_trace_file, path_test_file_fold, path_srch_file, define_string, generate_trace, path_reg_write_trace_file);
 
 	if (return_val > 255):

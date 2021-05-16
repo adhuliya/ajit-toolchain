@@ -167,18 +167,15 @@ void initCache (WriteThroughAllocateCache* c)
 	pthread_mutex_init (&(c->cache_mutex), NULL);
 }
 
+// invalidate the line at the specified index.
 void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address)
 {
 	c->number_of_invalidate_requests++;
 	int I = (va_line_address % c->number_of_lines);
 	if(c->cache_lines[I].valid)
 	{
-		uint32_t va_tag = (va_line_address >> c->log_number_of_lines);
-		if(c->cache_lines[I].va_tag == va_tag)
-		{
-			c->cache_lines[I].valid = 0;
-			c->number_of_invalidates++;
-		}	
+		c->cache_lines[I].valid = 0;
+		c->number_of_invalidates++;
 	}
 }
 

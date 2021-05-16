@@ -6,33 +6,33 @@ env = Environment(ENV = {'PATH' : os.environ['PATH']})
 
 #AHIR-related
 AHIR_RELEASE=os.environ['AHIR_RELEASE']
-AJIT_PROJECT_HOME=os.environ['AJIT_PROJECT_HOME']
 AHIR_INCLUDE=AHIR_RELEASE+"/include"
 AHIR_LIBPATH=AHIR_RELEASE + "/lib"
 FUNCTIONLIB_INCLUDE = AHIR_RELEASE + "/functionLibrary/include"
 FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
-AA_HOME=AJIT_PROJECT_HOME + "/processor/Aa_v3"
-C_64_HOME=AJIT_PROJECT_HOME + "/processor/64bit/C_multi_core_multi_thread"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+AA_HOME=AJIT_HOME + "/processor/Aa_v3"
+C_64_HOME=AJIT_HOME + "/processor/64bit/C_multi_core_multi_thread"
 DOVAL_HOME=C_64_HOME+"/debugger/doval/lib"
-ANTLR_PATH = AJIT_PROJECT_HOME +  "/tools/antlr3Cruntime/build/lib"
+ANTLR_PATH = AJIT_HOME +  "/tools/antlr3Cruntime/build/lib"
 
 
-env.Append(CPPPATH = AJIT_PROJECT_HOME + '/os/kernels/pico/include:')
-DEBUG_UTILS_INCLUDE=AJIT_PROJECT_HOME + '/processor/TestEnvironments/debug_utils/include'
-DEBUG_UTILS_LIB=AJIT_PROJECT_HOME + '/processor/TestEnvironments/debug_utils/lib'
+env.Append(CPPPATH = AJIT_HOME + '/os/kernels/pico/include:')
+DEBUG_UTILS_INCLUDE=AJIT_HOME + '/processor/TestEnvironments/debug_utils/include'
+DEBUG_UTILS_LIB=AJIT_HOME + '/processor/TestEnvironments/debug_utils/lib'
 env.Append(CPPPATH = DEBUG_UTILS_INCLUDE + ":./src/:")
 
-UART_LIB=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/lib"
-UART_INCLUDE=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/include"
+UART_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/lib"
+UART_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/include"
 
-CONSOLE_INCLUDE=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/console/include"
-CONSOLE_LIB=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
+CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
+CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
 
-CHARSERVER_LIB=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
-CHARSERVER_INCLUDE=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
+CHARSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
+CHARSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
 
-DEBUGSERVER_LIB=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/debugServerMultiThread/lib"
-DEBUGSERVER_INCLUDE=AJIT_PROJECT_HOME+"/processor/TestEnvironments/core_environment/debugServerMultiThread/include"
+DEBUGSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServerMultiThread/lib"
+DEBUGSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServerMultiThread/include"
 
 env.Append(CPPPATH = AHIR_INCLUDE + ":")
 env.Append(CPPPATH = C_64_HOME + "/cpu/include:")
@@ -42,7 +42,7 @@ env.Append(CPPPATH = CONSOLE_INCLUDE + ":")
 env.Append(CPPPATH = CHARSERVER_INCLUDE + ":")
 
 # debug infrastructure..
-env.Append(CPPPATH = C_64_HOME + "/debugger/doval/include:" + AJIT_PROJECT_HOME + "/tools/antlr3Cruntime/build/include:" + C_64_HOME + "/debugger/spi_common/include:" + C_64_HOME + "/debugger/gpb/include:" )
+env.Append(CPPPATH = C_64_HOME + "/debugger/doval/include:" + AJIT_HOME + "/tools/antlr3Cruntime/build/include:" + C_64_HOME + "/debugger/spi_common/include:" + C_64_HOME + "/debugger/gpb/include:" )
 env.Append(CPPPATH = C_64_HOME + "/tlbs/include/")
 
 

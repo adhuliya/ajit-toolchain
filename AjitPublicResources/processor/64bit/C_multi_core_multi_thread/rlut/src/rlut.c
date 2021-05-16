@@ -46,6 +46,29 @@ int myLog2(int x)
 	return(ret_val);
 }
 
+
+// Technically, there is no reason to keep the entire
+// VA line address in the RLUT.  We know that bits [5:0] of
+// the VA line address are the same as the PA to which it
+// is mapped.
+uint32_t reduceVaLineAddr(uint32_t va_line_addr)
+{
+	// data_width should be 3 for 512 line cache.
+	int data_width = ((LOG_CACHE_SIZE + LOG_CACHE_LINE_SIZE) - LOG_BASE_PAGE_SIZE);
+	uint32_t ret_val = (va_line_addr >> (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)) & ((1 << data_width)  - 1);
+	return(ret_val);
+}
+
+
+// Given bits [8:6] of the VA, the line address is obatined by concatenating
+// bits [5:0] of the PA line address to them.
+uint32_t reconstructVaLineAddr(uint32_t pa_line_addr, uint32_t reduced_va_line_addr)
+{
+	uint32_t ret_val = (reduced_va_line_addr << (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE));
+	ret_val = ret_val | (pa_line_addr & ((1 << (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE))-1));
+	return(ret_val);
+}
+
 					
 	
 uint32_t generateTag(Rlut* r, uint32_t pa_line_addr)
@@ -74,7 +97,8 @@ void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines)
 	int mem_size   = cache_size_in_lines;
 	int set_size   = cache_size_in_lines * CACHE_LINE_SIZE / BASE_PAGE_SIZE;
 	int tag_width  = (PHYSICAL_ADDR_WIDTH - LOG_CACHE_LINE_SIZE) - myLog2(set_size);
-	int data_width = (VIRTUAL_ADDR_WIDTH - LOG_CACHE_LINE_SIZE);
+	int data_width = ((LOG_CACHE_SIZE + LOG_CACHE_LINE_SIZE) - LOG_BASE_PAGE_SIZE);
+
 	r->pa_tlb      = findOrAllocateSetAssociativeMemory((is_icache ? 9 : 10),
 									tag_width, 
 									data_width, 
@@ -119,13 +143,16 @@ uint32_t lookupAndUpdateRlut(Rlut* r, uint32_t pa_line_addr, uint32_t va_line_ad
 	uint32_t pa_tag = generateTag(r, pa_line_addr);
 	uint32_t pa_set_id = generateSetIndex(r, pa_line_addr);
 
+	uint32_t va_reduced = reduceVaLineAddr (va_line_addr);
+
 	uint8_t hit = 0;
 	uint64_t hit_va_64 = 0;
+
 	operateOnSetAssociativeMemory (r->pa_tlb,
 					0, // clear
 					0, // erase
 					1,  // write
-					va_line_addr,
+					va_reduced,
 					pa_tag,
 					pa_set_id,
 					1,  // lookup
@@ -137,9 +164,9 @@ uint32_t lookupAndUpdateRlut(Rlut* r, uint32_t pa_line_addr, uint32_t va_line_ad
 	uint32_t hit_va = hit_va_64;
 
 	uint32_t ret_val = 0;
-	if(hit && (hit_va != va_line_addr))
+	if(hit && (hit_va != va_reduced))
 	{
-		ret_val = (hit ? ((hit << 31) | hit_va) : 0);
+		ret_val = (hit ? ((hit << 31) | reconstructVaLineAddr(pa_line_addr, hit_va)) : 0);
 		r->number_of_synonym_invalidates += 1;
 #ifdef DEBUG
 		fprintf(stderr,"Info: Synonym invalidate.  for pa=0x%x va=0x%x hit_va=0%x\n", 
@@ -178,14 +205,14 @@ uint32_t lookupRlut(Rlut* r, uint32_t pa_line_addr)
 					&hit_va_64);
 					
 	uint32_t hit_va = hit_va_64;
-	uint32_t ret_val = (hit ? ((hit << 31) | hit_va) : 0);
+	uint32_t ret_val = (hit ? ((hit << 31) | reconstructVaLineAddr(pa_line_addr, hit_va)) : 0);
 
 	if(hit)
 	{
 #ifdef DEBUG
 		fprintf(stderr,"Info: Coherence invalidate.  for pa=0x%x  hit_va=0%x\n", 
 						pa_line_addr << 6, 
-						hit_va << 6);
+						reconstructVaLineAddr(pa_line_addr, hit_va);
 #endif
 		r->number_of_coherency_invalidates += 1;
 	}

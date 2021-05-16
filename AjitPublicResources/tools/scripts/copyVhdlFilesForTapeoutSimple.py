@@ -141,6 +141,7 @@ def printUsage(app_name):
     print app_name + ''' 
      -r <root-directory>  (to start search for VHDL files)
      -o <output-directory> (destination for VHDL files)
+     [-l <vhdl-lib>] (optional: only VHDL files in library vhdl-lib will be copied.
      -s  (do-not-print chip-top file).
           '''
 def main():
@@ -160,9 +161,10 @@ def main():
 
     arg_list = sys.argv[1:]
 
+    selected_vhdl_lib = None
     output_directory = "./"
     root_directory = "./"
-    opts,args = getopt.getopt(arg_list,'r:o:s')
+    opts,args = getopt.getopt(arg_list,'r:o:sl:')
     app_name = ""
     c_include_dirs = []
     cc_flags =  " "
@@ -177,6 +179,9 @@ def main():
         elif option ==  '-s':
            print_chip_with_io = False
            logInfo("turn off printing chip with io")
+        elif option == '-l':
+           selected_vhdl_lib = parameter
+           logInfo("only files in library " + selected_vhdl_lib + " will be copied." )
  	else:
 	   logError("unknown-option " + option)
 	   return 1
@@ -194,23 +199,23 @@ def main():
     # 0 = success.
     ret_status  = 0
 
-    # first the libraries nned to be cleaned up and copied.
-    aieee_cpy_cmd = "cp " + ahir_release + "/vhdl/aHiR_ieee_proposed.vhdl " + output_directory  + "/aHiR_ieee_proposed.vhdl"
-    execSysCmd (aieee_cpy_cmd)
+    if (selected_vhdl_lib == None):
+       # first the libraries nned to be cleaned up and copied.
+       aieee_cpy_cmd = "cp " + ahir_release + "/vhdl/aHiR_ieee_proposed.vhdl " + output_directory  + "/aHiR_ieee_proposed.vhdl"
+       execSysCmd (aieee_cpy_cmd)
 
-    sed_cmd = "sed_synopsys_sync_set_reset.sh " + ahir_release + "/vhdl/ahirForAsic.umc65.vhdl " + output_directory + "/ahirASIC.vhdl"
-    execSysCmd (sed_cmd)
+       sed_cmd = "sed_synopsys_sync_set_reset.sh " + ahir_release + "/vhdl/ahirForAsic.umc65.vhdl " + output_directory + "/ahirASIC.vhdl"
+       execSysCmd (sed_cmd)
 
-    sal_cpy_cmd = "cp " + ajit_project_home + "/processor/vhdl/lib/simpleUartLib.vhdl " + output_directory + "/simpleUartLib.vhdl"
-    execSysCmd (sal_cpy_cmd)
+       sal_cpy_cmd = "cp " + ajit_project_home + "/processor/vhdl/lib/simpleUartLib.vhdl " + output_directory + "/simpleUartLib.vhdl"
+       execSysCmd (sal_cpy_cmd)
 
-    ac_cpy_cmd = "sed_synopsys_sync_set_reset.sh " + ajit_project_home + "/processor/vhdl/lib/AjitCustomForAsic.vhdl " + output_directory + "/AjitCustomForAsic.vhdl"
-    execSysCmd (ac_cpy_cmd)
+       ac_cpy_cmd = "sed_synopsys_sync_set_reset.sh " + ajit_project_home + "/processor/vhdl/lib/AjitCustomForAsic.vhdl " + output_directory + "/AjitCustomForAsic.vhdl"
+       execSysCmd (ac_cpy_cmd)
+    
 
 
-    # as you walk, execute the makefiles that you
-    # see.  This will produce aa2c directories 
-    # and also hsys files.
+    # walk and copy.
     for root, dirs, files in os.walk(root_directory, topdown=False, followlinks=True):
         for name in dirs:
            if(name == "vhdl"):
@@ -221,11 +226,12 @@ def main():
                      for vhdl_file in os.listdir(vhdl_lib_dir):
                         root, ext = os.path.splitext(vhdl_file) 
                         if((ext == ".vhdl") and (not "_test_bench" in root)):
-                            full_vhdl_file_path = os.path.join(vhdl_lib_dir, vhdl_file)
-                            cp_cmd = "cp " + full_vhdl_file_path + " " + output_directory + "/"
-                            execSysCmd (cp_cmd)
-                            # vhdl libraries. 
-			    print >> vhdl_lib_file, vhdl_lib + "\t\t" + vhdl_file 
+                            if ((selected_vhdl_lib == None) or (selected_vhdl_lib == vhdl_lib)):
+                               full_vhdl_file_path = os.path.join(vhdl_lib_dir, vhdl_file)
+                               cp_cmd = "cp " + full_vhdl_file_path + " " + output_directory + "/"
+                               execSysCmd (cp_cmd)
+                               # vhdl libraries. 
+			       print >> vhdl_lib_file, vhdl_lib + "\t\t" + vhdl_file 
                  
     
     command_log_file.close()
