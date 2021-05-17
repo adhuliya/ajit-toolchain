@@ -1,0 +1,12 @@
+SOURCES = vfmul.s
+
+RESULTS =
+f0=0x40000000
+f1=0x40000000
+f2=0x3c663c66
+f3=0x3c663c66
+f4=0x400ccccc
+f5=0x400ccccc
+f6=0x40660000
+f7=0x40660000
+
