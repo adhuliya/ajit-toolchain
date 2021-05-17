@@ -1,4 +1,0 @@
-SConscript(['misc/SConscript'])
-SConscript(['traceCompareServer/SConscript'])
-SConscript(['generateInitVal/SConscript'])
-SConscript(['genVmapAsm/SConscript'])

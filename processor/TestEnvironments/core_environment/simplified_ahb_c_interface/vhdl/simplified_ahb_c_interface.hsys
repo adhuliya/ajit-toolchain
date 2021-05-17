@@ -1,7 +1,0 @@
-$system simplified_ahb_c_interface $library simplified_ahb_c_interface_
-   $in 
-    $pipe  AFB_TO_AHB_COMMAND
-   $out 
-    $pipe  AHB_TO_AFB_RESPONSE
-{ 
-} 

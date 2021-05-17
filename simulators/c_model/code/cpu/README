@@ -1,8 +1,0 @@
-This folder contains the C model of the Sparc V8 cpu.
-
-CONTENTS:
-	docs	: documentation for the cpu model
-	include	: headers for cpu  model
-	src	: C files for the cpu model	
-	lib	: cpu model library gets created here
-	SConscript : build script used by scons

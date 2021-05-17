@@ -1,8 +1,0 @@
-run compile_for_ajit.sh to produce mmap file.
-Then run the mmap file on the processor.  Note 
-that there is no need for vmap.txt here, since
-there is no data section.
-
- ajit_C_system_model -m bootstrap.mmap
-
-

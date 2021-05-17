@@ -1,5 +1,0 @@
-run_test_failing.sh
-	run this script to mimic a failing case.
-
-run_test_passing.sh
-	run this script to mimic a passing case.

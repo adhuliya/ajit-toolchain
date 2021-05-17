@@ -1,7 +1,0 @@
-$system interrupt_stub  $library chip_interrupt_stub 
-	$in 
-		$signal INTR
-	$out 
-		$signal ENV_to_AJIT_irl
-{
-}

@@ -1,4 +1,0 @@
-import os
-
-os.system("export CLASSPATH=.:$AJIT_PROJECT_HOME/tools/antlr3Cruntime/antlrworks-1.4.3.jar ; java org.antlr.Tool -fo ../src ajit_validation.g")
-os.system("mv ../src/*.h ../include/")

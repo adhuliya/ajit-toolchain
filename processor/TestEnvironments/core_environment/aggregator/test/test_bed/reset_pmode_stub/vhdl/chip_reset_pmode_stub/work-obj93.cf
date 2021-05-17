@@ -1,4 +1,0 @@
-v 3
-file . "reset_pmode_stub.vhdl" "20161209210717.000" "20161210023718.196":
-  entity reset_pmode_stub at 1( 0) + 0 on 11;
-  architecture behave of reset_pmode_stub at 25( 806) + 0 on 12;

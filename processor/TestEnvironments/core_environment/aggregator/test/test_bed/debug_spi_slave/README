@@ -1,5 +1,0 @@
-a plug to connect the 32-bit debug pipes to a slave SPI
-interface
-
-	Note: the plug will only accept hex-coded data
-		(ie each transferred byte will be represented by two hex characters)

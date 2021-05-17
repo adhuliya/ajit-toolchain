@@ -1,8 +1,0 @@
-This folder contains the debugging support files for the C model of the Sparc V8 cpu.
-AUTHOR 	: Titto Thomas
-CONTENTS:
-	hwServer	: Files related to the hardware server implementation
-	gpb		: Files related to the gdb to processor bridge implementation
-	doval		: Files related to validation script
-	spi_common	: Common files for software to Ajit processor interface
-	docs	: Design documents of the debugger and the user manual

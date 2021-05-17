@@ -1,6 +1,0 @@
-import os
-import sys
-env = Environment(ENV = {'PATH' : os.environ['PATH']})
-env.Program('./bin/genInitValPackFromMemmap', './src/generateInitValPack.c', CCFLAGS = ' -g ')
-env.Program('./bin/genInitValPackFromMemmapU64', './src/generateInitValPackU64.c', CCFLAGS = ' -g ')
-env.Program('./bin/convertMemmapToIntBitVectorForm', './src/convertMemmapToIntBitVectorForm.c')

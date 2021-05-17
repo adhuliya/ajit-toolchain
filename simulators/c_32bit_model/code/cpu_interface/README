@@ -1,7 +1,0 @@
-Interfecase used by the C model of the cpu
-
-CONTENTS:
-	include	: headers for cpu  model interface
-	src	: C files for the cpu model interface
-	lib	: library gets created here
-	SConscript : build script used by scons

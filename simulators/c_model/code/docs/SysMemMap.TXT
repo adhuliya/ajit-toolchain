@@ -1,6 +1,0 @@
-0x0          0x400000          SYSMEM   FLASH
-0x400000     0x800000          SYSMEM   RAM
-0xffff0000   0xffff0ffc        PERIPH   SERIAL
-0xffff1000   0xffff1ffc        PERIPH   TIMER
-...etc....
-
