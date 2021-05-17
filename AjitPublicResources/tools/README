@@ -1,0 +1,66 @@
+Contents
+	ajit_access_routines/
+		AJIT access routines first version.   For the single
+		core case.
+
+	ajit_access_routines_mt/
+		AJIT access routines second version.   For the multi-core
+		case.  The major difference is the device memory mapping.
+
+	ajit_debug_monitor_mt/
+		Multi-core Multi-thread debug monitor.
+
+	antlr3Cruntime/
+		antlr3c distrib.
+
+	buildroot/
+		downloaded build root stuff.
+	cross-compiler
+		cross compilers
+	deviceTreeCompiler
+		device tree compiler.
+
+	docs/
+	
+	flash_image/
+		flash boot image generation utils.
+
+	gdb/
+		gdb scripts to help in debugging
+		aa2c
+
+	generateInitVal/
+		generation of initial value packages
+		from memory maps (for VHDL sims).
+
+	genVmapAsm/
+		Static page table creation..
+
+	glibc/
+		glibc port..  not used any more.
+	
+	linker/
+		reference linker scripts. 	
+
+	minimal_printf_timer/
+		clock and print routines for use
+		in programs 
+
+	misc/
+		Some useful utilities.
+
+	openbios/
+		firmware options... not explored.
+
+	pyelftools-0.25/
+		for compilation scripts.
+
+	qemu/
+		not used 
+
+	scripts/
+		lots of important scripts of all kinds.
+
+
+	traceCompareServer/
+		useful once maybe again....

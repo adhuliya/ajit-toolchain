@@ -1,0 +1,3 @@
+The AJIT access routines for multi-core allow for
+a richer combination of devices than the single core
+case.

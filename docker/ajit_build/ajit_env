@@ -12,7 +12,9 @@
 ## START: SETUP_BASE_PATHS
 ################################################################
 export AJIT_AHIR_DIR="$AJIT_HOME/ahir_release";
-export AJIT_TOOLS_DIR="$AJIT_HOME/tools";
+export AJIT_TOOLS_DIR="$AJIT_HOME/AjitPublicResources/tools";
+export AJIT_SCRIPTS_DIR="$AJIT_HOME/AjitPublicResources/tools/scripts";
+
 export AJIT_TESTS_DIR="$AJIT_HOME/tests";
 export AJIT_DEV_TREE_COMPILER_DIR="$AJIT_TOOLS_DIR/deviceTreeCompiler";
 
@@ -50,7 +52,7 @@ popd &> /dev/null;
 # for: sparc-linux-gcc, sparc-linux-readelf, ...
 export PATH=$AJIT_BUILDROOT_BIN_DIR:$PATH;
 # for: compileToSparc.py, pt_load_sections.py, ...
-export PATH=$AJIT_TOOLS_DIR/scripts:$PATH;
+export PATH=$AJIT_SCRIPTS_DIR:$PATH;
 # for: generateMemoryMap_Byte
 export PATH=$AJIT_TOOLS_DIR/misc/bin:$PATH;
 # for: remapMemmap
@@ -110,7 +112,7 @@ export AJIT_TOOLS_RELEASE=$(pwd)
 export AJIT_C_REF_MODEL=$AJIT_CMODEL_DIR;
 
 # compileToSparc.py needs these to be defined.
-export AJIT_PROJECT_HOME=$AJIT_HOME;
+export AJIT_PROJECT_HOME=$AJIT_HOME/AjitPublicResources;
 export AJIT_PROJECT_CROSS_COMPILER=sparc-linux
 #export AJIT_GLIBC_INSTALL_DIR=/usr/local/ajit_release/tools/glibc
 export AJIT_GLIBC_INSTALL_DIR=$(pwd)/tools/glibc

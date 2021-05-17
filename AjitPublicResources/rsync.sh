@@ -3,4 +3,5 @@ rsync -avz $AJIT_PROJECT_HOME/processor/64bit/C_multi_core_multi_thread processo
 rsync -avz $AJIT_PROJECT_HOME/processor/TestEnvironments processor/   --exclude "*.o" --exclude ".a" 
 rsync -avz $AJIT_PROJECT_HOME/processor/verification processor/   --exclude "*.o" --exclude ".a" 
 rsync -avz $AJIT_PROJECT_HOME/processor/validation  processor/   --exclude "*.o" --exclude ".a" 
+rsync -avz $AJIT_PROJECT_HOME/processor/C_reference_model processor/  --exclude "*.o" --exclude ".a" 
 rsync -avz $AJIT_PROJECT_HOME/os/kernels/pico os/kernels/  --exclude "*.o" --exclude ".a" 
