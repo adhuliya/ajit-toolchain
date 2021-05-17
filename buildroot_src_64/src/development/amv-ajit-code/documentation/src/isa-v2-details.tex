@@ -1,0 +1,1017 @@
+\subsection{Integer-Unit Extensions: Arithmetic-Logic Instructions}
+\label{sec:integer-unit-extns:arith-logic-insns}
+
+
+
+These  instructions provide  64-bit  arithmetic/logic  support in  the
+integer unit.  The instructions work  on 64-bit register pairs in most
+cases.  Register-pairs are  identified by a 5-bit  even number (lowest
+bit     must     be     0).      See     Tables~\ref{tab:arith:insns},
+\ref{tab:shift:insns},            \ref{tab:muldiv:insns}           and
+\ref{tab:64bit:logical:insns}.
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|l|l|}
+    \hline
+\multicolumn{2}{|l|}{	\textbf{ADDD}			} \\ 
+\hline
+ 		  same as ADD, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) + rs2(pair)\\
+\hline
+\hline
+\multicolumn{2}{|l|}{	\textbf{ADDDCC}} \\ 
+\hline
+ 		  same as ADDCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) + rs2(pair), set Z,N\\
+\hline
+\hline
+\multicolumn{2}{|l|}{	\textbf{SUBD}} \\ 
+\hline
+ 		  same as SUB, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) - rs2(pair)\\
+\hline
+\hline
+\multicolumn{2}{|l|}{	\textbf{SUBDCC}} \\ 
+\hline
+ 		  same as SUBCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) - rs2(pair), set Z,N\\
+\hline
+  \end{tabular}
+  \caption{Addition and Subtraction Instructions}
+  \label{tab:arith:insns}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{	\textbf{SLLD}} \\ 
+ \hline 
+    Same as SLL, but with Instr[7:6]=2.
+    If imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount,
+    else shift-amount is the lowest 6 bits of rs2. Note that rs2
+    is a 32-bit register. & 
+    rd(pair) $\leftarrow$  rs1(pair) $<<$ shift-amount\\
+\hline
+\hline
+\multicolumn{2}{|l|}{	\textbf{SRLD}} \\ 
+ \hline 
+    Same as SRL, but with Instr[7:6]=2.
+    If imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount,
+    else shift-amount is the lowest 6 bits of rs2. Note that rs2
+    is a 32-bit register. & 
+    rd(pair) $\leftarrow$  rs1(pair) $>>$ shift-amount\\
+\hline
+\hline
+\multicolumn{2}{|l|}{	\textbf{SRAD}} \\ 
+ \hline 
+    Same as SRA, but with Instr[7:6]=2.
+    If imm bit (Instr[13]) is 1, then Instr[5:0] is the shift-amount,
+    else shift-amount is the lowest 6 bits of rs2. Note that rs2
+    is a 32-bit register. & 
+    rd(pair) $\leftarrow$  rs1(pair) $>>$ shift-amount (with sign extension).\\
+\hline
+  \end{tabular}
+  \caption{Shift instructions}
+  \label{tab:shift:insns}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{	UMULD}} \\ 
+ \hline 
+ 		  same as UMUL, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair)\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	UMULDCC}} \\ 
+ \hline 
+ 		  same as UMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair), sets Z,\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	SMULD}} \\ 
+ \hline 
+ 		  same as SMULD, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) * rs2(pair) (signed)\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	SMULDCC}} \\ 
+ \hline 
+ 		  same as SMULCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) *
+                  rs2(pair) (signed)\\	sets condition codes Z,N,Ovflow}\\ 
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	UDIVD}} \\ 
+ \hline 
+ 		  same as UDIV, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
+                 rs2(pair)\\
+    \textbf{Note:} can generate div-by-zero trap.}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	UDIVDCC}} \\ 
+ \hline 
+ 		  same as UDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
+                 rs2(pair),\\ sets condition codes Z,Ovflow \\ \textbf{Note:} can generate div-by-zero trap.}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	SDIVD}} \\ 
+ \hline 
+ 		  same as SDIV, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		rd(pair) $\leftarrow$ rs1(pair) / rs2(pair) (signed)\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	SDIVDCC}} \\ 
+ \hline 
+ 		  same as SDIVCC, but with Instr[13]=0 (i=0), and Instr[5]=1. & 
+ 		\parbox{\linewidth}{rd(pair) $\leftarrow$ rs1(pair) /
+                  rs2(pair) (signed),\\ sets condition codes
+                  Z,N,Ovflow,\\ \textbf{Note:} can generate
+                  div-by-zero trap.}\\ 
+\hline
+  \end{tabular}
+  \caption{Multiplication and Division Instructions}
+  \label{tab:muldiv:insns}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{	ORD}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as OR, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ rs2(pair)}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ORDCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ rs2(pair),\\ sets Z.}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ORDN}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ORN, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ ($\sim$rs2(pair))}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ORDNCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ORNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\vert$ ($\sim$rs2(pair)),\\ sets Z                 sets Z.}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	XORDCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as XORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair), \\sets Z		sets Z.}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	XNORD}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as XNOR, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair)}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	XNORDCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as XNORCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) $\hat{}$ rs2(pair),\\ sets Z}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ANDD}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as AND, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . rs2(pair)}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ANDDCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ANDCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . rs2(pair),\\ sets Z}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ANDDN}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ANDN, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd(pair) $\leftarrow$ rs1(pair) . ($\sim$rs2(pair))}\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	ANDDNCC}} \\ 
+ \hline 
+ \parbox{\linewidth}{		  same as ANDNCC, but with Instr[13]=0 (i=0), and Instr[5]=1.} & 
+ \parbox{\linewidth}{		rd $\leftarrow$ rs1 . ($\sim$rs2),\\ sets Z}\\
+\hline
+  \end{tabular}
+  \caption{64 bit Logical Instructions}
+  \label{tab:64bit:logical:insns}
+\end{table}
+
+\subsection{Integer-Unit Extensions: SIMD Instructions}
+\label{sec:integer-unit-extns:simd-instructions}
+
+These instructions  are vector instructions  which work on  two source
+registers (each a  64 bit register pair), and produce  a 64-bit vector
+result.   The   vector  elements  can  be   8-bit/16-bit/32-bit.   See
+Table~\ref{tab:simd:insns}.
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{	VADDD8, VADDD16, VADDD32}} \\ 
+ \hline 
+ \parbox{\linewidth}{        Same as ADDD, but with Instr[13]=0 (i=0),
+    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
+    the data type \\
+\begin{tabular}[p]{|l|l|l|}
+\hline
+  001  &   byte			 & (VADDD8)\\
+  010  &   half-word (16-bits)	 & (VADDD16)\\
+  100  &   word (32-bits) 	 & (VADDD32)\\
+\hline
+\end{tabular}\\
+} & 
+ \parbox{\linewidth}{Performs a vector operation by considering the
+    64-bit operands as a vector of objects with specified data-type.
+    \vskip \parskip
+    \texttt{vaddd8   rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vaddd16  rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vaddd32  rs1, rs2, rd}
+    }\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	VSUBD8, VSUBD16, VSUBD32}} \\ 
+ \hline 
+ \parbox{\linewidth}{Same as SUBD, but with Instr[13]=0 (i=0),
+    and Instr[6:5]=2.  Bits Instr[9:7] are a 3-bit field, which
+    specify the data type\\
+\begin{tabular}[p]{|l|l|l|}
+\hline
+  001  &   byte 		 & (VSUBD8)\\
+  010  &   half-word (16-bits)	 & (VSUBD16)\\
+  100  &   word (32-bits) 	 & (VSUBD32)\\
+\hline
+\end{tabular}\\
+} & 
+ \parbox{\linewidth}{Performs a vector operation by considering the
+    64-bit operands as a vector of objects with specified
+    data-type.
+    \vskip \parskip
+    \texttt{vsubd8   rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vsubd16  rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vsubd32  rs1, rs2, rd}
+    }\\ 
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	VUMULD8, VUMULD16, VUMULD32}} \\ 
+ \hline 
+ \parbox{\linewidth}{Same as UMULD, but with Instr[13]=0 (i=0),
+    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
+    the data type\\
+\begin{tabular}[p]{|l|l|l|}
+\hline
+  001  &   byte			 & (VMULD8)\\
+  010  &   half-word (16-bits)	 & (VMULD16)\\
+  100  &   word (32-bits) 	 & (VMULD32)\\
+\hline
+\end{tabular}\\
+} & 
+ \parbox{\linewidth}{Performs a vector operation by considering the
+    64-bit operands as a vector of objects with specified data-type.
+    \vskip \parskip
+    \texttt{vumuld8   rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vumuld16  rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vumuld32  rs1, rs2, rd}
+    }\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{	VSMULD8, VSUMLD16, VSMULD32}} \\ 
+ \hline 
+ \parbox{\linewidth}{        Same as SMULD, but with Instr[13]=0 (i=0),
+    and Instr[6:5]=2. Bits Instr[9:7] are a 3-bit field, which specify
+    the data type\\
+\begin{tabular}[p]{|l|l|l|}
+\hline
+  001  &   byte			 & (VSMULD8)\\
+  010  &   half-word (16-bits)	 & (VSMULD16)\\
+  100  &   word (32-bits) 	 & (VSMULD32)\\
+\hline
+\end{tabular}\\
+} & 
+ \parbox{\linewidth}{Performs a vector operation by considering the
+    64-bit operands as a vector of objects with specified data-type.
+    \vskip \parskip
+    \texttt{vsmuld8   rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vsmuld16  rs1, rs2, rd}
+    \vskip \parskip
+    \texttt{vsmuld32  rs1, rs2, rd}
+    }\\
+\hline
+  \end{tabular}
+  \caption{SIMD Instructions}
+  \label{tab:simd:insns}
+\end{table}
+
+% \newpage
+\subsection{Integer-Unit Extensions: SIMD Instructions II}
+\label{sec:integer-unit-extns:simd-instructions:2}
+
+These  instructions are  vector  instructions which  reduce  a 64  bit
+source register to a destination  using an associative operation.  See
+%Table~\ref{tab:simd:2:insns}.
+Tables~\ref{tab:simd:2:insns:1},\ref{tab:simd:2:insns:2},\ref{tab:simd:2:insns:3}.
+
+% \begin{table}[p]
+%   \centering
+%   \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+%     \hline
+% \multicolumn{2}{|l|}{\textbf{ADDDREDUCE8}} \\ 
+%     \hline
+%     \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    32-bit register.\\
+%     Instr[24:19] (op3) = 101101\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) + (m6 ? rs1\_6
+%     : 0x0) + (m5 ? rs1\_5:0)  \ldots + (m0 ? rs1\_0 : 0x0)
+%     \vskip \parskip
+%     \texttt{adddreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% %    
+% \multicolumn{2}{|l|}{\textbf{ADDDREDUCE16}} \\ 
+%  \hline 
+%     \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    32-bit register.\\
+%     Instr[24:19] (op3) = 101101\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]   = 2 for half word reduce
+%     contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_hw\_3 : 0x0) + (m2 ? rs1\_hw\_2 : 0x0) 
+%     + (m1 ? rs1\_hw\_1: 0x0) + (m0 ? rs1\_hw\_0 : 0x0)
+%     \vskip \parskip
+%     \texttt{adddreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% %    
+% %    
+% \multicolumn{2}{|l|}{\textbf{ORDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{ordreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{ORDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{ordreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+
+% \multicolumn{2}{|l|}{\textbf{ANDDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{anddreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{ANDDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 101111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{anddreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+
+
+% \multicolumn{2}{|l|}{\textbf{XORDREDUCE8} (Byte-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
+%     of rs2 specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 111110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7] = 1 for byte reduce
+%     contents[7:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+%     rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{xordreduce8 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+% \multicolumn{2}{|l|}{\textbf{XORDREDUCE16} (Half Word-Reduce OR)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[3:0]
+%     of rs2 specify a mask.\\
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32-bit register.\\
+%     Instr[24:19] (op3) = 111110\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  = 0 (ignored)\\
+%     Instr[12:10]   (zero)\\
+%     Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+%     Instr[6:5]  (zero)\\
+%     Instr[4:0]   (rs2)   32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+%     rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+%     : 0x0) 
+%     \vskip \parskip
+%     \texttt{xordreduce16 \%rs1, \%rs2,  \%rd}
+%     }\\
+% \hline
+% \hline
+    
+% \multicolumn{2}{|l|}{\textbf{ZBYTEDPOS} (Positions-of-Zero-Bytes in D-Word)} \\ 
+%  \hline 
+%  \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0]
+%     of rs2/imm-value specify a mask.\\
+
+%     Instr[31:30] (op) = 0x2\\
+%     Instr[29:25] (rd)    rd is a 32 bit register\\
+%     Instr[24:19] (op3) = 111111\\
+%     Instr[18:14] (rs1)   lowest bit assumed 0.\\
+%     Instr[13]    (i)  =  if 0, use rs2, else Instr[7:0]\\
+%     Instr[12:5]  = 0  (ignored if i=0)\\
+%     Instr[4:0]   (rs2, if i=0) 32-bit register is read.\\
+% } & 
+%  \parbox{\linewidth}{rd $\leftarrow$ [b7\_zero b6\_zero b5\_zero
+%     b4\_zero \ldots b0\_zero] (if mask-bit is zero then b$\star$\_zero
+%     is zero)
+%     \vskip \parskip
+%     \texttt{zbytedpos \%rs1, \%rs2/imm, \%rd}
+%     }\\
+% \hline
+%   \end{tabular}
+%   \caption{SIMD Instructions II}
+%   \label{tab:simd:2:insns}
+% \end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{ADDDREDUCE8}} \\ 
+    \hline
+    \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[7:0] of rs2 specify a mask.\\
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    32-bit register.\\
+    Instr[24:19] (op3) = 101101\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7] = 1 for byte reduce
+    contents[7:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) + (m6 ? rs1\_6
+    : 0x0) + (m5 ? rs1\_5:0)  \ldots + (m0 ? rs1\_0 : 0x0)
+    \vskip \parskip
+    \texttt{adddreduce8 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+%    
+\multicolumn{2}{|l|}{\textbf{ADDDREDUCE16}} \\ 
+ \hline 
+    \parbox{\linewidth}{op=2, op3[3:0]=0xd, op3[5:4]=0x2, contents[3:0] of rs2 specify a mask.\\
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    32-bit register.\\
+    Instr[24:19] (op3) = 101101\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7]   = 2 for half word reduce
+    contents[3:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_hw\_3 : 0x0) + (m2 ? rs1\_hw\_2 : 0x0) 
+    + (m1 ? rs1\_hw\_1: 0x0) + (m0 ? rs1\_hw\_0 : 0x0)
+    \vskip \parskip
+    \texttt{adddreduce16 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+%    
+%    
+\multicolumn{2}{|l|}{\textbf{ORDREDUCE8} (Byte-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[7:0]
+    of rs2 specify a mask.\\
+
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 101110\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7] = 1 for byte reduce
+    contents[7:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+    rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{ordreduce8 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+  \end{tabular}
+  \caption{SIMD Instructions II - Part 1 of 3}
+  \label{tab:simd:2:insns:1}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+\hline
+\multicolumn{2}{|l|}{\textbf{ORDREDUCE16} (Half Word-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x2, contents[3:0]
+    of rs2 specify a mask.\\
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 101110\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+    rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{ordreduce16 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+
+\multicolumn{2}{|l|}{\textbf{ANDDREDUCE8} (Byte-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[7:0]
+    of rs2 specify a mask.\\
+
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 101111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7] = 1 for byte reduce
+    contents[7:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+    rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{anddreduce8 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{ANDDREDUCE16} (Half Word-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x2, contents[3:0]
+    of rs2 specify a mask.\\
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 101111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+    rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{anddreduce16 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+  \end{tabular}
+  \caption{SIMD Instructions II -- Part 2 of 3}
+  \label{tab:simd:2:insns:2}
+\end{table}
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{XORDREDUCE8} (Byte-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[7:0]
+    of rs2 specify a mask.\\
+
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 111110\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7] = 1 for byte reduce
+    contents[7:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m7 ? rs1\_7 : 0x0) $\vert$ (m6 ?
+    rs1\_6 : 0x0) $\vert$ (m5 ? rs1\_5:0)  \ldots $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{xordreduce8 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{XORDREDUCE16} (Half Word-Reduce OR)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xe, op3[5:4]=0x3, contents[3:0]
+    of rs2 specify a mask.\\
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32-bit register.\\
+    Instr[24:19] (op3) = 111110\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (ignored)\\
+    Instr[12:10]   (zero)\\
+    Instr[9:7]	= 2 for half-word reduce, contents[3:0] of rs2 specify a mask.\\
+    Instr[6:5]  (zero)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ (m3 ? rs1\_3 : 0x0) $\vert$ (m2 ?
+    rs1\_2 : 0x0) $\vert$ (m1 ? rs1\_1 : 0x0) $\vert$ (m0 ? rs1\_0
+    : 0x0) 
+    \vskip \parskip
+    \texttt{xordreduce16 \%rs1, \%rs2,  \%rd}
+    }\\
+\hline
+\hline
+    
+\multicolumn{2}{|l|}{\textbf{ZBYTEDPOS} (Positions-of-Zero-Bytes in D-Word)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=2, op3[3:0]=0xf, op3[5:4]=0x3, contents[7:0]
+    of rs2/imm-value specify a mask.\\
+
+    Instr[31:30] (op) = 0x2\\
+    Instr[29:25] (rd)    rd is a 32 bit register\\
+    Instr[24:19] (op3) = 111111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  =  if 0, use rs2, else Instr[7:0]\\
+    Instr[12:5]  = 0  (ignored if i=0)\\
+    Instr[4:0]   (rs2, if i=0) 32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{rd $\leftarrow$ [b7\_zero b6\_zero b5\_zero
+    b4\_zero \ldots b0\_zero] (if mask-bit is zero then b$\star$\_zero
+    is zero)
+    \vskip \parskip
+    \texttt{zbytedpos \%rs1, \%rs2/imm, \%rd}
+    }\\
+\hline
+  \end{tabular}
+  \caption{SIMD Instructions II -- Part 3 of 3}
+  \label{tab:simd:2:insns:3}
+\end{table}
+
+
+
+
+% \newpage
+\subsection{Vector Floating Point Instructions}
+\label{sec:vector-floating-point-instructions}
+
+These are vector  float operations which work on  two single precision
+operand  pairs   to  produce   two  single  precision   results.   See
+Table~\ref{tab:simd:float:ops}.
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|l|l|l|}
+    \hline
+    \textbf{VFADD32}
+    & {op=2, op3=0x34, opf=0x142}
+    & \texttt{vfadd32 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFADD16}
+    & {op=2, op3=0x34, opf=0x143}
+    & \texttt{vfadd16 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFSUB32}
+    & {op=2, op3=0x34, opf=0x144}
+    & \texttt{vfadd32 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFSUB16}
+    & {op=2, op3=0x34, opf=0x145}
+    & \texttt{vfadd16 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFMUL32}
+    & {op=2, op3=0x34, opf=0x146}
+    & \texttt{vfadd32 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFMUL16}
+    & {op=2, op3=0x34, opf=0x147}
+    & \texttt{vfadd16 \%f0, \%f2, \%f4} \\
+    \hline
+    \textbf{VFI16TOH}
+    & {op=2, op3=0x34, opf=0x148}
+    & \texttt{vfi16toh \%f0, \%f2} \\
+    \hline
+    \textbf{VFHTOI16}
+    & {op=2, op3=0x34, opf=0x149}
+    & \texttt{vfhtoi16 \%f0, \%f2} \\
+    \hline      
+  \end{tabular}
+  \caption[SIMD Floating Point Operations]{SIMD Floating Point
+    Operations.  NaN propagated, but no traps. For each of these,
+    rs1,rs2,rd are considered even numbers pointing to.
+  }
+  \label{tab:simd:float:ops}
+\end{table}
+% \begin{table}[p]
+%   \centering
+%   \begin{tabular}[p]{|l|l|}
+%     \hline
+%     \textbf{VFADD} & {op=2, op3=0x34, opf=0x142} \\
+%     \hline
+%     \textbf{VFSUB} & {op=2, op3=0x34, opf=0x146} \\
+%     \hline
+%     \textbf{VFMUL} & {op=2, op3=0x34, opf=0x14a} \\
+%     \hline
+%     \textbf{VFDIV} & {op=2, op3=0x34, opf=0x14e} \\
+%     \hline
+%     \textbf{VFSQRT} & {op=2, op3=0x34, opf=0x12a} \\
+%     \hline      
+%   \end{tabular}
+%   \caption[SIMD Floating Point Operations]{SIMD Floating Point
+%     Operations.  NaN propagated, but no traps. For each of these,
+%     rs1,rs2,rd are considered even numbers pointing to.
+%   }
+%   \label{tab:simd:float:ops}
+% \end{table}
+
+
+% \newpage
+
+\subsection{FP Reduce}
+\label{sec:fp reduce}
+
+This instruction adds the four half-precision numbers in the 64-bit FP
+register pair rs1, and produce a result into the 32-bit FP register.
+See Table~\ref{tab:fp:reduce:ops}.
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|l|l|l|}
+    \hline
+    \textbf{FADDREDUCE16}
+    & {op=2, op3=0x34, opf=0x150}
+    & \texttt{vfadd32 \%f0, \%f2, \%f4} \\
+    \hline
+  \end{tabular}
+  \caption[SIMD Floating Point Reduce Operations]{SIMD Floating Point
+    Reduce Operations.
+  }
+  \label{tab:fp:reduce:ops}
+\end{table}
+
+\subsection{Half Precision Conversion Operations}
+\label{sec:half precision conversion ops}
+
+These  instructions  allow   conversion  between  IEEE  half-precision
+numbers and IEEE single/double precision numbers and integers.
+See Table~\ref{tab:half:precision:conversion:ops}.
+
+\textbf{Note:} the double-to-half  and half-to-double, int-to-half and
+half-to-int  instructions are  not provided.   This is  because, these
+transformations  are likely  to be  rarer.  Also,  the \texttt{FDTOS},
+\texttt{FDTOI},  \texttt{FITOS}, \texttt{FITOD}  instructions together
+with  the   added  \texttt{FSTOH},  \texttt{FHTOS}   instructions  are
+sufficient (at a minor cost).
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|l|l|l|}
+    \hline
+    \textbf{FSTOH}
+    & {op=2, op3=0x34, opf=0x151}
+    & \texttt{fstoh \%f1, \%f2} \\
+    \hline
+    \textbf{FHTOS}
+    & {op=2, op3=0x34, opf=0x152}
+    & \texttt{fhtos \%f1, \%f2} \\
+    \hline
+  \end{tabular}
+  \caption[SIMD Floating Point Reduce Operations]{SIMD Floating Point
+    Reduce Operations.
+  }
+  \label{tab:half:precision:conversion:ops}
+\end{table}
+
+\subsection{CSWAP instructions}
+\label{sec:cswap-instructions}
+
+The Sparc-V8 ISA does not include a compare-and-swap (CAS) instruction
+which is very  useful in achieving consensus  among distributed agents
+when the number of agents is $>$ 2.
+
+We   introduce   a   CSWAP   instruction   in   two   flavours.    See
+Table~\ref{tab:cswap:insns}.
+
+The semantics of the instruction (the entire sequence is atomic)
+\begin{verbatim}
+TMPVAL = mem[rs1]  (load double, lock system bus)
+if <rs2-pair/immediate> == TMPVAL 
+        (store double, unlock) mem[rs1] = <rd-pair>  
+        <rd-pair>  = TMPVAL
+else
+        (store double, unlock) mem[rs1] = TMPVAL
+\end{verbatim}
+The write under  else is redundant but is required  in order to unlock
+the bus.
+
+Similar to SWAP, 
+\begin{itemize}[noitemsep]
+\item  \verb|mem[rs1]| is  left either  with  its value  prior to  the
+  instruction or with the value in rd-pair.
+\item  \verb|<rd-pair>| is  left either  with its  value prior  to the
+  instruction or with the value in mem[rs1].
+\end{itemize}
+The processor can check rd-pair after execution to confirm if the swap
+succeeded.
+
+
+\begin{table}[p]
+  \centering
+  \begin{tabular}[p]{|p{.45\textwidth}|p{.45\textwidth}|}
+    \hline
+\multicolumn{2}{|l|}{\textbf{CSWAP} (effective address in registers
+    rs1 and rs2)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=3, op3=10 1111, i=0.\\
+
+    Instr[31:30] (op) = 0x3\\
+    Instr[29:25] (rd)    lowest bit assumed 0.\\
+    Instr[24:19] (op3) = 101111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (registers based effective address)\\
+    Instr[12:5]  (asi) = Address Space Identifier (See: Appendix G of V8)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{\texttt{cswap \%rs1, \%rs2, \%rd} with asi specified.}\\
+\hline
+    \hline
+\multicolumn{2}{|l|}{\textbf{CSWAP} (immediate effective address)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=3, op3=10 1111, i=1.\\
+
+    Instr[31:30] (op) = 0x3\\
+    Instr[29:25] (rd)    lowest bit assumed 0.\\
+    Instr[24:19] (op3) = 101111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 1 (immediate effective address)\\
+    Instr[12:0]  (simm13) 13-bit immediate address.\\
+} & 
+ \parbox{\linewidth}{\texttt{cswap \%rs1, imm, \%rd}.}\\
+\hline
+    \hline
+\multicolumn{2}{|l|}{\textbf{CSWAPA} (effective address in registers
+    rs1 and rs2)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=3, op3=10 1111, i=0.\\
+    Instr[31:30] (op) = 0x3\\
+    Instr[29:25] (rd)    lowest bit assumed 0.\\
+    Instr[24:19] (op3) = 111111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 0 (registers based effective address)\\
+    Instr[12:5]  (asi) = Address Space Identifier (See: Appendix G of V8)\\
+    Instr[4:0]   (rs2)   32-bit register is read.\\
+} & 
+ \parbox{\linewidth}{\texttt{cswapa \%rs1, \%rs2, \%rd} with asi specified.}\\
+\hline
+    \hline
+\multicolumn{2}{|l|}{\textbf{CSWAPA} (immediate effective address)} \\ 
+ \hline 
+ \parbox{\linewidth}{op=3, op3=10 1111, i=1.\\
+    Instr[31:30] (op) = 0x3\\
+    Instr[29:25] (rd)    lowest bit assumed 0.\\
+    Instr[24:19] (op3) = 111111\\
+    Instr[18:14] (rs1)   lowest bit assumed 0.\\
+    Instr[13]    (i)  = 1 (immediate effective address)\\
+    Instr[12:0]  (simm13) 13-bit immediate address.\\
+} & 
+ \parbox{\linewidth}{\texttt{cswapa \%rs1, imm, \%rd}.}\\
+\hline
+  \end{tabular}
+  \caption{CSWAP Instructions}
+  \label{tab:cswap:insns}
+\end{table}

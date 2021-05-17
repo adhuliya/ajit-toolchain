@@ -1,0 +1,450 @@
+\chapter{AJIT Support for the GNU Binutils Toolchain}
+\label{chap:amv:work}
+
+\section{Towards a GNU Binutils Toolchain}
+\label{sec:binutils:support}
+
+This section describes the details  of adding the AJIT instructions to
+SPARC v8 part of GNU Binutils 2.22.  We use the SPARC v8 manual to get
+the details of  the sparc instruction.  It's bit  pattern is described
+\emph{again}, and  the new  bit pattern  required for  AJIT is  set up
+alongside.  Bit layouts to determine  the ``match'' etc.  of the sparc
+port  are  also  laid  out.    The  SPARC  manual  also  contains  the
+``suggested asm syntax''  that we adapt for the  new AJIT instruction.
+The sections below follow the sections in chapter~\ref{sec:isa:extns}.
+For each  instruction, we  need to  define its  bitfields in  terms of
+macros  in  \texttt{\$BINUTILSHOME/include/opcode/sparc.h} and  define
+the opcodes table in \texttt{\$BINUTILSHOME/opcodes/sparc-opc.c}.
+
+The AJIT  instructions are  variations of  the corresponding  SPARC V8
+instructions.  Please refer to the SPARC V8 manual for details of such
+corresponding SPARC instructions. For  example, the \texttt{ADD} insn,
+pg. 108 (pg.  130 in PDF  sequence) of the manual.  Other instructions
+can be similarly found, and will not be mentioned.
+
+\subsection{General Approach for Developing the Assembler}
+\label{sec:general:approach}
+
+The GNU Binutils package is a  collection of low level tools that help
+dealing  with binary  files  like program  object  files, object  file
+libraries and  program executables  files.  Written  mostly in  C, the
+code structure is  typically as used by C programmers  in general, and
+GNU community in particular.  Table~\ref{tab:binutils:desc} is a brief
+note about  the main contents  of each  top level subdirectory  of the
+binutils package.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}[h]{|p{.1\linewidth}|p{.65\linewidth}|}
+    \hline
+    \textbf{Name} & \textbf{Brief description} \\
+    \hline
+    bfd         & Support for the GNU BFD library. \\
+    binutils    & Some tools that do not have their own directory. \\
+    config      & Configuration. \\                        
+    cpu         & CPU descriptions of some CPUs (See: cpu-gen) \\
+    elfcpp      & C++ library for reading and writing ELF information. \\
+    etc         & Some miscellaneous files. \\
+    gas         & The GNU Assembler.  Parts of the assembler are in other directories. \\
+    gold        & The Gold Linker.  This is a new linker. \\
+    gprof       & The GNU Profiler. \\
+    include     & Most includes are here. \\
+    intl        & Internationalisation files. \\
+    ld          & The Standard GNU Linker. \\
+    libiberty   & Library of subroutines used by various GNU programs. \\
+    opcodes     & Per CPU opcodes generator indexed by the mnemonic. \\
+    texinfo     & GNU TeXInfo based documentation support files. \\
+    \hline
+  \end{tabular}
+  \caption[Binutils  Brief   Description]{Brief  description   of  the
+    directories in the GNU Binutils package.}
+  \label{tab:binutils:desc}
+\end{table}
+
+We will use the SPARC implementation as a template for developing the
+AJIT support within the tools.  The implementation is divided into two
+main stages:
+\begin{enumerate}
+\item \label{stage:1}  \textbf{Stage 1}:  Add AJIT instructions  as an
+  ``extension'' to the  SPARC V8 tools.  This implies  adding the AJIT
+  opcodes  to  the SPARC  opcodes.   The  tools  that change  are  the
+  assembler  \texttt{as}  and  the  disassembler used  by  tools  like
+  \texttt{objdump}.  Tools  like the  library archiver  \texttt{ar} do
+  \textbf{not}  work   on  individual  opcodes.   They   work  on  the
+  structure,  i.e. the  layout,  of the  executable  or object  files.
+  Hence they are not affected.
+
+  As of December 2020, this work is completed.
+  
+  \textbf{This document records the implementation of Stage 1.}
+
+\item  \label{stage:2}  \textbf{Stage  2}: This  implements  the  AJIT
+  support  as a  separate individual  processor supported  by the  GNU
+  Binutils package.
+
+  As of December 2020, this is ongoing work.
+\end{enumerate}
+
+\subsubsection{Opcode Format of SPARC V8}
+\label{sec:sparc:v8:opcode:format}
+
+\begin{figure}[h]
+  \centering
+  \epsfxsize=.8\linewidth
+  \epsffile{../figs/sparc-v8-insn-32-bit-layout.eps}
+  \caption[Format 3 SPARC V8 Layout.]{The SPARC V8 format 3
+    instruction layout.}
+  \label{fig:f3:layout}
+\end{figure}
+
+The C  preprocessor (CPP) macros  for the SPARC \emph{family}  of CPUs
+are in  \texttt{include/opcode/sparc.h}, and are reproduced  below for
+convenience.  Only the ones for the SPARC V8 format 3 instructions are
+listed below.
+{\small
+\begin{verbatim}
+#define OP(x)           ((unsigned) ((x) & 0x3) << 30) /* Op field of all insns.  */
+#define OPF(x)          (((x) & 0x1ff) << 5)           /* Opf field of float insns.  */
+#define F3F(x, y, z)    (OP (x) | OP3 (y) | OPF (z))   /* Format3 float insns.  */
+#define F3I(x)          (((x) & 0x1) << 13)            /* Immediate field of format 3 insns.  */
+#define F3(x, y, z)     (OP (x) | OP3(y) | F3I(z))     /* Format3 insns.  */
+#define ASI(x)          (((x) & 0xff) << 5)            /* Asi field of format3 insns.  */
+#define RS2(x)          ((x) & 0x1f)                   /* RS2 field.  */
+#define SIMM13(x)       ((x) & 0x1fff)                 /* Simm13 field.  */
+#define RD(x)           (((x) & 0x1f) << 25)           /* RD Destination register field.  */
+#define RS1(x)          (((x) & 0x1f) << 14)           /* RS1 field.  */
+\end{verbatim}
+}
+
+As  an  illustration of  the  operation  consider the  \texttt{OPF(x)}
+macro.   This expands  to: \verb|(((x)  &  0x1ff) <<  5)|.  The  inner
+expression, \verb|(x)  & 0x1FF| isolates  the 9 bits required  for the
+\texttt{OPF} field  using the constant \texttt{0x1FF}.   The result is
+left shifted by  5 to position these  9 bits at the  desired offset in
+the 32 bit instruction.  Similarly, the \verb|F3I(x)| macro expands to
+\verb|(((x)  & 0x1)  << 13)|.   This  sets the  ``\texttt{i}'' bit  at
+offset 13 to the value of ``\texttt{x}''.  If \texttt{x = 0}, then the
+``\texttt{i}'' bit is 0 giving the \emph{non-immediate} variant of the
+instruction.  When  \texttt{x = 1},  then the ``\texttt{i}'' bit  is 1
+giving the \emph{immediate} variant of the instruction.
+
+Finally, the \verb|F3(x,  y, z)| macro uses such  macros whose results
+are bitwise  OR'd to obtain  the set of  bits in the  instruction that
+\emph{uniquely} identify  the instruction.  The  implementation refers
+to these bits as the  ``\textbf{match}'' bits.  It also constructs the
+bit inverses of each field and  then bitwise OR's the result to obtain
+the so called ``\textbf{lose}'' bits.  In the following we discuss the
+construction of  the match  bits only.  However,  we do  implement the
+match as well as the lose bits.
+
+\subsubsection{Illustrating SPARC V8 Opcode Implementation}
+\label{sec:sparc:v8:opcode:implementation}
+
+The  \texttt{include/opcode/sparc.h} also  defines  the  layout of  an
+entry  that describes  one instruction.   It is  reproduced below  for
+convenience.
+{\small 
+\begin{verbatim}
+/* Structure of an opcode table entry as used in GNU Binutils 2.22 */
+
+typedef struct sparc_opcode
+{
+  const char *name;
+  unsigned long match;  /* Match bits that must be set. */
+  unsigned long lose;   /* Lose bits. */
+  const char *args;
+  unsigned int flags;
+  short architecture;   /* Bitmask of sparc_opcode_arch_val's. */
+} sparc_opcode;
+\end{verbatim}
+}
+
+All  the instructions  are  listed as  a  table, \texttt{const  struct
+  sparc\_opcode      sparc\_opcodes[]},      in      \texttt{opcodes}-
+\texttt{/sparc-opc.c}.   Each table  entry  is an  instance  of the  C
+structure  described  above.   The   entry  for  the  ``\texttt{add}''
+instruction for SPARC V8 looks like: {\small
+\begin{verbatim}
+{ "add",        F3(2, 0x00, 0), F3(~2, ~0x00, ~0)|ASI(~0),      "1,2,d", 0, v6 },
+{ "add",        F3(2, 0x00, 1), F3(~2, ~0x00, ~1),              "1,i,d", 0, v6 },
+\end{verbatim}
+}
+
+Note that  the third argument  of the \texttt{F3(...)} sets  or resets
+the  ``\texttt{i}''  bit  (at  offset   13).   When  1,  we  have  the
+\emph{immediate} value variant of  the \texttt{add} instruction.  When
+0, we have  the variant that has its arguments  in the registers, with
+the \texttt{asi} field specifying the alternate space index.
+
+\subsubsection{Opcode Format of AJIT}
+\label{sec:ajit:opcode:format}
+
+The AJIT architecture  augments the SPARC V8 instruction  set with its
+own  instructions.   These  are  format  3  style  instructions  which
+primarily focus on arithmetic operations.
+
+{\small
+\begin{verbatim}
+/* AJIT Additions */
+/* Bit setters */
+#define OP_AJIT_BIT_5(x)          (((x) & 0x1) << 5)      /* Set the bit 5 (6th bit) for AJIT */
+#define OP_AJIT_BIT_5_AND_6(x)    (((x) & 0x3) << 5)      /* Set the bits 5 and 6 for AJIT */
+#define OP_AJIT_BIT_7_THRU_9(x)   (((x) & 0x7) << 7)      /* Set bits 7 through 9 for AJIT */
+
+/* Bit setters for full instructions */
+#define OP_AJIT_BITS_30_TO_31(x)    (((x) & 0x03) << 30)  /* op, match */
+#define OP_AJIT_BITS_25_TO_29(x)    (((x) & 0x1F) << 25)  /* rd */
+#define OP_AJIT_BITS_19_TO_24(x)    (((x) & 0x3F) << 19)  /* op3, match */
+#define OP_AJIT_BITS_14_TO_18(x)    (((x) & 0x1F) << 14)  /* rs1 */
+#define OP_AJIT_BITS_13_TO_13(x)    (((x) & 0x1) << 13)   /* i */
+#define OP_AJIT_BITS_05_TO_12(x)    (((x) & 0xFF) << 05)  /* for UNUSED, set to zero */
+#define OP_AJIT_BITS_00_TO_04(x)    (((x) & 0x1F) << 00)  /* rs2 */
+#define OP_AJIT_BITS_05_TO_13(x)    (((x) & 0x1FF) << 05) /* opf */
+#define OP_AJIT_BITS_08_TO_12(x)    (((x) & 0x1F) << 8)
+#define OP_AJIT_BITS_00_TO_07(x)    (((x) & 0xFF) << 00)
+
+#define SET13   OP_AJIT_BITS_13_TO_13(1)
+
+/* Most arithmetic instructions */
+#define F4(x, y, z, b)        (F3(x, y, z) | OP_AJIT_BIT_5(b))            /* Format 3 with bit 5 */
+#define F5(x, y, z, b)        (F3(x, y, z) | OP_AJIT_BIT_5_AND_6 (b))     /* Format 3 with bits 5 and 6 */
+#define F6(x, y, z, b, a)     (F5 (x, y, z, b) | OP_AJIT_BIT_7_THRU_9(a)) /* Format 3 with bits 5-6 and 7-9 */
+
+/* For SIMD II instructions */
+#define F7(a, b, c, d)            (OP(a) | OP3(b) | F3I(c))
+#define F10(a, b, c, d)           (OP_AJIT_BITS_30_TO_31(a) | \
+                                   OP_AJIT_BITS_19_TO_24(b) | \
+                                   OP_AJIT_BITS_13_TO_13(c) | \
+                                   OP_AJIT_BITS_08_TO_12(0))
+
+/* For SIMD Floating point ops */
+#define F8(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \
+                                   OP_AJIT_BITS_19_TO_24(b) | \
+                                   OP_AJIT_BITS_05_TO_13(c))
+/* For CSWAP non immediate ops */
+#define F9(a, b, c)               (OP_AJIT_BITS_30_TO_31(a) | \
+                                   OP_AJIT_BITS_19_TO_24(b) | \
+                                   OP_AJIT_BITS_13_TO_13(c))
+/* For CSWAP immediate ops */
+#define F9d(a, b, c)              (OP_AJIT_BITS_30_TO_31(a) | \
+                                   OP_AJIT_BITS_19_TO_24(b) | \
+                                   OP_AJIT_BITS_13_TO_13(1) | \
+                                   SIMM13(c))
+
+/* End of AJIT specific additions */
+\end{verbatim}
+}
+
+\subsubsection{Illustrating AJIT Opcode Implementation}
+\label{sec:ajit:opcode:implementation}
+
+For AJIT we use the layout  of an entry that describes one instruction
+that is identical to SPARC V8.
+
+The entry for  the ``\texttt{addd}'' instruction for  AJIT looks like:
+{\small
+\begin{verbatim}
+{ "addd",       F4(2, 0x00, 0, 1), F4(~2, ~0x00, ~0, ~1),       "1,2,d", 0, v8 }, /* AJIT */
+\end{verbatim}
+}
+
+The ``\texttt{addd}'' AJIT instruction has no immediate value variant.
+It  uses  the  \texttt{F4(...)}   macro  to set  the  match  bits;  in
+particular  it  sets  the  bit  at  offset  5.   Hence  the  macro  is
+instantiated to describe the  \texttt{addd} instruction as: \texttt{F4
+  (2,   0x00,  0,   1)}.   It   is   implemented  in   terms  of   the
+\texttt{F3(...)}   macro  whose  result   is  bitwise  OR'd  with  the
+\texttt{OP\_AJIT\_BIT\_5(x)} macro  that either sets (\texttt{x  = 1})
+the bit at the 5$^{\mathrm{th}}$ offset (i.e. bit number 6), or resets
+(\texttt{x = 0}) it.
+
+\subsubsection{AJIT Implementation Notes}
+\label{sec:ajit:implementation:notes}
+
+The AJIT  specific additions to  the SPARC V8 implementation,  and the
+illustrations of the previous section  show the basic approach used to
+obtain the AJIT implementation.  In this section we note a few general
+aspects  that  describe  the   AJIT  implementation.   The  subsequent
+sections of this  chapter only record the details.   The complete AJIT
+instructions as  implemented in Stage 1  (See: page \pageref{stage:1})
+are  below.  Note  that  as required  by  the assembler  architecture,
+variants  of an  instruction need  to be  grouped together.   So these
+instructions  are collected  together  from  their implementations  in
+\texttt{opcodes/sparc-opc.c}.
+
+\hrulefill
+% {\small
+% \begin{verbatim}
+% {"slld",         F5(2, 0x25, 1, 0x1),      F5(~2, ~0x25, ~1, ~0x1),       "1,Y,d",    0,       v6}, /* AJIT */
+% {"slld",         F5(2, 0x25, 0, 0x1),      F5(~2, ~0x25, ~0, ~0x1),       "1,2,d",    0,       v6}, /* AJIT */
+% {"srad",         F5(2, 0x27, 1, 0x1),      F5(~2, ~0x27, ~1, ~0x1),       "1,Y,d",    0,       v6}, /* AJIT */
+% {"srad",         F5(2, 0x27, 0, 0x1),      F5(~2, ~0x27, ~0, ~0x1),       "1,2,d",    0,       v6}, /* AJIT */
+% {"srld",         F5(2, 0x26, 1, 0x1),      F5(~2, ~0x26, ~1, ~0x1),       "1,Y,d",    0,       v6}, /* AJIT */
+% {"srld",         F5(2, 0x26, 0, 0x1),      F5(~2, ~0x26, ~0, ~0x1),       "1,2,d",    0,       v6}, /* AJIT */
+% {"ord",          F4(2, 0x02, 0, 1),        F4(~2, ~0x02, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"ordcc",        F4(2, 0x12, 0, 1),        F4(~2, ~0x12, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"ordn",         F4(2, 0x06, 0, 1),        F4(~2, ~0x06, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"ordncc",       F4(2, 0x16, 0, 1),        F4(~2, ~0x16, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"anddn",        F4(2, 0x05, 0, 1),        F4(~2, ~0x05, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"anddncc",      F4(2, 0x15, 0, 1),        F4(~2, ~0x15, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"subd",         F4(2, 0x04, 0, 1),        F4(~2, ~0x04, ~0, ~1),         "1,2,d",    0,       v8}, /* AJIT */
+% {"subdcc",       F4(2, 0x14, 0, 1),        F4(~2, ~0x14, ~0, ~1),         "1,2,d",    0,       v8}, /* AJIT */
+% {"vsubd8",       F6(2, 0x04, 0, 2, 1),     F6(~2, ~0x04, ~0, ~2, ~1),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vsubd16",      F6(2, 0x04, 0, 2, 2),     F6(~2, ~0x04, ~0, ~2, ~3),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vsubd32",      F6(2, 0x04, 0, 2, 4),     F6(~2, ~0x04, ~0, ~2, ~4),     "1,2,d",    0,       v8}, /* AJIT */
+% {"andd",         F4(2, 0x01, 0, 1),        F4(~2, ~0x01, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"anddcc",       F4(2, 0x11, 0, 1),        F4(~2, ~0x11, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"addd",         F4(2, 0x00, 0, 1),        F4(~2, ~0x00, ~0, ~1),         "1,2,d",    0,       v8}, /* AJIT */
+% {"adddcc",       F4(2, 0x10, 0,1),         F4(~2, ~0x10, ~0, ~1),         "1,2,d",    0,       v8}, /* AJIT */
+% {"vaddd8",       F6(2, 0x00, 0, 2, 1),     F6(~2, ~0x00, ~0, ~2, ~1),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vaddd16",      F6(2, 0x00, 0, 2, 2),     F6(~2, ~0x00, ~0, ~2, ~2),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vaddd32",      F6(2, 0x00, 0, 2, 4),     F6(~2, ~0x00, ~0, ~2, ~4),     "1,2,d",    0,       v8}, /* AJIT */
+% {"smuld",        F4(2, 0x0b, 0, 1),        F4(~2, ~0x0b, ~0, ~1),         "1,2,d",    F_MUL32, v8}, /* AJIT */
+% {"smuldcc",      F4(2, 0x1b, 0, 1),        F4(~2, ~0x1b, ~0, ~1),         "1,2,d",    F_MUL32, v8}, /* AJIT */
+% {"umuld",        F4(2, 0x0a, 0, 1),        F4(~2, ~0x0a, ~0, ~1),         "1,2,d",    F_MUL32, v8}, /* AJIT */
+% {"umuldcc",      F4(2, 0x1a, 0, 1),        F4(~2, ~0x1a, ~0, ~1),         "1,2,d",    F_MUL32, v8}, /* AJIT */
+% {"vumuld8",      F6(2, 0x0a, 0, 2, 1),     F6(~2, ~0x0a, ~0, ~2, ~1),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vumuld16",     F6(2, 0x0a, 0, 2, 2),     F6(~2, ~0x0a, ~0, ~2, ~3),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vumuld32",     F6(2, 0x0a, 0, 2, 4),     F6(~2, ~0x0a, ~0, ~2, ~4),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vsmuld8",      F6(2, 0x1a, 0, 2, 1),     F6(~2, ~0x1a, ~0, ~2, ~1),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vsmuld16",     F6(2, 0x1a, 0, 2, 2),     F6(~2, ~0x1a, ~0, ~2, ~3),     "1,2,d",    0,       v8}, /* AJIT */
+% {"vsmuld32",     F6(2, 0x1a, 0, 2, 4),     F6(~2, ~0x1a, ~0, ~2, ~4),     "1,2,d",    0,       v8}, /* AJIT */
+% {"sdivd",        F4(2, 0x0f, 0, 1),        F4(~2, ~0x0f, ~0, ~1),         "1,2,d",    F_DIV32, v8}, /* AJIT */
+% {"sdivdcc",      F4(2, 0x1f, 0, 1),        F4(~2, ~0x1f, ~0, ~1),         "1,2,d",    F_DIV32, v8}, /* AJIT */
+% {"udivdcc",      F4(2, 0x1e, 0, 1),        F4(~2, ~0x1e, ~0, ~1),         "1,2,d",    F_DIV32, v8}, /* AJIT */
+% {"udivd",        F4(2, 0x0e, 0, 1),        F4(~2, ~0x0e, ~0, ~1),         "1,2,d",    F_DIV32, v8}, /* AJIT */
+% {"cswap",        F3(3, 0x2f, 0),           F3(~3, ~0x2f, ~0),             "[1+2]A,d", 0,       v8}, /* AJIT */
+% {"cswap",        F3(3, 0x2f, 1),           F3(~3, ~0x2f, ~1),             "[1+i],d",  0,       v8}, /* AJIT */
+% {"cswapa",       F3(3, 0x3f, 0),           F3(~3, ~0x3f, ~0),             "[1+2]A,d", 0,       v8}, /* AJIT */
+% {"cswapa",       F3(3, 0x3f, 1),           F3(~3, ~0x3f, ~1),             "[1+i],d",  0,       v8}, /* AJIT */
+% {"xnord",        F4(2, 0x07, 0, 1),        F4(~2, ~0x07, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"xnordcc",      F4(2, 0x17, 0, 1),        F4(~2, ~0x17, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"xordcc",       F4(2, 0x13, 0, 1),        F4(~2, ~0x13, ~0, ~1),         "1,2,d",    0,       v6}, /* AJIT */
+% {"adddreduce8",  F6(2, 0x2d, 0, 0x0, 0x1), F6(~2, ~0x2d, ~0, ~0x0, ~0x1), "1,2,d",    0,       v8}, /* AJIT */
+% {"adddreduce16", F6(2, 0x2d, 0, 0x0, 0x2), F6(~2, ~0x2d, ~0, ~0x0, ~0x2), "1,2,d",    0,       v8}, /* AJIT */
+% {"ordreduce8",   F6(2, 0x2e, 0, 0x0, 0x1), F6(~2, ~0x2e, ~0, ~0x0, ~0x1), "1,2,d",    0,       v8}, /* AJIT */
+% {"ordreduce16",  F6(2, 0x2e, 0, 0x0, 0x2), F6(~2, ~0x2e, ~0, ~0x0, ~0x2), "1,2,d",    0,       v8}, /* AJIT */
+% {"anddreduce8",  F6(2, 0x2f, 0, 0x0, 0x1), F6(~2, ~0x2f, ~0, ~0x0, ~0x1), "1,2,d",    0,       v8}, /* AJIT */
+% {"anddreduce16", F6(2, 0x2f, 0, 0x0, 0x2), F6(~2, ~0x2f, ~0, ~0x0, ~0x2), "1,2,d",    0,       v8}, /* AJIT */
+% {"xordreduce8",  F6(2, 0x3e, 0, 0x0, 0x1), F6(~2, ~0x3e, ~0, ~0x0, ~0x1), "1,2,d",    0,       v8}, /* AJIT */
+% {"xordreduce16", F6(2, 0x3e, 0, 0x0, 0x2), F6(~2, ~0x3e, ~0, ~0x0, ~0x2), "1,2,d",    0,       v8}, /* AJIT */
+% {"zbytedpos",    F7(2, 0x3f, 0x0, 0x0),    F7(~2, ~0x3f, ~0x0, ~0x0),     "1,2,d",    0,       v8}, /* AJIT */
+% {"zbytedpos",    F7(2, 0x3f, 0x1, 0x0),    F7(~2, ~0x3f, ~0x1, ~0x0),     "1,i,d",    0,       v8}, /* AJIT */
+% {"vfadd32",      F3F(2, 0x34, 0x142),      F3F(~2, ~0x34, ~0x142),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfadd16",      F3F(2, 0x34, 0x143),      F3F(~2, ~0x34, ~0x143),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfsub32",      F3F(2, 0x34, 0x144),      F3F(~2, ~0x34, ~0x144),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfsub16",      F3F(2, 0x34, 0x145),      F3F(~2, ~0x34, ~0x145),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfmul32",      F3F(2, 0x34, 0x146),      F3F(~2, ~0x34, ~0x146),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfmul16",      F3F(2, 0x34, 0x147),      F3F(~2, ~0x34, ~0x147),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfi16toh",     F3F(2, 0x34, 0x148),      F3F(~2, ~0x34, ~0x148),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"vfhtoi16",     F3F(2, 0x34, 0x149),      F3F(~2, ~0x34, ~0x149),        "v,B,H",    F_FLOAT, v8}, /* AJIT */
+% {"faddreduce16", F3F(2, 0x34, 0x150),      F3F(~2, ~0x34, ~0x150),        "v,g",      F_FLOAT, v8}, /* AJIT */
+% {"fstoh",        F3F(2, 0x34, 0x151),      F3F(~2, ~0x34, ~0x151),        "e,g",      F_FLOAT, v8}, /* AJIT */
+% {"fhtos",        F3F(2, 0x34, 0x152),      F3F(~2, ~0x34, ~0x152),        "e,g",      F_FLOAT, v8}, /* AJIT */
+% \end{verbatim}
+% }
+{\small
+\begin{verbatim}
+{"slld",         F5(2, 0x25, 1, 0x2),    F5(~2, ~0x25, ~1, ~0x2),      "1,Y,d",    0,       v6},
+{"slld",         F5(2, 0x25, 0, 0x2),    F5(~2, ~0x25, ~0, ~0x2),      "1,2,d",    0,       v6},
+{"srad",         F5(2, 0x27, 1, 0x2),    F5(~2, ~0x27, ~1, ~0x2),      "1,Y,d",    0,       v6},
+{"srad",         F5(2, 0x27, 0, 0x2),    F5(~2, ~0x27, ~0, ~0x2),      "1,2,d",    0,       v6},
+{"srld",         F5(2, 0x26, 1, 0x2),    F5(~2, ~0x26, ~1, ~0x2),      "1,Y,d",    0,       v6},
+{"srld",         F5(2, 0x26, 0, 0x2),    F5(~2, ~0x26, ~0, ~0x2),      "1,2,d",    0,       v6},
+{"ord",          F4(2, 0x02, 0, 1),      F4(~2, ~0x02, ~0, ~1),        "1,2,d",    0,       v6},
+{"ordcc",        F4(2, 0x12, 0, 1),      F4(~2, ~0x12, ~0, ~1),        "1,2,d",    0,       v6},
+{"ordn",         F4(2, 0x06, 0, 1),      F4(~2, ~0x06, ~0, ~1),        "1,2,d",    0,       v6},
+{"ordncc",       F4(2, 0x16, 0, 1),      F4(~2, ~0x16, ~0, ~1),        "1,2,d",    0,       v6},
+{"anddn",        F4(2, 0x05, 0, 1),      F4(~2, ~0x05, ~0, ~1),        "1,2,d",    0,       v6},
+{"anddncc",      F4(2, 0x15, 0, 1),      F4(~2, ~0x15, ~0, ~1),        "1,2,d",    0,       v6},
+{"subd",         F4(2, 0x04, 0, 1),      F4(~2, ~0x04, ~0, ~1),        "1,2,d",    0,       v8},
+{"subdcc",       F4(2, 0x14, 0, 1),      F4(~2, ~0x14, ~0, ~1),        "1,2,d",    0,       v8},
+{"vsubd8",       F6(2, 0x04, 0, 2, 1),   F6(~2, ~0x04, ~0, ~2, ~1),    "1,2,d",    0,       v8},
+{"vsubd16",      F6(2, 0x04, 0, 2, 2),   F6(~2, ~0x04, ~0, ~2, ~3),    "1,2,d",    0,       v8},
+{"vsubd32",      F6(2, 0x04, 0, 2, 4),   F6(~2, ~0x04, ~0, ~2, ~4),    "1,2,d",    0,       v8},
+{"andd",         F4(2, 0x01, 0, 1),      F4(~2, ~0x01, ~0, ~1),        "1,2,d",    0,       v6},
+{"anddcc",       F4(2, 0x11, 0, 1),      F4(~2, ~0x11, ~0, ~1),        "1,2,d",    0,       v6},
+{"addd",         F4(2, 0x00, 0, 1),      F4(~2, ~0x00, ~0, ~1),        "1,2,d",    0,       v8},
+{"adddcc",       F4(2, 0x10, 0,1),       F4(~2, ~0x10, ~0, ~1),        "1,2,d",    0,       v8},
+{"vaddd8",       F6(2, 0x00, 0, 2, 1),   F6(~2, ~0x00, ~0, ~2, ~1),    "1,2,d",    0,       v8},
+{"vaddd16",      F6(2, 0x00, 0, 2, 2),   F6(~2, ~0x00, ~0, ~2, ~2),    "1,2,d",    0,       v8},
+{"vaddd32",      F6(2, 0x00, 0, 2, 4),   F6(~2, ~0x00, ~0, ~2, ~4),    "1,2,d",    0,       v8},
+{"smuld",        F4(2, 0x0b, 0, 1),      F4(~2, ~0x0b, ~0, ~1),        "1,2,d",    F_MUL32, v8},
+{"smuldcc",      F4(2, 0x1b, 0, 1),      F4(~2, ~0x1b, ~0, ~1),        "1,2,d",    F_MUL32, v8},
+{"umuld",        F4(2, 0x0a, 0, 1),      F4(~2, ~0x0a, ~0, ~1),        "1,2,d",    F_MUL32, v8},
+{"umuldcc",      F4(2, 0x1a, 0, 1),      F4(~2, ~0x1a, ~0, ~1),        "1,2,d",    F_MUL32, v8},
+{"vumuld8",      F6(2, 0x0a, 0, 2, 1),   F6(~2, ~0x0a, ~0, ~2, ~1),    "1,2,d",    0,       v8},
+{"vumuld16",     F6(2, 0x0a, 0, 2, 2),   F6(~2, ~0x0a, ~0, ~2, ~3),    "1,2,d",    0,       v8},
+{"vumuld32",     F6(2, 0x0a, 0, 2, 4),   F6(~2, ~0x0a, ~0, ~2, ~4),    "1,2,d",    0,       v8},
+{"vsmuld8",      F6(2, 0x0b, 0, 2, 1),   F6(~2, ~0x0b, ~0, ~2, ~1),    "1,2,d",    0,       v8},
+{"vsmuld16",     F6(2, 0x0b, 0, 2, 2),   F6(~2, ~0x0b, ~0, ~2, ~3),    "1,2,d",    0,       v8},
+{"vsmuld32",     F6(2, 0x0b, 0, 2, 4),   F6(~2, ~0x0b, ~0, ~2, ~4),    "1,2,d",    0,       v8},
+{"sdivd",        F4(2, 0x0f, 0, 1),      F4(~2, ~0x0f, ~0, ~1),        "1,2,d",    F_DIV32, v8},
+{"sdivdcc",      F4(2, 0x1f, 0, 1),      F4(~2, ~0x1f, ~0, ~1),        "1,2,d",    F_DIV32, v8},
+{"udivdcc",      F4(2, 0x1e, 0, 1),      F4(~2, ~0x1e, ~0, ~1),        "1,2,d",    F_DIV32, v8},
+{"udivd",        F4(2, 0x0e, 0, 1),      F4(~2, ~0x0e, ~0, ~1),        "1,2,d",    F_DIV32, v8},
+{"cswap",        F3(3, 0x2f, 0),         F3(~3, ~0x2f, ~0),            "[1+2]A,d", 0,       v8},
+{"cswap",        F3(3, 0x2f, 1),         F3(~3, ~0x2f, ~1),            "[1+i],d",  0,       v8},
+{"cswapa",       F3(3, 0x3f, 0),         F3(~3, ~0x3f, ~0),            "[1+2]A,d", 0,       v8},
+{"cswapa",       F3(3, 0x3f, 1),         F3(~3, ~0x3f, ~1),            "[1+i],d",  0,       v8},
+{"xnord",        F4(2, 0x07, 0, 1),      F4(~2, ~0x07, ~0, ~1),        "1,2,d",    0,       v6},
+{"xnordcc",      F4(2, 0x17, 0, 1),      F4(~2, ~0x17, ~0, ~1),        "1,2,d",    0,       v6},
+{"xordcc",       F4(2, 0x13, 0, 1),      F4(~2, ~0x13, ~0, ~1),        "1,2,d",    0,       v6},
+{"adddreduce8",  F8(2, 0x2d, 0x0, 0x1),  F8(~2, ~0x2d, ~0x0, ~0x1),    "1,2,d",    0,       v8},
+{"ordreduce8",   F8(2, 0x2e, 0x0, 0x1),  F8(~2, ~0x2e, ~0x0, ~0x1),    "1,2,d",    0,       v8},
+{"anddreduce8",  F8(2, 0x2f, 0x0, 0x1),  F8(~2, ~0x2f, ~0x0, ~0x1),    "1,2,d",    0,       v8},
+{"xordreduce8",  F8(2, 0x3e, 0x0, 0x1),  F8(~2, ~0x3e, ~0x0, ~0x1),    "1,2,d",    0,       v8},
+{"adddreduce16", F8(2, 0x2d, 0x0, 0x2),  F8(~2, ~0x2d, ~0x0, ~0x2),    "1,2,d",    0,       v8},
+{"ordreduce16",  F8(2, 0x2e, 0x0, 0x2),  F8(~2, ~0x2e, ~0x0, ~0x2),    "1,2,d",    0,       v8},
+{"anddreduce16", F8(2, 0x2f, 0x0, 0x2),  F8(~2, ~0x2f, ~0x0, ~0x2),    "1,2,d",    0,       v8},
+{"xordreduce16", F8(2, 0x3e, 0x0, 0x2),  F8(~2, ~0x3e, ~0x0, ~0x2),    "1,2,d",    0,       v8},
+{"zbytedpos",    F8(2, 0x3f, 0x0, 0x0),  F8(~2, ~0x3f, ~0x0, ~0x0),    "1,2,d",    0,       v8},
+{"zbytedpos",    F8I(2, 0x3f, 0x1, 0x0), F8I(~2, ~0x3f, ~0x1, ~0x0),   "1,i,d",    0,       v8},
+{"vfadd32",      F3F(2, 0x34, 0x142),    F3F(~2, ~0x34, ~0x142),       "v,B,H",    F_FLOAT, v8},
+{"vfadd16",      F3F(2, 0x34, 0x143),    F3F(~2, ~0x34, ~0x143),       "v,B,H",    F_FLOAT, v8},
+{"vfsub32",      F3F(2, 0x34, 0x144),    F3F(~2, ~0x34, ~0x144),       "v,B,H",    F_FLOAT, v8},
+{"vfsub16",      F3F(2, 0x34, 0x145),    F3F(~2, ~0x34, ~0x145),       "v,B,H",    F_FLOAT, v8},
+{"vfmul32",      F3F(2, 0x34, 0x146),    F3F(~2, ~0x34, ~0x146),       "v,B,H",    F_FLOAT, v8},
+{"vfmul16",      F3F(2, 0x34, 0x147),    F3F(~2, ~0x34, ~0x147),       "v,B,H",    F_FLOAT, v8},
+{"vfi16toh",     F3F(2, 0x34, 0x148),    F3F(~2, ~0x34, ~0x148),       "f,H",      F_FLOAT, v8},
+{"vfhtoi16",     F3F(2, 0x34, 0x149),    F3F(~2, ~0x34, ~0x149),       "f,H",      F_FLOAT, v8},
+{"faddreduce16", F3F(2, 0x34, 0x150),    F3F(~2, ~0x34, ~0x150),       "f,H",      F_FLOAT, v8},
+{"fstoh",        F3F(2, 0x34, 0x151),    F3F(~2, ~0x34, ~0x151),       "f,H",      F_FLOAT, v8},
+{"fhtos",        F3F(2, 0x34, 0x152),    F3F(~2, ~0x34, ~0x152),       "f,H",      F_FLOAT, v8},
+\end{verbatim}
+}
+\vskip -.25in
+\hrulefill
+
+
+\subsection{Integer-Unit Extensions: Arithmetic-Logic Instructions}
+\label{sec:integer-unit-extns:arith-logic-insns:impl}
+
+The  integer  unit extensions  of  AJIT  are  based  on the  SPARC  V8
+instructions.    See:  SPArc   v8  architecture   manual.   SPARC   v8
+instructions  are  32   bits  long.   The  GNU   Binutils  2.22  SPARC
+implementation defines a  set of macros to capture the  bits set by an
+instruction.  These are the so called ``match'' masks.  Please see the
+code     in     \texttt{\$BINUTILSHOME/include/opcode/sparc.h}     and
+\texttt{\$BINUTILSHOME/opcodes/sparc-opc.c}.
+
+\input{../src/add-sub-insn-extns}
+\input{../src/shift-insn-extns}
+\input{../src/mul-div-insn-extns}
+\input{../src/64-bit-logical-insn-extns}
+%\input{../src/int-unit-extns-summary}
+
+\subsection{Integer-Unit Extensions: SIMD Instructions}
+\label{sec:integer-unit-extns:simd-instructions:impl}
+
+\input{../src/simd-1-insn-extns}
+
+\subsection{Integer-Unit Extensions: SIMD Instructions II}
+\label{sec:integer-unit-extns:simd-instructions:2:impl}
+
+\subsection{Vector Floating Point Instructions}
+\label{sec:vector-floating-point-instructions:impl}
+
+\subsection{CSWAP instructions}
+\label{sec:cswap-instructions:impl}
+
