@@ -20,7 +20,7 @@ files.
 		
 		Compile script is invoked as (assuming 80MHz system):
 
-		./compile_for_ajit_uclibc.sh 0x40000000 0x40008000 VMAPLOWMEM.TXT 80000000
+		./compile_for_ajit_uclibc.sh 0x40000000 0x40008000 VMAPHIGHMEM.TXT 80000000
 
 
 
