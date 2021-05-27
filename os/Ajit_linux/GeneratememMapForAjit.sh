@@ -42,8 +42,20 @@ echo "  Running 'make' inside buildroot folder."
 echo "================================================="
 
 cd buildroot-2014.08
-make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
-make
+
+# make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
+
+# portion that builts a rootfs and copies it for the intiramfs
+make clean
+make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_rootfs_$1_defconfig
+make && \
+cp ./output/images/rootfs.tar ./../Ajit_buildroot_configs/board/overlay/initramfs
+
+# building initramfs with the overlay that has the above rootfs, 
+# kernel and then combining both to a single binary
+# make clean
+make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_initramfs_$1_defconfig
+make && \
 cd -
 
 echo "================================================="
