@@ -1,0 +1,1 @@
+cp Ajit_device_tree_fpga.dts Ajit_device_tree.dts

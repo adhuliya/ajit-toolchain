@@ -1,0 +1,94 @@
+//minimal device tree for booting Linux kernel on Qemu
+//last revised on 20 Feb 2015
+//by Neha Karanjkar
+
+/dts-v1/;
+/{
+	ajit{
+		
+		compatible = "Ajit";
+		idprom                    = [ 01 40 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ]; 
+		banner-name               = "Ajit processor";
+		model                     = "Model V 0.1";
+		// idprom fields  that sparc linux kernel expects :
+		// arch/sparc/include/asm/idprom.h
+		// 	struct idprom {
+		// 		u8		id_format;	//  Format identifier (always 0x01) 
+		// 		u8		id_machtype;	//  Machine type = 0x40 for Ajit defined in arch/sparc/include/asm/machines.h
+		// 		u8		id_ethaddr[6];	//  Hardware ethernet address 
+		// 		s32		id_date;	//  Date of manufacture 
+		// 		u32		id_sernum:24;	//  Unique serial number 
+		// 		u8		id_cksum;	//  Checksum - xor of the data bytes 
+		// 		u8		reserved[16];
+		// 	};
+
+	
+		#address-cells		=   <1> ;   
+		#size-cells		=   <1> ;   
+		ajit_cpu{
+			device_type           =   "cpu";
+			mmu-nctx              =  <0x100> ; //number of contexts supported by mmu
+			};
+		ajit_interrupt_controller{
+			compatible 		=   "Ajit";
+			#address-cells		=   <1> ;   
+			#size-cells		=   <0> ;   
+			device_type		=   "interrupt_controller";
+			reg                   	=   <0xffff3000 0x00000100>;
+			};
+		ajit_timer{
+			compatible 		=   "Ajit";
+			#address-cells		=   <1> ;   //this indicates that addr is 1*32 bits wide 
+			#size-cells		=   <1> ;   //this indicates that size is 1*32 bits wide 
+			device_type		=   "timer";
+			reg                   	=   <0xffff3100 0x00000100>;//<addr, size>
+			#interrupt-cells	=   <1> ; //the interrupt number consists of just one number
+			interrupts		=   <10>; //timer interrupt IRQ level
+			tick-real-freq		=   <100>; //frequency of input clock to the timer in Hz. Slower the processor model, lower should be this value.
+			tick-virtual-freq	=   <100000>; //what the software should "think" is the clock tick frequency. Keep this fixed.
+			};
+		ajit_serial{
+			compatible 		=   "Ajit";
+			#address-cells		=   <1> ;   //this indicates that addr is 1*32 bits wide 
+			#size-cells		=   <1> ;   //this indicates that size is 1*32 bits wide 
+			device_type		=   "serial";
+			reg                   	=   <0xffff3200 0x00000100>;//<addr, size>
+			#interrupt-cells	=   <1> ; //the interrupt number consists of just one number
+			interrupts		=   <12>; //serial interrupt IRQ level
+			};
+
+		//The obio node information is not really used, but the
+		//kernel checks for presence of this node. So we keep it.
+		//TODO: get rid of the checks in the kernel
+		//and get rid of this node
+
+		obio{
+			name                  =   "obio";
+			device_type           =   "hierarchical";
+			#address-cells        =   <2> ;
+			#size-cells           =   <1> ;
+			ranges                =   [00 00 00 00 00 00 00 00 00 00 00 00 71 00 00 00 01 00 00 00] ;
+			
+			zs{
+				device_type		=   "serial";
+				reg                   	=   <0x00000000 0x00100000   0x00000008>;
+				address               	=   <0xffdd3000> ;
+				slave                 	=   <0x0> ;
+				intr                  	=   [00 00 00 2c 00 00 00 00] ;
+			};
+			counter{
+				reg                   =   <0x00000000 0x00d00000   0x00000010
+					0x00000000 0x00d10000   0x00000010>;
+				address               =   [ff dd b0 00 ff de b0 00] ;
+			};
+
+			interrupt{
+				reg                   =   <0x00000000 0x00e00000   0x00000010
+					0x00000000 0x00e10000   0x00000010>;
+				address               =   [ff de c0 00 ff df c0 00] ;
+			};
+		};
+		
+	};
+};
+

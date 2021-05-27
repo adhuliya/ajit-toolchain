@@ -1,0 +1,1 @@
+cp Ajit_device_tree_c_model.dts Ajit_device_tree.dts
