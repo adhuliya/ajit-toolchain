@@ -1,0 +1,25 @@
+#!/bin/busybox sh
+
+echo "init shell script called ..."
+
+# Dump to sh if something fails
+error() {
+	echo "Jumping into the shell..."
+	setsid cttyhack sh
+}
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+
+mkdir -p /newroot
+mount -t tmpfs tmpfs /newroot || error
+
+echo "Extracting rootfs... "
+export EXTRACT_UNSAFE_SYMLINKS=1
+tar -x -f rootfs.tar -C /newroot || error
+
+# Clean up.
+umount /proc
+umount /sys
+
+exec switch_root /newroot /sbin/init || error

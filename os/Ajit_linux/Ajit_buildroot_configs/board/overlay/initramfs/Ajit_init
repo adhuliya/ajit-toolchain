@@ -1,0 +1,39 @@
+#!/bin/busybox sh
+
+# devtmpfs does not get automounted for initramfs
+# /bin/mount -t devtmpfs devtmpfs /dev
+exec 0</dev/console
+exec 1>/dev/console
+exec 2>/dev/console
+
+echo "init shell script called ..."
+
+# Dump to sh if something fails
+error() {
+	echo "Jumping into the shell..."
+	setsid cttyhack sh
+}
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+
+mkdir -p /sys/dev
+mkdir -p /var/run
+mkdir -p /dev
+
+mkdir -p /dev/pts
+mount -t devpts devpts /dev/pts
+
+mkdir -p /newroot
+mount -t tmpfs tmpfs /newroot || error
+
+echo "Extracting rootfs... "
+export EXTRACT_UNSAFE_SYMLINKS=1
+tar -x -f rootfs.tar -C /newroot || error
+echo "successfully extracted"
+
+mount --move /sys /newroot/sys
+mount --move /proc /newroot/proc
+mount --move /dev /newroot/dev
+
+exec switch_root /newroot /sbin/init || error
