@@ -6,3 +6,12 @@ Generated_memory_map*
 GPATH
 GRTAGS
 GTAGS
+
+qemu-build/**
+logs/**
+
+# IDE files
+.vscode**
+
+
+Ajit_buildroot_configs/archive/**
