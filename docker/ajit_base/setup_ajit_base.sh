@@ -41,6 +41,7 @@
     bison \
     flex \
     gedit \
+    git \
 && \
   apt-get -y autoremove \
 && \
