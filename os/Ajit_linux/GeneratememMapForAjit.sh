@@ -3,6 +3,19 @@ BUILDROOT_BUILD_DIR=$PWD/buildroot-2014.08
 LINUX_BUILD_DIR=$PWD/buildroot-2014.08/output/build/linux-custom
 BUILDROOT_TAR=$PWD/buildroot-2014.08.tar.gz
 
+# Check for presence of Argumentsand throw an error when there is none or invalid one.
+if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
+  echo "ERROR: Invalid or missing argument...."
+  echo "Usage: $0 <DEFCONFIG>"
+  echo ""
+  echo "DEFONFIG values"
+  echo "    <0> rootfs-tmpfs with dynamic-lib & static device list"
+  echo "    <1> rootfs-tmpfs with satic-lib & static device list"
+  echo "    <2> rootfs-tmpfs with static-libs & dynamic device list"
+  echo "    <3> legacy initramfs system config;no rootfs-tmpfs present"
+  exit 1
+fi
+
 #If you're running this script for the first time,
 #the destination folder may not exist.
 #Let's create it first.
@@ -43,18 +56,31 @@ echo "================================================="
 
 cd buildroot-2014.08
 
-# make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
-
-# portion that builts a rootfs and copies it for the intiramfs
 make clean
-make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_rootfs_$1_defconfig
-make && \
-cp ./output/images/rootfs.tar ./../Ajit_buildroot_configs/board/overlay/initramfs
 
-# building initramfs with the overlay that has the above rootfs, 
-# kernel and then combining both to a single binary
-# make clean
-make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_initramfs_$1_defconfig
+if [ "$1" -eq 3 ]; then
+  # Original defconfig with just the initial ramfs
+  echo ""
+  echo "****Defconfig: Ajit_defconfig****"
+  echo ""
+  make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
+elif ! [ "$#" -eq 0]; then
+  echo ""
+  echo "****Defconfig: Ajit_rootfs_$1_defconfig****"
+  echo ""
+  make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_rootfs_$1_defconfig
+  make && \
+  cp ./output/images/rootfs.tar ./../Ajit_buildroot_configs/board/overlay/initramfs
+
+  # building initramfs with overlay that has the above rootfs, 
+  # kernel, and then combining both to a single binary
+  # make clean
+  echo ""
+  echo "****Defconfig: Ajit_rootfs_$1_defconfig****"
+  echo ""
+  make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_initramfs_$1_defconfig
+fi
+
 make && \
 cd -
 

@@ -24,7 +24,13 @@ BUILD INSTRUCTIONS:
 -------------------
 	To build the OS, run
 
-		./GeneratememMapForAjit.sh
+		./GeneratememMapForAjit.sh <DEFCONFIG>
+
+		DEFONFIG values
+		    <0> rootfs-tmpfs with dynamic-lib & static device list
+		    <1> rootfs-tmpfs with satic-lib & static device list
+		    <2> rootfs-tmpfs with static-libs & dynamic device list
+		    <3> legacy initramfs system config;no rootfs-tmpfs present
 
 	followed by
 
