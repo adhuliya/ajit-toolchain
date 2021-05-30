@@ -218,7 +218,14 @@ void cpuDcacheAccess (MmuState* ms,
 #ifdef DEBUG
 	fprintf(stderr,"\nDCACHE :  response to CPU mae=0x%x, data=0x%lx\n",*mae,*read_data);
 #endif
+	if(getCacheTraceFile() != NULL)
+	{
+		dumpCpuDcacheAccessTrace(dcache, asi, addr, request_type, byte_mask, write_data,
+							*mae, *read_data);
+	}
+
 	unlock_cache(dcache);
+
 }
 
 	

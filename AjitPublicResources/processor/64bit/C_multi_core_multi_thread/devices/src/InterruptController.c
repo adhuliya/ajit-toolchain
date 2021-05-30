@@ -96,6 +96,7 @@ void initialize_IRC_State()
 
 	// for the moment, all interrupts are directed
 	// only to CPU-0.
+	register_port("ENV_to_THREAD_irl_0_0",8,1);
 	set_pipe_is_written_into("ENV_to_THREAD_irl_0_0");
 	write_uint8("ENV_to_THREAD_irl_0_0", IRC_INT_OUT);
 }

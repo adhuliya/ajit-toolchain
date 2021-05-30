@@ -33,7 +33,9 @@ int main(int argc, char* argv[])
 				writeIntoSetAssociativeMemory(m, I+seed, I, I&0x7);
 			else
 			{
-				setAssociativeMemoryCModel(0,8,8,6,3, 
+				setAssociativeMemoryCModel(
+						0,8,8,6,3, 
+						1, // ignore collisions.
 						0, 0, 1, 	     // clear, erase, write
 						I, I+seed, I & 0x7,  // write data, tag, set-id
 						0, 0, 0,	     // lookup-flag, tag, set-id
@@ -57,6 +59,7 @@ int main(int argc, char* argv[])
 			else
 				setAssociativeMemoryCModel(
 						0,8,8,6,3,     // configuration
+						0, // do not ignore collisions
 						0, 0, 0, 	// clear, erase, write
 						0, 0, 0, 	// write-data, tag, set-id
 						1, I+seed, I & 0x7,  // lookup-flag, tag, set-id
@@ -81,7 +84,9 @@ int main(int argc, char* argv[])
 		{
 			uint8_t lv = 0;
 			uint64_t ld  = 0;
-			setAssociativeMemoryCModel(0,8,8,6,3, 	// config
+			setAssociativeMemoryCModel(
+					0,8,8,6,3, 	// config
+					1,  // ignore collisions
 					0, 1, 0, // clear erase write
 					0, (I+seed),  I&0x7,  // write-data, tag, set-id
 					0, 0, 0, 	// lookup flag, tag, set-id
@@ -101,6 +106,7 @@ int main(int argc, char* argv[])
 			uint64_t ld  = 0;
 			setAssociativeMemoryCModel(
 					0,8,8,6,3,     // configuration
+					1, // ignore collisions
 					0, 0, 0, 	// clear, erase, write
 					0, 0, 0, 	// write-data, tag, set-id
 					1, I+seed, I & 0x7,  // lookup-flag, tag, set-id

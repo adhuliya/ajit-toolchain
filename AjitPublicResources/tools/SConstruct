@@ -4,7 +4,6 @@ SConscript(['misc/SConscript'])
 SConscript(['traceCompareServer/SConscript'])
 SConscript(['generateInitVal/SConscript'])
 SConscript(['genVmapAsm/SConscript'])
-SConscript(['flash_image/SConscript'])
 #SConscript(['ajit_debug_monitor_mt/SConscript'])
 #SConscript(['ajit_debug_monitor/SConscript'])
 

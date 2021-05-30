@@ -742,7 +742,7 @@ uint8_t fetchInstruction(ThreadState* s,
 {
 	uint8_t mae_value;
 	readInstruction(s->mmu_state, s->icache,  addr_space, addr, &mae_value, inst, mmu_fsr);
-	setPageBit(s->parent_core_state,addr);
+	setPageBit((CoreState*) s->parent_core_state,addr);
 	return mae_value;
 }
 

@@ -1,5 +1,9 @@
 #ifndef _bridge_h___
 #define _bridge_h___
+
+// 8-entry snoop filter cache.
+#define SNOOP_FILTER_CACHE_LOG_MEM_SIZE 	 	3
+
 typedef struct  __memDescriptorList memDescriptorList;
 struct __memDescriptorList
 {

@@ -149,6 +149,7 @@ uint32_t lookupAndUpdateRlut(Rlut* r, uint32_t pa_line_addr, uint32_t va_line_ad
 	uint64_t hit_va_64 = 0;
 
 	operateOnSetAssociativeMemory (r->pa_tlb,
+					1, // ignore collisions.
 					0, // clear
 					0, // erase
 					1,  // write
@@ -192,6 +193,7 @@ uint32_t lookupRlut(Rlut* r, uint32_t pa_line_addr)
 	uint8_t hit = 0;
 	uint64_t hit_va_64 = 0;
 	operateOnSetAssociativeMemory (r->pa_tlb,
+					1, // ignore collisions
 					0, // clear
 					0, // erase
 					0,  // write

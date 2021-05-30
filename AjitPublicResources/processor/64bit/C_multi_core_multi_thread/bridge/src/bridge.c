@@ -38,9 +38,46 @@ int global_lock_owner_core = 0;
 
 extern int global_verbose_flag;
 
+setAssociativeMemory** snoop_filters = NULL;
+
+
 void bridgeSetNcores(uint32_t ncores)
 {
 	NCORES = ncores;
+	int I;
+	snoop_filters = (setAssociativeMemory**) malloc(ncores*sizeof(setAssociativeMemory*));
+	for(I = 0; I < ncores; I++)
+	{
+		// fully associative
+		snoop_filters[I] = 
+			findOrAllocateSetAssociativeMemory 
+					(I + 1000,  // give it a unique id different from the mmu tlbs.
+						30,
+						1,
+						SNOOP_FILTER_CACHE_LOG_MEM_SIZE,
+						SNOOP_FILTER_CACHE_LOG_MEM_SIZE);
+						
+	}
+}
+
+// return 1 if there was a hit on lookup.
+int updateAndLookupSnoopFilterCache (int cpu_id,
+					uint8_t erase,
+					uint8_t lookup,
+					uint8_t write,
+					uint32_t physical_addr_of_line)
+{
+	uint8_t lookup_valid = 0;
+	uint64_t lookup_data = 0;
+	operateOnSetAssociativeMemory(snoop_filters[cpu_id], 1,
+                                        0,
+                                        erase, 
+                                        write,
+                                        1, physical_addr_of_line, 0,
+					lookup,  physical_addr_of_line, 0,
+					&lookup_valid, &lookup_data);
+	int ret_val = lookup && lookup_valid;
+	return(ret_val);
 }
 
 int testAndSetGlobalLock (uint8_t l, int cpu_id)
@@ -139,7 +176,8 @@ int sysMemBusRequest (int cpu_id,
 				// if the cpu accesses the main memory, invalidate
 				// the last-line-address buffer.
 				//
-				last_line_address_invalidated[cpu_id] = 0xffffffff;
+				uint32_t line_addr = (addr >> LOG_BYTES_PER_CACHE_LINE);
+				updateAndLookupSnoopFilterCache(cpu_id, 1,0,0, line_addr);
 			}
 
 			*rdata = getDoubleWordInMemory(addr);
@@ -169,7 +207,10 @@ int sysMemBusRequest (int cpu_id,
 			{
 				if(COREID!= cpu_id)
 				{
-					if(line_addr != last_line_address_invalidated[COREID])
+					int lookup_hit = 
+						updateAndLookupSnoopFilterCache(cpu_id, 0, 1, 1, line_addr);
+
+					if(!lookup_hit)
 					{
 						uint32_t icache_inval_dat =
 							lookupRlutInManager(COREID,line_addr,1);

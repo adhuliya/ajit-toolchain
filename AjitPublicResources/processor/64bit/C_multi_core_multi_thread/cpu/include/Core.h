@@ -6,7 +6,6 @@
 #define MAX_NCORES 		4
 #define MAX_NTHREADS_PER_CORE 	2
 
-typedef struct _ThreadState ThreadState;
 typedef struct _CoreState 
 {
 	uint32_t core_id;

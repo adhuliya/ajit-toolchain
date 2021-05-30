@@ -58,7 +58,7 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 	uint8_t lock_flag = 0;
 	if(is_not_alternate)
 	{
-		setPageBit(state->parent_core_state, address); // flag all pages that were accessed.
+		setPageBit((CoreState*) state->parent_core_state, address); // flag all pages that were accessed.
 
 		if (!s) addr_space =10;
 		else	addr_space =11;
@@ -272,7 +272,7 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	uint8_t is_not_alternate = ((op >= _STB_) && (op <= _STDCQ_));
 	if(is_not_alternate)
 	{
-		setPageBit(state->parent_core_state, address); // flag all pages that were accessed.
+		setPageBit((CoreState*) state->parent_core_state, address); // flag all pages that were accessed.
 		if( !s) addr_space = 10;
 		else    addr_space = 11;
 	}else

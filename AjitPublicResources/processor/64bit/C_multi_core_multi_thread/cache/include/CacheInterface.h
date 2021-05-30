@@ -123,12 +123,22 @@ void cpuIcacheAccess (MmuState* ms,
 			WriteThroughAllocateCache* icache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t* mae, uint64_t* instr_pair, uint32_t* mmu_fsr);
+void dumpCpuIcacheAccessTrace
+		(WriteThroughAllocateCache* icache,
+			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
+				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr);
  
 void cpuDcacheAccess (MmuState* ms, 
 			WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,
 				uint8_t* mae, uint64_t* read_data);
+void dumpCpuDcacheAccessTrace 
+		     (WriteThroughAllocateCache* dcache,
+			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
+				uint64_t write_data,
+				uint8_t mae, uint64_t read_data);
+
 
 void printCacheStatistics (WriteThroughAllocateCache* c);
 
@@ -143,5 +153,8 @@ void updateMmuState (WriteThroughAllocateCache* c,
 			uint32_t  waddr,
 			uint64_t  write_dword);
 int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c);
+
+void setCacheTraceFile(FILE* fp);
+FILE* getCacheTraceFile();
 						
 #endif

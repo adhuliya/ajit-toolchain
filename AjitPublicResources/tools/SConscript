@@ -4,7 +4,6 @@ SConscript(['misc/SConscript'])
 SConscript(['traceCompareServer/SConscript'])
 SConscript(['generateInitVal/SConscript'])
 SConscript(['genVmapAsm/SConscript'])
-SConscript(['flash_image/SConscript'])
 
 
 AJIT_HOME=os.environ['AJIT_PROJECT_HOME']

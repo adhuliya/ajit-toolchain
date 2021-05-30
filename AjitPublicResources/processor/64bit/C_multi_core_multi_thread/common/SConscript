@@ -4,7 +4,7 @@ env = Environment(ENV = {'PATH' : os.environ['PATH']})
 Import('COMPILATION_FLAGS')
 
 AHIR_RELEASE=os.environ['AHIR_RELEASE']
-env.Append(CPPPATH = './src/:./include:')
+env.Append(CPPPATH = './include:')
 
 FUNCTIONLIB_INCLUDE=AHIR_RELEASE + "/functionLibrary/include"
 env.Append(CPPPATH = FUNCTIONLIB_INCLUDE + ":")

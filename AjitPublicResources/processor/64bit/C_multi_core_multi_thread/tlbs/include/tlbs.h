@@ -33,16 +33,18 @@ setAssociativeMemory* findOrAllocateSetAssociativeMemory(uint8_t model_id,
 								uint8_t tag_width, uint8_t data_width,
 								uint8_t log_mem_size, uint8_t log_set_size);
 
-void setAssociativeMemoryCModel (uint8_t model_id, 
+void setAssociativeMemoryCModel (uint8_t model_id,  
 					uint8_t twidth, uint8_t data_width, uint8_t log_mem_size,
 					uint8_t log_set_size, 
+					uint8_t ignore_collisions,
 					uint8_t clear_flag, uint8_t erase_flag, uint8_t write_flag,
 					uint64_t write_data, uint64_t write_tag, uint16_t write_set_id,
 					uint8_t lookup_flag, uint64_t lookup_tag, uint16_t lookup_set_id,
 					uint8_t* lookup_valid, uint64_t* lookup_data);
 
-void fullyAssociativeMemoryCModel ( 	uint8_t model_id,
+void fullyAssociativeMemoryCModel ( 	uint8_t model_id, 
 					uint8_t twidth, uint8_t data_width, uint8_t log_mem_size, 
+					uint8_t ignore_collisions,
 					uint8_t clear_flag,  uint8_t erase_flag, uint8_t write_flag,
 					uint64_t write_data, uint64_t write_tag, 
 					uint8_t lookup_flag, uint64_t lookup_tag, 
@@ -57,6 +59,7 @@ int lookupSetAssociativeMemory(setAssociativeMemory* m, uint64_t lookup_tag, uin
 						uint64_t* lookup_data);
 
 void operateOnSetAssociativeMemory(setAssociativeMemory* m, 
+					uint8_t ignore_collisions,
 					uint8_t clear_flag,
 					uint8_t erase_flag, 
 					uint8_t write_flag,

@@ -115,6 +115,12 @@ void cpuIcacheAccess (MmuState* ms,
 		}
 	}
 
+	if(getCacheTraceFile() != NULL)
+	{
+		dumpCpuIcacheAccessTrace(icache, asi, addr, request_type, byte_mask, 
+							*mae, *instr_pair, *mmu_fsr);
+	}
+
 	unlock_cache(icache);
 #ifdef DEBUG
 	fprintf(stderr,"\nICACHE :  response to CPU mae=0x%x, instr-pair=0x%lx, mmu-fsr=0x%x\n",

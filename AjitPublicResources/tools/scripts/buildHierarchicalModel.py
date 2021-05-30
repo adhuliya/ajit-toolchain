@@ -639,8 +639,9 @@ def main():
 
            uniquification_file = "__UFQ.TXT"
            prefix_rename_map,  rpipe_rename_map, wpipe_rename_map, register_pipe_rename_map  = buildUniquifyMaps (uniquification_file)
-    elif (hiersys2c_flag):
+    elif (hiersys2c_flag and (len(hsys_list) == 0)):
         logError("no hsys files found under " + work_area)
+        return 1
 
     # C files..  collect them.  Note that they will be uniquified if
     # -u option has been used.

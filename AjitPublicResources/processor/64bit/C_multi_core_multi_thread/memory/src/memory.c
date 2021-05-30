@@ -342,3 +342,8 @@ void accessMemU64 (uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata, 
 	}
 }
 
+void     vGetDoubleWordInMemory(uint32_t address, uint64_t* rd)
+{
+	*rd = getDoubleWordInMemory(address);
+}
+

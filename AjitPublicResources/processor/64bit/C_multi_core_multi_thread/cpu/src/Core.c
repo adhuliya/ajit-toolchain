@@ -75,7 +75,7 @@ void init_core(CoreState* s,
 		s->threads[I]->mmu_state = s->mmu_state;
 		s->threads[I]->dcache = s->dcache;
 		s->threads[I]->icache = s->icache;
-		s->threads[I]->parent_core_state = s;
+		s->threads[I]->parent_core_state = (CoreState*) s;
 	
 		char irl_buffer[256];
 		sprintf(irl_buffer,"ENV_to_AJIT_irl_%d_%d", core_id, I);

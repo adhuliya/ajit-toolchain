@@ -50,6 +50,7 @@ uint32_t getWordInMemory(uint32_t address);
 void     setWordInMemory(uint32_t address, uint32_t word, uint8_t byte_mask);
 //last 3 bits of address are ignored
 uint64_t getDoubleWordInMemory(uint32_t address);
+void     vGetDoubleWordInMemory(uint32_t address, uint64_t* rd);
 void    setDoubleWordInMemory(uint32_t address, uint64_t double_word, uint8_t byte_mask);
 
 void accessMemU64 (uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata, uint64_t* rdata);

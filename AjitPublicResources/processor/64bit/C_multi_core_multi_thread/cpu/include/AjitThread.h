@@ -13,7 +13,6 @@
 #include "monitorLogger.h"
 	
 
-typedef struct _CoreState CoreState;
 
 typedef enum _ThreadMode
 {
@@ -124,7 +123,7 @@ typedef struct _StateUpdateFlags
 
 typedef struct _ThreadState
 {
-	CoreState*  parent_core_state;
+	void*  parent_core_state;
 
 	uint32_t core_id;
 	uint32_t thread_id;

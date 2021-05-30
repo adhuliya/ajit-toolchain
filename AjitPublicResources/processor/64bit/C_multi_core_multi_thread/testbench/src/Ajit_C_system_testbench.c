@@ -29,6 +29,7 @@
 #include "StatsKeeping.h"
 #include "DummyDcache.h"
 #include "DummyIcache.h"
+#include "CacheInterface.h"
 #include "Mmu.h"
 #include "memory.h"
 #include "Timer.h"
@@ -59,6 +60,9 @@ void registerResetPorts(uint32_t NCORES, uint32_t NTHREADS)
 		{
 			char reset_buf[1024];
 			sprintf(reset_buf,"ENV_to_AJIT_reset_%d_%d", CID,TID);
+			register_port (reset_buf,8,1);
+
+			sprintf(reset_buf,"ENV_to_THREAD_irl_%d_%d", CID,TID);
 			register_port (reset_buf,8,1);
 		}
 	}
@@ -130,6 +134,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -I <reporting-interval>, optional, for specifying interval at which Instr summary is printed. default is 10000000.\n");
 	fprintf(stderr, "   -R <randomization-seed>, optional, for randomizing initial memory values (if omitted, memory will be initialized to 0).\n");
 	fprintf(stderr, "   -i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4\n");
+	fprintf(stderr, "   -e <cache-trace-file>, optional, for specifying cache access dump file.\n");
 	fprintf(stderr, "                                                                         \n");
 	fprintf(stderr, "EXAMPLE:  \n");
 	fprintf(stderr, "          %s -m add_test.mmap -d -l add_test.log -r add_test.results -w add_test.wtrace \n", app_name);
@@ -221,6 +226,7 @@ int main(int argc, char **argv)
 	uint8_t log_flag = 0;
 	char* 	reg_write_file_name = NULL;
 	char*   long_reg_write_file_name = NULL;
+	char*   cache_trace_file_name = NULL;
 	logger_server_ip_address = NULL;
 	logger_server_port_number=-1;
 	int opt;
@@ -242,7 +248,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -256,6 +262,10 @@ int main(int argc, char **argv)
 				break;
 			case 'N':
 				icache_number_of_lines = atoi(optarg);
+				break;
+			case 'e':
+				cache_trace_file_name = strdup(optarg);
+				fprintf(stderr,"Info: cache trace file=%s.\n", cache_trace_file_name);
 				break;
 			case 'n':
 				NCOREs = atoi(optarg);
@@ -354,6 +364,27 @@ int main(int argc, char **argv)
 				break;
 		}
 	}
+
+	if(cache_trace_file_name != NULL)
+	{
+		FILE* cache_trace_file = NULL;
+
+		if(strcmp(cache_trace_file_name,"stdout") == 0)
+			cache_trace_file = stdout;	
+		else
+			cache_trace_file = fopen(cache_trace_file_name,"w");
+
+		if(cache_trace_file != NULL)
+		{
+			setCacheTraceFile(cache_trace_file);
+		}
+		else
+		{
+			fprintf(stderr,"Error: could not open cache trace file %s\n", cache_trace_file_name);
+		}
+	}
+
+	registerResetPorts(NCOREs, NTHREADs);
 
 	fprintf(stderr,"Info: branch-predictor table size=%d.\n", bp_table_size);
 	fprintf(stderr,"Info: dcache-number-of-lines=0x%x.\n", dcache_number_of_lines);
