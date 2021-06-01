@@ -1,0 +1,72 @@
+Opcode|Format type|Format Value|Other field|Value|Operation|Sparc V8 Manual main description page|Sparc V8 Manual main description Chapter reference|Insn Category|Insn Category Index|Format Index|Processing Status|Privilege|Notes|Register Type, if any|ASM Rator Syntax|Num Args|ASM Arg 1|ASM Arg 2|ASM Arg 3|ASM Arg 4|END
+SETHI|op2|100|||Set High-Order 22 bits|104|B9|Integer Arith|2|op22|raw|0|const22, %hi (value)|nr|sethi|2|imm22|rd|||end
+NOP|op2|100|||No Operation, argument is ignored.|105|B10|Integer Arith|2|op23|raw|1|special case of SETHI with rd = 0 and imm22=0|n|nop|1|imm22||||end
+AND|op3|000001|i|000000|And|106|B11|Integer Arith|2|op40|raw|0||rrr|and|3|rs1|rs2|rd||end
+ANDcc|op3|010001|i|000000|And and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|andcc|3|rs1|rs2|rd||end
+ANDN|op3|000101|i|000000|And Not|106|B11|Integer Arith|2|op40|raw|0||rrr|andn|3|rs1|rs2|rd||end
+ANDNcc|op3|010101|i|000000|And Not and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|andncc|3|rs1|rs2|rd||end
+OR|op3|000010|i|000000|Inclusive Or|106|B11|Integer Arith|2|op40|raw|0||rrr|or|3|rs1|rs2|rd||end
+ORcc|op3|010010|i|000000|Inclusive Or and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|orcc|3|rs1|rs2|rd||end
+ORN|op3|000110|i|000000|Inclusive Or Not|106|B11|Integer Arith|2|op40|raw|0||rrr|orn|3|rs1|rs2|rd||end
+ORNcc|op3|010110|i|000000|Inclusive Or Not and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|orncc|3|rs1|rs2|rd||end
+XOR|op3|000011|i|000000|Exclusive Or|106|B11|Integer Arith|2|op40|raw|0||rrr|xor|3|rs1|rs2|rd||end
+XORcc|op3|010011|i|000000|Exclusive Or and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|xorcc|3|rs1|rs2|rd||end
+XNOR|op3|000111|i|000000|Exclusive Nor|106|B11|Integer Arith|2|op40|raw|0||rrr|xnor|3|rs1|rs2|rd||end
+XNORcc|op3|010111|i|000000|Exclusive Nor and modify icc|106|B11|Integer Arith|2|op40|raw|0||rrr|xnorcc|3|rs1|rs2|rd||end
+SLL|op3|100101|i|000000|Shift Left Logical|107|B12|Integer Arith|2|op40|raw|0||rrr|sll|3|rs1|rs2|rd||end
+SRL|op3|100110|i|000000|Shift Right Logical|107|B12|Integer Arith|2|op40|raw|0||rrr|srl|3|rs1|rs2|rd||end
+SRA|op3|100111|i|000000|Shift Right Arithmetic|107|B12|Integer Arith|2|op40|raw|0||rrr|sra|3|rs1|rs2|rd||end
+ADD|op3|000000|i|000000|Add|108|B13|Integer Arith|2|op40|raw|0||rrr|add|3|rs1|rs2|rd||end
+ADDcc|op3|010000|i|000000|Add and modify icc|108|B13|Integer Arith|2|op40|raw|0||rrr|addcc|3|rs1|rs2|rd||end
+ADDX|op3|001000|i|000000|Add with Carry|108|B13|Integer Arith|2|op40|raw|0||rrr|addx|3|rs1|rs2|rd||end
+ADDXcc|op3|011000|i|000000|Add with Carry and modify icc|108|B13|Integer Arith|2|op40|raw|0||rrr|addxcc|3|rs1|rs2|rd||end
+TADDcc|op3|100000|i|000000|Tagged Add and modify icc|109|B14|Integer Arith|2|op40|raw|0||rrr|taddcc|3|rs1|rs2|rd||end
+TADDccTV|op3|100010|i|000000|Tagged Add, modify icc and Trap on Overflow|109|B14|Integer Arith|2|op40|raw|0||rrr|taddcctv|3|rs1|rs2|rd||end
+SUB|op3|000100|i|000000|Subtract|110|B15|Integer Arith|2|op40|raw|0||rrr|sub|3|rs1|rs2|rd||end
+SUBcc|op3|010100|i|000000|Subtract and modify icc|110|B15|Integer Arith|2|op40|raw|0||rrr|subcc|3|rs1|rs2|rd||end
+SUBX|op3|001100|i|000000|Subtract with Carry|110|B15|Integer Arith|2|op40|raw|0||rrr|subx|3|rs1|rs2|rd||end
+SUBXcc|op3|011100|i|000000|Subtract with Carry and modify icc|110|B15|Integer Arith|2|op40|raw|0||rrr|subxcc|3|rs1|rs2|rd||end
+TSUBcc|op3|100001|i|000000|Tagged Subtract and modify icc|111|B16|Integer Arith|2|op40|raw|0||rrr|tsubcc|3|rs1|rs2|rd||end
+TSUBccTV|op3|100011|i|000000|Tagged Subtract, modify icc and Trap on Overflow|111|B16|Integer Arith|2|op40|raw|0||rrr|tsubcctv|3|rs1|rs2|rd||end
+MULScc|op3|100100|i|000000|Multiply Step and modify icc|112|B17|Integer Arith|2|op40|raw|0||rrr|mulscc|3|rs1|rs2|rd||end
+UMUL|op3|001010|i|000000|Unsigned Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|umul|3|rs1|rs2|rd||end
+SMUL|op3|001011|i|000000|Signed Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|smul|3|rs1|rs2|rd||end
+UMULcc|op3|011010|i|000000|Unsigned Integer Multiply and modify icc|113|B18|Integer Arith|2|op40|raw|0||rrr|umulcc|3|rs1|rs2|rd||end
+SMULcc|op3|011011|i|000000|Signed Integer Multiply and modify icc|113|B18|Integer Arith|2|op40|raw|0||rrr|smulcc|3|rs1|rs2|rd||end
+UDIV|op3|001110|i|000000|Unsigned Integer Divide|115|B19|Integer Arith|2|op40|raw|0||rrr|udiv|3|rs1|rs2|rd||end
+SDIV|op3|001111|i|000000|Signed Integer Divide|115|B19|Integer Arith|2|op40|raw|0||rrr|sdiv|3|rs1|rs2|rd||end
+UDIVcc|op3|011110|i|000000|Unsigned Integer Divide and modify icc|115|B19|Integer Arith|2|op40|raw|0||rrr|udivcc|3|rs1|rs2|rd||end
+SDIVcc|op3|011111|i|000000|Signed Integer Divide and modify icc|115|B19|Integer Arith|2|op40|raw|0||rrr|sdivcc|3|rs1|rs2|rd||end
+SAVE|op3|111100|i|000000|Save caller’s window|117|B20|Integer Arith|2|op40|raw|0||rrr|save|3|rs1|rs2|rd||end
+RESTORE|op3|111101|i|000000|Restore caller’s window|117|B20|Integer Arith|2|op40|raw|0||rrr|restore|3|rs1|rs2|rd||end
+|||||||||||||||||||||
+VADDD8|op3|000000|i|000000|Add|108|B13|Integer Arith|2|op40|raw|0||rrr|add|3|rs1|rs2|rd||end
+VADDD16|op3|000000|i|000000|Add|108|B13|Integer Arith|2|op40|raw|0||rrr|add|3|rs1|rs2|rd||end
+VADDD32|op3|000000|i|000000|Add|108|B13|Integer Arith|2|op40|raw|0||rrr|add|3|rs1|rs2|rd||end
+|||||||||||||||||||||
+VSUBD8|op3|000100|i|000000|Subtract|110|B15|Integer Arith|2|op40|raw|0||rrr|sub|3|rs1|rs2|rd||end
+VSUBD16|op3|000100|i|000000|Subtract|110|B15|Integer Arith|2|op40|raw|0||rrr|sub|3|rs1|rs2|rd||end
+VSUBD32|op3|000100|i|000000|Subtract|110|B15|Integer Arith|2|op40|raw|0||rrr|sub|3|rs1|rs2|rd||end
+|||||||||||||||||||||
+VUMULD8|op3|001010|i|000000|Unsigned Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|umul|3|rs1|rs2|rd||end
+VUMULD16|op3|001010|i|000000|Unsigned Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|umul|3|rs1|rs2|rd||end
+VUMULD32|op3|001010|i|000000|Unsigned Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|umul|3|rs1|rs2|rd||end
+|||||||||||||||||||||
+VSMULD8|op3|001011|i|000000|Signed Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|smul|3|rs1|rs2|rd||end
+VSMULD16|op3|001011|i|000000|Signed Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|smul|3|rs1|rs2|rd||end
+VSMULD32|op3|001011|i|000000|Signed Integer Multiply|113|B18|Integer Arith|2|op40|raw|0||rrr|smul|3|rs1|rs2|rd||end
+|||||||||||||||||||||
+ADDDBYTER|||||||||||||||||||||
+ORDBYTER|||||||||||||||||||||
+ANDDBYTER|||||||||||||||||||||
+XORDBYTER|||||||||||||||||||||
+ZBYTEDPOS|||||||||||||||||||||
+|||||||||||||||||||||
+VFADD|||||||||||||||||||||
+VFSUB|||||||||||||||||||||
+VFMUL|||||||||||||||||||||
+VFDIV|||||||||||||||||||||
+VFSQRT|||||||||||||||||||||
+|||||||||||||||||||||
+CSWAPD|||||||||||||||||||||
+CSWAPDA|||||||||||||||||||||

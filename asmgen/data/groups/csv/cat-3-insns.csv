@@ -1,0 +1,134 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+BA,op2,1000,a,0000,Branch Always,119,B21,Control Transfer,3,op21,raw,0,,n,ba,1,disp22,,,,end
+BN,op2,0000,a,0000,Branch Never,119,B21,Control Transfer,3,op21,raw,0,,n,bn,1,disp22,,,,end
+BNE,op2,1001,a,0000,Branch on Not Equal,119,B21,Control Transfer,3,op21,raw,0,,n,bne,1,disp22,,,,end
+BE,op2,0001,a,0000,Branch on Equal,119,B21,Control Transfer,3,op21,raw,0,,n,be,1,disp22,,,,end
+BG,op2,1010,a,0000,Branch on Greater,119,B21,Control Transfer,3,op21,raw,0,,n,bg,1,disp22,,,,end
+BLE,op2,0010,a,0000,Branch on Less or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,ble,1,disp22,,,,end
+BGE,op2,1011,a,0000,Branch on Greater or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,bge,1,disp22,,,,end
+BL,op2,0011,a,0000,Branch on Less,119,B21,Control Transfer,3,op21,raw,0,,n,bl,1,disp22,,,,end
+BGU,op2,1100,a,0000,Branch on Greater Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,bgu,1,disp22,,,,end
+BLEU,op2,0100,a,0000,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,bleu,1,disp22,,,,end
+BCC,op2,1101,a,0000,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,bcc,1,disp22,,,,end
+BCS,op2,0101,a,0000,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,bcs,1,disp22,,,,end
+BPOS,op2,1110,a,0000,Branch on Positive,119,B21,Control Transfer,3,op21,raw,0,,n,bpos,1,disp22,,,,end
+BNEG,op2,0110,a,0000,Branch on Negative,119,B21,Control Transfer,3,op21,raw,0,,n,bneg,1,disp22,,,,end
+BVC,op2,1111,a,0000,Branch on Overflow Clear,119,B21,Control Transfer,3,op21,raw,0,,n,bvc,1,disp22,,,,end
+BVS,op2,0111,a,0000,Branch on Overflow Set,119,B21,Control Transfer,3,op21,raw,0,,n,bvs,1,disp22,,,,end
+FBA,op2,1000,a,0000,FCC Branch Always,121,B22,Control Transfer,3,op21,raw,0,,n,fba,1,disp22,,,,end
+FBN,op2,0000,a,0000,FCC Branch Never,121,B22,Control Transfer,3,op21,raw,0,,n,fbn,1,disp22,,,,end
+FBU,op2,0111,a,0000,FCC Branch on Unordered,121,B22,Control Transfer,3,op21,raw,0,,n,fbu,1,disp22,,,,end
+FBG,op2,0110,a,0000,FCC Branch on Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fbg,1,disp22,,,,end
+FBUG,op2,0101,a,0000,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fbug,1,disp22,,,,end
+FBL,op2,0100,a,0000,FCC Branch on Less,121,B22,Control Transfer,3,op21,raw,0,,n,fbl,1,disp22,,,,end
+FBUL,op2,0011,a,0000,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,op21,raw,0,,n,fbul,1,disp22,,,,end
+FBLG,op2,0010,a,0000,FCC Branch on Less or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,fblg,1,disp22,,,,end
+FBNE,op2,0001,a,0000,FCC Branch on Not Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbne,1,disp22,,,,end
+FBE,op2,1001,a,0000,FCC Branch on Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbe,1,disp22,,,,end
+FBUE,op2,1010,a,0000,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbue,1,disp22,,,,end
+FBGE,op2,1011,a,0000,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbge,1,disp22,,,,end
+FBUGE,op2,1100,a,0000,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbuge,1,disp22,,,,end
+FBLE,op2,1101,a,0000,FCC Branch on Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fble,1,disp22,,,,end
+FBULE,op2,1110,a,0000,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,fbule,1,disp22,,,,end
+FBO,op2,1111,a,0000,FCC Branch on Ordered,121,B22,Control Transfer,3,op21,raw,0,,n,fbo,1,disp22,,,,end
+CBA,op2,1000,a,0000,CCC Branch Always,123,B23,Control Transfer,3,op21,raw,0,,n,cba,1,disp22,,,,end
+CBN,op2,0000,a,0000,CCC Branch Never,123,B23,Control Transfer,3,op21,raw,0,,n,cbn,1,disp22,,,,end
+CB3,op2,0111,a,0000,CCC Branch on Unordered,123,B23,Control Transfer,3,op21,raw,0,,n,cb3,1,disp22,,,,end
+CB2,op2,0110,a,0000,CCC Branch on Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb2,1,disp22,,,,end
+CB23,op2,0101,a,0000,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb23,1,disp22,,,,end
+CB1,op2,0100,a,0000,CCC Branch on Less,123,B23,Control Transfer,3,op21,raw,0,,n,cb1,1,disp22,,,,end
+CB13,op2,0011,a,0000,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,op21,raw,0,,n,cb13,1,disp22,,,,end
+CB12,op2,0010,a,0000,CCC Branch on Less or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,cb12,1,disp22,,,,end
+CB123,op2,0001,a,0000,CCC Branch on Not Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb123,1,disp22,,,,end
+CB0,op2,1001,a,0000,CCC Branch on Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb0,1,disp22,,,,end
+CB03,op2,1010,a,0000,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb03,1,disp22,,,,end
+CB02,op2,1011,a,0000,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb02,1,disp22,,,,end
+CB023,op2,1100,a,0000,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb023,1,disp22,,,,end
+CB01,op2,1101,a,0000,CCC Branch on Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb01,1,disp22,,,,end
+CB013,op2,1110,a,0000,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,cb013,1,disp22,,,,end
+CB012,op2,1111,a,0000,CCC Branch on Ordered,123,B23,Control Transfer,3,op21,raw,0,,n,cb012,1,disp22,,,,end
+CALL,op,01,,,Call and Link,125,B24,Control Transfer,3,op1,raw,0,,n,call,1,disp30,,,,end
+JMPL,op3,111000,i,000000,Jump and Link,126,B25,Control Transfer,3,op40,raw,0,,rrr,jmpl,3,rs1,rs2,rd,,end
+RETT,op3,111001,i,000000,Return from Trap,127,B26,Control Transfer,3,op43,raw,0,,rr,rett,2,rs1,rs2,,,end
+TA,op3,111010,i,000000,Trap Always,129,B27,Control Transfer,3,op37,raw,0,,rr,ta,2,rs1,rs2,,,end
+TN,op3,111010,i,000000,Trap Never,129,B27,Control Transfer,3,op37,raw,1,,rr,tn,2,rs1,rs2,,,end
+TNE,op3,111010,i,000000,Trap on Not Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tne,2,rs1,rs2,,,end
+TE,op3,111010,i,000000,Trap on Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,te,2,rs1,rs2,,,end
+TG,op3,111010,i,000000,Trap on Greater,129,B27,Control Transfer,3,op37,raw,0,,rr,tg,2,rs1,rs2,,,end
+TLE,op3,111010,i,000000,Trap on Less or Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tle,2,rs1,rs2,,,end
+TGE,op3,111010,i,000000,Trap on Greater or Equal,129,B27,Control Transfer,3,op37,raw,0,,rr,tge,2,rs1,rs2,,,end
+TL,op3,111010,i,000000,Trap on Less,129,B27,Control Transfer,3,op37,raw,0,,rr,tl,2,rs1,rs2,,,end
+TGU,op3,111010,i,000000,Trap on Greater Unsigned,129,B27,Control Transfer,3,op37,raw,0,,rr,tgu,2,rs1,rs2,,,end
+TLEU,op3,111010,i,000000,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,op37,raw,0,,rr,tleu,2,rs1,rs2,,,end
+TCC,op3,111010,i,000000,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,op37,raw,0,,rr,tcc,2,rs1,rs2,,,end
+TCS,op3,111010,i,000000,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,op37,raw,0,,rr,tcs,2,rs1,rs2,,,end
+TPOS,op3,111010,i,000000,Trap on Positive,129,B27,Control Transfer,3,op37,raw,0,,rr,tpos,2,rs1,rs2,,,end
+TNEG,op3,111010,i,000000,Trap on Negative,129,B27,Control Transfer,3,op37,raw,0,,rr,tneg,2,rs1,rs2,,,end
+TVC,op3,111010,i,000000,Trap on Overflow Clear,129,B27,Control Transfer,3,op37,raw,0,,rr,tvc,2,rs1,rs2,,,end
+TVS,op3,111010,i,000000,Trap on Overflow Set,129,B27,Control Transfer,3,op37,raw,0,,rr,tvs,2,rs1,rs2,,,end
+BA,op2,1000,a,0001,Branch Always,119,B21,Control Transfer,3,op21,raw,0,,n,"ba,a",1,disp22,,,,end
+BN,op2,0000,a,0001,Branch Never,119,B21,Control Transfer,3,op21,raw,0,,n,"bn,a",1,disp22,,,,end
+BNE,op2,1001,a,0001,Branch on Not Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"bne,a",1,disp22,,,,end
+BE,op2,0001,a,0001,Branch on Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"be,a",1,disp22,,,,end
+BG,op2,1010,a,0001,Branch on Greater,119,B21,Control Transfer,3,op21,raw,0,,n,"bg,a",1,disp22,,,,end
+BLE,op2,0010,a,0001,Branch on Less or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"ble,a",1,disp22,,,,end
+BGE,op2,1011,a,0001,Branch on Greater or Equal,119,B21,Control Transfer,3,op21,raw,0,,n,"bge,a",1,disp22,,,,end
+BL,op2,0011,a,0001,Branch on Less,119,B21,Control Transfer,3,op21,raw,0,,n,"bl,a",1,disp22,,,,end
+BGU,op2,1100,a,0001,Branch on Greater Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,"bgu,a",1,disp22,,,,end
+BLEU,op2,0100,a,0001,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,op21,raw,0,,n,"bleu,a",1,disp22,,,,end
+BCC,op2,1101,a,0001,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,"bcc,a",1,disp22,,,,end
+BCS,op2,0101,a,0001,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,op21,raw,0,,n,"bcs,a",1,disp22,,,,end
+BPOS,op2,1110,a,0001,Branch on Positive,119,B21,Control Transfer,3,op21,raw,0,,n,"bpos,a",1,disp22,,,,end
+BNEG,op2,0110,a,0001,Branch on Negative,119,B21,Control Transfer,3,op21,raw,0,,n,"bneg,a",1,disp22,,,,end
+BVC,op2,1111,a,0001,Branch on Overflow Clear,119,B21,Control Transfer,3,op21,raw,0,,n,"bvc,a",1,disp22,,,,end
+BVS,op2,0111,a,0001,Branch on Overflow Set,119,B21,Control Transfer,3,op21,raw,0,,n,"bvs,a",1,disp22,,,,end
+FBA,op2,1000,a,0001,FCC Branch Always,121,B22,Control Transfer,3,op21,raw,0,,n,"fba,a",1,disp22,,,,end
+FBN,op2,0000,a,0001,FCC Branch Never,121,B22,Control Transfer,3,op21,raw,0,,n,"fbn,a",1,disp22,,,,end
+FBU,op2,0111,a,0001,FCC Branch on Unordered,121,B22,Control Transfer,3,op21,raw,0,,n,"fbu,a",1,disp22,,,,end
+FBG,op2,0110,a,0001,FCC Branch on Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fbg,a",1,disp22,,,,end
+FBUG,op2,0101,a,0001,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fbug,a",1,disp22,,,,end
+FBL,op2,0100,a,0001,FCC Branch on Less,121,B22,Control Transfer,3,op21,raw,0,,n,"fbl,a",1,disp22,,,,end
+FBUL,op2,0011,a,0001,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,op21,raw,0,,n,"fbul,a",1,disp22,,,,end
+FBLG,op2,0010,a,0001,FCC Branch on Less or Greater,121,B22,Control Transfer,3,op21,raw,0,,n,"fblg,a",1,disp22,,,,end
+FBNE,op2,0001,a,0001,FCC Branch on Not Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbne,a",1,disp22,,,,end
+FBE,op2,1001,a,0001,FCC Branch on Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbe,a",1,disp22,,,,end
+FBUE,op2,1010,a,0001,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbue,a",1,disp22,,,,end
+FBGE,op2,1011,a,0001,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbge,a",1,disp22,,,,end
+FBUGE,op2,1100,a,0001,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbuge,a",1,disp22,,,,end
+FBLE,op2,1101,a,0001,FCC Branch on Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fble,a",1,disp22,,,,end
+FBULE,op2,1110,a,0001,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,op21,raw,0,,n,"fbule,a",1,disp22,,,,end
+FBO,op2,1111,a,0001,FCC Branch on Ordered,121,B22,Control Transfer,3,op21,raw,0,,n,"fbo,a",1,disp22,,,,end
+CBA,op2,1000,a,0001,CCC Branch Always,123,B23,Control Transfer,3,op21,raw,0,,n,"cba,a",1,disp22,,,,end
+CBN,op2,0000,a,0001,CCC Branch Never,123,B23,Control Transfer,3,op21,raw,0,,n,"cbn,a",1,disp22,,,,end
+CB3,op2,0111,a,0001,CCC Branch on Unordered,123,B23,Control Transfer,3,op21,raw,0,,n,"cb3,a",1,disp22,,,,end
+CB2,op2,0110,a,0001,CCC Branch on Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb2,a",1,disp22,,,,end
+CB23,op2,0101,a,0001,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb23,a",1,disp22,,,,end
+CB1,op2,0100,a,0001,CCC Branch on Less,123,B23,Control Transfer,3,op21,raw,0,,n,"cb1,a",1,disp22,,,,end
+CB13,op2,0011,a,0001,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,op21,raw,0,,n,"cb13,a",1,disp22,,,,end
+CB12,op2,0010,a,0001,CCC Branch on Less or Greater,123,B23,Control Transfer,3,op21,raw,0,,n,"cb12,a",1,disp22,,,,end
+CB123,op2,0001,a,0001,CCC Branch on Not Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb123,a",1,disp22,,,,end
+CB0,op2,1001,a,0001,CCC Branch on Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb0,a",1,disp22,,,,end
+CB03,op2,1010,a,0001,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb03,a",1,disp22,,,,end
+CB02,op2,1011,a,0001,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb02,a",1,disp22,,,,end
+CB023,op2,1100,a,0001,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb023,a",1,disp22,,,,end
+CB01,op2,1101,a,0001,CCC Branch on Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb01,a",1,disp22,,,,end
+CB013,op2,1110,a,0001,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,op21,raw,0,,n,"cb013,a",1,disp22,,,,end
+CB012,op2,1111,a,0001,CCC Branch on Ordered,123,B23,Control Transfer,3,op21,raw,0,,n,"cb012,a",1,disp22,,,,end
+JMPL,op3,111000,i,000001,Jump and Link,126,B25,Control Transfer,3,op32,raw,0,,rnr,jmpl,3,rs1,sign_ext (simm13),rd,,end
+RETT,op3,111001,i,000001,Return from Trap,127,B26,Control Transfer,3,op44,raw,0,,rn,rett,2,rs1,sign_ext (simm13),,,end
+TA,op3,111010,i,000001,Trap Always,129,B27,Control Transfer,3,op38,raw,0,,rn,ta,2,rs1,sign_ext (simm13),,,end
+TN,op3,111010,i,000001,Trap Never,129,B27,Control Transfer,3,op38,raw,0,,rn,tn,2,rs1,sign_ext (simm13),,,end
+TNE,op3,111010,i,000001,Trap on Not Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tne,2,rs1,sign_ext (simm13),,,end
+TE,op3,111010,i,000001,Trap on Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,te,2,rs1,sign_ext (simm13),,,end
+TG,op3,111010,i,000001,Trap on Greater,129,B27,Control Transfer,3,op38,raw,0,,rn,tg,2,rs1,sign_ext (simm13),,,end
+TLE,op3,111010,i,000001,Trap on Less or Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tle,2,rs1,sign_ext (simm13),,,end
+TGE,op3,111010,i,000001,Trap on Greater or Equal,129,B27,Control Transfer,3,op38,raw,0,,rn,tge,2,rs1,sign_ext (simm13),,,end
+TL,op3,111010,i,000001,Trap on Less,129,B27,Control Transfer,3,op38,raw,0,,rn,tl,2,rs1,sign_ext (simm13),,,end
+TGU,op3,111010,i,000001,Trap on Greater Unsigned,129,B27,Control Transfer,3,op38,raw,0,,rn,tgu,2,rs1,sign_ext (simm13),,,end
+TLEU,op3,111010,i,000001,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,op38,raw,0,,rn,tleu,2,rs1,sign_ext (simm13),,,end
+TCC,op3,111010,i,000001,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,op38,raw,0,,rn,tcc,2,rs1,sign_ext (simm13),,,end
+TCS,op3,111010,i,000001,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,op38,raw,0,,rn,tcs,2,rs1,sign_ext (simm13),,,end
+TPOS,op3,111010,i,000001,Trap on Positive,129,B27,Control Transfer,3,op38,raw,0,,rn,tpos,2,rs1,sign_ext (simm13),,,end
+TNEG,op3,111010,i,000001,Trap on Negative,129,B27,Control Transfer,3,op38,raw,0,,rn,tneg,2,rs1,sign_ext (simm13),,,end
+TVC,op3,111010,i,000001,Trap on Overflow Clear,129,B27,Control Transfer,3,op38,raw,0,,rn,tvc,2,rs1,sign_ext (simm13),,,end
+TVS,op3,111010,i,000001,Trap on Overflow Set,129,B27,Control Transfer,3,op38,raw,0,,rn,tvs,2,rs1,sign_ext (simm13),,,end

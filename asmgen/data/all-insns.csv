@@ -1,0 +1,402 @@
+Opcode,Format type,Format Value,Other field,Value,Operation,Sparc V8 Manual main description page,Sparc V8 Manual main description Chapter reference,Insn Category,Insn Category Index,Format Index,Processing Status,Privilege,Notes,"Register Type, if any",ASM Rator Syntax,ASM Rand Syntax Notes,Num Args,ASM Arg 1,ASM Arg 2,ASM Arg 3,ASM Arg 4,END
+LDSB,op3,001001,i,000000,Load Signed Byte,90,B1,Load,1,F01-1,raw,0,,rrr,ldsb,[address],3,rs1,rs2,rd,,end
+LDSH,op3,001010,i,000000,Load Signed Halfword,90,B1,Load,1,F01-1,raw,0,,rrr,ldsh,[address],3,rs1,rs2,rd,,end
+LDUB,op3,000001,i,000000,Load Unsigned Byte,90,B1,Load,1,F01-1,raw,0,,rrr,ldub,[address],3,rs1,rs2,rd,,end
+LDUH,op3,000010,i,000000,Load Unsigned Halfword,90,B1,Load,1,F01-1,raw,0,,rrr,lduh,[address],3,rs1,rs2,rd,,end
+LD,op3,000000,i,000000,Load Word,90,B1,Load,1,F01-1,raw,0,,rrr,ld,[address],3,rs1,rs2,rd,,end
+LDD,op3,000011,i,000000,Load Doubleword,90,B1,Load,1,F01-1,raw,0,,rrr,ldd,[address],3,rs1,rs2,rd,,end
+LDSBA,op3,011001,i,000000,Load Signed Byte from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,ldsba,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDSHA,op3,011010,i,000000,Load Signed Halfword from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,ldsha,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDUBA,op3,010001,i,000000,Load Unsigned Byte from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,lduba,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDUHA,op3,010010,i,000000,Load Unsigned Halfword from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,lduha,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDA,op3,010000,i,000000,Load Word from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,lda,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDDA,op3,010011,i,000000,Load Doubleword from Alternate space,90,B1,Load,1,F01-a,raw,1,asi,rrrn,ldda,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDF,op3,100000,i,000000,Load Floating-point Register from memory,92,B2,Load,1,F01-1,raw,0,,rrf,ld,[address],3,rs1,rs2,rd=fprd,,end
+LDDF,op3,100011,i,000000,Load Double Floating-point Register from memory,92,B2,Load,1,F01-1,raw,0,,rrf,ldd,[address],3,rs1,rs2,rd=fprd,,end
+LDFSR,op3,100001,i,000000,Load Floating-point State Register from memory,92,B2,Load,1,F01-1,raw,0,,rrf,ld,[address],3,rs1,rs2,rd=%fsr,,end
+LDC,op3,110000,i,000000,Load Coprocessor Register,94,B3,Load,1,F01-1,raw,0,,rrc,ld,[address],3,rs1,rs2,rd=cprd,,end
+LDDC,op3,110011,i,000000,Load Double Coprocessor Register,94,B3,Load,1,F01-1,raw,0,,rrc,ldd,[address],3,rs1,rs2,rd=cprd,,end
+LDCSR,op3,110001,i,000000,Load Coprocessor State Register,94,B3,Load,1,F01-1,raw,0,,rrc,ld,[address],3,rs1,rs2,rd=%csr,,end
+STB,op3,000101,i,000000,Store Byte,95,B4,Store,1,F01-1,raw,0,,rrr,stb,[address],3,rd,rs1,rs2,,end
+STH,op3,000110,i,000000,Store Halfword,95,B4,Store,1,F01-1,raw,0,,rrr,sth,[address],3,rd,rs1,rs2,,end
+ST,op3,000100,i,000000,Store Word,95,B4,Store,1,F01-1,raw,0,,rrr,st,[address],3,rd,rs1,rs2,,end
+STD,op3,000111,i,000000,Store Doubleword,95,B4,Store,1,F01-1,raw,0,,rrr,std,[address],3,rd,rs1,rs2,,end
+STBA,op3,010101,i,000000,Store Byte into Alternate space,95,B4,Store,1,F01-a,raw,1,asi,rrrn,stba,[regaddr] asi,4,rd,rs1,rs2,asi,end
+STHA,op3,010110,i,000000,Store Halfword into Alternate space,95,B4,Store,1,F01-a,raw,1,asi,rrrn,stha,[regaddr] asi,4,rd,rs1,rs2,asi,end
+STA,op3,010100,i,000000,Store Word into Alternate space,95,B4,Store,1,F01-a,raw,1,asi,rrrn,sta,[regaddr] asi,4,rd,rs1,rs2,asi,end
+STDA,op3,010111,i,000000,Store Doubleword into Alternate space,95,B4,Store,1,F01-a,raw,1,asi,rrrn,stda,[regaddr] asi,4,rd,rs1,rs2,asi,end
+STF,op3,100100,i,000000,Store Floating-point to memory,97,B5,Store,1,F01-1,raw,0,,frr,st,[address],3,rd=fprd,rs1,rs2,,end
+STDF,op3,100111,i,000000,Store Double Floating-point to memory,97,B5,Store,1,F01-1,raw,0,,frr,std,[address],3,rd=fprd,rs1,rs2,,end
+STFSR,op3,100101,i,000000,Store Floating-point State Register to memory,97,B5,Store,1,F01-1,raw,0,,frr,st,[address],3,rd=%fsr,rs1,rs2,,end
+STDFQ,op3,100110,i,000000,Store Double Floating-point deferred-trap Queue,97,B5,Store,1,F01-1,raw,1,,frr,std,[address],3,rd=%fq,rs1,rs2,,end
+STC,op3,110100,i,000000,Store Coprocessor,99,B6,Store,1,F01-1,raw,0,,crr,st,[address],3,rd=cprd,rs1,rs2,,end
+STDC,op3,110111,i,000000,Store Double Coprocessor,99,B6,Store,1,F01-1,raw,0,,crr,std,[address],3,rd=cprd,rs1,rs2,,end
+STCSR,op3,110101,i,000000,Store Coprocessor State Register,99,B6,Store,1,F01-1,raw,0,,crr,st,[address],3,rd=%csr,rs1,rs2,,end
+STDCQ,op3,110110,i,000000,Store Double Coprocessor Queue,99,B6,Store,1,F01-1,raw,1,,crr,std,[address],3,rd=%cq,rs1,rs2,,end
+LDSTUB,op3,001101,i,000000,Atomic Load-Store Unsigned Byte,101,B7,Load,1,F01-1,raw,0,,rrr,ldstub,[address],3,rs1,rs2,rd,,end
+LDSTUBA,op3,011101,i,000000,Atomic Load-Store Unsigned Byte into Alternate space,101,B7,Load,1,F01-a,raw,0,,rrrn,ldstuba,[regaddr] asi,4,rs1,rs2,rd,asi,end
+SWAP,op3,001111,i,000000,SWAP register with memory,102,B8,Load,1,F01-1,raw,1,,rrr,swap,[address],3,rs1,rs2,rd,,end
+SWAPA,op3,011111,i,000000,SWAP register with Alternate space memory,102,B8,Load,1,F01-a,raw,0,,rrrn,swapa,[regaddr] asi,4,rs1,rs2,rd,asi,end
+SETHI,op2,100,,,Set High-Order 22 bits,104,B9,Integer Arith,2,F02-0,raw,0,"const22, %hi (value)",nr,sethi,const22,2,imm22,rd,,,end
+NOP,op2,100,,,"No Operation, argument is ignored.",105,B10,Integer Arith,2,F02-1,raw,1,special case of SETHI with rd = 0 and imm22=0,,nop,,0,imm22,,,,end
+AND,op3,000001,i,000000,And,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,and,,3,rs1,rs2,rd,,end
+ANDcc,op3,010001,i,000000,And and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,andcc,,3,rs1,rs2,rd,,end
+ANDN,op3,000101,i,000000,And Not,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,andn,,3,rs1,rs2,rd,,end
+ANDNcc,op3,010101,i,000000,And Not and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,andncc,,3,rs1,rs2,rd,,end
+OR,op3,000010,i,000000,Inclusive Or,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,or,,3,rs1,rs2,rd,,end
+ORcc,op3,010010,i,000000,Inclusive Or and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,orcc,,3,rs1,rs2,rd,,end
+ORN,op3,000110,i,000000,Inclusive Or Not,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,orn,,3,rs1,rs2,rd,,end
+ORNcc,op3,010110,i,000000,Inclusive Or Not and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,orncc,,3,rs1,rs2,rd,,end
+XOR,op3,000011,i,000000,Exclusive Or,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,xor,,3,rs1,rs2,rd,,end
+XORcc,op3,010011,i,000000,Exclusive Or and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,xorcc,,3,rs1,rs2,rd,,end
+XNOR,op3,000111,i,000000,Exclusive Nor,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,xnor,,3,rs1,rs2,rd,,end
+XNORcc,op3,010111,i,000000,Exclusive Nor and modify icc,106,B11,Integer Arith,2,F03-1,raw,0,,rrr,xnorcc,,3,rs1,rs2,rd,,end
+SLL,op3,100101,i,000000,Shift Left Logical,107,B12,Integer Arith,2,F04-1,raw,0,,rrr,sll,,3,rs1,rs2,rd,,end
+SRL,op3,100110,i,000000,Shift Right Logical,107,B12,Integer Arith,2,F04-1,raw,0,,rrr,srl,,3,rs1,rs2,rd,,end
+SRA,op3,100111,i,000000,Shift Right Arithmetic,107,B12,Integer Arith,2,F04-1,raw,0,,rrr,sra,,3,rs1,rs2,rd,,end
+ADD,op3,000000,i,000000,Add,108,B13,Integer Arith,2,F03-1,raw,0,,rrr,add,,3,rs1,rs2,rd,,end
+ADDcc,op3,010000,i,000000,Add and modify icc,108,B13,Integer Arith,2,F03-1,raw,0,,rrr,addcc,,3,rs1,rs2,rd,,end
+ADDX,op3,001000,i,000000,Add with Carry,108,B13,Integer Arith,2,F03-1,raw,0,,rrr,addx,,3,rs1,rs2,rd,,end
+ADDXcc,op3,011000,i,000000,Add with Carry and modify icc,108,B13,Integer Arith,2,F03-1,raw,0,,rrr,addxcc,,3,rs1,rs2,rd,,end
+TADDcc,op3,100000,i,000000,Tagged Add and modify icc,109,B14,Integer Arith,2,F03-1,raw,0,,rrr,taddcc,,3,rs1,rs2,rd,,end
+TADDccTV,op3,100010,i,000000,"Tagged Add, modify icc and Trap on Overflow",109,B14,Integer Arith,2,F03-1,raw,0,,rrr,taddcctv,,3,rs1,rs2,rd,,end
+SUB,op3,000100,i,000000,Subtract,110,B15,Integer Arith,2,F03-1,raw,0,,rrr,sub,,3,rs1,rs2,rd,,end
+SUBcc,op3,010100,i,000000,Subtract and modify icc,110,B15,Integer Arith,2,F03-1,raw,0,,rrr,subcc,,3,rs1,rs2,rd,,end
+SUBX,op3,001100,i,000000,Subtract with Carry,110,B15,Integer Arith,2,F03-1,raw,0,,rrr,subx,,3,rs1,rs2,rd,,end
+SUBXcc,op3,011100,i,000000,Subtract with Carry and modify icc,110,B15,Integer Arith,2,F03-1,raw,0,,rrr,subxcc,,3,rs1,rs2,rd,,end
+TSUBcc,op3,100001,i,000000,Tagged Subtract and modify icc,111,B16,Integer Arith,2,F03-1,raw,0,,rrr,tsubcc,,3,rs1,rs2,rd,,end
+TSUBccTV,op3,100011,i,000000,"Tagged Subtract, modify icc and Trap on Overflow",111,B16,Integer Arith,2,F03-1,raw,0,,rrr,tsubcctv,,3,rs1,rs2,rd,,end
+MULScc,op3,100100,i,000000,Multiply Step and modify icc,112,B17,Integer Arith,2,F03-1,raw,0,,rrr,mulscc,,3,rs1,rs2,rd,,end
+UMUL,op3,001010,i,000000,Unsigned Integer Multiply,113,B18,Integer Arith,2,F03-1,raw,0,,rrr,umul,,3,rs1,rs2,rd,,end
+SMUL,op3,001011,i,000000,Signed Integer Multiply,113,B18,Integer Arith,2,F03-1,raw,0,,rrr,smul,,3,rs1,rs2,rd,,end
+UMULcc,op3,011010,i,000000,Unsigned Integer Multiply and modify icc,113,B18,Integer Arith,2,F03-1,raw,0,,rrr,umulcc,,3,rs1,rs2,rd,,end
+SMULcc,op3,011011,i,000000,Signed Integer Multiply and modify icc,113,B18,Integer Arith,2,F03-1,raw,0,,rrr,smulcc,,3,rs1,rs2,rd,,end
+UDIV,op3,001110,i,000000,Unsigned Integer Divide,115,B19,Integer Arith,2,F03-1,raw,0,,rrr,udiv,,3,rs1,rs2,rd,,end
+SDIV,op3,001111,i,000000,Signed Integer Divide,115,B19,Integer Arith,2,F03-1,raw,0,,rrr,sdiv,,3,rs1,rs2,rd,,end
+UDIVcc,op3,011110,i,000000,Unsigned Integer Divide and modify icc,115,B19,Integer Arith,2,F03-1,raw,0,,rrr,udivcc,,3,rs1,rs2,rd,,end
+SDIVcc,op3,011111,i,000000,Signed Integer Divide and modify icc,115,B19,Integer Arith,2,F03-1,raw,0,,rrr,sdivcc,,3,rs1,rs2,rd,,end
+SAVE,op3,111100,i,000000,Save caller’s window,117,B20,Integer Arith,2,F03-1,raw,0,,rrr,save,,3,rs1,rs2,rd,,end
+RESTORE,op3,111101,i,000000,Restore caller’s window,117,B20,Integer Arith,2,F03-1,raw,0,,rrr,restore,,3,rs1,rs2,rd,,end
+BA,op2,1000,a,0000,Branch Always,119,B21,Control Transfer,3,F05-1,raw,0,,n,ba,label,1,disp22,,,,end
+BN,op2,0000,a,0000,Branch Never,119,B21,Control Transfer,3,F05-1,raw,0,,n,bn,label,1,disp22,,,,end
+BNE,op2,1001,a,0000,Branch on Not Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,bne,label,1,disp22,,,,end
+BE,op2,0001,a,0000,Branch on Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,be,label,1,disp22,,,,end
+BG,op2,1010,a,0000,Branch on Greater,119,B21,Control Transfer,3,F05-1,raw,0,,n,bg,label,1,disp22,,,,end
+BLE,op2,0010,a,0000,Branch on Less or Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,ble,label,1,disp22,,,,end
+BGE,op2,1011,a,0000,Branch on Greater or Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,bge,label,1,disp22,,,,end
+BL,op2,0011,a,0000,Branch on Less,119,B21,Control Transfer,3,F05-1,raw,0,,n,bl,label,1,disp22,,,,end
+BGU,op2,1100,a,0000,Branch on Greater Unsigned,119,B21,Control Transfer,3,F05-1,raw,0,,n,bgu,label,1,disp22,,,,end
+BLEU,op2,0100,a,0000,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,F05-1,raw,0,,n,bleu,label,1,disp22,,,,end
+BCC,op2,1101,a,0000,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,F05-1,raw,0,,n,bcc,label,1,disp22,,,,end
+BCS,op2,0101,a,0000,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,F05-1,raw,0,,n,bcs,label,1,disp22,,,,end
+BPOS,op2,1110,a,0000,Branch on Positive,119,B21,Control Transfer,3,F05-1,raw,0,,n,bpos,label,1,disp22,,,,end
+BNEG,op2,0110,a,0000,Branch on Negative,119,B21,Control Transfer,3,F05-1,raw,0,,n,bneg,label,1,disp22,,,,end
+BVC,op2,1111,a,0000,Branch on Overflow Clear,119,B21,Control Transfer,3,F05-1,raw,0,,n,bvc,label,1,disp22,,,,end
+BVS,op2,0111,a,0000,Branch on Overflow Set,119,B21,Control Transfer,3,F05-1,raw,0,,n,bvs,label,1,disp22,,,,end
+FBA,op2,1000,a,0000,FCC Branch Always,121,B22,Control Transfer,3,F05-2,raw,0,,n,fba,label,1,disp22,,,,end
+FBN,op2,0000,a,0000,FCC Branch Never,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbn,label,1,disp22,,,,end
+FBU,op2,0111,a,0000,FCC Branch on Unordered,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbu,label,1,disp22,,,,end
+FBG,op2,0110,a,0000,FCC Branch on Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbg,label,1,disp22,,,,end
+FBUG,op2,0101,a,0000,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbug,label,1,disp22,,,,end
+FBL,op2,0100,a,0000,FCC Branch on Less,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbl,label,1,disp22,,,,end
+FBUL,op2,0011,a,0000,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbul,label,1,disp22,,,,end
+FBLG,op2,0010,a,0000,FCC Branch on Less or Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,fblg,label,1,disp22,,,,end
+FBNE,op2,0001,a,0000,FCC Branch on Not Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbne,label,1,disp22,,,,end
+FBE,op2,1001,a,0000,FCC Branch on Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbe,label,1,disp22,,,,end
+FBUE,op2,1010,a,0000,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbue,label,1,disp22,,,,end
+FBGE,op2,1011,a,0000,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbge,label,1,disp22,,,,end
+FBUGE,op2,1100,a,0000,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbuge,label,1,disp22,,,,end
+FBLE,op2,1101,a,0000,FCC Branch on Less or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fble,label,1,disp22,,,,end
+FBULE,op2,1110,a,0000,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbule,label,1,disp22,,,,end
+FBO,op2,1111,a,0000,FCC Branch on Ordered,121,B22,Control Transfer,3,F05-2,raw,0,,n,fbo,label,1,disp22,,,,end
+CBA,op2,1000,a,0000,CCC Branch Always,123,B23,Control Transfer,3,F05-3,raw,0,,n,cba,label,1,disp22,,,,end
+CBN,op2,0000,a,0000,CCC Branch Never,123,B23,Control Transfer,3,F05-3,raw,0,,n,cbn,label,1,disp22,,,,end
+CB3,op2,0111,a,0000,CCC Branch on Unordered,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb3,label,1,disp22,,,,end
+CB2,op2,0110,a,0000,CCC Branch on Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb2,label,1,disp22,,,,end
+CB23,op2,0101,a,0000,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb23,label,1,disp22,,,,end
+CB1,op2,0100,a,0000,CCC Branch on Less,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb1,label,1,disp22,,,,end
+CB13,op2,0011,a,0000,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb13,label,1,disp22,,,,end
+CB12,op2,0010,a,0000,CCC Branch on Less or Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb12,label,1,disp22,,,,end
+CB123,op2,0001,a,0000,CCC Branch on Not Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb123,label,1,disp22,,,,end
+CB0,op2,1001,a,0000,CCC Branch on Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb0,label,1,disp22,,,,end
+CB03,op2,1010,a,0000,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb03,label,1,disp22,,,,end
+CB02,op2,1011,a,0000,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb02,label,1,disp22,,,,end
+CB023,op2,1100,a,0000,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb023,label,1,disp22,,,,end
+CB01,op2,1101,a,0000,CCC Branch on Less or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb01,label,1,disp22,,,,end
+CB013,op2,1110,a,0000,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb013,label,1,disp22,,,,end
+CB012,op2,1111,a,0000,CCC Branch on Ordered,123,B23,Control Transfer,3,F05-3,raw,0,,n,cb012,label,1,disp22,,,,end
+CALL,op,01,,,Call and Link,125,B24,Control Transfer,3,F06-1,raw,0,,n,call,label,1,disp30,,,,end
+JMPL,op3,111000,i,000000,Jump and Link,126,B25,Control Transfer,3,F03-1,raw,0,,rrr,jmpl,address,3,rs1,rs2,rd,,end
+RETT,op3,111001,i,000000,Return from Trap,127,B26,Control Transfer,3,F07-1,raw,0,,rr,rett,address,2,rs1,rs2,,,end
+TA,op3,111010,i,000000,Trap Always,129,B27,Control Transfer,3,F08-1,raw,0,,rr,ta,software_trap,2,rs1,rs2,,,end
+TN,op3,111010,i,000000,Trap Never,129,B27,Control Transfer,3,F08-1,raw,1,,rr,tn,software_trap,2,rs1,rs2,,,end
+TNE,op3,111010,i,000000,Trap on Not Equal,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tne,software_trap,2,rs1,rs2,,,end
+TE,op3,111010,i,000000,Trap on Equal,129,B27,Control Transfer,3,F08-1,raw,0,,rr,te,software_trap,2,rs1,rs2,,,end
+TG,op3,111010,i,000000,Trap on Greater,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tg,software_trap,2,rs1,rs2,,,end
+TLE,op3,111010,i,000000,Trap on Less or Equal,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tle,software_trap,2,rs1,rs2,,,end
+TGE,op3,111010,i,000000,Trap on Greater or Equal,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tge,software_trap,2,rs1,rs2,,,end
+TL,op3,111010,i,000000,Trap on Less,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tl,software_trap,2,rs1,rs2,,,end
+TGU,op3,111010,i,000000,Trap on Greater Unsigned,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tgu,software_trap,2,rs1,rs2,,,end
+TLEU,op3,111010,i,000000,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tleu,software_trap,2,rs1,rs2,,,end
+TCC,op3,111010,i,000000,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,F08-1,raw,0,,rr,tcc,software_trap,2,rs1,rs2,,,end
+TCS,op3,111010,i,000000,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,F08-1,raw,0,,rr,tcs,software_trap,2,rs1,rs2,,,end
+TPOS,op3,111010,i,000000,Trap on Positive,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tpos,software_trap,2,rs1,rs2,,,end
+TNEG,op3,111010,i,000000,Trap on Negative,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tneg,software_trap,2,rs1,rs2,,,end
+TVC,op3,111010,i,000000,Trap on Overflow Clear,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tvc,software_trap,2,rs1,rs2,,,end
+TVS,op3,111010,i,000000,Trap on Overflow Set,129,B27,Control Transfer,3,F08-1,raw,0,,rr,tvs,software_trap,2,rs1,rs2,,,end
+RDY,op3,101000,,,Read Y Register,131,B28,State Register,4,F09-1,raw,0,rs1=0,ar,rd,,2,rs1=%y,rd,,,end
+RDASR,op3,101000,,,Read Ancillary State Register (reserved),131,B28,State Register,4,F09-1,raw,0,"Rs = 1 … 15, causes undefined results",ar,rd,,2,rs1=rs1,rd,,,end
+RDASR,op3,101000,,,(implementation-dependent),131,B28,State Register,4,F09-1,raw,0,Stbar = rdasr with rd=0 and rs1=15,ar,rd,,2,rs1=rs1,rd,,,end
+RDPSR,op3,101001,,,Read Processor State Register,131,B28,State Register,4,F09-1,raw,2,,gr,rd,,2,rs1=%psr,rd,,,end
+RDWIM,op3,101010,,,Read Window Invalid Mask Register,131,B28,State Register,4,F09-1,raw,2,,gr,rd,,2,rs1=%wim,rd,,,end
+RDTBR,op3,101011,,,Read Trap Base Register,131,B28,State Register,4,F09-1,raw,1,,gr,rd,,2,rs1=%tbr,rd,,,end
+WRY,op3,110000,i,000000,Write Y Register,133,B29,State Register,4,F03-1,raw,1,rd=0,rra,wr,xor,3,rs1,rs2,rd=%y,,end
+WRASR,op3,110000,i,000000,Write Ancillary State Register (reserved),133,B29,State Register,4,F03-1,raw,1,"Rs = 1 … 15, causes undefined results",rra,wr,xor,3,rs1,rs2,rd=rd,,end
+WRASR,op3,110000,i,000000,(implementation-dependent),133,B29,State Register,4,F03-1,raw,0,,rra,wr,xor,3,rs1,rs2,rd=rd,,end
+WRPSR,op3,110001,i,000000,Write Processor State Register,133,B29,State Register,4,F03-1,raw,2,,rrg,wr,xor,3,rs1,rs2,rd=%psr,,end
+WRWIM,op3,110010,i,000000,Write Window Invalid Mask Register,133,B29,State Register,4,F03-1,raw,2,,rrg,wr,xor,3,rs1,rs2,rd=%wim,,end
+WRTBR,op3,110011,i,000000,Write Trap Base Register,133,B29,State Register,4,F03-1,raw,1,,rrg,wr,xor,3,rs1,rs2,rd=%tbr,,end
+STBAR,op3,101000,,,Store Barrier,136,B30,Load/Store,1,F10-1,raw,1,,,stbar,,0,,,,,end
+UNIMP,op2,0,,,Unimplemented,137,B31,,6,F00-1,raw,1,,n,unimp,,1,const22,,,,end
+FLUSH,op3,111011,i,000000,Flush Instruction Memory,138,B32,Load/Store,1,F07-1,raw,0,,rr,flush,address,2,rs1,rs2,,,end
+FiTOs,op3,110100,opf,11000100,Convert Integer to Single,140,B33,Floating Point,5,F11-2,raw,0,,ff,fitos,single,2,rs2=fprs2,rd=fprd,,,end
+FiTOd,op3,110100,opf,11001000,Convert Integer to Double,140,B33,Floating Point,5,F11-2,raw,0,,ff,fitod,double,2,rs2=fprs2,rd=fprd,,,end
+FiTOq,op3,110100,opf,11001100,Convert Integer to Quad,140,B33,Floating Point,5,F11-2,raw,0,,ff,fitoq,quad,2,rs2=fprs2,rd=fprd,,,end
+FsTOi,op3,110100,opf,11010001,Convert Single to Integer,140,B33,Floating Point,5,F11-2,raw,0,,ff,fstoi,single,2,rs2=fprs2,rd=fprd,,,end
+FdTOi,op3,110100,opf,11010010,Convert Double to Integer,140,B33,Floating Point,5,F11-2,raw,0,,ff,fdtoi,double,2,rs2=fprs2,rd=fprd,,,end
+FqTOi,op3,110100,opf,11010011,Convert Quad to Integer,140,B33,Floating Point,5,F11-2,raw,0,,ff,fqtoi,quad,2,rs2=fprs2,rd=fprd,,,end
+FsTOd,op3,110100,opf,11001001,Convert Single to Double,140,B33,Floating Point,5,F11-2,raw,0,,ff,fstod,double,2,rs2=fprs2,rd=fprd,,,end
+FsTOq,op3,110100,opf,11001101,Convert Single to Quad,140,B33,Floating Point,5,F11-2,raw,0,,ff,fstoq,quad,2,rs2=fprs2,rd=fprd,,,end
+FdTOs,op3,110100,opf,11000110,Convert Double to Single,140,B33,Floating Point,5,F11-2,raw,0,,ff,fdtos,double,2,rs2=fprs2,rd=fprd,,,end
+FdTOq,op3,110100,opf,11001110,Convert Double to Quad,140,B33,Floating Point,5,F11-2,raw,0,,ff,fdtoq,quad,2,rs2=fprs2,rd=fprd,,,end
+FqTOs,op3,110100,opf,11000111,Convert Quad to Single,140,B33,Floating Point,5,F11-2,raw,0,,ff,fqtos,quad,2,rs2=fprs2,rd=fprd,,,end
+FqTOd,op3,110100,opf,11001011,Convert Quad to Double,140,B33,Floating Point,5,F11-2,raw,0,,ff,fqtod,quad,2,rs2=fprs2,rd=fprd,,,end
+FMOVs,op3,110100,opf,1,Move,140,B33,Floating Point,5,F11-2,raw,0,,ff,fmovs,single,2,rs2=fprs2,rd=fprd,,,end
+FNEGs,op3,110100,opf,101,Negate,140,B33,Floating Point,5,F11-2,raw,0,,ff,fnegs,single,2,rs2=fprs2,rd=fprd,,,end
+FABSs,op3,110100,opf,1001,Absolute Value,140,B33,Floating Point,5,F11-2,raw,0,,ff,fabss,,2,rs2=fprs2,rd=fprd,,,end
+FSQRTs,op3,110100,opf,101001,Square Root Single,140,B33,Floating Point,5,F11-2,raw,0,,ff,fsqrts,single,2,rs2=fprs2,rd=fprd,,,end
+FSQRTd,op3,110100,opf,101010,Square Root Double,140,B33,Floating Point,5,F11-2,raw,0,,ff,fsqrtd,double,2,rs2=fprs2,rd=fprd,,,end
+FSQRTq,op3,110100,opf,101011,Square Root Quad,140,B33,Floating Point,5,F11-2,raw,0,,ff,fsqrtq,quad,2,rs2=fprs2,rd=fprd,,,end
+FADDs,op3,110100,opf,1000001,Add Single,140,B33,Floating Point,5,F11-1,raw,0,,fff,fadds,single,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FADDd,op3,110100,opf,1000010,Add Double,140,B33,Floating Point,5,F11-1,raw,0,,fff,faddd,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FADDq,op3,110100,opf,1000011,Add Quad,140,B33,Floating Point,5,F11-1,raw,0,,fff,faddq,quad,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FSUBs,op3,110100,opf,1000101,Subtract Single,140,B33,Floating Point,5,F11-1,raw,0,,fff,fsubs,single,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FSUBd,op3,110100,opf,1000110,Subtract Double,140,B33,Floating Point,5,F11-1,raw,0,,fff,fsubd,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FSUBq,op3,110100,opf,1000111,Subtract Quad,140,B33,Floating Point,5,F11-1,raw,0,,fff,fsubq,quad,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FMULs,op3,110100,opf,1001001,Multiply Single,140,B33,Floating Point,5,F11-1,raw,0,,fff,fmuls,single,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FMULd,op3,110100,opf,1001010,Multiply Double,140,B33,Floating Point,5,F11-1,raw,0,,fff,fmuld,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FMULq,op3,110100,opf,1001011,Multiply Quad,140,B33,Floating Point,5,F11-1,raw,0,,fff,fmulq,quad,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FsMULd,op3,110100,opf,1101001,Multiply Single to Double,140,B33,Floating Point,5,F11-1,raw,0,,fff,fsmuld,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FdMULq,op3,110100,opf,1101110,Multiply Double to Quad,140,B33,Floating Point,5,F11-1,raw,0,,fff,fdmulq,quad,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FDIVs,op3,110100,opf,1001101,Divide Single,140,B33,Floating Point,5,F11-1,raw,0,,fff,fdivs,single,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FDIVd,op3,110100,opf,1001110,Divide Double,140,B33,Floating Point,5,F11-1,raw,0,,fff,fdivd,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FDIVq,op3,110100,opf,1001111,Divide Quad,140,B33,Floating Point,5,F11-1,raw,0,,fff,fdivq,quad,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+FCMPs,op3,110101,opf,1010001,Compare Single,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmps,single,2,rs1=fprs1,rs2=fprs2,,,end
+FCMPd,op3,110101,opf,1010010,Compare Double,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmpd,double,2,rs1=fprs1,rs2=fprs2,,,end
+FCMPq,op3,110101,opf,1010011,Compare Quad,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmpq,quad,2,rs1=fprs1,rs2=fprs2,,,end
+FCMPEs,op3,110101,opf,1010101,Compare Single and Exception if Unordered,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmpes,single,2,rs1=fprs1,rs2=fprs2,,,end
+FCMPEd,op3,110101,opf,1010110,Compare Double and Exception if Unordered,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmped,double,2,rs1=fprs1,rs2=fprs2,,,end
+FCMPEq,op3,110101,opf,1010111,Compare Quad and Exception if Unordered,140,B33,Floating Point,5,F11-3,raw,0,,ff ,fcmpeq,quad,2,rs1=fprs1,rs2=fprs2,,,end
+BA,op2,1000,a,0001,Branch Always,119,B21,Control Transfer,3,F05-1,raw,0,,n,"ba,a",label,1,disp22,,,,end
+BN,op2,0000,a,0001,Branch Never,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bn,a",label,1,disp22,,,,end
+BNE,op2,1001,a,0001,Branch on Not Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bne,a",label,1,disp22,,,,end
+BE,op2,0001,a,0001,Branch on Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,"be,a",label,1,disp22,,,,end
+BG,op2,1010,a,0001,Branch on Greater,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bg,a",label,1,disp22,,,,end
+BLE,op2,0010,a,0001,Branch on Less or Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,"ble,a",label,1,disp22,,,,end
+BGE,op2,1011,a,0001,Branch on Greater or Equal,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bge,a",label,1,disp22,,,,end
+BL,op2,0011,a,0001,Branch on Less,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bl,a",label,1,disp22,,,,end
+BGU,op2,1100,a,0001,Branch on Greater Unsigned,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bgu,a",label,1,disp22,,,,end
+BLEU,op2,0100,a,0001,Branch on Less or Equal Unsigned,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bleu,a",label,1,disp22,,,,end
+BCC,op2,1101,a,0001,"Branch on Carry Clear (Greater than or Equal, Unsigned)",119,B21,Control Transfer,3,F05-1,raw,0,,n,"bcc,a",label,1,disp22,,,,end
+BCS,op2,0101,a,0001,"Branch on Carry Set (Less than, Unsigned)",119,B21,Control Transfer,3,F05-1,raw,0,,n,"bcs,a",label,1,disp22,,,,end
+BPOS,op2,1110,a,0001,Branch on Positive,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bpos,a",label,1,disp22,,,,end
+BNEG,op2,0110,a,0001,Branch on Negative,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bneg,a",label,1,disp22,,,,end
+BVC,op2,1111,a,0001,Branch on Overflow Clear,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bvc,a",label,1,disp22,,,,end
+BVS,op2,0111,a,0001,Branch on Overflow Set,119,B21,Control Transfer,3,F05-1,raw,0,,n,"bvs,a",label,1,disp22,,,,end
+FBA,op2,1000,a,0001,FCC Branch Always,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fba,a",label,1,disp22,,,,end
+FBN,op2,0000,a,0001,FCC Branch Never,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbn,a",label,1,disp22,,,,end
+FBU,op2,0111,a,0001,FCC Branch on Unordered,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbu,a",label,1,disp22,,,,end
+FBG,op2,0110,a,0001,FCC Branch on Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbg,a",label,1,disp22,,,,end
+FBUG,op2,0101,a,0001,FCC Branch on Unordered or Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbug,a",label,1,disp22,,,,end
+FBL,op2,0100,a,0001,FCC Branch on Less,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbl,a",label,1,disp22,,,,end
+FBUL,op2,0011,a,0001,FCC Branch on Unordered or Less,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbul,a",label,1,disp22,,,,end
+FBLG,op2,0010,a,0001,FCC Branch on Less or Greater,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fblg,a",label,1,disp22,,,,end
+FBNE,op2,0001,a,0001,FCC Branch on Not Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbne,a",label,1,disp22,,,,end
+FBE,op2,1001,a,0001,FCC Branch on Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbe,a",label,1,disp22,,,,end
+FBUE,op2,1010,a,0001,FCC Branch on Unordered or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbue,a",label,1,disp22,,,,end
+FBGE,op2,1011,a,0001,FCC Branch on Greater or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbge,a",label,1,disp22,,,,end
+FBUGE,op2,1100,a,0001,FCC Branch on Unordered or Greater or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbuge,a",label,1,disp22,,,,end
+FBLE,op2,1101,a,0001,FCC Branch on Less or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fble,a",label,1,disp22,,,,end
+FBULE,op2,1110,a,0001,FCC Branch on Unordered or Less or Equal,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbule,a",label,1,disp22,,,,end
+FBO,op2,1111,a,0001,FCC Branch on Ordered,121,B22,Control Transfer,3,F05-2,raw,0,,n,"fbo,a",label,1,disp22,,,,end
+CBA,op2,1000,a,0001,CCC Branch Always,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cba,a",label,1,disp22,,,,end
+CBN,op2,0000,a,0001,CCC Branch Never,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cbn,a",label,1,disp22,,,,end
+CB3,op2,0111,a,0001,CCC Branch on Unordered,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb3,a",label,1,disp22,,,,end
+CB2,op2,0110,a,0001,CCC Branch on Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb2,a",label,1,disp22,,,,end
+CB23,op2,0101,a,0001,CCC Branch on Unordered or Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb23,a",label,1,disp22,,,,end
+CB1,op2,0100,a,0001,CCC Branch on Less,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb1,a",label,1,disp22,,,,end
+CB13,op2,0011,a,0001,CCC Branch on Unordered or Less,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb13,a",label,1,disp22,,,,end
+CB12,op2,0010,a,0001,CCC Branch on Less or Greater,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb12,a",label,1,disp22,,,,end
+CB123,op2,0001,a,0001,CCC Branch on Not Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb123,a",label,1,disp22,,,,end
+CB0,op2,1001,a,0001,CCC Branch on Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb0,a",label,1,disp22,,,,end
+CB03,op2,1010,a,0001,CCC Branch on Unordered or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb03,a",label,1,disp22,,,,end
+CB02,op2,1011,a,0001,CCC Branch on Greater or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb02,a",label,1,disp22,,,,end
+CB023,op2,1100,a,0001,CCC Branch on Unordered or Greater or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb023,a",label,1,disp22,,,,end
+CB01,op2,1101,a,0001,CCC Branch on Less or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb01,a",label,1,disp22,,,,end
+CB013,op2,1110,a,0001,CCC Branch on Unordered or Less or Equal,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb013,a",label,1,disp22,,,,end
+CB012,op2,1111,a,0001,CCC Branch on Ordered,123,B23,Control Transfer,3,F05-3,raw,0,,n,"cb012,a",label,1,disp22,,,,end
+ADDD,op3,000000,i,000000,Add,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,addd,,3,rs1,rs2,rd,,end
+ADDDcc,op3,010000,i,000000,Add and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,adddcc,,3,rs1,rs2,rd,,end
+SUBD,op3,000100,i,000000,Subtract,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,subd,,3,rs1,rs2,rd,,end
+SUBDcc,op3,010100,i,000000,Subtract and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,subdcc,,3,rs1,rs2,rd,,end
+SLLD,op3,100101,i,000000,Shift Left Logical,,,Integer Arith,2,F13-1,raw,0,AJIT,rrr,slld,,3,rs1,rs2,rd,,end
+SRLD,op3,100110,i,000000,Shift Right Logical,,,Integer Arith,2,F13-1,raw,0,AJIT,rrr,srld,,3,rs1,rs2,rd,,end
+SRAD,op3,100111,i,000000,Shift Right Arithmetic,,,Integer Arith,2,F13-1,raw,0,AJIT,rrr,srad,,3,rs1,rs2,rd,,end
+UMULD,op3,001010,i,000000,Unsigned Integer Multiply,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,umuld,,3,rs1,rs2,rd,,end
+SMULD,op3,001011,i,000000,Signed Integer Multiply,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,smuld,,3,rs1,rs2,rd,,end
+UMULDcc,op3,011010,i,000000,Unsigned Integer Multiply and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,umuldcc,,3,rs1,rs2,rd,,end
+SMULDcc,op3,011011,i,000000,Signed Integer Multiply and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,smuldcc,,3,rs1,rs2,rd,,end
+UDIVD,op3,001110,i,000000,Unsigned Integer Divide,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,udivd,,3,rs1,rs2,rd,,end
+SDIVD,op3,001111,i,000000,Signed Integer Divide,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,sdivd,,3,rs1,rs2,rd,,end
+UDIVDcc,op3,011110,i,000000,Unsigned Integer Divide and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,udivdcc,,3,rs1,rs2,rd,,end
+SDIVDcc,op3,011111,i,000000,Signed Integer Divide and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,sdivdcc,,3,rs1,rs2,rd,,end
+ANDD,op3,000001,i,000000,And,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,andd,,3,rs1,rs2,rd,,end
+ANDDcc,op3,010001,i,000000,And and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,anddcc,,3,rs1,rs2,rd,,end
+ANDDN,op3,000101,i,000000,And Not,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,anddn,,3,rs1,rs2,rd,,end
+ANDDNcc,op3,010101,i,000000,And Not and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,anddncc,,3,rs1,rs2,rd,,end
+ORD,op3,000010,i,000000,Inclusive Or,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,ord,,3,rs1,rs2,rd,,end
+ORDcc,op3,010010,i,000000,Inclusive Or and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,ordcc,,3,rs1,rs2,rd,,end
+ORDN,op3,000110,i,000000,Inclusive Or Not,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,ordn,,3,rs1,rs2,rd,,end
+ORDNcc,op3,010110,i,000000,Inclusive Or Not and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,ordncc,,3,rs1,rs2,rd,,end
+XORD,op3,000011,i,000000,Exclusive Or,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,xord,,3,rs1,rs2,rd,,end
+XORDcc,op3,010011,i,000000,Exclusive Or and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,xordcc,,3,rs1,rs2,rd,,end
+XNORD,op3,000111,i,000000,Exclusive Nor,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,xnord,,3,rs1,rs2,rd,,end
+XNORDcc,op3,010111,i,000000,Exclusive Nor and modify icc,,,Integer Arith,2,F12-1,raw,0,AJIT,rrr,xnordcc,,3,rs1,rs2,rd,,end
+VADDD8,op3,000000,dt,000001,Add,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vaddd8,,3,rs1,rs2,rd,,end
+VADDD16,op3,000000,dt,000010,Add,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vaddd16,,3,rs1,rs2,rd,,end
+VADDD32,op3,000000,dt,000100,Add,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vaddd32,,3,rs1,rs2,rd,,end
+VSUBD8,op3,000100,dt,000001,Subtract,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsubd8,,3,rs1,rs2,rd,,end
+VSUBD16,op3,000100,dt,000010,Subtract,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsubd16,,3,rs1,rs2,rd,,end
+VSUBD32,op3,000100,dt,000100,Subtract,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsubd32,,3,rs1,rs2,rd,,end
+VUMULD8,op3,001010,dt,000001,Unsigned Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vumuld8,,3,rs1,rs2,rd,,end
+VUMULD16,op3,001010,dt,000010,Unsigned Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vumuld16,,3,rs1,rs2,rd,,end
+VUMULD32,op3,001010,dt,000100,Unsigned Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vumuld32,,3,rs1,rs2,rd,,end
+VSMULD8,op3,001011,dt,000001,Signed Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsmuld8,,3,rs1,rs2,rd,,end
+VSMULD16,op3,001011,dt,000010,Signed Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsmuld16,,3,rs1,rs2,rd,,end
+VSMULD32,op3,001011,dt,000100,Signed Integer Multiply,,,Integer Arith,2,F14-1,raw,0,AJIT,rrr,vsmuld32,,3,rs1,rs2,rd,,end
+ADDDREDUCE8,op3,101101,dt,000001,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,adddreduce8,,3,rs1,rs2,rd,,end
+ORDREDUCE8,op3,101110,dt,000001,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,ordreduce8,,3,rs1,rs2,rd,,end
+ANDDREDUCE8,op3,101111,dt,000001,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,anddreduce8,,3,rs1,rs2,rd,,end
+XORDREDUCE8,op3,111110,dt,000001,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,xordreduce8,,3,rs1,rs2,rd,,end
+ADDDREDUCE16,op3,101101,dt,000010,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,adddreduce16,,3,rs1,rs2,rd,,end
+ORDREDUCE16,op3,101110,dt,000010,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,ordreduce16,,3,rs1,rs2,rd,,end
+ANDDREDUCE16,op3,101111,dt,000010,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,anddreduce16,,3,rs1,rs2,rd,,end
+XORDREDUCE16,op3,111110,dt,000010,,,,Integer Arith,2,F15-1,raw,0,AJIT,rrr,xordreduce16,,3,rs1,rs2,rd,,end
+ZBYTEDPOS,op3,111111,i,000000,,,,Integer Arith,2,F04-1,raw,0,AJIT,rrr,zbytedpos,,3,rs1,rs2,rd,,end
+VFADD32,op3,110100,opf,101000010,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfadd32,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFADD16,op3,110100,opf,101000011,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfadd16,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFSUB32,op3,110100,opf,101000100,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfsub32,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFSUB16,op3,110100,opf,101000101,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfsub16,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFMUL32,op3,110100,opf,101000110,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfmul32,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFMUL16,op3,110100,opf,101000111,Vector Floating Point Add,,,Integer Arith,2,F11-1,raw,0,AJIT,fff,vfmul16,double,3,rs1=fprs1,rs2=fprs2,rd=fprd,,end
+VFI16TOH,op3,110100,opf,101001000,Vector Floating Point Add,,,Integer Arith,2,F16-1,raw,0,AJIT,ff,vfi16toh,double,2,rs1=fprs1,rd=fprd,,,end
+VFHTOI16,op3,110100,opf,101001001,Vector Floating Point Add,,,Integer Arith,2,F16-1,raw,0,AJIT,ff,vfhtoi16,double,2,rs1=fprs1,rd=fprd,,,end
+FADDREDUCE16,op3,110100,opf,101010000,Vector Floating Point Add,,,Integer Arith,2,F17-1,raw,0,AJIT,ff,faddreduce16,double,2,rs1=fprs1,rd=fprd,,,end
+FSTOH,op3,110100,opf,101010001,Vector Floating Point Add,,,Integer Arith,2,F17-1,raw,0,AJIT,ff,fstoh,single,2,rs1=fprs1,rd=fprd,,,end
+FHTOS,op3,110100,opf,101010010,Vector Floating Point Add,,,Integer Arith,2,F17-1,raw,0,AJIT,ff,fhtos,single,2,rs1=fprs1,rd=fprd,,,end
+CSWAP,op3,101111,i,000000,SWAP register with memory,,,Integer Arith,2,F01-1,raw,0,AJIT,rrr,cswap,[address],3,rs1,rs2,rd,,end
+CSWAPA,op3,111111,i,000000,SWAP register with Alternate space memory,,,Integer Arith,2,F01-a,raw,0,AJIT,rrrn,cswapa,[regaddr] asi,4,rs1,rs2,rd,asi,end
+LDSB,op3,001001,i,000001,Load Signed Byte,90,B1,Load/Store,1,F01-2,raw,0,,rnr,ldsb,[address],3,rs1,sign_ext (simm13),rd,,end
+LDSH,op3,001010,i,000001,Load Signed Halfword,90,B1,Load/Store,1,F01-2,raw,0,,rnr,ldsh,[address],3,rs1,sign_ext (simm13),rd,,end
+LDUB,op3,000001,i,000001,Load Unsigned Byte,90,B1,Load/Store,1,F01-2,raw,0,,rnr,ldub,[address],3,rs1,sign_ext (simm13),rd,,end
+LDUH,op3,000010,i,000001,Load Unsigned Halfword,90,B1,Load/Store,1,F01-2,raw,0,,rnr,lduh,[address],3,rs1,sign_ext (simm13),rd,,end
+LD,op3,000000,i,000001,Load Word,90,B1,Load/Store,1,F01-2,raw,0,,rnr,ld,[address],3,rs1,sign_ext (simm13),rd,,end
+LDD,op3,000011,i,000001,Load Doubleword,90,B1,Load/Store,1,F01-2,raw,0,,rnr,ldd,[address],3,rs1,sign_ext (simm13),rd,,end
+LDF,op3,100000,i,000001,Load Floating-point Register,92,B2,Load/Store,1,F01-2,raw,0,,rnf,ld,[address],3,rs1,sign_ext (simm13),rd=fprd,,end
+LDDF,op3,100011,i,000001,Load Double Floating-point Register,92,B2,Load/Store,1,F01-2,raw,0,,rnf,ldd,[address],3,rs1,sign_ext (simm13),rd=fprd,,end
+LDFSR,op3,100001,i,000001,Load Floating-point State Register,92,B2,Load/Store,1,F01-2,raw,0,,rng,ld,[address],3,rs1,sign_ext (simm13),rd=%fsr,,end
+LDC,op3,110000,i,000001,Load Coprocessor Register,94,B3,Load/Store,1,F01-2,raw,0,,rnc,ld,[address],3,rs1,sign_ext (simm13),rd=cprd,,end
+LDDC,op3,110011,i,000001,Load Double Coprocessor Register,94,B3,Load/Store,1,F01-2,raw,0,,rnc,ldd,[address],3,rs1,sign_ext (simm13),rd=cprd,,end
+LDCSR,op3,110001,i,000001,Load Coprocessor State Register,94,B3,Load/Store,1,F01-2,raw,0,,rng,ld,[address],3,rs1,sign_ext (simm13),rd=%csr,,end
+STB,op3,000101,i,000001,Store Byte,95,B4,Store,1,F01-2,raw,0,,rrn,stb,[address],3,rd,rs1,sign_ext (simm13),,end
+STH,op3,000110,i,000001,Store Halfword,95,B4,Store,1,F01-2,raw,0,,rrn,sth,[address],3,rd,rs1,sign_ext (simm13),,end
+ST,op3,000100,i,000001,Store Word,95,B4,Store,1,F01-2,raw,0,,rrn,st,[address],3,rd,rs1,sign_ext (simm13),,end
+STD,op3,000111,i,000001,Store Doubleword,95,B4,Store,1,F01-2,raw,0,,rrn,std,[address],3,rd,rs1,sign_ext (simm13),,end
+STF,op3,100100,i,000001,Store Floating-point,97,B5,Store,1,F01-2,raw,0,,frn,st,[address],3,rd=fprd,rs1,sign_ext (simm13),,end
+STDF,op3,100111,i,000001,Store Double Floating-point,97,B5,Store,1,F01-2,raw,0,,frn,std,[address],3,rd=fprd,rs1,sign_ext (simm13),,end
+STFSR,op3,100101,i,000001,Store Floating-point State Register,97,B5,Store,1,F01-2,raw,0,,frn,st,[address],3,rd=%fsr,rs1,sign_ext (simm13),,end
+STDFQ,op3,100110,i,000001,Store Double Floating-point deferred-trap Queue,97,B5,Store,1,F01-2,raw,0,,frn,std,[address],3,rd=%fq,rs1,sign_ext (simm13),,end
+STC,op3,110100,i,000001,Store Coprocessor,99,B6,Store,1,F01-2,raw,0,,crn,st,[address],3,rd=cprd,rs1,sign_ext (simm13),,end
+STDC,op3,110111,i,000001,Store Double Coprocessor,99,B6,Store,1,F01-2,raw,0,,crn,std,[address],3,rd=cprd,rs1,sign_ext (simm13),,end
+STCSR,op3,110101,i,000001,Store Coprocessor State Register,99,B6,Store,1,F01-2,raw,0,,crn,st,[address],3,rd=%csr,rs1,sign_ext (simm13),,end
+STDCQ,op3,110110,i,000001,Store Double Coprocessor Queue,99,B6,Store,1,F01-2,raw,0,,crn,std,[address],3,rd=%cq,rs1,sign_ext (simm13),,end
+LDSTUB,op3,001101,i,000001,Atomic Load-Store Unsigned Byte,101,B7,Load,1,F01-2,raw,0,,rnr,ldstub,[address],3,rs1,sign_ext (simm13),rd,,end
+SWAP,op3,001111,i,000001,SWAP register with memory,102,B8,Load,1,F01-2,raw,1,,rnr,swap,[address],3,rs1,sign_ext (simm13),rd,,end
+AND,op3,000001,i,000001,And,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,and,,3,rs1,sign_ext (simm13),rd,,end
+ANDcc,op3,010001,i,000001,And and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,andcc,,3,rs1,sign_ext (simm13),rd,,end
+ANDN,op3,000101,i,000001,And Not,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,andn,,3,rs1,sign_ext (simm13),rd,,end
+ANDNcc,op3,010101,i,000001,And Not and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,andncc,,3,rs1,sign_ext (simm13),rd,,end
+OR,op3,000010,i,000001,Inclusive Or,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,or,,3,rs1,sign_ext (simm13),rd,,end
+ORcc,op3,010010,i,000001,Inclusive Or and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,orcc,,3,rs1,sign_ext (simm13),rd,,end
+ORN,op3,000110,i,000001,Inclusive Or Not,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,orn,,3,rs1,sign_ext (simm13),rd,,end
+ORNcc,op3,010110,i,000001,Inclusive Or Not and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,orncc,,3,rs1,sign_ext (simm13),rd,,end
+XOR,op3,000011,i,000001,Exclusive Or,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,xor,,3,rs1,sign_ext (simm13),rd,,end
+XORcc,op3,010011,i,000001,Exclusive Or and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,xorcc,,3,rs1,sign_ext (simm13),rd,,end
+XNOR,op3,000111,i,000001,Exclusive Nor,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,xnor,,3,rs1,sign_ext (simm13),rd,,end
+XNORcc,op3,010111,i,000001,Exclusive Nor and modify icc,106,B11,Integer Arith,2,F03-2,raw,0,,rnr,xnorcc,,3,rs1,sign_ext (simm13),rd,,end
+SLL,op3,100101,i,000001,Shift Left Logical,107,B12,Integer Arith,2,F04-2,raw,0,,rnr,sll,,3,rs1,imm5,rd,,end
+SRL,op3,100110,i,000001,Shift Right Logical,107,B12,Integer Arith,2,F04-2,raw,0,,rnr,srl,,3,rs1,imm5,rd,,end
+SRA,op3,100111,i,000001,Shift Right Arithmetic,107,B12,Integer Arith,2,F04-2,raw,0,,rnr,sra,,3,rs1,imm5,rd,,end
+ADD,op3,000000,i,000001,Add,108,B13,Integer Arith,2,F03-2,raw,0,,rnr,add,,3,rs1,sign_ext (simm13),rd,,end
+ADDcc,op3,010000,i,000001,Add and modify icc,108,B13,Integer Arith,2,F03-2,raw,0,,rnr,addcc,,3,rs1,sign_ext (simm13),rd,,end
+ADDX,op3,001000,i,000001,Add with Carry,108,B13,Integer Arith,2,F03-2,raw,0,,rnr,addx,,3,rs1,sign_ext (simm13),rd,,end
+ADDXcc,op3,011000,i,000001,Add with Carry and modify icc,108,B13,Integer Arith,2,F03-2,raw,0,,rnr,addxcc,,3,rs1,sign_ext (simm13),rd,,end
+TADDcc,op3,100000,i,000001,Tagged Add and modify icc,109,B14,Integer Arith,2,F03-2,raw,0,,rnr,taddcc,,3,rs1,sign_ext (simm13),rd,,end
+TADDccTV,op3,100010,i,000001,"Tagged Add, modify icc and Trap on Overflow",109,B14,Integer Arith,2,F03-2,raw,0,,rnr,taddcctv,,3,rs1,sign_ext (simm13),rd,,end
+SUB,op3,000100,i,000001,Subtract,110,B15,Integer Arith,2,F03-2,raw,0,,rnr,sub,,3,rs1,sign_ext (simm13),rd,,end
+SUBcc,op3,010100,i,000001,Subtract and modify icc,110,B15,Integer Arith,2,F03-2,raw,0,,rnr,subcc,,3,rs1,sign_ext (simm13),rd,,end
+SUBX,op3,001100,i,000001,Subtract with Carry,110,B15,Integer Arith,2,F03-2,raw,0,,rnr,subx,,3,rs1,sign_ext (simm13),rd,,end
+SUBXcc,op3,011100,i,000001,Subtract with Carry and modify icc,110,B15,Integer Arith,2,F03-2,raw,0,,rnr,subxcc,,3,rs1,sign_ext (simm13),rd,,end
+TSUBcc,op3,100001,i,000001,Tagged Subtract and modify icc,111,B16,Integer Arith,2,F03-2,raw,0,,rnr,tsubcc,,3,rs1,sign_ext (simm13),rd,,end
+TSUBccTV,op3,100011,i,000001,"Tagged Subtract, modify icc and Trap on Overflow",111,B16,Integer Arith,2,F03-2,raw,0,,rnr,tsubcctv,,3,rs1,sign_ext (simm13),rd,,end
+MULScc,op3,100100,i,000001,Multiply Step and modify icc,112,B17,Integer Arith,2,F03-2,raw,0,,rnr,mulscc,,3,rs1,sign_ext (simm13),rd,,end
+UMUL,op3,001010,i,000001,Unsigned Integer Multiply,113,B18,Integer Arith,2,F03-2,raw,0,,rnr,umul,,3,rs1,sign_ext (simm13),rd,,end
+SMUL,op3,001011,i,000001,Signed Integer Multiply,113,B18,Integer Arith,2,F03-2,raw,0,,rnr,smul,,3,rs1,sign_ext (simm13),rd,,end
+UMULcc,op3,011010,i,000001,Unsigned Integer Multiply and modify icc,113,B18,Integer Arith,2,F03-2,raw,0,,rnr,umulcc,,3,rs1,sign_ext (simm13),rd,,end
+SMULcc,op3,011011,i,000001,Signed Integer Multiply and modify icc,113,B18,Integer Arith,2,F03-2,raw,0,,rnr,smulcc,,3,rs1,sign_ext (simm13),rd,,end
+UDIV,op3,001110,i,000001,Unsigned Integer Divide,115,B19,Integer Arith,2,F03-2,raw,0,,rnr,udiv,,3,rs1,sign_ext (simm13),rd,,end
+SDIV,op3,001111,i,000001,Signed Integer Divide,115,B19,Integer Arith,2,F03-2,raw,0,,rnr,sdiv,,3,rs1,sign_ext (simm13),rd,,end
+UDIVcc,op3,011110,i,000001,Unsigned Integer Divide and modify icc,115,B19,Integer Arith,2,F03-2,raw,0,,rnr,udivcc,,3,rs1,sign_ext (simm13),rd,,end
+SDIVcc,op3,011111,i,000001,Signed Integer Divide and modify icc,115,B19,Integer Arith,2,F03-2,raw,0,,rnr,sdivcc,,3,rs1,sign_ext (simm13),rd,,end
+SAVE,op3,111100,i,000001,Save caller’s window,117,B20,Integer Arith,2,F03-2,raw,0,,rnr,save,,3,rs1,sign_ext (simm13),rd,,end
+RESTORE,op3,111101,i,000001,Restore caller’s window,117,B20,Integer Arith,2,F03-2,raw,0,,rnr,restore,,3,rs1,sign_ext (simm13),rd,,end
+JMPL,op3,111000,i,000001,Jump and Link,126,B25,Control Transfer,3,F03-2,raw,0,,rnr,jmpl,address,3,rs1,sign_ext (simm13),rd,,end
+RETT,op3,111001,i,000001,Return from Trap,127,B26,Control Transfer,3,F07-2,raw,0,,rn,rett,address,2,rs1,sign_ext (simm13),,,end
+TA,op3,111010,i,000001,Trap Always,129,B27,Control Transfer,3,F08-2,raw,0,,rn,ta,software_trap,2,rs1,sign_ext (simm13),,,end
+TN,op3,111010,i,000001,Trap Never,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tn,software_trap,2,rs1,sign_ext (simm13),,,end
+TNE,op3,111010,i,000001,Trap on Not Equal,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tne,software_trap,2,rs1,sign_ext (simm13),,,end
+TE,op3,111010,i,000001,Trap on Equal,129,B27,Control Transfer,3,F08-2,raw,0,,rn,te,software_trap,2,rs1,sign_ext (simm13),,,end
+TG,op3,111010,i,000001,Trap on Greater,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tg,software_trap,2,rs1,sign_ext (simm13),,,end
+TLE,op3,111010,i,000001,Trap on Less or Equal,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tle,software_trap,2,rs1,sign_ext (simm13),,,end
+TGE,op3,111010,i,000001,Trap on Greater or Equal,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tge,software_trap,2,rs1,sign_ext (simm13),,,end
+TL,op3,111010,i,000001,Trap on Less,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tl,software_trap,2,rs1,sign_ext (simm13),,,end
+TGU,op3,111010,i,000001,Trap on Greater Unsigned,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tgu,software_trap,2,rs1,sign_ext (simm13),,,end
+TLEU,op3,111010,i,000001,Trap on Less or Equal Unsigned,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tleu,software_trap,2,rs1,sign_ext (simm13),,,end
+TCC,op3,111010,i,000001,"Trap on Carry Clear (Greater than or Equal, Unsigned)",129,B27,Control Transfer,3,F08-2,raw,0,,rn,tcc,software_trap,2,rs1,sign_ext (simm13),,,end
+TCS,op3,111010,i,000001,"Trap on Carry Set (Less Than, Unsigned)",129,B27,Control Transfer,3,F08-2,raw,0,,rn,tcs,software_trap,2,rs1,sign_ext (simm13),,,end
+TPOS,op3,111010,i,000001,Trap on Positive,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tpos,software_trap,2,rs1,sign_ext (simm13),,,end
+TNEG,op3,111010,i,000001,Trap on Negative,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tneg,software_trap,2,rs1,sign_ext (simm13),,,end
+TVC,op3,111010,i,000001,Trap on Overflow Clear,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tvc,software_trap,2,rs1,sign_ext (simm13),,,end
+TVS,op3,111010,i,000001,Trap on Overflow Set,129,B27,Control Transfer,3,F08-2,raw,0,,rn,tvs,software_trap,2,rs1,sign_ext (simm13),,,end
+FLUSH,op3,111011,i,000001,Flush Instruction Memory,138,B32,Load/Store,1,F07-2,raw,0,,rn,flush,address,2,rs1,sign_ext (simm13),,,end
+WRY,op3,110000,i,000001,Write Y Register,133,B29,State Register,4,F03-2,raw,1,rd=0,rna,wr,xor,3,rs1,sign_ext (simm13),rd=%y,,end
+WRASR,op3,110000,i,000001,Write Ancillary State Register (reserved),133,B29,State Register,4,F03-2,raw,1,"Rs = 1 … 15, causes undefined results",rna,wr,xor,3,rs1,sign_ext (simm13),rd=rd,,end
+WRASR,op3,110000,i,000001,(implementation-dependent),133,B29,State Register,4,F03-2,raw,0,,rna,wr,xor,3,rs1,sign_ext (simm13),rd=rd,,end
+WRPSR,op3,110001,i,000001,Write Processor State Register,133,B29,State Register,4,F03-2,raw,2,,rng,wr,xor,3,rs1,sign_ext (simm13),rd=%psr,,end
+WRWIM,op3,110010,i,000001,Write Window Invalid Mask Register,133,B29,State Register,4,F03-2,raw,2,,rng,wr,xor,3,rs1,sign_ext (simm13),rd=%wim,,end
+WRTBR,op3,110011,i,000001,Write Trap Base Register,133,B29,State Register,4,F03-2,raw,1,,rng,wr,xor,3,rs1,sign_ext (simm13),rd=%tbr,,end
+SLLD,op3,100101,i,000001,Shift Left Logical,,,Integer Arith,2,F13-2,raw,0,AJIT,rrr,slld,,3,rs1,imm6,rd,,end
+SRLD,op3,100110,i,000001,Shift Right Logical,,,Integer Arith,2,F13-2,raw,0,AJIT,rrr,srld,,3,rs1,imm6,rd,,end
+SRAD,op3,100111,i,000001,Shift Right Arithmetic,,,Integer Arith,2,F13-2,raw,0,AJIT,rrr,srad,,3,rs1,imm6,rd,,end
+CSWAP,op3,101111,i,000001,SWAP register with memory,,,Load/Store,1,F01-2,raw,1,AJIT,rrr,cswap,,2,rs1,sign_ext (simm13),,,end
+ZBYTEDPOS,op3,111111,i,000001,,,,Integer Arith,2,F18-1,raw,0,AJIT,rnr,zbytedpos,,3,rs1,imm8,rd,,end
