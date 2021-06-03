@@ -258,4 +258,7 @@ void release_file_print_lock(FILE* fp);
 //  inside the function (memory leak alert).
 char* pipe_value_to_string(const char* id);
 
+// just dump all the registered pipes.
+void dump_all_registered_pipes();
+
 #endif

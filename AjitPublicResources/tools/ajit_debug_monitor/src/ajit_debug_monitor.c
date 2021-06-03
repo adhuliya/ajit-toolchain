@@ -28,11 +28,13 @@
 #include "aggregator.h"
 #include "spi_common.h"
 #include "debugServer.h"
+#ifdef SUPPORT_AA2C
 #include "chip_afb_bridge_afb_bridge_aa_c_model.h"
 #include "chip_core_core.h"
 #include "sys_afb_ahb_bridge_afb_ahb_bridge_aa_c_model.h"
 #include "sys_peripherals_peripherals.h"
 #include "chip_interrupt_stub_interrupt_stub_aa_c_model.h"
+#endif
 
 
 #define __SLEEP__(x)  usleep(x);
@@ -253,6 +255,7 @@ int main(int argc, char **argv)
 	// FPGA hardware connected to debug interface with PCIE.
 	// need to start console and aggregator on the software side.
 	{
+#ifdef SUPPORT_RIFFA
 
 		setDebugServerConnectMode(dbg_CONNECT_WITH_PCIE);
 		int link_status = set_processor_link (PROCESSOR_RIFFA_LINK);
@@ -268,12 +271,17 @@ int main(int argc, char **argv)
 
 		PTHREAD_DECL(listenToPmode);
 		PTHREAD_CREATE(listenToPmode);
+#else
+		fprintf(stderr,"Sorry!  riffa not supported.\n");
+		return(1);
+#endif
 	}
 	else if (aa2c_flag)
 	//
 	// AA2C model..
 	//
 	{
+#ifdef SUPPORT_AA2C
 		allocateMemory(32); 
 		if(mmap_file_name != NULL)
 		{
@@ -307,6 +315,10 @@ int main(int argc, char **argv)
 
 		PTHREAD_DECL(monitorLogger);
 		PTHREAD_CREATE(monitorLogger);
+#else
+		fprintf(stderr,"Sorry, aa2c mode not supported.\n");
+		return(1);
+#endif
 	}
 	else if(use_socket_to_dut)
 	//
@@ -332,8 +344,10 @@ int main(int argc, char **argv)
 	startDebugInterpreter();
 
 
+#ifdef SUPPORT_RIFFA)
 	if(riffa_flag)
 		close_fpga();
+#endif
 
 	return (main_ret_val);
 }

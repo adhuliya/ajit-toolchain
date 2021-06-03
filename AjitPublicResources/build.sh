@@ -1,5 +1,10 @@
 #!/bin/bash
 CWD=$(pwd)
+# build the tools
+echo "build tools"
+cd tools
+scons
+cd $CWD
 # build test-environments
 echo "build processor/TestEnvironments"
 cd processor/TestEnvironments

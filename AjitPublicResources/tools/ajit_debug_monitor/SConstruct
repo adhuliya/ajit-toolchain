@@ -106,7 +106,7 @@ env.Append(CPPPATH = C_64_HOME + "/tlbs/include/")
 #===================================================================================================================
 # AJIT debug monitor  
 #-------------------------------------------------------------------------------------------------------------------
-MONITOR_LLIBS = ' Tlbs Sysmem MemArray Bootmem Console rt SimplifiedAhbCInterface PipeHandlerDebugPthreads monitorLogger BitVectors AggregatorSimplified Common uarch_debug_utils_single_core gpb SPICommon Common doval antlr3c fpu CharClientServer rt '  + ' uart_interface  processor_link '  + libriffa + ' m sys_sys DebugServer Rtl2AaMatcher SockPipes pthread  readline Tlbs '  
+MONITOR_LLIBS = ' Tlbs Sysmem MemArray Bootmem Console rt SimplifiedAhbCInterface PipeHandlerDebugPthreads monitorLogger BitVectors AggregatorSimplified Common uarch_debug_utils_single_core gpb SPICommon Common doval antlr3c fpu CharClientServer rt '  + ' uart_interface  processor_link '  + libriffa + ' m DebugServer Rtl2AaMatcher SockPipes pthread  readline Tlbs '  
 
 MONITOR_LIBPATHS = ' /usr/lib/ /usr/local/lib/ ' +  C_HOME + '/common/lib ' +  C_HOME + '/debugger/gpb/lib ' + C_HOME + '/debugger/spi_common/lib ' +  AHIR_LIBPATH + ' ' + FUNCTIONLIB_PATH + ' ' + AA_HOME + '/sys_simplified/lib ' + DEBUG_UTILS_LIB + ' ' + DOVAL_HOME  + ' ' + ANTLR_PATH + ' ' +  MONITOR_LOGGER_LIB + ' ' + DEBUG_UTILS_LIB + ' '+ ' '  + CONSOLE_LIB + ' ' + BOOTMEM_LIB + ' ' + SYSMEM_LIB + ' ' + MEMARRAY_LIB + ' ' + AGGREGATOR_SIMPLIFIED_LIB + ' ' + PROC_LINK_LIB  + ' ' + RIFFA_LIB + ' ' + CHARSERVER_LIB + ' ' + SIMPLIFIEDAHBCINTERFACE_LIB + ' ' + UART_LIB  + ' ' + DEBUGSERVER_LIB + ' ' + C_64_HOME  + '/tlbs/lib ' 
 

@@ -4,6 +4,11 @@ SConscript(['misc/SConscript'])
 SConscript(['traceCompareServer/SConscript'])
 SConscript(['generateInitVal/SConscript'])
 SConscript(['genVmapAsm/SConscript'])
+SConscript(['flash_image/SConscript'])
+
+# These are commented out...  They depend on 
+# other units which have to be built before this
+# is built..
 #SConscript(['ajit_debug_monitor_mt/SConscript'])
 #SConscript(['ajit_debug_monitor/SConscript'])
 

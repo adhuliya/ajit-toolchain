@@ -1,17 +1,5 @@
-commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+commit a883ab1a7a563a57ba1876269e4064bb8fd510c9
 Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Mon Feb 1 17:21:43 2021 +0530
+Date:   Fri May 21 17:50:27 2021 +0530
 
-    Avoid printing foreign module info in aa2c file.  Also
-    changed an error to a warning for output ports of
-    operators.
-----------------------------------------------------------------------------
-Mon Feb 1 18:34:49 IST 2021
-commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
-Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Mon Feb 1 17:21:43 2021 +0530
-
-    Avoid printing foreign module info in aa2c file.  Also
-    changed an error to a warning for output ports of
-    operators.
-----------------------------------------------------------------------------
+    Added current release to AHIR repo
