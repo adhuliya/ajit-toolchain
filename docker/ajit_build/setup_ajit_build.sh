@@ -15,7 +15,7 @@ echo "################################################";
 echo "  Building C Model.";
 echo "################################################";
 sleep 3;
-bash $AJIT_HOME/scripts/build_simulator.sh;
+bash $AJIT_HOME/scripts/build_ajit_public_resources;
 
 
 echo "################################################";
