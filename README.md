@@ -1,9 +1,114 @@
 README
 =============
 Tested to work on: Ubuntu 16.04.
+If you are going to use the docker setup below,
+it will use Ubuntu 16.04 by default.
+For troubleshooting in a local setup one can refer to the
+docker setup steps which have been well tested.
 
-To setup and use the system see the section
-on "Building and Installation" below.
+
+## Building and Installation
+
+Run the following command from this `README.md`'s directory,
+to set the `AJIT_HOME` environment variable,
+
+    source ./set_ajit_home
+
+
+### Install/Setup docker images
+
+    source ./set_ajit_home;   # sets AJIT_HOME
+    ./install_docker.sh;      # installs docker and more
+    ./docker_setup.sh;        # creates the docker images 
+
+    # on success
+    cd ./docker/ajit_build_dev; # go to the image utility directory
+    ./run.sh;                   # starts docker container `ajit_build_dev`
+    ./attach_shell;             # gives you shell access to the container
+    ## now you are inside the container ajit_build_dev
+    ./setup.sh;                 # build and setup the Ajit system
+    exit;
+    ## now you are outside the container
+
+Once the above setup is done refer `./docker/README.md` for more details.
+
+## Run a test program
+
+To run and test a sample examples,
+
+    # STEP 1: Enter the docker container.
+    cd ./docker/ajit_build_dev; # go to the image utility directory
+    ./run.sh;                   # starts docker container `ajit_build_dev`
+    ./attach_shell;             # gives you shell access to the container
+    ## now you are inside the container ajit_build_dev
+    # STEP 2: Execute a single test.
+    cd ./tests/examples/misc/sin-model-test;
+    ./build.sh;
+    ./run_cmodel.sh;
+    ./clean.sh;
+
+The output of `./run_cmodel.sh` should have a line `Tests Successful`.
+If so, the system is probably ready to use.
+To be on a safer side do run all the automated tests as given below.
+
+### Running (all) automated tests
+
+Run the following sequence of commands as given,
+from the root of the repository,
+
+    # STEP 1: Enter the docker container.
+    cd ./docker/ajit_build_dev; # go to the image utility directory
+    ./run.sh;                   # starts docker container `ajit_build_dev`
+    ./attach_shell;             # gives you shell access to the container
+    ## now you are inside the container ajit_build_dev
+    # STEP 2: Execute all the tests.
+    cd ./tests; ./test.sh;
+    cd ..; cd ./tests/verfication; ./verify.sh;
+
+
+### Do a local setup
+
+To setup Ajit Toolchain on the local system run,
+
+    source ./set_ajit_home;   # sets AJIT_HOME
+    ./setup.sh;               # builds the system
+    source ./ajit_env;        # to setup the environment
+
+Note that if this setup fails, the user should
+refer the `./docker_setup.sh` which stands as a
+reference to a well tested system environment.
+
+
+## Clean the slate
+
+To cleanup the local system setup use,
+
+    ./clean.sh;
+
+You can also call the above script from inside
+`ajit_build_dev` image container to clean the
+whole ajit build. 
+
+To cleanup a sub-build in the Ajit toolchain,
+read the script to see which sub-scripts it invokes.
+
+
+## Setup environment to start using the toolchain
+
+To setup the environment to start using Ajit Toolchain,
+
+    source ./set_ajit_home;
+    source ./ajit_env;
+
+`./ajit_env` contains all the truth about the global
+environment variables needed for Ajit development and use.
+
+
+## Important Files and Directories
+
+* `tests/examples/` folder contains examples that demonstrate the
+  use of many of the tools in this repo.
+
 
 
 General Information
@@ -66,92 +171,5 @@ then the third step has to be done manually.
 You may refer `./docker/ajit_tools/Dockerfile` to know
 which directories need to be deleted/kept to reduce the 
 disk size of the system (this step will be automated in future).
-
-
-## Building and Installation
-
-First set `AJIT_HOME` environment variable to the
-directory this README.md file is in. This is `AJIT_HOME`.
-(Or run `source ./set_ajit_home` from this directory)
-
-
-### Install/Setup docker images
-
-    source ./set_ajit_home;   # sets AJIT_HOME
-    ./install_docker.sh;      # installs docker and more
-    ./docker_setup.sh;        # creates the docker images 
-
-    # on success
-    cd ./docker/ajit_build_dev; # go to the image utility directory
-    ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
-
-Once the above setup is done refer `./docker/README.md`.
-
-
-### Do a local setup
-
-To setup Ajit Toolchain on the local system run,
-
-    source ./set_ajit_home;   # sets AJIT_HOME
-    ./setup.sh;               # builds the system
-    source ./ajit_env;        # to setup the environment
-
-Note that if this setup fails, the user should
-refer the `./docker_setup.sh` which stands as a
-reference to a well tested system environment.
-
-
-## Clean the slate
-
-To cleanup the local system setup use,
-
-    ./clean.sh;
-
-You can also call the above script from inside
-`ajit_build_dev` image container to clean the
-whole ajit build. 
-
-To cleanup a sub-build in the Ajit toolchain,
-read the script to see which sub-scripts it invokes.
-
-
-## Setup environment to start using the toolchain
-
-To setup the environment to start using Ajit Toolchain,
-
-    source ./set_ajit_home;
-    source ./ajit_env;
-
-`./ajit_env` contains all the truth about the global
-environment variables needed for Ajit development and use.
-
-
-## Test the setup (using examples)
-
-To run and test a sample examples,
-
-    cd ./tests/examples/misc/sin-model-test;
-    ./build.sh;
-    ./run_cmodel.sh;
-    ./clean.sh;
-
-The output of `./run_cmodel.sh` should have a line `Tests Successful`.
-If so, the system is probably ready to use.
-To be on a safer side do run all the automated tests as given below.
-
-### Running (all) automated tests
-
-Run the following sequence of commands as given,
-from the root of the repository,
-
-    cd ./tests; ./test.sh;
-    cd ..; cd ./tests/verfication; ./verify.sh;
-
-
-## Important Files and Directories
-
-* `tests/examples/` folder contains examples that demonstrate the
-  use of many of the tools in this repo.
 
 
