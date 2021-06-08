@@ -65,7 +65,7 @@ _start:
 	set 0x00000000,%l3
 	set 0x0000014D,%l1
 	set 0xFFFFFF5B,%l0 
-	sdivdcc %l0,%l2,%o0			! Result is 0xFFFFFFFE. N is set
+	sdivdcc %l0,%l2,%o0			! Trap! Registeres not modified. condition codes not changed.
 	rd %psr, %i3 
 
 	

@@ -194,8 +194,8 @@ void execute64BitSub  (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	uint8_t operand2_sign = getBit64(operand2, 63);
 	uint8_t n = getBit64(res, 63);
 	uint8_t z = (res == 0);
-	uint8_t v = ((operand1_sign & operand2_sign & !n) | (!operand1_sign & !operand2_sign & n));
-	uint8_t c = (operand1_sign & operand2_sign) | ((!n) & (operand1_sign | operand2_sign));
+	uint8_t v = ((operand1_sign && (!operand2_sign) & (!n)) || ((!operand1_sign) && operand2_sign && n));
+	uint8_t c = ((!operand1_sign) && operand2_sign) || (n && ((!operand1_sign) || operand2_sign));
 
 	if(modify_icc)
 	{
@@ -298,7 +298,7 @@ uint32_t execute64BitDiv   (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	uint8_t n = getBit64(res, 63);
 	uint8_t z = (res == 0);
 
-	uint8_t modify_icc =  ((op == _UDIVDcc_) || (op == _SDIVDcc_));
+	uint8_t modify_icc =  !exception && ((op == _UDIVDcc_) || (op == _SDIVDcc_));
 	if(modify_icc)
 	{
 		status_reg->psr = setBit32(status_reg->psr, 23, n) ; //N flag

@@ -1205,10 +1205,13 @@ uint32_t executeDiv( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *
 	uint32_t tv = trap_vector;
 	uint8_t f = *flags;
 
+	uint8_t div_by_zero_trap = 0;
+
 	if(operand2 == 0)
 	{
 		tv = setBit32(tv, _TRAP_, 1);
 		tv = setBit32(tv, _DIVISION_BY_ZERO_, 1) ;
+		div_by_zero_trap = 1;
 	}
 
 	uint64_t oprnd1 = operand1;
@@ -1255,7 +1258,7 @@ uint32_t executeDiv( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *
 		}
 	}
 
-	uint8_t modify_icc =  ((op == _UDIVcc_) || (op == _SDIVcc_));
+	uint8_t modify_icc =  !div_by_zero_trap && ((op == _UDIVcc_) || (op == _SDIVcc_));
 
 	uint8_t n = getBit32(res, 31);
 	uint8_t z = ((res == 0) ? 1 : 0);

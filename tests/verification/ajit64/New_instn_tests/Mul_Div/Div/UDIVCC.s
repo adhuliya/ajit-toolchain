@@ -65,7 +65,7 @@ _start:
 	set 0x00000000,%l3
 	set 0xFFFFFFFF,%l0 
 	set 0x000000A5,%l1 
-	udivdcc %l0,%l2,%o4			! Trap, g2 increments, result is unchanged
+	udivdcc %l0,%l2,%o4			! Trap, g2 increments, result is unchanged, cc unchanged.
 	rd %psr, %i3 	
 
 	ta 0
