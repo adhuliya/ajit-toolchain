@@ -30,6 +30,8 @@ from the directory.
 You can also follow the cleanup script `./clean.sh` to see how each
 sub-project's build is cleaned up.
 
+NOTE: Don't invoke any of the following command as a root/sudo user.
+
 
 ## Building and Installation
 
@@ -40,6 +42,8 @@ to set the `AJIT_HOME` environment variable,
 
 
 ### Install/Setup docker images
+
+Note: Don't be a root or sudo user when invoking any of the commands.
 
     source ./set_ajit_home;   # sets AJIT_HOME
     ./install_docker.sh;      # installs docker and more
