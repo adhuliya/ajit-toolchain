@@ -8,7 +8,7 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
   echo "ERROR: Invalid or missing argument...."
   echo "Usage: $0 <DEFCONFIG>"
   echo ""
-  echo "DEFONFIG values"
+  echo "DEFCONFIG values"
   echo "    <0> rootfs-tmpfs with dynamic-lib & static device list"
   echo "    <1> rootfs-tmpfs with satic-lib & static device list"
   echo "    <2> rootfs-tmpfs with static-libs & dynamic device list"
@@ -56,7 +56,7 @@ echo "================================================="
 
 cd buildroot-2014.08
 
-make clean
+# make clean
 
 if [ "$1" -eq 3 ]; then
   # Original defconfig with just the initial ramfs

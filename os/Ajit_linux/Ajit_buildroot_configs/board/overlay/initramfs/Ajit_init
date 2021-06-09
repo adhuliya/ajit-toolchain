@@ -17,12 +17,12 @@ error() {
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-mkdir -p /sys/dev
-mkdir -p /var/run
-mkdir -p /dev
+# mkdir -p /sys/dev
+# mkdir -p /var/run
+# mkdir -p /dev
 
-mkdir -p /dev/pts
-mount -t devpts devpts /dev/pts
+# mkdir -p /dev/pts
+# mount -t devpts devpts /dev/pts
 
 mkdir -p /newroot
 mount -t tmpfs tmpfs /newroot || error
@@ -32,8 +32,12 @@ export EXTRACT_UNSAFE_SYMLINKS=1
 tar -x -f rootfs.tar -C /newroot || error
 echo "successfully extracted"
 
-mount --move /sys /newroot/sys
-mount --move /proc /newroot/proc
-mount --move /dev /newroot/dev
+# mount --move /sys /newroot/sys
+# mount --move /proc /newroot/proc
+# mount --move /dev /newroot/dev
+
+# tidy before switching root
+umount /proc
+umount /sys
 
 exec switch_root /newroot /sbin/init || error

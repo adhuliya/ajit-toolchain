@@ -7,8 +7,8 @@ ABOUT:
 CONTENTS:
 	Ajit_linux_3.16.1/ 	: Kernel source code for Ajit processor
 				   created by modifying the linux kernel 3.16.1
-	Ajit_buildroot_configs/ : kernel configurations for Ajit_linux
-	initramfs/		: contents that go into the initial filesystem
+	Ajit_buildroot_configs/ : kernel & BR2 configurations for Ajit_linux
+		board/overlay/	: contents that go into the initial filesystem
 
 	Documentation/		: Steps for generating the kernel image,
 				   running it on Ajit C model,
@@ -26,7 +26,7 @@ BUILD INSTRUCTIONS:
 
 		./GeneratememMapForAjit.sh <DEFCONFIG>
 
-		DEFONFIG values
+		DEFCONFIG values
 		    <0> rootfs-tmpfs with dynamic-lib & static device list
 		    <1> rootfs-tmpfs with satic-lib & static device list
 		    <2> rootfs-tmpfs with static-libs & dynamic device list

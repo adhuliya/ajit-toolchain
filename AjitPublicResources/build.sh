@@ -32,3 +32,7 @@ echo "build tools/ajit_debug_monitor"
 cd tools/ajit_debug_monitor
 scons
 cd $CWD
+# compile and install device tree
+echo "build tools/deviceTreeCompiler"
+cd tools/deviceTreeCompiler
+make 
