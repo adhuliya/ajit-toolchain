@@ -1,8 +1,5 @@
-A test which copies blocks of data from one location to the 
-other and gives back the time taken to perform this operation. 
-
-The memory locations where data transactions are performed
-are chosen such that there are absolutely no cache conflicts.(see test.c)
+Performs a march test, switches context 
+and performs another march test.
 
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.

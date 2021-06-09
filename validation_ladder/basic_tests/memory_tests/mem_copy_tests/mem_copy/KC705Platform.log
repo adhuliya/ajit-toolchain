@@ -1,0 +1,16 @@
+********************************************
+Date: June 2021
+Bitfile date: 17 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705 FPGA
+********************************************
+
+
+Starting
+Done initialising array
+1K: err=0 t=0.152761 seconds
+4K: err=0 t=0.603051 seconds
+16K: err=0 t=2.400213 seconds
+64K: err=0 t=9.588830 seconds
+Done
+

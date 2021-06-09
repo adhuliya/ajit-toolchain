@@ -8,3 +8,4 @@ rm -f custom*
 rm -f *.bin
 rm -f bootstrap*
 rm -f *_copy_asm.s
+rm -rf sparc-*
