@@ -1,0 +1,5 @@
+Basic memory functions.
+
+	_a64_memcpy
+	_a64_memmove
+	_a64_memset
