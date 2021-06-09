@@ -1,0 +1,6 @@
+SOURCES = fhtos.s
+
+RESULTS = 
+f0=0x3c66
+f1=0x3f8cc000
+

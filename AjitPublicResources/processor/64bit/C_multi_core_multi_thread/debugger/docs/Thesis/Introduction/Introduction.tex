@@ -1,0 +1,20 @@
+% Introduction
+
+
+The AJIT processor project aims to develop a 32-bit processor platform compliant with the IEEE standard 1754-1994\cite{sparcIEEEstd} and SPARC V8 Architecture Manual\cite{sparcV8} from SPARC International Inc. This work attempts creation of an efficient debug infrastructure and provision of real time debug capability on the processor, even when it is working as part of a larger system. Along with this in-system debugging, it can also be used for verification during the different stages of processor development. The proposed system with integrated hardware-software architecture provides a non-intrusive view of the processor and the ability to remotely modify it at any instant.
+
+
+% Aim of the project
+\section{Motivation}
+As the embedded microprocessors are getting more powerful and are being used to build complex systems, their debug support needs improvement. An efficient debugger requires low level control on the program execution and complete visibility in hardware. Such debug capabilities are necessary to deliver quality systems and meet production goals.
+
+According to 2014 results of UBM Tech's annual comprehensive survey \cite{UBMsurvey} on embedded systems industry, debugging tools and support were the most lacking aspect in embedded design activities. The conventional hardware-independent debugging techniques are very restricted and do not provide any information about the system internals and peripherals (how they behave in a system). This work is motivated towards creating an efficient in-system debugger for the in-house developed AJIT processor and across its different implementation models. Such a system would enable the users to evaluate both the on-chip and in-system effects on the working hardware.
+
+Even though there are proprietary commercial tools from different companies, very few of such debuggers exist in the open source domain. Gnu debugger (GDB) is the main one among them that supports many different architectures. The aim is to create an efficient system by synchronizing one of these standard software debuggers with this specific hardware. The system needs to provide real time debug capability on the actual processor hardware and support application development.
+
+This in-system debugger will be an essential utility throughout the AJIT processor hardware and software development to remain as the only way of external control in the final hardware.
+
+% How the rest of the thesis is organized
+\section{Organization of the thesis}
+
+Chapter 1 is the introduction. In Chapter 2, the existing solutions for embedded system debugging are briefly discussed. Chapter 3 describes the system architecture and design of in-system debugger across different AJIT processor models. Chapter 4 deals with the implementation and validation details of the proposed system. Chapter 5 discusses the results and future work.

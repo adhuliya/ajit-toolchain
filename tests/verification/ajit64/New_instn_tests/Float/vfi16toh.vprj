@@ -1,0 +1,8 @@
+SOURCES = vfi16toh.s
+
+RESULTS =
+f0=0x10001
+f1=0x10001
+f2=0x3c003c00
+f3=0x3c003c00
+

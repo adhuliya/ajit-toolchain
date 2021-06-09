@@ -1,0 +1,58 @@
+This is the multi-core multi-thread C model for AJIT processor systems.
+
+An AJIT multi-core multi-thread system consists of up to 4 cores,
+each of which can have either 1 or 2 threads.
+
+The threads in a core are identical, and  can support either the plain 
+SPARC-V8 32-bit ISA or the AJIT extended 64-bit ISA.
+
+
+The components of the C model
+
+	bridge/
+		coherent memory switch
+		stitching together the cores.
+
+	cache/
+		model for dcache and icache.
+		VIVT caches with synonym elimination
+		and cache coherency related invalidation.
+
+
+	cpu/
+	cpu_interface/
+		Model of the AJIT thread (called the CPU earlier).
+
+	debugger/
+		AJIT thread debug infrastructure.  Each thread can
+		be connected to a GDB client.
+
+
+	devices/
+		Timer, serial, interrupt controller.
+
+	mmu/
+	tlbs/
+	rlut/
+		memory management unit, tlbs, rlut (for synonym elim and cache coherency)
+
+	half_precision_float/
+		library for half precision operations.
+
+	memory/
+		memory array model.
+
+	monitorLogger/
+		trace logging.
+
+	common/
+		shared code.
+
+	testbench/
+		the executable is in bin/ inside this folder.
+
+	SConscript
+	SConstruct
+
+	docs/
+		useful docs.  See the figure.

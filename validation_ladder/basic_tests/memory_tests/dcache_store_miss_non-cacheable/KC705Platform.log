@@ -1,0 +1,15 @@
+********************************************
+Date: 23 March 2021
+Bitfile date: 30 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705
+********************************************
+
+Starting...
+For 256 stores with DCACHE misses and non-cacheable MMU lookup,
+ time elapsed is t=0.000207 seconds, 
+ and err=0
+Done
+
+
+

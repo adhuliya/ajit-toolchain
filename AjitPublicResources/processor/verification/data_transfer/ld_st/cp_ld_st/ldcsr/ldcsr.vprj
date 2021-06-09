@@ -1,0 +1,9 @@
+SOURCES = ldcsr.s
+
+
+
+RESULTS = 
+g1 = 0x00000024
+l0 = 0x000020e0
+psr = 0x000020c0
+o0 = 0x6c

@@ -1,0 +1,114 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+
+
+#AHIR-related
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+FUNCTIONLIB_INCLUDE = AHIR_RELEASE + "/functionLibrary/include"
+FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+AA_HOME=AJIT_HOME + "/processor/Aa_v3"
+C_HOME=AJIT_HOME + "/processor/C_reference_model"
+C_64_HOME=AJIT_HOME + "/processor/64bit/C_multi_core_multi_thread"
+DOVAL_HOME=C_HOME+"/debugger/doval/lib"
+ANTLR_PATH = AJIT_HOME +  "/tools/antlr3Cruntime/build/lib"
+
+
+env.Append(CPPPATH = AJIT_HOME + '/os/kernels/pico/include:')
+DEBUG_UTILS_INCLUDE=AJIT_HOME + '/processor/TestEnvironments/debug_utils/include'
+DEBUG_UTILS_LIB=AJIT_HOME + '/processor/TestEnvironments/debug_utils/single_core/lib'
+env.Append(CPPPATH = DEBUG_UTILS_INCLUDE + ":./src/:./include:")
+
+#  If RIFFA is not installable, use the next two 
+RIFFA_INCLUDE = AJIT_HOME + "/processor/TestEnvironments/core_environment/riffa_dummy/include"
+RIFFA_LIB  = AJIT_HOME + "/processor/TestEnvironments/core_environment/riffa_dummy/lib"
+libriffa = "riffa_dummy"
+
+# Use these if riffa is installable.
+#RIFFA_INCLUDE = "/usr/local/include"
+#RIFFA_LIB  = "/usr/local/lib"
+#libriffa = "riffa"
+
+env.Append(CPPPATH = RIFFA_INCLUDE + ":")
+
+#library for modeling the cpu environment.
+CORE_INCLUDE = AA_HOME + '/sys_simplified/chip_simplified/core_simplified/aa2c'
+CHIP_INCLUDE = AA_HOME + '/sys_simplified/chip_simplified/aa2c'
+AFB_BRIDGE_INCLUDE = AA_HOME + '/sys_simplified/chip_simplified/afb_bridge/aa2c'
+AFB_AHB_BRIDGE_INCLUDE = AA_HOME + '/sys_simplified/afb_ahb_bridge/aa2c'
+SSYS_INCLUDE = AA_HOME + '/sys_simplified/aa2c'
+PERIPHERALS_INCLUDE=AA_HOME + "/sys_simplified/peripherals/aa2c"
+INTERRUPT_STUB_INCLUDE=AA_HOME + "/sys_simplified/chip_simplified/interrupt_stub/aa2c"
+C_CPU_INCLUDE = AJIT_HOME + '/processor/C/cpu/include'
+MONITOR_LOGGER_INCLUDE = AJIT_HOME + '/processor/TestEnvironments/core_environment/monitorLogger/include'
+MONITOR_LOGGER_LIB = AJIT_HOME + '/processor/TestEnvironments/core_environment/monitorLogger/lib'
+CONSOLE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/lib"
+CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/include"
+BOOTMEM_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/bootmem/lib"
+BOOTMEM_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/bootmem/include"
+SYSMEM_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/sys_mem/lib"
+SYSMEM_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/sys_mem/include"
+MEMARRAY_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/mem_array/lib"
+MEMARRAY_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/mem_array/include"
+AGGREGATOR_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/aggregator/lib"
+AGGREGATOR_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/aggregator/include"
+AGGREGATOR_SIMPLIFIED_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/aggregator_simplified/lib"
+AGGREGATOR_SIMPLIFIED_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/aggregator_simplified/include"
+PROC_LINK_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/processor_link/lib"
+PROC_LINK_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/processor_link/include"
+CHARSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
+CHARSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
+SPISLAVECLUSTER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/lib"
+SPISLAVECLUSTER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/include"
+SPISLAVECLUSTER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/spi_slave_cluster/include"
+SIMPLIFIEDAHBCINTERFACE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/simplified_ahb_c_interface/include"
+SIMPLIFIEDAHBCINTERFACE_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/simplified_ahb_c_interface/lib"
+UART_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/lib"
+UART_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/uart_interface/include"
+
+DEBUGSERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServer/lib"
+DEBUGSERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/debugServer/include"
+
+PTHREAD_LIB="usr/lib/x86_64-linux-gnu/"
+
+env.Append(CPPPATH = AHIR_INCLUDE + ":")
+env.Append(CPPPATH = C_CPU_INCLUDE + ":")
+env.Append(CPPPATH = CORE_INCLUDE + ":")
+env.Append(CPPPATH = AFB_BRIDGE_INCLUDE + ":")
+env.Append(CPPPATH = AFB_AHB_BRIDGE_INCLUDE + ":")
+env.Append(CPPPATH = CHIP_INCLUDE + ":")
+env.Append(CPPPATH = SSYS_INCLUDE + ":")
+env.Append(CPPPATH = PERIPHERALS_INCLUDE + ":")
+env.Append(CPPPATH = INTERRUPT_STUB_INCLUDE + ":")
+env.Append(CPPPATH = MONITOR_LOGGER_INCLUDE + ":")
+env.Append(CPPPATH = CONSOLE_INCLUDE + ":")
+env.Append(CPPPATH = BOOTMEM_INCLUDE + ":")
+env.Append(CPPPATH = MEMARRAY_INCLUDE + ":")
+env.Append(CPPPATH = SYSMEM_INCLUDE + ":")
+env.Append(CPPPATH = AGGREGATOR_INCLUDE + ":")
+env.Append(CPPPATH = AGGREGATOR_SIMPLIFIED_INCLUDE + ":")
+env.Append(CPPPATH = PROC_LINK_INCLUDE + ":")
+env.Append(CPPPATH = CHARSERVER_INCLUDE + ":")
+env.Append(CPPPATH = UART_INCLUDE + ":")
+env.Append(CPPPATH = DEBUGSERVER_INCLUDE + ":")
+env.Append(CPPPATH = SPISLAVECLUSTER_INCLUDE + ":")
+env.Append(CPPPATH = SIMPLIFIEDAHBCINTERFACE_INCLUDE + ":")
+
+# debug infrastructure..
+env.Append(CPPPATH = C_HOME + "/debugger/doval/include:" + AJIT_HOME + "/tools/antlr3Cruntime/build/include:" + C_HOME + "/debugger/spi_common/include:" + C_HOME + "/debugger/gpb/include:" )
+env.Append(CPPPATH = C_64_HOME + "/tlbs/include/")
+
+
+#===================================================================================================================
+# AJIT debug monitor  
+#-------------------------------------------------------------------------------------------------------------------
+MONITOR_LLIBS = ' Tlbs Sysmem MemArray Bootmem Console rt SimplifiedAhbCInterface PipeHandlerDebugPthreads monitorLogger BitVectors AggregatorSimplified Common uarch_debug_utils_single_core gpb SPICommon Common doval antlr3c fpu CharClientServer rt '  + ' uart_interface  processor_link '  + libriffa + ' m DebugServer Rtl2AaMatcher SockPipes pthread  readline Tlbs '  
+
+MONITOR_LIBPATHS = ' /usr/lib/ /usr/local/lib/ ' +  C_HOME + '/common/lib ' +  C_HOME + '/debugger/gpb/lib ' + C_HOME + '/debugger/spi_common/lib ' +  AHIR_LIBPATH + ' ' + FUNCTIONLIB_PATH + ' ' + AA_HOME + '/sys_simplified/lib ' + DEBUG_UTILS_LIB + ' ' + DOVAL_HOME  + ' ' + ANTLR_PATH + ' ' +  MONITOR_LOGGER_LIB + ' ' + DEBUG_UTILS_LIB + ' '+ ' '  + CONSOLE_LIB + ' ' + BOOTMEM_LIB + ' ' + SYSMEM_LIB + ' ' + MEMARRAY_LIB + ' ' + AGGREGATOR_SIMPLIFIED_LIB + ' ' + PROC_LINK_LIB  + ' ' + RIFFA_LIB + ' ' + CHARSERVER_LIB + ' ' + SIMPLIFIEDAHBCINTERFACE_LIB + ' ' + UART_LIB  + ' ' + DEBUGSERVER_LIB + ' ' + C_64_HOME  + '/tlbs/lib ' 
+
+env.Program('./bin/ajit_debug_monitor', Split('src/ajit_debug_monitor.c src/timerRoutines.c'), CCFLAGS=' -pthread -g -DUSE_PIPE_HANDLER ' ,LINKFLAGS='-g  ', LIBS=Split(MONITOR_LLIBS), LIBPATH=Split(MONITOR_LIBPATHS))
+

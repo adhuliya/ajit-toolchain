@@ -1,8 +1,9 @@
 .section .text.ajitstart
 .global _start;
 _start:
-	set 0xfff01000, %sp
-	set 0xfff01f00, %fp
+	! stack..
+	set 0xfff01ff8, %sp
+        set 0xfff01f00, %fp
 
 	set 0x1,%l0
 	wr %l0, 0x0, %wim

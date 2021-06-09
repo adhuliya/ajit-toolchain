@@ -20,6 +20,7 @@ El Dorado Hills, CA, 95762
 	This file contains the framework to acquire a block of memory, seed initial parameters, tun t he benchmark and report the results.
 */
 #include "coremark.h"
+//#include "core_portme.h"
 #include "ajit_access_routines.h"
 
 /* Function: iterate

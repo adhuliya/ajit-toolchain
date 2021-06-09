@@ -1,0 +1,6 @@
+SOURCES = iu_perf.s
+
+RESULTS =
+
+o0 = 0x0
+g7 = 0x2a64bc0

@@ -1,0 +1,2 @@
+#    Time: 3355 ns  Iteration: 0  Region: /sys_test_bench/dut/chip_inst/core_inst/cpu_inst/teu_inst/iu_inst/regs_inst/ccu_to_teu_iunit_register_access_command_Pipe/pb/debugGen# ** Note: WPIPE NOBLOCK_CPU_to_DCACHE_command-rxB0-bufPipe requester=0 data= 10e0000000000000000000000000001
+#    Time: 4125 ns  Iteration: 0  Region: /sys_test_bench/dut/chip_inst/core_inst/cpu_inst/teu_inst/iu_inst/regs_inst/ccu_to_teu_iunit_register_access_command_Pipe/pb/debugGen# ** Note: WPIPE NOBLOCK_CPU_to_DCACHE_command-rxB0-bufPipe requester=0 data= 00409e0000000000000020000000001

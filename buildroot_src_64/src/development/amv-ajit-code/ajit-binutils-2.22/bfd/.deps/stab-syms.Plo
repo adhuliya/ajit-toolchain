@@ -1,0 +1,17 @@
+stab-syms.lo: stab-syms.c bfd.h ../include/ansidecl.h ../include/symcat.h \
+ libaout.h ../include/bfdlink.h ../include/aout/aout64.h \
+ ../include/aout/stab.def
+
+bfd.h:
+
+../include/ansidecl.h:
+
+../include/symcat.h:
+
+libaout.h:
+
+../include/bfdlink.h:
+
+../include/aout/aout64.h:
+
+../include/aout/stab.def:

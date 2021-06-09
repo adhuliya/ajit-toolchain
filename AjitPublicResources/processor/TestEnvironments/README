@@ -1,0 +1,23 @@
+Test environments for validating processor models.
+	cpu_env_models
+		two versions of environment v0=only mem, v1=caches+mmu+devices
+
+	cpu_env_to_riffa
+		riffa aggregator on C side
+	
+	cpu_env_to_riffa_compare_fpga_c
+		riffa aggregator for twin cpu
+
+	cpu_env_to_riffa_twin_cpu
+		environment with cache+mmu+devices for twin-CPU
+
+	cpu_env_v0
+		obsolete.
+
+	debug_utils
+		utilities
+
+	monitorLogger
+		monitor-logger reads log pipes from cpu
+		and prints/sends-to-socket.
+

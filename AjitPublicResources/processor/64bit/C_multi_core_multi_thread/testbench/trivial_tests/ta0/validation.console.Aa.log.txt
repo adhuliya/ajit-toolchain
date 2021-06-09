@@ -1,0 +1,267 @@
+Info: elf-file to be produced  = ta0.elf.
+Info: var-dump-file to be produced  = ta0.vars.
+Info: hex-dump-file to be produced  = ta0.hex.
+Info: memory-map-file to be produced  = ta0.mmap.
+Info: object-dump-file to be produced  = ta0.objdump.
+Info: added assembly-file = /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.s.
+Info: linker_script_file  = /home/madhav/AjitProject/Git/AjitRepoV2/tools/linker/validationLinkerScript.lnk.
+Info: Executing:
+	rm -rf .//sparc-assembly
+Info: Executing:
+	mkdir .//sparc-assembly
+Info: Executing:
+	rm -rf .//sparc-obj
+Info: Executing:
+	mkdir .//sparc-obj
+Info: Executing:
+	sparc-linux-as   -Av8  /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.s -o .//sparc-obj/ta0.o
+Info: Executing:
+	sparc-linux-ld  --unique=SECTION -e main -T /home/madhav/AjitProject/Git/AjitRepoV2/tools/linker/validationLinkerScript.lnk .//sparc-obj/ta0.o   -o .//ta0.elf
+Info: Executing:
+	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  .//ta0.elf | tr -cd '\11\12\15\40-\176' | grep 0x > .//ta0.hex
+Info: Executing:
+	sparc-linux-readelf  --symbols .//ta0.elf  > .//ta0.vars
+Info: Executing:
+	Info: Generating memory map .//ta0.mmap
+Info: Executing:
+	sparc-linux-objdump -d  .//ta0.elf > .//ta0.objdump
+Warning : 'INCLUDES' list empty/not present/incorrect in /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.vprj
+Warning : 'DEFINES' list empty/not present in /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.vprj
+Note: vprj /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.vprj has test files : ['ta0.s']
+Note: executing command: compileToSparc.ForValidation.py   -E ta0.elf -V ta0.vars -H ta0.hex -M ta0.mmap -O ta0.objdump -s /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.s  -L /home/madhav/AjitProject/Git/AjitRepoV2/tools/linker/validationLinkerScript.lnk
+Note: executing /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/Testbenches/bin/ajit_simplified_sys_sw_uarch_test -d -m /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/compiled/ta0/ta0.mmap -r /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/compiled/ta0/ta0.results -l /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/log/ta0.log   
+Note: validation of  /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.vprj is successful
+sparc-linux-ld: warning: cannot find entry symbol main; defaulting to 0000000000000000
+readelf: Warning: Section '.bss' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
+readelf: Warning: Section '.data' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
+readelf: Warning: Section '.rodata' was not dumped because it does not exist!
+Info: allocating main memory with 36 address-bits.
+Info: starting simplified sys threads.
+Info:pThreadUtils: started thread core_icache_icache_IcacheBackendDaemon
+Info:pThreadUtils: started thread core_icache_icache_IcacheFrontendDaemon
+Info:pThreadUtils: started thread core_mmu_mux_mmu_mux_mmuDcacheServiceDaemon
+Info:pThreadUtils: started thread core_mmu_mux_mmu_mux_mmuIcacheServiceDaemon
+Info:pThreadUtils: started thread core_mmu_mux_mmu_mux_mmuMuxDaemon
+Info:pThreadUtils: started thread core_thread_configurator_thread_configurator_threadConfiguratorDaemon
+Info:pThreadUtils: started thread cpu_ccu_ccu_ccu_daemon
+Info:pThreadUtils: started thread cpu_ccu_ccu_ccu_debug_daemon
+Info:pThreadUtils: started thread cpu_ccu_ccu_reset_replicator_daemon
+Info:pThreadUtils: started thread teu_ifetch_ifetch_ifetch_main_daemon
+Info:pThreadUtils: started thread teu_ifetch_ifetch_issue_instruction_daemon
+Info:pThreadUtils: started thread iunit_writeback_in_mux_iu_writeback_in_mux_iunit_writeback_in_mux_daemon
+Info:pThreadUtils: started thread iunit_registers_iu_registers_iu_registers_daemon
+Info:pThreadUtils: started thread iunit_exec_iu_exec_iu_exec_daemon
+Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_debug_unit_ccu_daemon
+Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_daemon
+Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_in_mux_daemon
+Info:pThreadUtils: started thread teu_iretire_iretire_iretire_daemon
+Info:pThreadUtils: started thread teu_idecode_idispatch_idecode_idispatch_idecode_idispatch_daemon
+Info:pThreadUtils: started thread teu_idecode_idispatch_idecode_idispatch_sc_iretire_join_daemon
+Info:pThreadUtils: started thread teu_loadstore_loadstore_ccu_service_daemon
+Info:pThreadUtils: started thread teu_loadstore_loadstore_load_store_daemon
+Info:pThreadUtils: started thread teu_loadstore_loadstore_load_store_router_daemon
+Info:pThreadUtils: started thread fpunit_writeback_writeback_fpunit_writeback_daemon
+Info:pThreadUtils: started thread fpunit_writeback_writeback_fpunit_writeback_recv_write_response_daemon
+Info:pThreadUtils: started thread fpunit_registers_registers_fp_registers_daemon
+Info:pThreadUtils: started thread fpunit_exec_exec_exec_daemon
+Info:pThreadUtils: started thread fpunit_exec_exec_fpunit_exec_pipe_merge_daemon
+Info:pThreadUtils: started thread cpu_debug_interface_debug_interface_inWardDaemon
+Info:pThreadUtils: started thread cpu_debug_interface_debug_interface_outWardDaemon
+Info:pThreadUtils: started thread core_mmu_mmu_coherencyDaemon
+Info:pThreadUtils: started thread core_mmu_mmu_memAccessAndSendResponseDaemon
+Info:pThreadUtils: started thread core_mmu_mmu_memAccessRequestMergeDaemon
+Info:pThreadUtils: started thread core_mmu_mmu_mmuDaemon
+Info:pThreadUtils: started thread core_dcache_dcache_DcacheBackendDaemon
+Info:pThreadUtils: started thread core_dcache_dcache_DcacheBackendResponseDaemon
+Info:pThreadUtils: started thread core_dcache_dcache_DcacheFrontendDaemon
+Info:pThreadUtils: started thread chip_afb_bridge_afb_bridge_bridge_daemon
+Info:pThreadUtils: started thread chip_interrupt_stub_interrupt_stub_interrupt_stub_daemon
+Info:pThreadUtils: started thread sys_afb_ahb_bridge_afb_ahb_bridge_afb_ahb_bridge_daemon
+Info:pThreadUtils: started thread peripherals_serial_serial_serialDaemon
+Info:pThreadUtils: started thread peripherals_serial_serial_serialListenOnCpuDaemon
+Info:pThreadUtils: started thread peripherals_serial_serial_serialListenOnRxDaemon
+Info:pThreadUtils: started thread peripherals_serial_serial_transmitDaemon
+Info:pThreadUtils: started thread peripherals_timer_timer_listenToCpuDaemon
+Info:pThreadUtils: started thread peripherals_timer_timer_timerDaemon
+Info:pThreadUtils: started thread peripherals_irc_irc_ircDaemon
+Info:pThreadUtils: started thread peripherals_irc_irc_ircListenOnCpuDaemon
+Info: starting sys-mem threads.
+Info:pThreadUtils: started thread envSysmemDaemon
+Info: starting console threads.
+
+Error: pipeHandler: redefinition of pipe SERIAL_TX_to_CONSOLE with conflicting depths (2 or 8?)
+
+Error: pipeHandler: redefinition of pipe CONSOLE_to_SERIAL_RX with conflicting depths (2 or 8?)
+Info:pThreadUtils: started thread consoleOutput
+Info:pThreadUtils: started thread consoleInput
+Info: starting Debug server threads.
+Info: Debug Server started.
+Info:pThreadUtils: started thread blockingToNonblockingFromGdbDaemon
+Info:pThreadUtils: started thread blockingToNonblockingFromCcuDaemon
+Info:pThreadUtils: started thread debugServerDaemon
+Info:pThreadUtils: started thread listenToPmode
+pipe NOBLOCK_FROM_ccu is not written into.
+pipe NOBLOCK_FROM_ccu is not read from.
+pipe NOBLOCK_FROM_gdb is not written into.
+pipe NOBLOCK_FROM_gdb is not read from.
+pipe RESPONSE_FROM_DEBUG_SERVER is not written into.
+pipe RESPONSE_FROM_DEBUG_SERVER is not read from.
+pipe COMMAND_TO_DEBUG_SERVER is not written into.
+pipe COMMAND_TO_DEBUG_SERVER is not read from.
+pipe SYS_CLK is not written into.
+pipe SYS_CLK is not read from.
+pipe SINGLE_STEP_MODE is not written into.
+pipe SINGLE_STEP_MODE is not read from.
+pipe LOGGER_MODE is not written into.
+pipe LOGGER_MODE is not read from.
+pipe INTR_LEVEL is not read from.
+pipe HWRITE is not written into.
+pipe HWRITE is not read from.
+pipe HWDATA is not written into.
+pipe HWDATA is not read from.
+pipe HTRANS is not written into.
+pipe HTRANS is not read from.
+pipe HSIZE is not written into.
+pipe HSIZE is not read from.
+pipe HRESP is not written into.
+pipe HRESP is not read from.
+pipe HREADY is not written into.
+pipe HREADY is not read from.
+pipe HRDATA is not written into.
+pipe HRDATA is not read from.
+pipe HPROT is not written into.
+pipe HPROT is not read from.
+pipe HMASTLOCK is not written into.
+pipe HMASTLOCK is not read from.
+pipe HBURST is not written into.
+pipe HBURST is not read from.
+pipe HADDR is not written into.
+pipe HADDR is not read from.
+pipe DEBUG_MODE is not written into.
+pipe DEBUG_MODE is not read from.
+pipe CPU_RESET is not written into.
+pipe CPU_RESET is not read from.
+pipe CPU_MODE is not written into.
+pipe CPU_MODE is not read from.
+pipe bridge_rx_to_tx is not written into.
+pipe bridge_rx_to_tx is not read from.
+pipe TIMER_to_BRIDGE_data is not read from.
+pipe SPI_to_BRIDGE_data is not written into.
+pipe SPI_to_BRIDGE_data is not read from.
+pipe SERIAL_to_BRIDGE_data is not read from.
+pipe SERIAL_TX_to_CONSOLE is not read from.
+pipe RIFFA_to_CPU is not written into.
+pipe RIFFA_to_CPU is not read from.
+pipe NOBLOCK_CHIP_to_ENV_logger is not written into.
+pipe NOBLOCK_CHIP_to_ENV_logger is not read from.
+pipe MONITOR_to_DEBUG is not written into.
+pipe MONITOR_to_DEBUG is not read from.
+pipe IRC_to_BRIDGE_data is not read from.
+pipe DEBUG_to_MONITOR is not written into.
+pipe DEBUG_to_MONITOR is not read from.
+pipe CPU_to_RIFFA is not written into.
+pipe CPU_to_RIFFA is not read from.
+pipe CONSOLE_to_SERIAL_RX is not written into.
+pipe BRIDGE_to_TIMER_request_type is not written into.
+pipe BRIDGE_to_TIMER_data is not written into.
+pipe BRIDGE_to_TIMER_addr is not written into.
+pipe BRIDGE_to_SPI_request_type is not written into.
+pipe BRIDGE_to_SPI_request_type is not read from.
+pipe BRIDGE_to_SPI_data is not written into.
+pipe BRIDGE_to_SPI_data is not read from.
+pipe BRIDGE_to_SPI_addr is not written into.
+pipe BRIDGE_to_SPI_addr is not read from.
+pipe BRIDGE_to_SERIAL_request_type is not written into.
+pipe BRIDGE_to_SERIAL_data is not written into.
+pipe BRIDGE_to_SERIAL_addr is not written into.
+pipe BRIDGE_to_IRC_request_type is not written into.
+pipe BRIDGE_to_IRC_data is not written into.
+pipe BRIDGE_to_IRC_addr is not written into.
+pipe AHB_TO_AFB_RESPONSE is not written into.
+pipe AHB_TO_AFB_RESPONSE is not read from.
+pipe AFB_TO_AHB_COMMAND is not written into.
+pipe AFB_TO_AHB_COMMAND is not read from.
+pipe teu_iretire_to_iexception is not written into.
+pipe teu_iretire_to_iexception is not read from.
+pipe noblock_teu_idispatch_sstream_correction_to_ifetch is not written into.
+pipe noblock_teu_idispatch_sstream_correction_to_ifetch is not read from.
+pipe AFB_BUS_RESPONSE is not written into.
+pipe AFB_BUS_RESPONSE is not read from.
+pipe AFB_BUS_REQUEST is not written into.
+pipe AFB_BUS_REQUEST is not read from.
+pipe NOBLOCK_CPU_LOADSTORE_to_ICACHE_command is not written into.
+pipe NOBLOCK_CPU_LOADSTORE_to_ICACHE_command is not read from.
+pipe MMU_to_ICACHE_fsr is not written into.
+pipe MMU_to_ICACHE_fsr is not read from.
+pipe MMU_to_ICACHE_flags is not written into.
+pipe MMU_to_ICACHE_flags is not read from.
+pipe MMU_to_ICACHE_data is not written into.
+pipe MMU_to_ICACHE_data is not read from.
+pipe MMU_to_DCACHE_flags is not written into.
+pipe MMU_to_DCACHE_flags is not read from.
+pipe MMU_to_DCACHE_data is not written into.
+pipe MMU_to_DCACHE_data is not read from.
+pipe ICACHE_to_MMU_request_type is not written into.
+pipe ICACHE_to_MMU_request_type is not read from.
+pipe ICACHE_to_MMU_asi is not written into.
+pipe ICACHE_to_MMU_asi is not read from.
+pipe ICACHE_to_MMU_addr is not written into.
+pipe ICACHE_to_MMU_addr is not read from.
+pipe ICACHE_to_CPU_LOADSTORE_response is not written into.
+pipe ICACHE_to_CPU_LOADSTORE_response is not read from.
+pipe ENV_to_AJIT_irl is not written into.
+pipe ENV_to_AJIT_irl is not read from.
+pipe ENV_to_AJIT_data is not written into.
+pipe ENV_to_AJIT_data is not read from.
+pipe ENV_to_AJIT_access_error is not written into.
+pipe ENV_to_AJIT_access_error is not read from.
+pipe DCACHE_to_MMU_request_type is not written into.
+pipe DCACHE_to_MMU_request_type is not read from.
+pipe DCACHE_to_MMU_data is not written into.
+pipe DCACHE_to_MMU_data is not read from.
+pipe DCACHE_to_MMU_byte_mask is not written into.
+pipe DCACHE_to_MMU_byte_mask is not read from.
+pipe DCACHE_to_MMU_asi is not written into.
+pipe DCACHE_to_MMU_asi is not read from.
+pipe DCACHE_to_MMU_addr is not written into.
+pipe DCACHE_to_MMU_addr is not read from.
+pipe AJIT_to_ENV_request_type is not written into.
+pipe AJIT_to_ENV_request_type is not read from.
+pipe AJIT_to_ENV_data is not written into.
+pipe AJIT_to_ENV_data is not read from.
+pipe AJIT_to_ENV_byte_mask is not written into.
+pipe AJIT_to_ENV_byte_mask is not read from.
+pipe AJIT_to_ENV_addr is not written into.
+pipe AJIT_to_ENV_addr is not read from.
+pipe CORE_BUS_REQUEST is not read from.
+pipe INVALIDATE_REQUEST is not written into.
+pipe CORE_BUS_RESPONSE is not written into.
+pipe AJIT_to_ENV_debug_response is not read from.
+pipe ENV_to_AJIT_debug_command is not written into.
+pipe AJIT_to_ENV_logger is not read from.
+pipe ENV_to_CPU_irl is not written into.
+pipe AJIT_to_ENV_processor_mode is not read from.
+pipe CORE_ID is not written into.
+pipe ENV_to_AJIT_reset is not written into.
+Entered putTheProcessorInReset().
+asserted reset.
+processor put into reset-mode.
+Info: initializing main memory using memory-map /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/compiled/ta0/ta0.mmap
+Info: bring CPU out of reset: reset value = 0x0.
+Info: processor brought out of reset-mode. Debug-mode=0, Single-step-mode=0, Logging-enabled=0
+
+Error state detected
+Total time taken by CPU: 1.084900e+00 secs
+
+
+Validating : Result file = /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/compiled/ta0/ta0.results, Log file = /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/log/ta0.log
+
+
+Tests Successful.
+5.45user 3.73system 0:02.53elapsed 362%CPU (0avgtext+0avgdata 16548maxresident)k
+128inputs+1944outputs (1major+17268minor)pagefaults 0swaps
+Note : total failed cases = 0
+Note : total time taken by all jobs = 2.417 s
+Note : total vprj = 1

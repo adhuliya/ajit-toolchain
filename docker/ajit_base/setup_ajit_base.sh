@@ -40,6 +40,7 @@
     libncurses5-dev \
     bison \
     flex \
+    libreadline-dev \
     gedit \
     git \
 && \

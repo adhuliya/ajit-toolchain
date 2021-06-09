@@ -1,0 +1,7 @@
+SOURCES = dot_product.s
+
+RESULTS =
+
+g0 = 0x0
+g1 = 0x0
+f0 = 0x43000000

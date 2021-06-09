@@ -1,0 +1,8 @@
+Measured on April 23, 2021.  80MHz system, NSWEEPS=1024.
+	(bit file = ajit_base_board_with_trace_logger_vc709.bit)
+
+Non-cacheable: Time = 0.141510.  (seconds)
+Bypass: Time = 0.171024.  (seconds)
+Cacheable: Time = 0.066160.  (seconds)
+
+

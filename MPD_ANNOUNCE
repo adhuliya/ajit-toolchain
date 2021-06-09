@@ -1,0 +1,9 @@
+All the stuff from Ajit processor repo
+is in AjitPublicResources
+
+	- simulator
+	- 32-bit verif tests
+	- ajit_debug_monitor*
+	- tools
+	- scripts
+etc.

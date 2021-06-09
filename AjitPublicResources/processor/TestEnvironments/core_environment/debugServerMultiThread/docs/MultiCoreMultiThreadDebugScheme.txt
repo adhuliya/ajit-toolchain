@@ -1,0 +1,69 @@
+
+	Multi-core multi-thread AJIT C model debug scheme
+		Madhav Desai.
+
+
+1. Overview:
+
+	The debug scheme has two views:
+		- from the processor model side
+			- VHDL model view
+			- actual FPGA platform model view.
+
+		- from the user side.
+			- ajit_debug_monitor, doval view
+			- gdb view.
+
+
+			
+2. From the processor model side 
+
+	In the processor model, there is a thread of execution
+	for each processor thread.  The processor threads are
+	identified by a pair of integers 
+		(core-id, thread-id-in-core)
+
+	Consider a thread identified by the pair (0,0).  Data
+	from this thread arrives from the processor side
+	as 6 bytes at a time (either from uart or from sock
+	pipe DEBUG_TO_MONITOR_0_0 (0_1 etc.) from the vhdl sim).
+
+	In the VHDL sim case, the incoming pipe data is demuxed
+	to one of the DEBUG_TO_MONITOR_I_J pipes and this
+	is assembled into 32-bit words and presented to the DEBUG
+	server.
+
+	In the UART (FPGA) case, the uart_link module maintains 
+	a queue of received bytes for each I,J pair which is 
+	probed by the debug server.
+
+
+3.  From the testbench side:
+
+	GDB-client <------> GDB-server <-------> debug server
+
+	doval <-------> debug_utils <---> debug server
+	ajit_debug_monitor <-------> debug utils <---> debug server
+
+	doval, ajit_debug_monitor and debug_utils  need to be started 
+	in multi-core mode.
+	
+	
+				     
+
+
+		
+3.  From the user side
+
+	a. From GDB:
+		Messages from the GDB client are converted
+		to commands/responses on the following
+		pipes.
+
+		COMMAND_TO_DEBUG_SERVER_0_0
+		RESPONSE_FROM_DEBUG_SERVER_0_0
+
+		These are then 
+	
+	b. ajit_debug_monitor
+	

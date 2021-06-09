@@ -1,0 +1,4 @@
+wim read/wr is privileged
+when s=0, it causes a privileged instruction trap
+Upon a write to WIM, bits corresponding to non-existant windows should
+remain unchanged.

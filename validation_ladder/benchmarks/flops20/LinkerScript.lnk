@@ -8,9 +8,9 @@
 ENTRY(_start)
 SECTIONS
 {
-	. = 0x00000000;
+	. = 0x40000000;
 	.text ALIGN(8) : { *(.text.start) *(.text.main) *(.text.*) }
-	. = 0x00020000;
+	. = 0x40020000;
 	.rodata ALIGN(8) : { *(.rodata) }
 	.data ALIGN(8)   : { *(.data) *(.bss)}
 }

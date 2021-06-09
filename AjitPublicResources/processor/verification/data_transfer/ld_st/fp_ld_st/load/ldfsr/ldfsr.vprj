@@ -1,0 +1,8 @@
+SOURCES = ldfsr.s
+
+
+
+RESULTS = 
+g1 = 0x00000080
+o0 = 0x68
+fpsr = 0x01

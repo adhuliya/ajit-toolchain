@@ -1,0 +1,4 @@
+SOURCES = ta0.s
+
+RESULTS = 
+g0=0x0

@@ -1,0 +1,12 @@
+$system adm_test_setup $library adm_test_lib
+	$in
+		$pipe SOC_MONITOR_to_DEBUG 8 $depth 2
+		
+	$out
+		$pipe SOC_DEBUG_to_MONITOR 8 $depth 2
+
+{
+	$instance daggr_inst GlueModules:debug_aggregator_four_core
+	$instance pinger_inst adm_test_lib:pinger
+}
+

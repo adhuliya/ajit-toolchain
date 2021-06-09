@@ -1,0 +1,8 @@
+This folder contains the C model of mmu for the Ajit processor
+
+CONTENTS:
+	docs	: documentation 
+	include	: headers 
+	src	: C files 	
+	lib	: model library gets created here
+	SConscript : build script used by scons

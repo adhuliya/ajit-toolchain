@@ -1,0 +1,21 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+
+AHIR_RELEASE=os.environ['AHIR_RELEASE']
+AHIR_INCLUDE=AHIR_RELEASE+"/include"
+AHIR_LIBPATH=AHIR_RELEASE + "/lib"
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+C_HOME=AJIT_HOME + "/processor/C"
+
+env.Append(CPPPATH = "./:")
+env.Append(CPPPATH = AHIR_INCLUDE + ":" + "./include:")
+env.Append(CPPPATH = C_HOME + "/common/include:" + C_HOME + "/cpu/include:"+ C_HOME + "/cpu_interface_for_twin_cpu_testbench/include:")
+
+
+
+
+# create a shared library for the environment
+VariantDir('objriffa','src',duplicate=0)
+env.Library("./lib/compare_fpga_c", Glob ('./objriffa/*.c'), CCFLAGS=" -gdwarf-2 -g3 -DUSE_RIFFA ")
+

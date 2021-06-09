@@ -1,0 +1,333 @@
+\subsubsection{64 Bit Logical Instructions:}
+\label{sec:64:bit:logical:insn:impl}
+
+No immediate mode, i.e. insn[5] $\equiv$ i = 0, always.
+
+\begin{enumerate}
+\item \textbf{ORD}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/ord-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ORD instruction  with register operands.}
+      \label{fig:ajit:ord:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ORD}: same as OR, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{ord  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\vert$ rs2(pair).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x02                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ORDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/ordcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ORDCC instruction  with register operands.}
+      \label{fig:ajit:ordcc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ORDCC}: same as ORCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{ordcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\vert$
+    rs2(pair), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x12                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ORDN}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/ordn-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ORDN instruction  with register operands.}
+      \label{fig:ajit:ordn:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ORDN}: same as ORN, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{ordn  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\vert$ ($\sim$rs2(pair)).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x06                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ORDNCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/ordncc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ORDNCC instruction  with register operands.}
+      \label{fig:ajit:ordncc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ORDNCC}: same as ORN, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{ordncc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\vert$
+    ($\sim$rs2(pair)), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x16                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{XORDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/xordcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT XORDCC instruction  with register operands.}
+      \label{fig:ajit:xordcc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{XORDCC}: same as XORCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{xordcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\hat{~}$
+    rs2(pair), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x13                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+
+\item \textbf{XNORD}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/xnord-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT XNORD instruction  with register operands.}
+      \label{fig:ajit:xnord:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{XNORD}: same as XNOR, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{xnordcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\hat{~}$
+    rs2(pair).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x07                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{XNORDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/xnordcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT XNORDCC instruction  with register operands.}
+      \label{fig:ajit:xnordcc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{XNORDCC}: same as XNORD, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{xnordcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\hat{~}$
+    rs2(pair), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x17                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ANDD}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/andd-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ANDD instruction  with register operands.}
+      \label{fig:ajit:andd:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ANDD}: same as AND, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{andd  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\cdot$ rs2(pair).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x01                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ANDDCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/anddcc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ANDDCC instruction  with register operands.}
+      \label{fig:ajit:anddcc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ANDDCC}: same as ANDCC, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{anddcc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\cdot$
+    rs2(pair), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x11                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ANDDN}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/anddn-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ANDDN instruction  with register operands.}
+      \label{fig:ajit:anddn:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ANDDN}: same as ANDN, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{anddn  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\cdot$ ($\sim$rs2(pair)).
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x05                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+\item \textbf{ANDDNCC}:\\
+  \begin{center}
+    \begin{figure}[h]
+      \centering
+      \epsfxsize=.8\linewidth
+      \epsffile{../figs/anddncc-ajit-insn-32-bit-layout.eps}
+      \caption{The AJIT ANDDNCC instruction  with register operands.}
+      \label{fig:ajit:anddncc:insn}
+    \end{figure}
+  \end{center}
+  \begin{itemize}
+  \item []\textbf{ANDDNCC}: same as ANDN, but with Instr[13]=0 (i=0), and
+    Instr[5]=1.
+  \item []\textbf{Syntax}: ``\texttt{anddncc  SrcReg1, SrcReg2, DestReg}''.
+  \item []\textbf{Semantics}: rd(pair) $\leftarrow$ rs1(pair) $\cdot$
+    ($\sim$rs2(pair)), sets Z.
+  \end{itemize}
+
+  Hence the SPARC bit layout of this instruction is:
+
+  \begin{tabular}[h]{lclcl}
+    Macro to set   &=&  \verb|F4(x, y, z, b)|     &in& \verb|sparc.h|     \\
+    Macro to reset &=&  \verb|F4(~x, ~y, ~z, ~b)| &in& \verb|sparc.h|     \\
+    x              &=& 0x2                        &in& \verb|OP(x) | \\
+    y              &=& 0x15                       &in& \verb|OP3(y) | \\
+    z              &=& 0x0                        &in& \verb|F3I(z) | \\
+    b              &=& 0x1                        &in& \verb|OP_AJIT_BIT_5(a) |
+  \end{tabular}
+
+  The AJIT bit  (insn[5]) is set internally by  \texttt{F4}, and hence
+  there are only three arguments.
+
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

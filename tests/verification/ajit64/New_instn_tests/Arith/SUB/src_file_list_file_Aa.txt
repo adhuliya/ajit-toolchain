@@ -1,0 +1,2 @@
+/home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj
+/home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj

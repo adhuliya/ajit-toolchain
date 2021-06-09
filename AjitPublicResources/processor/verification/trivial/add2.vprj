@@ -1,0 +1,6 @@
+SOURCES = add2.s
+
+RESULTS = 
+g1=0x1
+g2=0x2
+g3=0x3

@@ -1,0 +1,5 @@
+An interface between the environment and the CPU VHDL simulation
+model.  Formwards pipe information between environment and CPU
+through the 64-bit riffa_to_cpu and cpu_to_riffa pipes.
+
+

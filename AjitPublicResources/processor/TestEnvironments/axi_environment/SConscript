@@ -1,0 +1,6 @@
+SConscript(['aggregator/SConscript'])
+SConscript(['console/SConscript'])
+SConscript(['processor_link_axi/SConscript'])
+SConscript(['testbench/SConscript'])
+SConscript(['mem_interface/SConscript'])
+

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - libbash test coverage - src/MmuInterface.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - MmuInterface.c<span style="font-size: 80%;"> (source / <a href="MmuInterface.c.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">libbash test coverage</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : //MmuInterface.c</a>
+<span class="lineNum">       2 </span>            : //AUTHOR: Neha Karanjkar
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span>            : #ifdef SW
+<span class="lineNum">       7 </span>            :     #include &lt;stdio.h&gt;
+<span class="lineNum">       8 </span>            : #endif
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      12 </span>            : #include &lt;pthread.h&gt;
+<span class="lineNum">      13 </span>            : #include &quot;pthreadUtils.h&quot;
+<span class="lineNum">      14 </span>            : #include &quot;Pipes.h&quot;
+<span class="lineNum">      15 </span>            : #include &quot;pipeHandler.h&quot;
+<span class="lineNum">      16 </span>            : #include &quot;RequestTypeValues.h&quot;
+<span class="lineNum">      17 </span>            : #include &quot;CacheInterface.h&quot;
+<span class="lineNum">      18 </span>            : #include &quot;MmuInterface.h&quot;
+<span class="lineNum">      19 </span>            : #include &quot;Ancillary.h&quot;
+<a name="20"><span class="lineNum">      20 </span>            : </a>
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span><span class="lineCov"> 1132473520 : void readCacheToMmuRequest(uint8_t *asi, uint32_t *addr, uint8_t *request_type, uint8_t* byte_mask, uint64_t *data, uint8_t*source)</span>
+<span class="lineNum">      23 </span>            : {
+<span class="lineNum">      24 </span>            :     
+<span class="lineNum">      25 </span><span class="lineCov"> 1132473520 :     *asi        = read_uint8 (&quot;CACHE_to_MMU_asi&quot;);</span>
+<span class="lineNum">      26 </span><span class="lineCov"> 1132427870 :     *addr       = read_uint32(&quot;CACHE_to_MMU_addr&quot;);</span>
+<span class="lineNum">      27 </span><span class="lineCov"> 1132427870 :     *request_type   = read_uint8 (&quot;CACHE_to_MMU_request_type&quot;);</span>
+<span class="lineNum">      28 </span><span class="lineCov"> 1132427870 :     *byte_mask  = read_uint8 (&quot;CACHE_to_MMU_byte_mask&quot;);</span>
+<span class="lineNum">      29 </span><span class="lineCov"> 1132427870 :     *data       = read_uint64(&quot;CACHE_to_MMU_data&quot;);</span>
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :     //read bit 7 of request type to determine if the
+<span class="lineNum">      32 </span>            :     //source of teh request was Dcache or Icache.
+<span class="lineNum">      33 </span><span class="lineCov"> 1132427870 :     *source     = getBit8(*request_type,7);</span>
+<span class="lineNum">      34 </span>            :     //reset bit 7 of request type
+<span class="lineNum">      35 </span><span class="lineCov"> 1132427870 :     *request_type   = setBit8(*request_type,7,0);</span>
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :     #ifdef DEBUG
+<span class="lineNum">      39 </span>            :     if(*source==DCACHE_TYPE)
+<span class="lineNum">      40 </span>            :         printf(&quot;\nMMU :  read DCACHE request asi=0x%x, addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx&quot;,*asi,*addr,*request_type,*byte_mask,*data);
+<span class="lineNum">      41 </span>            :     else
+<span class="lineNum">      42 </span>            :         printf(&quot;\nMMU :  read ICACHE request asi=0x%x, addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx&quot;,*asi,*addr,*request_type,*byte_mask,*data);
+<span class="lineNum">      43 </span>            :     #endif
+<span class="lineNum">      44 </span><span class="lineCov"> 1132427870 : }</span>
+<span class="lineNum">      45 </span>            : 
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span><span class="lineCov"> 1132427870 : void sendMmuToCacheResponse(uint8_t mae, uint64_t data, uint8_t cacheable, uint8_t destination)</span>
+<span class="lineNum">      49 </span>            : {
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineCov"> 1132427870 :     mae= setBit8(mae,7,destination);</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineCov"> 1132427870 :     write_uint8 (&quot;MMU_to_CACHE_mae&quot;, mae);</span>
+<span class="lineNum">      54 </span><span class="lineCov"> 1132427870 :     write_uint64(&quot;MMU_to_CACHE_data&quot;,data);</span>
+<span class="lineNum">      55 </span><span class="lineCov"> 1132427870 :     write_uint8 (&quot;MMU_to_CACHE_cacheable&quot;,cacheable);</span>
+<span class="lineNum">      56 </span>            :     
+<span class="lineNum">      57 </span>            :     #ifdef DEBUG
+<span class="lineNum">      58 </span>            :     if(destination==DCACHE_TYPE)
+<span class="lineNum">      59 </span>            :         printf(&quot;\nMMU :  sent response to DCACHE mae=0x%x, data=0x%lx, cacheable=0x%x&quot;,mae,data,cacheable);
+<span class="lineNum">      60 </span>            :     else
+<span class="lineNum">      61 </span>            :         printf(&quot;\nMMU :  sent response to ICACHE mae=0x%x, data=0x%lx, cacheable=0x%x&quot;,mae,data,cacheable);
+<span class="lineNum">      62 </span>            :     #endif
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov"> 1132427870 : }</span>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineCov"> 1132990649 : void sendMmuToMemoryRequest(uint8_t request_type, uint64_t addr, uint64_t data, uint8_t byte_mask)</span>
+<span class="lineNum">      68 </span>            : {
+<span class="lineNum">      69 </span><span class="lineCov"> 1132990649 :     write_uint8 (&quot;AJIT_to_ENV_request_type&quot;,request_type);</span>
+<span class="lineNum">      70 </span><span class="lineCov"> 1132990649 :     write_uint64(&quot;AJIT_to_ENV_addr&quot;,addr);</span>
+<span class="lineNum">      71 </span><span class="lineCov"> 1132990649 :     write_uint64(&quot;AJIT_to_ENV_data&quot;,data);</span>
+<span class="lineNum">      72 </span><span class="lineCov"> 1132990649 :     write_uint8 (&quot;AJIT_to_ENV_byte_mask&quot;, byte_mask);</span>
+<span class="lineNum">      73 </span>            :     
+<span class="lineNum">      74 </span>            :     #ifdef DEBUG
+<span class="lineNum">      75 </span>            :     printf(&quot;\nMMU :  sent request to System Bus request_type=0x%x, addr=0x%lx, data=0x%lx, byte_mask=0x%x&quot;,request_type, addr, data, byte_mask);
+<span class="lineNum">      76 </span>            :     #endif
+<span class="lineNum">      77 </span>            : 
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov"> 1132990649 : }</span></a>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineCov"> 1132990649 : void readMemoryToMmuResponse(uint64_t* data)</span>
+<span class="lineNum">      81 </span>            : {
+<span class="lineNum">      82 </span><span class="lineCov"> 1132990649 :     *data       = read_uint64(&quot;ENV_to_AJIT_data&quot;);</span>
+<span class="lineNum">      83 </span>            :     #ifdef DEBUG
+<span class="lineNum">      84 </span>            :     printf(&quot;\nMMU :  read Response from System Bus : data = 0x%lx&quot;,*data);
+<span class="lineNum">      85 </span>            :     #endif
+<span class="lineNum">      86 </span>            : 
+<span class="lineNum">      87 </span><span class="lineCov"> 1132990649 : }</span>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            : 
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

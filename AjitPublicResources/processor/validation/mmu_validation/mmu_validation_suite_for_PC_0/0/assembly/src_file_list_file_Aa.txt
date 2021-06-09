@@ -1,0 +1,5 @@
+/home/madhav/AjitProject/Git/AjitRepoV2/processor/validation/mmu_validation/mmu_validation_suite_for_PC_0/0/assembly/FSR_FAR_updation/FSR_FAR_updation.vprj
+/home/madhav/AjitProject/Git/AjitRepoV2/processor/validation/mmu_validation/mmu_validation_suite_for_PC_0/0/assembly/asm_context_switch/asm_context_switch.vprj
+/home/madhav/AjitProject/Git/AjitRepoV2/processor/validation/mmu_validation/mmu_validation_suite_for_PC_0/0/assembly/PTE_with_ET3_level0/PTE_with_ET3_level0.vprj
+/home/madhav/AjitProject/Git/AjitRepoV2/processor/validation/mmu_validation/mmu_validation_suite_for_PC_0/0/assembly/mmu_basic_test/mmu_basic_test.vprj
+/home/madhav/AjitProject/Git/AjitRepoV2/processor/validation/mmu_validation/mmu_validation_suite_for_PC_0/0/assembly/test_flush_with_mmu_enabled/test_flush_with_mmu_enabled.vprj

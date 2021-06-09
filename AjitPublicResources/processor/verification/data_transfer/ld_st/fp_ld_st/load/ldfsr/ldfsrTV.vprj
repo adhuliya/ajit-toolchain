@@ -1,0 +1,9 @@
+SOURCES = ldfsrTV.s
+
+
+
+RESULTS = 
+g1 = 0x00000080
+o0 = 0xf0
+psr = 0x000010c0
+g2 = 0x00000002

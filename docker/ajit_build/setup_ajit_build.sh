@@ -12,15 +12,15 @@ bash $AJIT_HOME/buildroot_src/setup.sh;
 
 
 echo "################################################";
-echo "  Building C Model.";
+echo "  Building Tools, C Model and debug monitors.";
 echo "################################################";
 sleep 3;
-bash $AJIT_HOME/scripts/build_simulator.sh;
+bash $AJIT_HOME/scripts/build_ajit_public_resources.sh;
 
 
-echo "################################################";
-echo "  Building Ajit Tools/Scripts.";
-echo "################################################";
+#echo "################################################";
+#echo "  Building Ajit Tools/Scripts.";
+#echo "################################################";
 sleep 3;
-bash $AJIT_HOME/scripts/build_tools.sh;
+#bash $AJIT_HOME/scripts/build_tools.sh;
 

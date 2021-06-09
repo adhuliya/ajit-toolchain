@@ -1,0 +1,3 @@
+Instruction : LDC
+Details :
+The load single coprocessor instruction (LDC) moves a word from memory into a coprocessor register.

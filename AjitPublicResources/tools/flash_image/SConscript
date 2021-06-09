@@ -1,0 +1,7 @@
+import os
+import sys
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+env.Append(CPPPATH = './include:')
+env.Program('./bin/mmapToAssy', './src/mmapToAssy.c', CCFLAGS=' -g  ', LINKFLAGS='-g ')
+env.Program('./bin/mmapToAssyU64', './src/mmapToAssyU64.c', CCFLAGS=' -g   ', LINKFLAGS='-g ')
+env.Program('./bin/mmapToBin', './src/mmapToBin.c', CCFLAGS=' -g  ', LINKFLAGS='-g ')

@@ -1,0 +1,19 @@
+import os
+
+SConscript(['misc/SConscript'])
+SConscript(['traceCompareServer/SConscript'])
+SConscript(['generateInitVal/SConscript'])
+SConscript(['genVmapAsm/SConscript'])
+SConscript(['flash_image/SConscript'])
+
+# These are commented out...  They depend on 
+# other units which have to be built before this
+# is built..
+#SConscript(['ajit_debug_monitor_mt/SConscript'])
+#SConscript(['ajit_debug_monitor/SConscript'])
+
+
+AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
+antlr_lib_filename=AJIT_HOME + "/tools/antlr3Cruntime/build/lib/libantlr3c.a"
+if (not(os.path.exists(antlr_lib_filename))):
+    SConscript(['antlr3Cruntime/SConscript'])

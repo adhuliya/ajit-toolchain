@@ -1,0 +1,2 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+1	:	1616918749.059	     2.417	0	2697	0	0	python /home/madhav/AjitProject/Git/AjitRepoV2/tools/scripts/validation_inner_env_v3.py -A /home/madhav/AjitProject/Git/AjitRepoV2/processor/64bit/C/testbench/trivial_tests/ta0/ta0.vprj

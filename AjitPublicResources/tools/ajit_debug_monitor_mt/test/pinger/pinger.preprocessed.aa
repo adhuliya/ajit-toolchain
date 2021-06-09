@@ -1,0 +1,241 @@
+
+
+$module [ping_daemon_0_0] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_0_0  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 0 ) ($bitcast ($uint<4>) 0 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_0_0 := r0
+			AJIT_to_ENV_debug_response_0_0 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+ 
+$module [ping_daemon_0_1] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_0_1  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 0 ) ($bitcast ($uint<4>) 1 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_0_1 := r0
+			AJIT_to_ENV_debug_response_0_1 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+
+$module [ping_daemon_1_0] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_1_0  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 1 ) ($bitcast ($uint<4>) 0 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_1_0 := r0
+			AJIT_to_ENV_debug_response_1_0 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+ 
+$module [ping_daemon_1_1] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_1_1  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 1 ) ($bitcast ($uint<4>) 1 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_1_1 := r0
+			AJIT_to_ENV_debug_response_1_1 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+
+$module [ping_daemon_2_0] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_2_0  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 2 ) ($bitcast ($uint<4>) 0 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_2_0 := r0
+			AJIT_to_ENV_debug_response_2_0 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+ 
+$module [ping_daemon_2_1] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_2_1  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 2 ) ($bitcast ($uint<4>) 1 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_2_1 := r0
+			AJIT_to_ENV_debug_response_2_1 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+
+$module [ping_daemon_3_0] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_3_0  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 3 ) ($bitcast ($uint<4>) 0 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_3_0 := r0
+			AJIT_to_ENV_debug_response_3_0 := r1
+
+		$while 1
+	}
+}
+
+
+
+
+ 
+$module [ping_daemon_3_1] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+
+			$merge $entry $loopback
+				$phi req := ENV_to_AJIT_debug_command_3_1  $on $entry, $loopback
+				$phi counter := $zero<16> $on $entry ncounter $on $loopback
+			$endmerge
+
+			r16     := ($slice req 15 0)
+			r4      := ($slice req 3 0)
+
+			ncounter := (counter + 1)
+
+			r0   := ($concat ($bitcast ($uint<16>) 9) r4  
+						($bitcast ($uint<4>) 3 ) ($bitcast ($uint<4>) 1 )  $zero<4>)
+			r1   := ($concat r16 counter)
+
+			AJIT_to_ENV_debug_response_3_1 := r0
+			AJIT_to_ENV_debug_response_3_1 := r1
+
+		$while 1
+	}
+}
+
+
+
+

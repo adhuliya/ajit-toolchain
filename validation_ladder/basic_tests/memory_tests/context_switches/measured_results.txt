@@ -12,3 +12,11 @@ Time per context-switch=0.000004
 
 	4us per context switch.
 
+Started: clock freq=80 Mhz, NITERS=100000
+Time per context-switch=0.000006
+	
+	6 us per context switch (at 80MHz).
+	This would be 5 us per context switch
+		(increased memory latency path due to
+			trace logger).
+

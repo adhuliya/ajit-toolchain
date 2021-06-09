@@ -1,0 +1,12 @@
+SOURCES = vfsub.s
+
+
+RESULTS = 
+f0=0x40664066
+f1=0x40664066
+f2=0x3c663c66
+f3=0x3c663c66
+f4=0x3f8ccccc
+f5=0x3f8ccccc
+f6=0x3c663c66
+f7=0x3c663c66     
