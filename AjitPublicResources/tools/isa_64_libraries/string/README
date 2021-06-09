@@ -1,0 +1,7 @@
+Basic string library using the 64-bit extensions.
+
+	_a64_strcpy
+	_a64_strncpy
+	_a64_strcmp
+	_a64_strcasecmp
+	_a64_strcat
