@@ -1,10 +1,34 @@
 README
 =============
-Tested to work on: Ubuntu 16.04.
+Note: This is tested to work on: Ubuntu 16.04 only.
+
+The documentation of the Ajit toolchain can be found in the
+`./docs` directory. This readme explains the build and setup process.
+
+
+Some notes on the build process
+----------------------------------
+
 If you are going to use the docker setup below,
 it will use Ubuntu 16.04 by default.
-For troubleshooting in a local setup one can refer to the
+For troubleshooting in a local setup, one can refer to the
 docker setup steps which have been well tested.
+
+Ajit is a collection of many different projects which
+might use their own build process (e.g. scripts, scons, cmake, make, etc.).
+Hence, the build system is hierarchical.
+The top level build script invokes sub-scripts
+that may go to deeper levels.
+
+The build output is aggregated at the top level,
+but each level also maintains a copy of the output log
+separately. This helps when one is working on a sub-project.
+
+To cleanup the build of a sub-project in the Ajit toolchain,
+go the project directory and invoke the cleanup script/command
+from the directory.
+You can also follow the cleanup script `./clean.sh` to see how each
+sub-project's build is cleaned up.
 
 
 ## Building and Installation
@@ -30,7 +54,7 @@ to set the `AJIT_HOME` environment variable,
     exit;
     ## now you are outside the container
 
-Once the above setup is done refer `./docker/README.md` for more details.
+Once the above setup is done, you can refer `./docker/README.md` for more details.
 
 ## Run a test program
 
@@ -88,9 +112,6 @@ To cleanup the local system setup use,
 You can also call the above script from inside
 `ajit_build_dev` image container to clean the
 whole ajit build. 
-
-To cleanup a sub-build in the Ajit toolchain,
-read the script to see which sub-scripts it invokes.
 
 
 ## Setup environment to start using the toolchain
