@@ -45,7 +45,7 @@ _start:
 	set 0x0, %l2
 	set 0x3, %l3
 	subdcc %l0, %l2, %o0	! Expected o0=o1=0xFFFFFFFF
-	rd %psr, %i4		! Expected i4=0xa000E0
+	rd %psr, %i4		! Expected i4=0x9000E0
 
 	!sub two negative numbers
 	set 0xffffffff, %l0
@@ -53,7 +53,7 @@ _start:
 	set 0xffffffff, %l2
 	set 0xfffffffd, %l3
 	subdcc %l0, %l2, %o2	! Expected o2=0,o3=0x00000001
-	rd %psr, %i5		! Expected i5=0x3000E0
+	rd %psr, %i5		! Expected i5=0x0000E0
 
 	!sub negative and positive, result is negative
 	set 0xffffffff, %l0
@@ -72,13 +72,13 @@ _start:
 	rd %psr, %i7		! Expected o7=0x1000E0
 
 	!sub two large positive numbers to 
-	!create a negative result and an overflow
+	!create a negative result overflow carry.
 	set 0x7FFFFFFF, %l0
 	set 0xffffffff, %l1
 	set 0x80000000, %l2
 	set 0x00000001,%l3
 	subdcc %l0, %l2, %i0	! Expected i0=0xFFFFFFFE
-	rd %psr, %l4		! Expected i1=0x8000E0
+	rd %psr, %l4		! Expected i1=0xb000E0
 	
 	!sub two large negative numbers to 
 	!create a positive result and an overflow
@@ -87,7 +87,7 @@ _start:
 	set 0x7FFFFFFF, %l2
 	set 0xfffffffe, %l3
 	subdcc %l0, %l2, %i2	! Expected i2=0x00000002
-	rd %psr, %l5		! Expected i3=0x1000E0
+	rd %psr, %l5		! Expected i3=0x2000E0
 
 	!subcc with carry=0
 	set 0x00000000, %l0

@@ -3,12 +3,14 @@
 main:
 start:
 	save %sp, -80, %sp
+	set 0x1000, %g6
+	
 
         set 0x3,%g2
         set 0xfffffffc,%g3   !double-word aligned for std
-        and %fp, %g3,%fp	
-        st %g2, [%fp + -4]   !Store values to be exchanged in memory
-        mov %fp, %g2
+        and %g6, %g3, %g6	
+        st %g2, [%g6 + -4]   !Store values to be exchanged in memory
+        mov %g6, %g2
         add %g2, -4, %g2
 
         mov 0x3, %g1

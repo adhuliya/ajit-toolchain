@@ -4,7 +4,9 @@
 
 main:
 start: 
+	set 0x1000, %sp
         save %sp,-80,%sp    !save memory to store input values
+
         set 0xfffffffc,%g3   !double-word aligned for std
         and %fp, %g3,%fp
 

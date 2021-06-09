@@ -3,8 +3,8 @@ Info: var-dump-file to be produced  = SUBCC.vars.
 Info: hex-dump-file to be produced  = SUBCC.hex.
 Info: memory-map-file to be produced  = SUBCC.mmap.
 Info: object-dump-file to be produced  = SUBCC.objdump.
-Info: added assembly-file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s.
-Info: linker_script_file  = /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk.
+Info: added assembly-file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s.
+Info: linker_script_file  = /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk.
 Info: Executing:
 	rm -rf .//sparc-assembly
 Info: Executing:
@@ -14,9 +14,9 @@ Info: Executing:
 Info: Executing:
 	mkdir .//sparc-obj
 Info: Executing:
-	sparc-linux-as   -Av8  /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s -o .//sparc-obj/SUBCC.o
+	sparc-linux-as   -Av8  /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s -o .//sparc-obj/SUBCC.o
 Info: Executing:
-	sparc-linux-ld  --unique=SECTION -e main -T /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk .//sparc-obj/SUBCC.o   -o .//SUBCC.elf
+	sparc-linux-ld  --unique=SECTION -e main -T /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk .//sparc-obj/SUBCC.o   -o .//SUBCC.elf
 Info: Executing:
 	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  .//SUBCC.elf | tr -cd '\11\12\15\40-\176' | grep 0x > .//SUBCC.hex
 Info: Executing:
@@ -25,29 +25,32 @@ Info: Executing:
 	Info: Generating memory map .//SUBCC.mmap
 Info: Executing:
 	sparc-linux-objdump -d  .//SUBCC.elf > .//SUBCC.objdump
-Info: inished initializing memory from file /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap.			last address written = 1fffWarning : 'INCLUDES' list empty/not present/incorrect in /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj
-Warning : 'DEFINES' list empty/not present in /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj
-Note: vprj /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj has test files : ['SUBCC.s']
-Note: executing command: compileToSparc.ForValidation.py   -E SUBCC.elf -V SUBCC.vars -H SUBCC.hex -M SUBCC.mmap -O SUBCC.objdump -s /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s  -L /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk
-Note: executing /home/gauri/marshal/ajit-toolchain/AjitPublicResources/simulators/thread_64_aa2c/ajit_thread_64_test -d -m /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap -r /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.results -l /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUBCC.log   
-ERROR : validation of /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj is unsuccessful
+Info: inished initializing memory from file /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap.			last address written = 1fffInfo: override execution path to /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test
+Info: execution path is /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test
+Warning : 'INCLUDES' list empty/not present/incorrect in /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj
+Warning : 'DEFINES' list empty/not present in /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj
+Note: vprj /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj has test files : ['SUBCC.s']
+Note: executing command: compileToSparc.ForValidation.py   -E SUBCC.elf -V SUBCC.vars -H SUBCC.hex -M SUBCC.mmap -O SUBCC.objdump -s /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.s  -L /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk
+Note: executing /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test -d -m /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap -r /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.results -l /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUBCC.log   
+Note: validation of  /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUBCC.vprj is successful
 readelf: Warning: Section '.bss' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
 readelf: Warning: Section '.data' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata' was not dumped because it does not exist!
+Info: testbench running in 64-bit mode
 Info: starting core threads.
+Info:pThreadUtils: started thread teu_ifetch_ifetch_ifetch_main_daemon
+Info:pThreadUtils: started thread teu_ifetch_ifetch_issue_instruction_daemon
 Info:pThreadUtils: started thread iunit_writeback_in_mux_ajit_64_iu_writeback_in_mux_ajit_64_iunit_writeback_in_mux_ajit_64_daemon
 Info:pThreadUtils: started thread iunit_registers_iu_registers_iu_registers_daemon
 Info:pThreadUtils: started thread iunit_exec_iu_exec_iu_exec_daemon
-Info:pThreadUtils: started thread teu_ifetch_ifetch_ifetch_main_daemon
-Info:pThreadUtils: started thread teu_ifetch_ifetch_issue_instruction_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_debug_unit_ccu_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_in_mux_daemon
+Info:pThreadUtils: started thread teu_iretire_iretire_iretire_daemon
 Info:pThreadUtils: started thread teu_idecode_idispatch_64_idecode_idispatch_64_idecode_idispatch_daemon
 Info:pThreadUtils: started thread teu_idecode_idispatch_64_idecode_idispatch_64_sc_iretire_join_daemon
-Info:pThreadUtils: started thread teu_iretire_iretire_iretire_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_ccu_service_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_load_store_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_load_store_router_daemon
@@ -64,10 +67,22 @@ Info:pThreadUtils: started thread cpu_debug_interface_debug_interface_outWardDae
 Info:pThreadUtils: started thread core_cpu_cpu_stub_dcache_stub_daemon
 Info:pThreadUtils: started thread core_cpu_cpu_stub_icache_stub_daemon
 Info:pThreadUtils: started thread core_cpu_cpu_stub_misc_stub_daemon
-Info:pThreadUtils: started thread monitorLogger
 Info:pThreadUtils: started thread listenToPmode
 Entered putTheProcessorInReset().
 asserted reset.
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
 processor-mode=0
 processor-mode=0
 processor-mode=0
@@ -78,26 +93,26 @@ Info: Debug Server started.
 Info:pThreadUtils: started thread blockingToNonblockingFromGdbDaemon
 Info:pThreadUtils: started thread blockingToNonblockingFromCcuDaemon
 Info:pThreadUtils: started thread debugServerDaemon
-Info: initializing main memory using memory-map /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap
-Info: opened memory map file /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap
-Info: bring CPU out of reset: reset value = 0x8.
-Info: processor brought out of reset-mode. Debug-mode=0, Single-step-mode=0, Logging-enabled=1
+Info: initializing main memory using memory-map /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap
+Info: opened memory map file /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.mmap
+Info: bring CPU out of reset: reset value = 0x0.
+Info: processor brought out of reset-mode. Debug-mode=0, Single-step-mode=0, Logging-enabled=0
 
 Error state detected
-Total time taken by CPU: 9.916819e-01 secs
+Total time taken by CPU: 3.209583e+00 secs
 
 
-Validating : Result file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.results, Log file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUBCC.log
+Validating : Result file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUBCC/SUBCC.results, Log file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUBCC.log
 
 
-ERROR: Tests Failed.
+Tests Successful.
 Info: elf-file to be produced  = SUB.elf.
 Info: var-dump-file to be produced  = SUB.vars.
 Info: hex-dump-file to be produced  = SUB.hex.
 Info: memory-map-file to be produced  = SUB.mmap.
 Info: object-dump-file to be produced  = SUB.objdump.
-Info: added assembly-file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s.
-Info: linker_script_file  = /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk.
+Info: added assembly-file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s.
+Info: linker_script_file  = /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk.
 Info: Executing:
 	rm -rf .//sparc-assembly
 Info: Executing:
@@ -107,9 +122,9 @@ Info: Executing:
 Info: Executing:
 	mkdir .//sparc-obj
 Info: Executing:
-	sparc-linux-as   -Av8  /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s -o .//sparc-obj/SUB.o
+	sparc-linux-as   -Av8  /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s -o .//sparc-obj/SUB.o
 Info: Executing:
-	sparc-linux-ld  --unique=SECTION -e main -T /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk .//sparc-obj/SUB.o   -o .//SUB.elf
+	sparc-linux-ld  --unique=SECTION -e main -T /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk .//sparc-obj/SUB.o   -o .//SUB.elf
 Info: Executing:
 	sparc-linux-readelf  --hex-dump=.text --hex-dump=.rodata --hex-dump=.rodata.str1.8 --hex-dump=.data --hex-dump=.rodata.cst8 --hex-dump=.bss  .//SUB.elf | tr -cd '\11\12\15\40-\176' | grep 0x > .//SUB.hex
 Info: Executing:
@@ -118,29 +133,32 @@ Info: Executing:
 	Info: Generating memory map .//SUB.mmap
 Info: Executing:
 	sparc-linux-objdump -d  .//SUB.elf > .//SUB.objdump
-Info: inished initializing memory from file /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap.			last address written = 1fffWarning : 'INCLUDES' list empty/not present/incorrect in /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj
-Warning : 'DEFINES' list empty/not present in /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj
-Note: vprj /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj has test files : ['SUB.s']
-Note: executing command: compileToSparc.ForValidation.py   -E SUB.elf -V SUB.vars -H SUB.hex -M SUB.mmap -O SUB.objdump -s /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s  -L /home/gauri/ajit-toolchain/from_ajit_repo/tools//linker/validationLinkerScript.lnk
-Note: executing /home/gauri/marshal/ajit-toolchain/AjitPublicResources/simulators/thread_64_aa2c/ajit_thread_64_test -d -m /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap -r /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.results -l /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUB.log   
-Note: validation of  /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj is successful
+Info: inished initializing memory from file /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap.			last address written = 1fffInfo: override execution path to /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test
+Info: execution path is /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test
+Warning : 'INCLUDES' list empty/not present/incorrect in /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj
+Warning : 'DEFINES' list empty/not present in /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj
+Note: vprj /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj has test files : ['SUB.s']
+Note: executing command: compileToSparc.ForValidation.py   -E SUB.elf -V SUB.vars -H SUB.hex -M SUB.mmap -O SUB.objdump -s /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.s  -L /home/madhav/AjitToolChain/AjitPublicResources/tools/linker/validationLinkerScript.lnk
+Note: executing /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/core_units/Testbenches/ThreadTestbench/bin/ajit_thread_64_test -d -m /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap -r /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.results -l /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUB.log   
+Note: validation of  /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/SUB.vprj is successful
 readelf: Warning: Section '.bss' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata.cst8' was not dumped because it does not exist!
 readelf: Warning: Section '.data' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata.str1.8' was not dumped because it does not exist!
 readelf: Warning: Section '.rodata' was not dumped because it does not exist!
+Info: testbench running in 64-bit mode
 Info: starting core threads.
+Info:pThreadUtils: started thread teu_ifetch_ifetch_ifetch_main_daemon
+Info:pThreadUtils: started thread teu_ifetch_ifetch_issue_instruction_daemon
 Info:pThreadUtils: started thread iunit_writeback_in_mux_ajit_64_iu_writeback_in_mux_ajit_64_iunit_writeback_in_mux_ajit_64_daemon
 Info:pThreadUtils: started thread iunit_registers_iu_registers_iu_registers_daemon
 Info:pThreadUtils: started thread iunit_exec_iu_exec_iu_exec_daemon
-Info:pThreadUtils: started thread teu_ifetch_ifetch_ifetch_main_daemon
-Info:pThreadUtils: started thread teu_ifetch_ifetch_issue_instruction_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_debug_unit_ccu_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_daemon
 Info:pThreadUtils: started thread teu_stream_corrector_stream_corrector_stream_corrector_in_mux_daemon
+Info:pThreadUtils: started thread teu_iretire_iretire_iretire_daemon
 Info:pThreadUtils: started thread teu_idecode_idispatch_64_idecode_idispatch_64_idecode_idispatch_daemon
 Info:pThreadUtils: started thread teu_idecode_idispatch_64_idecode_idispatch_64_sc_iretire_join_daemon
-Info:pThreadUtils: started thread teu_iretire_iretire_iretire_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_ccu_service_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_load_store_daemon
 Info:pThreadUtils: started thread teu_loadstore_64_loadstore_64_load_store_router_daemon
@@ -157,10 +175,15 @@ Info:pThreadUtils: started thread cpu_debug_interface_debug_interface_outWardDae
 Info:pThreadUtils: started thread core_cpu_cpu_stub_dcache_stub_daemon
 Info:pThreadUtils: started thread core_cpu_cpu_stub_icache_stub_daemon
 Info:pThreadUtils: started thread core_cpu_cpu_stub_misc_stub_daemon
-Info:pThreadUtils: started thread monitorLogger
 Info:pThreadUtils: started thread listenToPmode
 Entered putTheProcessorInReset().
 asserted reset.
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
+processor-mode=0
 processor-mode=0
 processor-mode=0
 processor-mode=0
@@ -174,22 +197,21 @@ Info: Debug Server started.
 Info:pThreadUtils: started thread blockingToNonblockingFromGdbDaemon
 Info:pThreadUtils: started thread blockingToNonblockingFromCcuDaemon
 Info:pThreadUtils: started thread debugServerDaemon
-Info: initializing main memory using memory-map /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap
-Info: opened memory map file /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap
-Info: bring CPU out of reset: reset value = 0x8.
-Info: processor brought out of reset-mode. Debug-mode=0, Single-step-mode=0, Logging-enabled=1
+Info: initializing main memory using memory-map /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap
+Info: opened memory map file /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.mmap
+Info: bring CPU out of reset: reset value = 0x0.
+Info: processor brought out of reset-mode. Debug-mode=0, Single-step-mode=0, Logging-enabled=0
 
 Error state detected
-Total time taken by CPU: 8.305585e-01 secs
+Total time taken by CPU: 2.808141e+00 secs
 
 
-Validating : Result file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.results, Log file = /home/gauri/ajit-toolchain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUB.log
+Validating : Result file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/compiled/SUB/SUB.results, Log file = /home/madhav/AjitToolChain/tests/verification/ajit64/New_instn_tests/Arith/SUB/log/SUB.log
 
 
 Tests Successful.
-Command exited with non-zero status 1
-28.21user 6.72system 0:06.85elapsed 509%CPU (0avgtext+0avgdata 17036maxresident)k
-24160inputs+3408outputs (86major+26423minor)pagefaults 0swaps
-Note : total failed cases = 1
-Note : total time taken by all jobs = 5.539 s
+27.23user 12.79system 0:10.77elapsed 371%CPU (0avgtext+0avgdata 16432maxresident)k
+0inputs+3584outputs (0major+26566minor)pagefaults 0swaps
+Note : total failed cases = 0
+Note : total time taken by all jobs = 10.65 s
 Note : total vprj = 2
