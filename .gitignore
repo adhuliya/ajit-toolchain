@@ -48,6 +48,7 @@ bin/
 *.mmap*
 *.objdump
 *wtrace*
+*.vars
 
 # scons
 *.dblite
