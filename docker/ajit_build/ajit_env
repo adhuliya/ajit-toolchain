@@ -8,13 +8,14 @@
 #       ~/.bashrc file which helps source this file
 #       automatically on opening a bash shell.
 
+# ./AjitPublicResources/tools/antlr3Cruntime/build/lib/libantlr3c.so
 ################################################################
 ## START: SETUP_BASE_PATHS
 ################################################################
 export AJIT_PROJECT_HOME=$AJIT_HOME/AjitPublicResources;
 export AJIT_AHIR_DIR="$AJIT_HOME/ahir_release";
 export AJIT_TOOLS_DIR="$AJIT_PROJECT_HOME/tools";
-export AJIT_SCRIPTS_DIR="$AJIT_PROJECT_HOME/tools/scripts";
+export AJIT_SCRIPTS_DIR="$AJIT_TOOLS_DIR/scripts";
 
 export AJIT_TESTS_DIR="$AJIT_HOME/tests";
 export AJIT_DEV_TREE_COMPILER_DIR="$AJIT_TOOLS_DIR/deviceTreeCompiler";
@@ -23,8 +24,8 @@ export AJIT_CMODEL_DIR="$AJIT_PROJECT_HOME/processor/64bit/C_multi_core_multi_th
 export AJIT_CMODEL_BIN_DIR="$AJIT_CMODEL_DIR/testbench/bin";
 
 export AJIT_BUILD_DIR="$AJIT_HOME/build";
-export AJIT_DEBUG_MONITOR_DIR="$AJIT_PROJECT_HOME/tools/ajit_debug_monitor"
-export AJIT_DEBUG_MONITOR_MT_DIR="$AJIT_PROJECT_HOME/tools/ajit_debug_monitor_mt"
+export AJIT_DEBUG_MONITOR_DIR="$AJIT_TOOLS_DIR/ajit_debug_monitor"
+export AJIT_DEBUG_MONITOR_MT_DIR="$AJIT_TOOLS_DIR/ajit_debug_monitor_mt"
 
 export AJIT_BUILDROOT_DIR="$AJIT_BUILD_DIR/buildroot-2014.08";
 export AJIT_BUILDROOT_HOST_DIR="$AJIT_BUILDROOT_DIR/output/host";
@@ -84,7 +85,7 @@ export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";
 export AJIT_BUILDROOT_LIB_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/lib";
 # UCLIBC_LIB="$AJIT_UCLIBC_DIR/lib";
 export AJIT_UCLIBC_LIB_DIR="$AJIT_UCLIBC_DIR/sysroot/usr/lib";
-export AJIT_CMODEL_LIB_DIR="$AJIT_CMODEL_DIR/code/debugger/doval/antlr3Cruntime/build/lib";
+export AJIT_CMODEL_LIB_DIR="$AJIT_TOOLS_DIR/antlr3Cruntime/build/lib";
 export LD_LIBRARY_PATH=$AJIT_BUILDROOT_LIB_DIR:$LD_LIBRARY_PATH;
 export LD_LIBRARY_PATH=$AJIT_UCLIBC_LIB_DIR:$LD_LIBRARY_PATH;
 export LD_LIBRARY_PATH=$AJIT_CMODEL_LIB_DIR:$LD_LIBRARY_PATH;
