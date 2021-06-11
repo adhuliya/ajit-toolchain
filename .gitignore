@@ -72,3 +72,7 @@ ajit_C_system_model
 /tests/**/sparc-assembly
 /tests/**/sparc-obj
 
+#antlr builds
+/AjitPublicResources/tools/antlr3Cruntime/build/
+/AjitPublicResources/tools/antlr3Cruntime/libantlr3c-3.4/
+
