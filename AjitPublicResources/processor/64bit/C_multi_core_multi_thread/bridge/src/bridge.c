@@ -60,8 +60,18 @@ void bridgeSetNcores(uint32_t ncores)
 	}
 }
 
+//
+// To reduce redundant invalidates, we can remember the last (address,value,byte_mask) triples
+// which were updated into memory from each CPU.  If the state of the memory can be proven
+// to be unchanged by the current write, there is no need to generate an invalidate
+// message... This needs to be thought about further..
+//
+// For the moment we remember the a set of invalidated address for each cpu. If that cpu
+// has done no cache line fetches between the last invalidation and the current write
+// is to an invalidated line, in this set then there is no need to generate an invalidate..
+//
 // return 1 if there was a hit on lookup.
-int updateAndLookupSnoopFilterCache (int cpu_id,
+int updateAndLookupSnoopFilterCache (int core_id,
 					uint8_t erase,
 					uint8_t lookup,
 					uint8_t write,
@@ -69,7 +79,7 @@ int updateAndLookupSnoopFilterCache (int cpu_id,
 {
 	uint8_t lookup_valid = 0;
 	uint64_t lookup_data = 0;
-	operateOnSetAssociativeMemory(snoop_filters[cpu_id], 1,
+	operateOnSetAssociativeMemory(snoop_filters[core_id], 1,
                                         0,
                                         erase, 
                                         write,
@@ -80,35 +90,35 @@ int updateAndLookupSnoopFilterCache (int cpu_id,
 	return(ret_val);
 }
 
-int testAndSetGlobalLock (uint8_t l, int cpu_id)
+int testAndSetGlobalLock (uint8_t l, int core_id)
 {
 	int ret_val = 0;
 	MUTEX_LOCK(lock_mutex);
-	if((global_lock_flag == 0) || (cpu_id == global_lock_owner_core))
+	if((global_lock_flag == 0) || (core_id == global_lock_owner_core))
 	{
 		ret_val = 1;
 		if(l==1)		
 		{
 #ifdef DEBUG
-			fprintf(stderr,"\nGLOCK=1, CPU-ID=%d\n",cpu_id);
+			fprintf(stderr,"\nGLOCK=1, CPU-ID=%d\n",core_id);
 #endif
 			global_lock_flag = 1;
-			global_lock_owner_core = cpu_id;
+			global_lock_owner_core = core_id;
 		}
 	}
 	MUTEX_UNLOCK(lock_mutex);
 	return(ret_val);
 }
 
-int clearGlobalLock (uint8_t l, int cpu_id)
+int clearGlobalLock (uint8_t l, int core_id)
 {
 	MUTEX_LOCK(lock_mutex);
-	if(cpu_id == global_lock_owner_core)
+	if(core_id == global_lock_owner_core)
 	{
 		if((l == 0) && global_lock_flag)
 		{
 #ifdef DEBUG
-			fprintf(stderr,"\nGLOCK=0, CPU-ID=%d\n",cpu_id);
+			fprintf(stderr,"\nGLOCK=0, CPU-ID=%d\n",core_id);
 #endif
 			global_lock_flag = 0;
 		}
@@ -118,17 +128,6 @@ int clearGlobalLock (uint8_t l, int cpu_id)
 }
 
 
-//
-// To reduce redundant invalidates, we can remember the last (address,value,byte_mask) triple
-// which was updated into memory from each CPU.  If the state of the memory can be proven
-// to be unchanged by the current write, there is no need to generate an invalidate
-// message... This needs to be thought about further..
-//
-// For the moment we remember the last invalidated address for each cpu. If that cpu
-// has done no cache line fetches between the last invalidation and the current write
-// is to the last invalidated line, then there is no need to generate an invalidate..
-//
-uint32_t last_line_address_invalidated[4] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
 
 void register_bridge_pipes (int number_of_cpus)
 {
@@ -136,7 +135,7 @@ void register_bridge_pipes (int number_of_cpus)
 }
 
 // return 1 if OK, 0 if not OK.
-int sysMemBusRequest (int cpu_id,
+int sysMemBusRequest (int core_id,
 				uint8_t request_type,
 				uint8_t byte_mask,
 				uint32_t addr,
@@ -148,11 +147,11 @@ int sysMemBusRequest (int cpu_id,
 	uint8_t set_mem_access_lock = ((request_type & SET_LOCK_FLAG) != 0);
 
 	// acquire and set lock for atomic operations.	
-	if (!testAndSetGlobalLock(set_mem_access_lock, cpu_id))
+	if (!testAndSetGlobalLock(set_mem_access_lock, core_id))
 		return(0);
 
 #ifdef DEBUG
-	fprintf(stderr,"\nMEMORY ACCESS from CPU %d :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",cpu_id, addr,request_type,byte_mask,data64);
+	fprintf(stderr,"\nMEMORY ACCESS from CPU %d :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",core_id, addr,request_type,byte_mask,data64);
 #endif
 
 
@@ -177,13 +176,13 @@ int sysMemBusRequest (int cpu_id,
 				// the last-line-address buffer.
 				//
 				uint32_t line_addr = (addr >> LOG_BYTES_PER_CACHE_LINE);
-				updateAndLookupSnoopFilterCache(cpu_id, 1,0,0, line_addr);
+				updateAndLookupSnoopFilterCache(core_id, 1,0,0, line_addr);
 			}
 
 			*rdata = getDoubleWordInMemory(addr);
 
 			if(global_verbose_flag) {
-				fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=%d lock=%d\n", data64, addr, cpu_id, global_lock_flag);
+				fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=%d lock=%d\n", data64, addr, core_id, global_lock_flag);
 			}
 
 		}
@@ -197,7 +196,7 @@ int sysMemBusRequest (int cpu_id,
 			*rdata = getDoubleWordInMemory(addr);
 
 			if(global_verbose_flag) {
-				fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=%d lock=%d\n", addr,data64,byte_mask, cpu_id, global_lock_flag);
+				fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=%d lock=%d\n", addr,data64,byte_mask, core_id, global_lock_flag);
 			}
 
 			uint32_t line_addr = (addr >> LOG_BYTES_PER_CACHE_LINE);
@@ -205,10 +204,10 @@ int sysMemBusRequest (int cpu_id,
 
 			for (COREID= 0;  COREID< NCORES; COREID++)
 			{
-				if(COREID!= cpu_id)
+				if(COREID!= core_id)
 				{
 					int lookup_hit = 
-						updateAndLookupSnoopFilterCache(cpu_id, 0, 1, 1, line_addr);
+						updateAndLookupSnoopFilterCache(core_id, 0, 1, 1, line_addr);
 
 					if(!lookup_hit)
 					{
@@ -223,14 +222,10 @@ int sysMemBusRequest (int cpu_id,
 						if(dcache_inval_dat != 0)
 							write_uint32(getCacheInvalPipeName(COREID,0),
 									dcache_inval_dat);
-						last_line_address_invalidated[COREID] = line_addr;
 					}
 				}
-				else
-				{
-					last_line_address_invalidated[COREID] = 0xffffffff;
-				}
 			}
+
 		}
 		else
 		{
@@ -238,6 +233,9 @@ int sysMemBusRequest (int cpu_id,
 			fprintf(stderr,"\nERROR: invalid request type %d to memoryAccess thread",request_type);
 			assert(0);
 		}
+
+		if(global_verbose_flag)
+			fprintf(stderr,"\nInfo: core=%d executed memory access rwbar=%d, addr=0x%lx, byte_mask=0x%x, wdata=0x%llx, rdata=0x%llx\n", core_id, (request_type != REQUEST_TYPE_WRITE), addr, byte_mask, data64, *rdata);
 
 
 		__RELEASE_MEMORY_LOCK__;
@@ -252,6 +250,8 @@ int sysMemBusRequest (int cpu_id,
 
 				uint8_t rwbar = (request_type == REQUEST_TYPE_READ);
 			*rdata = executePeripheralAccess(pdl, rwbar, addr, byte_mask, data64);
+			if(global_verbose_flag)
+				fprintf(stderr,"\nInfo: core=%d executed peripheral access rwbar=%d, addr=0x%lx, byte_mask=0x%x, wdata=0x%llx, rdata=0x%llx\n", core_id, rwbar, addr, byte_mask, data64, *rdata);
 
 			__RELEASE_PERIPHERAL_LOCK__
 
@@ -266,7 +266,7 @@ int sysMemBusRequest (int cpu_id,
 
 	// clear lock for atomic operations
 	if(request_type!=REQUEST_TYPE_IFETCH)
-		clearGlobalLock(set_mem_access_lock, cpu_id);
+		clearGlobalLock(set_mem_access_lock, core_id);
 
 #ifdef DEBUG
 	fprintf(stderr,"\nbridge: Memory access response=0x%" PRIx64 "\n", data64);

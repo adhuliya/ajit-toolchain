@@ -1,13 +1,20 @@
-This is the multi-core multi-thread C model for AJIT processor systems.
 
-An AJIT multi-core multi-thread system consists of up to 4 cores,
-each of which can have either 1 or 2 threads.
+	About the multi-core multi-thread C model
+		Madhav P. Desai
+	
 
-The threads in a core are identical, and  can support either the plain 
-SPARC-V8 32-bit ISA or the AJIT extended 64-bit ISA.
+1.Overview
+
+	This is the multi-core multi-thread C model for AJIT processor systems.
+
+	An AJIT multi-core multi-thread system consists of up to 4 cores,
+	each of which can have either 1 or 2 threads.
+
+	The threads in a core are identical, and  can support either the plain 
+	SPARC-V8 32-bit ISA or the AJIT extended 64-bit ISA.
 
 
-The components of the C model
+	The components of the C model
 
 	bridge/
 		coherent memory switch
@@ -15,13 +22,15 @@ The components of the C model
 
 	cache/
 		model for dcache and icache.
-		VIVT caches with synonym elimination
-		and cache coherency related invalidation.
+		VIVT, write-through-allocate,  direct-mapped caches with 
+		synonym elimination and cache coherency related invalidation.
 
 
 	cpu/
 	cpu_interface/
-		Model of the AJIT thread (called the CPU earlier).
+		The AJIT CORE and CPU-thread model.  There can be one or two
+		threads per core, and up to four cores in the system.
+
 
 	debugger/
 		AJIT thread debug infrastructure.  Each thread can
@@ -56,3 +65,50 @@ The components of the C model
 
 	docs/
 		useful docs.  See the figure.
+
+
+2. Using the C multi-core multi-thread C model.
+--------------------------------------------------
+    The C model is invoked using the command 
+		ajit_C_system_model
+
+    The binary is in the testbench/bin/ folder.
+
+    2.1 Synopsys
+    -------------
+
+    ajit_C_system_model ... options .... 
+
+    The options are
+   	-n <number-of-cores>     : specifies number-of-cores in the processor for this test.
+                 		: default is 1, maximum is 4.
+    	-t <number-of-threads-per-core>     : specifies number-of-threads-per-core in the processor for this test.
+                 			    : default is 1, maximum is 2.
+   	-u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]
+   	-m <mmap-file>     : required, specifies memory-map of processor for this test.
+   	-b <bp-size>, optional,  branch predictor table size (default=16)
+   	-D <dcache-size-in-lines>, optional  (default=512)
+   	-N <icache-size-in-lines>, optional  (default=512)
+   	-B <bridge-target-configuration optional, sets up memory map at bridge
+   	-g, optional, to run the CORE in debug mode.
+   	-q <number-of-address-bits>, optional, size of memory is 2**<number-of-address-bits>, default is 32.
+   	-p <gdb-port-number>, required with -g, to specify remote debug port.
+   	-d  : optional, use if doval utility is to be run...
+   	-r <results-file>  : required with -d, specifies expected register/memory values at end of run.
+   	-l <log-file>      : required with -d, specifies a log-file of the validation checks.
+   	-w <reg-writes-dump>: optional. if specified, a log of all register and memory writes is generated.
+   	-S <log-server-ip-addr>  : optional, specifies a logging-server-ip-addr to compare write traces.
+   	-P <log-server-ip-port>  : required with -S, specifies a logging-server-port to compare write traces.
+   	-c <console-server-port-number>, specify port for console server.
+   	-v optional, verbose flag for printing lots of junk.
+   	-I <reporting-interval>, optional, for specifying interval at which Instr summary is printed. 
+				The default is 10000000.
+   	-R <randomization-seed>, optional, for randomizing initial memory values 
+				(if omitted, memory will be initialized to 0).
+   	-i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4
+   	-e <cache-trace-file>, optional, for specifying cache access dump file.
+                                                                         
+	EXAMPLE:  
+          ajit_C_system_model -m add_test.mmap -d -l add_test.log -r add_test.results -w add_test.wtrace 
+
+

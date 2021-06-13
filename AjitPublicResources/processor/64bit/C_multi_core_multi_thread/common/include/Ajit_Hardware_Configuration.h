@@ -133,3 +133,6 @@
 
 #define TRAP_PENALTY		16
 
+
+// invalidate queue size.
+#define INVALIDATE_QUEUE_SIZE	1024

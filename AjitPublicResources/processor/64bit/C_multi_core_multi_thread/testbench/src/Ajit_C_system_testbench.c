@@ -175,10 +175,7 @@ int  __query__()
 void Handle_Ctrl_C(int signal)
 {
 	fprintf(stderr, "Ctrl-C.. !!\n");
-	int status = __query__();
-	
-	if(status)
-		exit(-1);
+	exit(-1);
 }
 
 
@@ -467,6 +464,11 @@ int main(int argc, char **argv)
 	//First and foremost, start the pipe handler
 	init_pipe_handler();
 
+	// ensure that the pipe handler does not accept
+	// an access to an unregistered pipe.
+	set_pipe_handler_in_strict_mode();
+
+
 	// set up the RLUTs
 	setupRlutManager(NCOREs, icache_number_of_lines, dcache_number_of_lines);
 
@@ -628,7 +630,7 @@ int main(int argc, char **argv)
 		for(TID = 0; TID < NTHREADs; TID++)
 		{
 			
-			pthread_create(&(error_threads[COREID*NCOREs + TID]),
+			pthread_create(&(error_threads[COREID*NTHREADs + TID]),
 					   NULL, &checkErrorStateAndExit, 
 						(void*) (core_state_vector[COREID]->threads[TID]));
 		}

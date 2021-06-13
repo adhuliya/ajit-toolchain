@@ -606,7 +606,7 @@ uint32_t executeSwap( Opcode op,
 	{
 		// wait until BlockLdstByte and BlockLdstWord are both 0
 		testAndSetBlockLdstFlags(state, 0, 1);
-		uint8_t load_byte_mask = ((address & 0x4) == 0) ? 0xf0 : 0x0f;
+		uint8_t load_byte_mask = 0xf;
 		lockAndReadData(state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
 		if(mae1)
 		{
@@ -714,13 +714,16 @@ uint32_t executeCswap( Opcode op,
 
 	uint8_t  mae 	   = 0;
 
+	// byte mask for 32-bit read  (this is expanded to 64-bit read in lockAndReadData).
+	uint8_t byte_mask = 0xf;
+
 	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
 	{
 		uint32_t read_data;
 		lockAndReadData(state->mmu_state,  
 					state->dcache, 
 					addr_space, 
-					0xF,
+					byte_mask,
 					address,
 					&mae, 	
 					&read_data);
@@ -738,7 +741,7 @@ uint32_t executeCswap( Opcode op,
 				writeData(state->mmu_state, 
 						state->dcache,  
 						addr_space, address, 
-						0xF, 
+						byte_mask, 
 						operand3,
 						&mae);
 				*result = read_data;
@@ -754,7 +757,7 @@ uint32_t executeCswap( Opcode op,
 						state->dcache,  
 						addr_space, 
 						address, 
-						0xF, 
+						byte_mask, 
 						read_data,
 						&mae);
 
