@@ -1,0 +1,19 @@
+********************************************
+Date: June 2021
+Bitfile date: 30 Jan 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705
+********************************************
+
+Starting by filling up arrays
+
+ Done initialising array
+
+For 1024 load-stores, time elapsed is t=0.000159 seconds,
+
+ successful load-srores completed: 1024, 
+ and errors occured=0
+Done
+
+
+
