@@ -1,6 +1,7 @@
-if [ $# -ne 4 ]; 
-    then echo "illegal number of parameters"
-    exit 1 
+if [ $# -ne 4 ];
+    then echo "illegal number of parameters, specify memory locations of text, data sections and vmap file and clk_freq"
+        echo "eg: ./compile_for_ajit_uclibc.sh 0x0 0x8000 VMAPLOWMEM.TXT 80000000 "
+    exit 1
 fi
 
 AAR=$AJIT_ACCESS_ROUTINES

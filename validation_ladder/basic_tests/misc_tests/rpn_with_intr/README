@@ -1,0 +1,25 @@
+A RPN calculator which uses the serial device 
+via interrupts.   You can ask the device to
+evaluate RPN expressions that involve single 
+digits and +,*,/,-.  Type 'q' to exit.
+
+This example exercises the interrupt mechanism as well as the
+serial peripheral.
+
+See KC705Platform.log file to check output of
+this program tested on the KC705 FPGA Platform.
+
+Usage for the KC705 Platform:
+1. Source the bin-utils required for AJIT processor.
+
+2. Compile the program by running compile_for_ajit_uclibc.sh
+        script and pass the starting address of data and text
+section along with the corresponding vmap file.
+eg: ./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt
+
+3. Using the 'run_at_high_mem.s' script
+with ajit_debug_monitor will load the memory
+map of application at high memory and start.
+
+4. Use the 'run_from_flash.s' if you are running the
+application by burning a Bin file in the flash.

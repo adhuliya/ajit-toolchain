@@ -1,9 +1,19 @@
 ********************************************
-Date: 23 March 2021
+Date: June 2021
 Bitfile date: 17 Jan 2021
 bin-utils from ajit-toolchain/marshal branch
-Platform: Xilinx KC705
+Platform: Xilinx KC705 FPGA
 ********************************************
 
-Starting 
-Success! for 256 bypass loads, time elapsed is t=0.000409 seconds
+?? : 
+862*+
+
+R: 20
+?? :
+ 777*+
+
+R: 56
+?? :
+ q
+
+BYE(1)

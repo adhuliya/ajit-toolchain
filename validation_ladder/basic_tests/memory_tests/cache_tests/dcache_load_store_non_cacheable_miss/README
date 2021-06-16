@@ -1,13 +1,13 @@
-A test that demonstrates a case of DCACHE LOAD-STORE MISS accesses with cacheable data
-addresses
+A test that demonstrates a case of DCACHE LOAD-STORE MISS accesses with non-cacheable 
+data locations(see VMAP*.txt files)
 
-Time taken for same operation but having the data already present in 
-cache has advantage in terms of speed. 
+Time taken for same operation but having the cacheable data
+has advantage in terms of speed of execution. 
 
-See ../dcache_load_store_hits/KC705Platform.log for more.
+See ../dcache_load_store_hits/KC705Platform.log for reference.
 
 The arrays are kept in same cache lines to create cache conflicts. 
-Data locations are marked as cached(see VMAPHIGH.txt and VMAPLOW.txt).
+Data locations are marked as non-cacheable(see VMAPHIGH.txt and VMAPLOW.txt).
 
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
@@ -19,7 +19,7 @@ Usage for the KC705 Platform:
 	2. Compile the program by running compile_for_ajit_uclibc.sh 
 	script along with starting addresses of instruction and data area
 	the corresponding vmap file for those addresses.
-		eg:
+	eg:
 		./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt
 	3. Using the 'run_at_high_mem.s' script 
 		with ajit_debug_monitor will load the memory

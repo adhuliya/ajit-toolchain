@@ -1,5 +1,7 @@
 if [ $# -ne 3 ];
-    then echo "specify memory locations of text, data sections"
+   then echo "specify memory locations of text, data sections and vmap file"
+	echo "eg: ./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt"
+	echo "or ./compile_for_ajit_uclibc.sh 0x0 0x40000000 VMAPLOW.txt"
     exit 1
 fi
 TEXTBASE=$1
@@ -19,7 +21,7 @@ if [ $1 != "0x0" ]
 then
 echo "Creating the flash Image"
 #Step 3: convert application's mmap to assembly
-$AJIT_FLASH_IMAGE_DIR/bin/mmapToAssyU64 memcpy_uncached.mmap memcpy_uncached_copy_asm.s $TEXTBASE 0x50000
+$AJIT_FLASH_IMAGE_DIR/bin/mmapToAssyU64 memcpy_uncached.mmap memcpy_uncached_copy_asm.s $TEXTBASE 0x60000
 #Step 4.a: linker script for bootstrapping
 makeLinkerScript.py -t 0x0 -d 0x10000000 -o bootstrapLinkerScript.lnk
 #Step 4.b: Compile the application with boostrap wrapper
