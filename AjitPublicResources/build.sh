@@ -36,3 +36,4 @@ cd $CWD
 echo "build tools/deviceTreeCompiler"
 cd tools/deviceTreeCompiler
 make 
+cd $CWD

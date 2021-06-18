@@ -12,3 +12,7 @@ cd -
 cd tools/ajit_debug_monitor_mt
 scons -c
 cd $CCWD
+# clean dtc
+cd tools/deviceTreeCompiler
+make clean
+cd $CCWD
