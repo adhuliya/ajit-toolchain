@@ -24,6 +24,7 @@
 #include "irq.h"
 #include "kernel.h"
 #include <asm/prom.h> //to access the device tree
+#include <linux/delay.h>
 
 
 
@@ -233,6 +234,8 @@ unsigned int Ajit_build_device_irq(struct platform_device *op, unsigned int real
 //We clear the current interrupt and re-set the one-shot timer
 static void Ajit_clear_clock_irq(void)
 {
+	int* paddr = (int*) ADDR_TIMER_CONTROL_REGISTER;
+	
 	//Steps:
 	//1. Disable IRC
 	//2. Disable Timer
@@ -251,6 +254,11 @@ static void Ajit_clear_clock_irq(void)
 	Ajit_write_IRC_control_word(0x00);
 	//Disable timer
 	Ajit_write_timer_control_word(0x00);
+	// mitigate the race condition.
+	// mdelay(1); //introduce delay of 1ms
+	// wait till bit 0 is 0
+	// while(!(Ajit_read_timer_register(paddr) == 0x00)) {}
+	while(!(Ajit_read_timer_register(paddr)<<31 == 0)) {}
 	//Enable the IRC
 	Ajit_write_IRC_control_word(0x01);
 	//Enable timer
