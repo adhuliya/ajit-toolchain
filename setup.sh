@@ -32,11 +32,11 @@ _OUT_LOG=$AJIT_HOME/build.log;
     echo "Inside a docker container.";
     echo "Skipping ajit_base setup!";
   else
-    echo "################################################";
-    echo "##  Setting up ajit_base.";
-    echo "################################################";
-    sleep 3;
-    bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
+    #echo "################################################";
+    #echo "##  Setting up ajit_base.";
+    #echo "################################################";
+    #sleep 3;
+    #bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
   fi
 
   echo "################################################";
@@ -46,11 +46,11 @@ _OUT_LOG=$AJIT_HOME/build.log;
   bash $AJIT_HOME/docker/ajit_build/setup_ajit_build.sh;
 
 
-  echo "################################################";
-  echo "##  Setting up ajit_tools.";
-  echo "################################################";
-  sleep 3;
-  bash $AJIT_HOME/docker/ajit_tools/setup_ajit_tools.sh;
+  #echo "################################################";
+  #echo "##  Setting up ajit_tools.";
+  #echo "################################################";
+  #sleep 3;
+  #bash $AJIT_HOME/docker/ajit_tools/setup_ajit_tools.sh;
 
   echo "DONE!";
 } |& tee $_OUT_LOG;
