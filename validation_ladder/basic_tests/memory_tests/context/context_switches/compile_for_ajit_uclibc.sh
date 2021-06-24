@@ -1,8 +1,9 @@
 if [ $# -ne 3 ];
-    then echo "specify memory locations of text, data sections"
-	echo "eg: ./compile_for_ajit_uclibc.sh 0x0 0x40040000 VMAPLOW.txt "
+    then echo "specify memory locations of text, data sections and vmap file"
+	echo "eg: ./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt"
+	echo "or ./compile_for_ajit_uclibc.sh 0x0 0x40000000 VMAPLOW.txt"
     exit 1
-fi 
+fi
 MAIN=context_switches
 TEXTBASE=$1
 DATABASE=$2

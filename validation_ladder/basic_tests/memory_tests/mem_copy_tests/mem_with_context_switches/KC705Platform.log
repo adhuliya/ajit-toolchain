@@ -1,11 +1,13 @@
 *************************************************
-Date: June 2021
-Bitfile Generation date: 17 Jan 2021
+Date: 24 June 2021
+Bitfile Generation date: 21 June 2021
 bin-utils used from ajit-toolchain/marshal branch
 Platform: Xilinx KC705 FPGA
 *************************************************
 
 Starting...
-March-time (ticks,contexts)=7596584,4
+March-time (ticks,contexts)=6176625,4
 OK
+
+
 

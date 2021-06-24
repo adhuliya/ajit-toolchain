@@ -1,16 +1,16 @@
 *************************************************
-Date: June 2021
-Bitfile Generation date: 17 Jan 2021
+Date: 24 June 2021
+Bitfile Generation date: 21 June 2021
 bin-utils used from ajit-toolchain/marshal branch
 Platform: Xilinx KC705 FPGA
 *************************************************
 
-March-time in ticks=47478649, for 24  contexts
-Finished                                                                                     
-March-time in Ticks within a context is 47478410
-Finished       
+March-time is ticks=38603560, for 24  contexts
+Finished
+March-time in Ticks within a context is 38603361
+Finished    
 
-Overhead for context switching: 239 ticks
+Overhead for context switching: 199 ticks
 for 24 context switches.
 
 

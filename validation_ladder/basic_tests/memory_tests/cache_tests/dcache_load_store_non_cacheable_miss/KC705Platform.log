@@ -1,6 +1,6 @@
 ********************************************
-Date: June 2021
-Bitfile date: 17 Jan 2021
+Date: 24 June 2021
+Bitfile date: 21 June 2021
 bin-utils from ajit-toolchain/marshal branch
 Platform: Xilinx KC705
 ********************************************
@@ -8,10 +8,11 @@ Platform: Xilinx KC705
 
 Starting 
 
-For 1024 load-stores with definite non-cacheable misses, time elapsed is t=0.001426 seconds
+For 1024 load-stores with definite non-cacheable misses, time elapsed is t=0.001292 seconds
 Succesful load-stores are 1024 and err=0
 
 Done
+
 
 
 

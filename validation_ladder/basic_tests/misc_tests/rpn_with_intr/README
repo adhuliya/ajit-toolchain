@@ -8,6 +8,9 @@ serial peripheral.
 
 See KC705Platform.log file to check output of
 this program tested on the KC705 FPGA Platform.
+		
+
+	Generation date of the bitfile used for testing this program: 21 June
 
 Usage for the KC705 Platform:
 1. Source the bin-utils required for AJIT processor.
@@ -16,6 +19,7 @@ Usage for the KC705 Platform:
         script and pass the starting address of data and text
 section along with the corresponding vmap file.
 eg: ./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt
+or ./compile_for_ajit_uclibc.sh 0x0 0x40040000 VMAPLOW.txt
 
 3. Using the 'run_at_high_mem.s' script
 with ajit_debug_monitor will load the memory

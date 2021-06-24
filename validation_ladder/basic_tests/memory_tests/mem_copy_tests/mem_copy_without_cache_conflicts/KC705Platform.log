@@ -1,15 +1,16 @@
 ********************************************
-Date: June 2021
-Bitfile date: 17 Jan 2021
+Date: 24 June 2021
+Bitfile date: 21 June 2021
 bin-utils from ajit-toolchain/marshal branch
 Platform: Xilinx KC705 FPGA
 ********************************************
 
 Starting
-1K: err=0 t=0.010829 seconds
-4K: err=0 t=0.138939 seconds
-16K: err=0 t=0.919051 seconds
-64K: err=0 t=3.676241 seconds
+1K: err=0 t=0.010670 seconds
+4K: err=0 t=0.116513 seconds
+16K: err=0 t=0.754646 seconds
+64K: err=0 t=3.018227 seconds
 Done
+
 
 

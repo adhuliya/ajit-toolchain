@@ -27,7 +27,7 @@ files.
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
 
-	Bitfile Generation date: 17 Jan 2021 
+	Bitfile Generation date: 21 June 2021 
 
 Usage for the KC705 Platform: 
 	1. Source the bin-utils required for AJIT processor.
