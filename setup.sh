@@ -35,7 +35,7 @@ _OUT_LOG=$AJIT_HOME/build.log;
     #echo "################################################";
     #echo "##  Setting up ajit_base.";
     #echo "################################################";
-    #sleep 3;
+    sleep 3;
     #bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
   fi
 
