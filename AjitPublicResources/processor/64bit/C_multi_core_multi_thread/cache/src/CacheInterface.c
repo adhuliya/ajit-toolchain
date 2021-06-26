@@ -407,8 +407,9 @@ void dumpCpuIcacheAccessTrace
 	MUTEX_LOCK(__trace_mutex__);
 
 	fprintf(cache_trace_file,
-			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x\n",
-			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr);
+			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x %s\n",
+			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr,
+						((mmu_fsr != 0) ? "fsr!" : ""));
 	fflush(cache_trace_file);
 	
 	MUTEX_UNLOCK(__trace_mutex__);

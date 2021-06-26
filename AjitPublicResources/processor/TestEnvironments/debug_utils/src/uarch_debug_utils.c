@@ -420,7 +420,8 @@ int dbg_load_mmap(char* memoryMapFile)
 				current_read_word = (data <<  8*(3 - (addr & 0x3)));
 		}
 
-		if ((current_word_address != (addr & 0xffffffffc)) || (eof_reached))
+		uint32_t masked_addr = addr & 0xfffffffc;
+		if ((current_word_address != masked_addr) || (eof_reached))
 		{
 			dbg_write_mem(0x20, current_word_address, current_read_word);
 			if(global_verbose_flag)
@@ -436,7 +437,7 @@ int dbg_load_mmap(char* memoryMapFile)
 			}
 
 
-			current_word_address = (addr & 0xfffffffc);
+			current_word_address = masked_addr;
 			current_read_word = (data <<  8*(3 - (addr & 0x3)));
 
 			written_word_count++;
@@ -446,7 +447,7 @@ int dbg_load_mmap(char* memoryMapFile)
 				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
 			}
 		}
-		else if (current_word_address == (addr & 0xffffffffc))
+		else if (current_word_address == masked_addr)
 		{
 			current_read_word = current_read_word | (data <<  8*(3 - (addr & 0x3)));
 		}

@@ -1,0 +1,13 @@
+Structure of a functional test
+---------------------------------
+
+
+	1. Initialization
+		assembly program.
+
+	2. Run the test
+		assembly program
+		 (maybe randomized? exhaustive?).
+
+	3. Check expected and unexpected.
+		assembly program.

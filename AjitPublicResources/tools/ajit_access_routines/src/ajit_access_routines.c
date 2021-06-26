@@ -188,6 +188,7 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr)
 }
 
 
+
 //
 // load word from mmu register
 //
@@ -207,121 +208,6 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr)
                              "=r"(retval) : "r"(addr), "i"(ASI_MMU_BYPASS));
         return retval;
 }
-
-//
-// mmu disable/enable functions.
-//   (note: will not disturb the default cacheable bit).
-//
-inline void __ajit_enable_mmu__()
-{
-	uint32_t addr  = MMU_REG_CONTROL;
-	uint32_t cval = __ajit_load_word_mmu_reg__(addr);
-	cval = cval | 1;
-	__ajit_store_word_mmu_reg__(cval, addr);
-
-}
-
-inline void __ajit_disable_mmu__()
-{
-	uint32_t addr  = MMU_REG_CONTROL;
-	uint32_t cval = __ajit_load_word_mmu_reg__(addr);
-	cval = cval & 0xfffffffe;
-	__ajit_store_word_mmu_reg__(cval, addr);
-}
-
-
-
-
-//
-// Mmu flush: flush the TLB
-//
-inline void __ajit_mmu_flush__(uint32_t value, uint32_t addr)
-{
-	__asm__ __volatile__("sta %0, [%1] %2\n\t"  : : "r"(value), "r"(addr), "i"(ASI_MMU_FLUSH_PROBE) : "memory");
-}
-
-
-
-//
-// Mmu probe: returns the pte.
-//
-inline uint32_t __ajit_mmu_probe__(uint32_t addr)
-{
-        uint32_t retval;
-        __asm__ __volatile__("lda [%1] %2, %0\n\t" :
-                             "=r"(retval) : "r"(addr), "i"(ASI_MMU_FLUSH_PROBE));
-        return retval;
-}
-
-
-
-//
-// make a switch to a particular context
-//
-inline void __ajit_mmu_context_switch__(uint32_t context_number)
-{
-	
-	//Copy context number into register
-	__asm__ __volatile__("mov %0, %%l0\n\t" : : "r"(context_number):"memory");
-
-	
-	//flush dcache
-	__asm__ __volatile__("sta %%g0, [%%g0] %0\n\t" : :
-			     "i"(ASI_FLUSH_I_D_CONTEXT) : "memory");
-	//flush icache
-	__asm__ __volatile__(" flush ");
-	//flush TLB
-	__asm__ __volatile__("sta %%g0, [%%g0] %0\n\t"  : : "i"(ASI_MMU_FLUSH_PROBE) : "memory");
-
-	//write new context number into mmu context register
-	__asm__ __volatile__("sta %%l0, [%0] %1\n\t" : : "r"(MMU_REG_CONTEXT),
-			     "i"(ASI_MMU_REGISTER) : "memory");
-	//flush dcache
-	__asm__ __volatile__("sta %%g0, [%%g0] %0\n\t" : :
-			     "i"(ASI_FLUSH_I_D_CONTEXT) : "memory");
-	//flush icache
-	__asm__ __volatile__(" flush ");
-	//flush TLB
-	__asm__ __volatile__("sta %%g0, [%%g0] %0\n\t"  : : "i"(ASI_MMU_FLUSH_PROBE) : "memory");
-
-}
-
-inline uint32_t _ajit_va_l1_offset (uint32_t va)
-{
-	return ((va >> 24) & 0xff);
-}
-
-inline uint32_t _ajit_va_l2_offset (uint32_t va)
-{
-	return ((va >> 18) & 0x1f);
-}
-
-inline uint32_t _ajit_va_l3_offset (uint32_t va)
-{
-	return ((va >> 12) & 0x1f);
-}
-
-inline uint32_t __ajit_make_pte__ ( uint32_t ppn, 
-					uint8_t cacheable, 
-					uint8_t modified,
-					uint8_t referenced,
-					uint8_t acc)
-{
-	uint32_t ret_val = 0x2 |  
-				(acc << 2) | 
-				(referenced << 5) | 
-				(modified << 6) | 
-				(cacheable  << 7) | 
-				(ppn << 8);
-	return(ret_val);
-}
-
-inline uint32_t __ajit_make_ptd__ (uint32_t table_ptr_bits_35_downto_6)
-{
-	uint32_t ret_val = 0x1 | (table_ptr_bits_35_downto_6 << 2);
-	return(ret_val);
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Cache related stuff
@@ -669,7 +555,6 @@ void  __ajit_serial_gets_via_vmap__ (char* s, uint32_t length)
 void  __ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
 {
 	uint32_t cval = *((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER);
-	__AJIT_READ_SERIAL_CONTROL_REGISTER__(cval);
 
 
 	if(enable_tx)

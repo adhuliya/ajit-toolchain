@@ -136,6 +136,7 @@ inline void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit);
 // store word into mmu register
 //
 inline void __ajit_store_word_mmu_reg__(uint32_t value, uint32_t addr);
+
 //
 // store while bypassing the MMU.
 //   (this is one way to access peripherals).
@@ -159,42 +160,6 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
 #define __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr,value) {\
         __asm__ __volatile__("lduba [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
 
-//
-// mmu disable/enable functions.
-//   (note: will not disturb the default cacheable bit).
-//
-inline void __ajit_enable_mmu__();
-inline void __ajit_disable_mmu__();
-
-
-
-
-//
-// Mmu flush: flush the TLB
-//
-inline void __ajit_mmu_flush__(uint32_t value, uint32_t addr);
-
-
-//
-// Mmu probe: returns the pte corresponding to this address.
-//
-inline uint32_t __ajit_mmu_probe__(uint32_t addr);
-
-
-//
-// make a switch to a particular context
-//
-inline void __ajit_mmu_context_switch__(uint32_t context_number);
-
-
-//
-// page table manipulation.
-//
-inline uint32_t __ajit_va_l1_offset__ (uint32_t va);
-inline uint32_t __ajit_va_l2_offset__ (uint32_t va);
-inline uint32_t __ajit_va_l3_offset__ (uint32_t va);
-inline uint32_t __ajit_make_pte__ (uint32_t ppn, uint8_t cacheable, uint8_t modified, uint8_t referenced,  uint8_t acc);
-inline uint32_t __ajit_make_ptd__ (uint32_t table_ptr_bits_35_downto_6);
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Cache related stuff

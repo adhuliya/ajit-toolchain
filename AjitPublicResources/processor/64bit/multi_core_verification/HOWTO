@@ -322,3 +322,56 @@
 
 	.align 8
       		PT_FLAG: .word 0x0
+
+
+4. Checking post conditions.
+--------------------------------
+
+	To check a post condition, you prepare a result file
+	with each line in the file specifying an expected result.
+
+	The line in the file can specify a register value or memory
+	value.
+
+	If it is a register value: it can specify a general purpose
+	register, a state register or an ancillary register.	
+		
+	The general format is
+	
+		<reg-id>=hex-value hex-mask core x thread y
+
+	For a general purpose integer register:
+
+		g0=0x0 0xffffffff  core 0 thread 0
+		l5=0x3f 0xff        core 0 thread 1
+
+		etc.
+
+	For PSR
+		psr=0x10c7 0xffff   core 0 thread 1
+	For TBR
+		tbr=0x10c7 0xffff   core 0 thread 1
+	Similarly for WIM (wim), Y (y), 
+		
+	For ASR's
+		asr29=0x50520000  core 0 thread 0
+
+
+	For a general purpose floating point register:
+
+		f12=0x0 0xffffffff  core 0 thread 0
+
+	For the FSR, FAR
+		fsr=0x01   0xff
+		far=0x101  0xffffffff
+	
+	For a memory location, specify address, value, mask 
+	and ASI value
+
+	m[0x0]=0x4000  0xffff asi=0x20   core 0 thread 0
+			to fetch from physical without translation.
+
+	m[0x4]=0x01020304  asi=0xa	core 1 thread 1
+			translated (may hit in cache) before fetching
+			from physical.
+
