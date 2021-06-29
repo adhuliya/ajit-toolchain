@@ -1586,7 +1586,7 @@ void do_timer(unsigned long ticks)
 	calc_global_load(ticks);
 
 	//added to Ajit_linux for viewing timer interrupts
-	//prom_printf("\n Timer ISR called. Jiffies = %lu",jiffies);
+	// prom_printf("\n Timer ISR called. Jiffies = %lx",jiffies);
 
 }
 

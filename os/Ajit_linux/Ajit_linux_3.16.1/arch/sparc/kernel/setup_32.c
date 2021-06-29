@@ -298,6 +298,7 @@ void __init sparc32_start_kernel(struct linux_romvec *rp)
 	prom_printf("\n-----------------------------------");
 	prom_printf("\n Romvec pointer passed by bootloader= 0x%x\n", (uint32_t)rp);
 	
+	prom_printf("\n  Running start_kernel()");
 	start_kernel();
 }
 

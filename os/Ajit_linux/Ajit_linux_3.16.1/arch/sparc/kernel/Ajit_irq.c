@@ -255,9 +255,7 @@ static void Ajit_clear_clock_irq(void)
 	//Disable timer
 	Ajit_write_timer_control_word(0x00);
 	// mitigate the race condition.
-	// mdelay(1); //introduce delay of 1ms
 	// wait till bit 0 is 0
-	// while(!(Ajit_read_timer_register(paddr) == 0x00)) {}
 	while(!(Ajit_read_timer_register(paddr)<<31 == 0)) {}
 	//Enable the IRC
 	Ajit_write_IRC_control_word(0x01);
