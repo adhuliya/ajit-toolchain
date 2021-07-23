@@ -1,0 +1,65 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage[none]{hyphenat}
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
+\title{Proposal for adding debugger on the Aa model}
+
+\author{Titto Thomas}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Current implementation}
+\label{sec:current}
+
+\subsection*{In ccu.Aa}
+\begin{itemize}
+\item A \texttt{debug\_daemon} module that currently supports only reading register contents and memory. It also supports writing to the registers and memory as well.
+
+\item In \texttt{ccu\_daemon} checks for the processor mode for \texttt{PROCESSOR\_DEBUG\_RESET}.
+\end{itemize}
+
+\section*{Proposed additions}
+\label{sec:proposal}
+
+\subsection*{In ccu}
+\begin{itemize}
+\item Pass the processor mode information ( \texttt{PROCESSOR\_DEBUG\_RESET} ) to the \texttt{teu} blocks for enabling breakpoint and watchpoint checks.
+
+	\begin{itemize}
+	\item replace the current single bit \texttt{single\_step\_mode\_selected} with a 2bit \texttt{processor\_mode\_selected}
+	\end{itemize}
+
+\item When there is a breakpoint / watchpoint hit informed by the \texttt{teu}, change the processor mode to single step mode ( \texttt{PROCESSOR\_SINGLE\_STEP\_RESET} ) and let the \texttt{teu} finish executing the current instruction.
+
+\item Abort further instruction fetch and then transfer the control over to the \texttt{ccu\_daemon} and wait for a continue signal. If the gdb has detached then let the \texttt{teu} continue in normal mode, otherwise continue in debug mode.
+\end{itemize}
+
+\subsection*{In teu}
+\begin{itemize}
+\item Store 4 breakpoint and 4 watchpoint registers in the register file.
+
+\item If debug mode is enabled then perform a check of calculated memory address with the currently active watchpoints in the \texttt{load\_store} and pass on the information to \texttt{iretire}.
+
+\item \texttt{iretire} should stop execution and hand over the control to \texttt{teu} in case of any watchpoint hit ( informed by the \texttt{load\_store} ) or breakpoint hit ( by comparing breakpoint registers and current PC ) if debug mode is enabled.
+\end{itemize}
+
+\subsection*{In debug\_daemon}
+\begin{itemize}
+\item Wait for the control transfer from the \texttt{ccu} and then communicate with \textit{GDB software server} over pipes. Execute their commands like reading / writing to registers / memory and setting / clearing of watchpoints / breakpoints.
+
+\item If the \textit{GDB software server} send a continue message, then inform the \texttt{ccu} to continue in debug mode.
+
+\item If the \textit{GDB software server} send a detach / kill message, then inform the \texttt{ccu} to continue in normal mode.
+\end{itemize}
+
+\end{document}

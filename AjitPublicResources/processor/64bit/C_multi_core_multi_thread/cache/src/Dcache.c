@@ -39,7 +39,6 @@ void cpuDcacheAccess (MmuState* ms,
 			break;
 	}
 
-	//the main loop ..runs forever:
 	*mae=0;
 	*read_data = 0;
 	uint8_t	cacheable=0;

@@ -1,0 +1,252 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{listings}
+\usepackage{epstopdf}
+\usepackage{import}
+\usepackage[none]{hyphenat}
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
+\title{Debug support on the Aa model}
+
+\author{Titto Thomas}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\renewcommand{\thesubsection}{\arabic{subsection}.}
+
+\section{Overview}
+\label{sec:overview}
+
+The debug support on the Ajit processor Aa model will be provided through a \texttt{debug\_daemon} block in the hardware and it's connections with \texttt{ccu}.\texttt{debug\_daemon} communicates with with other blocks through AHIR pipes. The processor will communicate with the \texttt{debug\_daemon} only if the processor is running in the \texttt{DEBUG\_MODE}.
+
+\begin{figure}[h!]
+	\scalebox{.57}{\import{./figs/}{block.tex}}
+	\caption{System architecture}
+\end{figure}
+
+The system consists of the two interfaces described below.
+
+\subsection{\texttt{debug\_daemon} to external environment}
+The pipes \texttt{ENV\_to\_AJIT\_command} and \texttt{AJIT\_to\_ENV\_response} are used for communicating with the GDB on host PC. The message format on these pipes are same for both the C and micro-architectural model of the processor. They are described in the section 3 of this document.
+
+\subsection{\texttt{debug\_daemon} to \texttt{ccu}}
+This interface with \texttt{ccu\_to\_debug} and \texttt{debug\_to\_ccu} pipes will be primarily used for updating the processor state at any instant and to be informed when the thread finishes or stops.
+
+\begin{itemize}
+	\item The \texttt{ccu} informs \texttt{debug\_daemon} if any of the following situations occur and then wait for a response. Along with the code for thread finish, the current value of PC, NPC and PSR will also be passed on.
+		\begin{itemize}
+			\item Connection request (initial)
+			\item Breakpoint hit
+			\item Watchpoint hit (both read \& write)
+			\item Processor is in error mode
+			\item Trap occurance
+			\item Returning from single step
+			\item Kill request executed
+		\end{itemize}
+	After subsequent operations, when the \texttt{debug\_daemon} wants to continue, it will pass the following details to \texttt{ccu}.
+		\begin{itemize}
+			\item PC, NPC, PSR
+			\item Next processor mode
+		\end{itemize}
+	 If the host has terminated the connection, then 
+	 \texttt{debug\_daemon} will change the processor to normal execution mode.
+	 
+	\item \texttt{debug\_daemon} will send requests to  \texttt{ccu} for reading/modifying the current processor state. The requests could be 
+		\begin{itemize}
+			\item Interrupt the processor execution flow when there is a \textit{kill} request from the GDB host.
+			\item Read/write the iunit/fpunit/control/co-processor registers
+			\item Read/write the fpunit registers
+			\item Read/write the memory
+			\item Read/write the breakpoint/watchpoint registers
+			\item Detach the debugger and continue exeuction in normal mode
+		\end{itemize}
+
+\end{itemize}
+
+\vspace*{1cm}
+
+\section{\texttt{debug\_daemon} execution flow}
+\label{sec:execution}
+\begin{itemize}
+\item Wait for a connection request from the \texttt{ccu\_daemon}. Will not continue forward unless the connection request arrives.
+
+\item After receiving the connection request from \texttt{ccu\_daemon}, wait for a similar request from the GDB host to proceed further.
+
+\item Acknowledge the GDB host connect request and execute all the subsequent instructions such as read/write the registers/memory and set/clear the breakpoints/watchpoints.
+
+\item Once the GDB host sends a \textit{continue} message, read the current PC, NPC, PSR values. Pass these values to the \texttt{ccu\_daemon} and start program execution.
+
+\item Read the \texttt{ENV\_to\_AJIT\_command} and \texttt{ccu\_to\_debug} pipes every cycle and respond if there are any valid requests on them.
+		\begin{itemize}
+		\item \texttt{ccu\_to\_debug} can inform regarding breakpoint hit, watchpoint hit and occurance of trap.
+		
+				\begin{itemize}
+				\item Inform the GDB host regarding the breakpoint hit, watchpoint hit and occurance of trap along with the details. The address of breakpoint/watchpoint hit will be obtained from the local copies of their corresponding registers stored in debugger.
+				
+				\item Execute all the subsequent instructions such as read/write the registers/memory and set/clear the breakpoints/watchpoints. Update the local copies of PC, NPC, PSR and breakpoints/watchpoint registers with corresponding messages.
+				
+				\item Once the GDB host sends a \textit{continue} message, pass it to the \texttt{ccu\_daemon} along with PC, NPC, PSR and start program execution.
+				
+				\item If GDB host sends a \textit{detach} message, pass it to the \texttt{ccu\_daemon} along with PC, NPC, PSR and let the program execution continue in normal mode.
+				\end{itemize}
+		\item \texttt{ENV\_to\_AJIT\_command} inform when the GDB host wants to kill the program execution.
+		
+				\begin{itemize}
+				\item Send an interrupt signal to the \texttt{ccu\_daemon} and stop the current program execution.
+				\end{itemize}
+		\end{itemize}
+
+\end{itemize}
+
+\newpage
+\section{Packet format on each of the pipes}
+\label{sec:packformat}
+The message formats on each of the interface pipes are as shown in the following sections.
+\setcounter{subsection}{0}
+\subsection{\texttt{ENV\_to\_AJIT\_command} (64 bit, non-blocking)}
+The messages on this interface will be same for both the micro-architecture and the C model. These 32 bit messages are send through this 64 bit pipe with an additional bit to indicate whether it's valid or not ( shown in fig. \ref{gdb_packet}).
+\begin{figure}[h!]
+	\centering
+	\scalebox{.65}{\import{./figs/}{gdb_packet.tex}}
+	\caption{ENV\_to\_AJIT\_command packets}
+	\label{gdb_packet}
+\end{figure}
+
+The 32 bit GDB messages could either be commands or data for the debugger. These commands have the format shown in fig. \ref{packet1}. 
+
+\begin{figure}[h!]
+	\centering
+	\scalebox{.65}{\import{./figs/}{packet1.tex}}
+	\caption{GDB commands for the debugger}
+	\label{packet1}
+\end{figure}
+
+The individual messages are as follows.
+\begin{itemize}
+		\item Read \texttt{iunit} registers : op-code = 1, length = 1, command is interpreted in the following order. If the \textit{reg} or \textit{asr} bit is set, then the \textit{reg\_id} indicates the number of corresponding register. The \textit{win-ptr} field corresponds to the window pointer for the register.
+		
+		\begin{figure}[h!]
+			\centering
+			\scalebox{.65}{\import{./figs/}{reg_packet.tex}}
+		\end{figure}
+		
+		\item Write \texttt{iunit} registers : op-code = 2, length = 2, command is interpreted in the same way as the previous one. This command will be followed by the data to be written.
+		
+		\item Read \texttt{fpunit} registers : op-code = 3, length = 1, command is interpreted as following. If the \textit{fsr} bit is not set, then the register with \textit{reg\_id} will be read.
+		
+		\begin{figure}[h!]
+			\centering
+			\scalebox{.65}{\import{./figs/}{fp_packet.tex}}
+		\end{figure}
+				
+		\item Write \texttt{fpunit} registers : op-code = 4, length = 2, command is interpreted in the same way as the read command. This command will be followed by the data to be written.
+		
+		\item Read from the memory : op-code = 6, length = 1, command is interpreted as follows.
+		
+		\begin{figure}[h!]
+			\centering
+			\scalebox{.65}{\import{./figs/}{mem_packet.tex}}
+		\end{figure}
+		
+		\item Write to the memory : op-code = 7, length = 2, command is interpreted in the same way as the previous one. This command will be followed by the data to be written.
+		
+		\item Set breakpoint : op-code = 8, length = 2, command is interpreted as follows. The \textit{reg\_id} field corresponds to the breakpoint register where the address will be stored. The command is followed by the address to be stored in the register.
+		
+		\begin{figure}[h!]
+			\centering
+			\scalebox{.65}{\import{./figs/}{bp_packet.tex}}
+		\end{figure}
+		
+		\item Remove breakpoint : op-code = 9, length = 1, command is interpreted as the previous one.
+		
+		\item Set watchpoint : op-code = 10, length = 2, command is interpreted as follows. The type indicates the properties of the watchpoint. It could be a write watchpoint (type = 2), read watchpoint (type = 3) or access watchpoint (type = 4). The command is followed by the address to be stored in the register.
+		
+		\begin{figure}[h!]
+					\centering
+					\scalebox{.65}{\import{./figs/}{wp_packet.tex}}
+				\end{figure}
+		
+		\item Remove watchpoint : op-code = 11, length = 1, command is interpreted similarly to the breakpoint removal.
+		
+		\item Read control registers : op-code = 13, length = 1, command is decoded as follows.
+
+		\begin{figure}[h!]
+			\centering
+			\scalebox{.65}{\import{./figs/}{cntrl_packet.tex}}
+		\end{figure}
+				
+		\item Detach : op-code = 15, length = 1, requests to stop debugger and continue normal execution.
+		
+		\item Continue : op-code = 16, length = 1, requests to resume program execution.
+		
+		\item Read co-processor status register : op-code = 17, length = 1, command is unused.
+		
+		\item Write co-processor status register : op-code = 18, length = 1, command is unused.
+		
+		\item Kill the current thread : op-code = 19, length = 1, command is unused.
+		
+\end{itemize}
+
+\subsection{\texttt{AJIT\_to\_ENV\_response} (32 bit, blocking) }
+These pipes will use the same message formats of the C model, described the Debugger design document\cite{main_doc}.
+
+
+\subsection{\texttt{debug\_to\_ccu} (64 bit, non-blocking)}
+This pipe has to request the read/write to the general registers/memory/breakpoint registers/watchpoint registers and also allow the \texttt{ccu} to continue after a halt (with new PC, NPC, PSR, and mode).
+
+The message format is almost same as that of the \texttt{ENV\_to\_AJIT\_command} 
+commands. The structure in fig. \ref{gdb_packet} is retained and the commands are also same except the following two.
+\begin{itemize}
+		\item Continue : op-code = 16, length = 4, command will contain the new processor mode ( same values used in the \texttt{ccu} ). Followed by 3 packets with new PC, NPC, PSR values. 
+		
+		\item Kill the current thread : op-code = 19, length = 4, command will be same as the previous one. Followed by 3 packets with new PC, NPC, PSR values. 
+				
+\end{itemize}
+
+\subsection{\texttt{ccu\_to\_debug} (64 bit, non-blocking))}
+This pipe has to inform the \texttt{debug\_daemon} when it stops and send the register/memory contents when required. The MSB indicates if the pipe has a valid message or not and the rest 32 bits have the following format shown in fig. \ref{packet2}.
+\begin{figure}[h!]
+	\centering
+	\scalebox{.55}{\import{./figs/}{packet2.tex}}
+	\caption{ccu\_to\_debug interface packet response}
+	\label{packet2}
+\end{figure}
+
+\begin{itemize}
+		\item Connect request : op-code = 1, length = 1;
+		\item Breakpoint hit : op-code = 2, length = 4. Packet is followed by PC, NPC, PSR values.
+		\item Watchpoint hit (read) : op-code = 3, length = 4. Packet is followed by PC, NPC, PSR values.
+		\item Watchpoint hit (write) : op-code = 4, length = 4. Packet is followed by PC, NPC, PSR values.
+		
+		\item Thread finished : op-code = 5, length = 4. The reason for the thread being finished is encoded in the command.
+		\begin{itemize}
+				\item command [0] : Trap occured
+				\item command [1] : Returning after single step
+				\item command [2] : Interrupt
+				\item command [3] : Returning after a kill request
+		\end{itemize}
+		Multiple bits on the command could be '1' at the same time.
+		
+		\item Entered error mode : op-code = 6, length = 1.
+		
+		\item Register/memory content : If the pipe contains a response for one of the register or memory reads, then the then the least significant 32 bits will be the content.
+\end{itemize}
+
+\newpage
+
+\begin{thebibliography}{main}
+	
+	\bibitem{main_doc} Titto Thomas, Ashfaque Ahammed, Prof. Madhav Desai, \textquotedblleft Design Of Debugger For AJIT Processor,\textquotedblright\, 2015.
+	
+\end{thebibliography}
+
+\end{document}

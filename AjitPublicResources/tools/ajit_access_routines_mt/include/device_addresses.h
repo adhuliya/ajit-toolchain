@@ -10,15 +10,17 @@
 
 
 // Devices will be allocated an address chunk of either
-//     16/256/512/1024/.../1024*1024 bytes
+//     16/32/256/512/1024/.../1024*1024 bytes
 
 
 /*
 	Interrupt controller
-		Each interrupt controller is assigned 16 bytes in the memory map.
-		register 0 is the control register.  rest are unused.
+		The multi-core interrupt controller is assigned 32 bytes in the memory map.
+		See irc.h for more details.
 */
-#define ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER 	0xFFFF3000 // AJIT default-interrupt-controller control register (word).
+#define ADDR_INTERRUPT_CONTROLLER_MIN 	0xFFFF3000 // Base address
+#define ADDR_INTERRUPT_CONTROLLER_MAX 	0xFFFF301c // Base address + 28
+
 
 /*
 	Timer

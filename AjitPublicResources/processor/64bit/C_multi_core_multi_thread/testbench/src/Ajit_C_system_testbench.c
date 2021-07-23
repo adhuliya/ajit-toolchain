@@ -1,14 +1,17 @@
 //Ajit system : C model
 //
 // The system consists of:
-// 	cpu
-// 	dummy Icache/Dcache
-// 	MMU
-// 	memory
-// 	memory-mapped peripherals:
+// 	cores (up to 4 cores)
+//         threads (up to 2 threads per core)
+//             debug_interface (1 per thread)
+//         icache/dcache/mmu  (1 set per core)
+//      bridge (coherent memory model)
+//      peripherals (1 shared set)
 // 		Timer
 // 		Serial
 // 		Interrupt controller
+// 	memory
+//   
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -109,31 +112,42 @@ DEFINE_THREAD_WITH_ARG(checkErrorStateAndExit, cs);
 void print_usage(char* app_name)
 {
 	fprintf(stderr, "USAGE: ");
-	fprintf(stderr, "   %s -n <number-of-cpus> -m <mmap-file> [-g -p <gdb-port-number>] [-d -r <results-file> -l <log-file>]  [-w <write-trace-logger-file>] [-S <logger-server-ip> -P <logger-server-port>] \n", app_name);
+	fprintf(stderr, "   %s ...options...\n");
+	fprintf(stderr, "OPTIONS: ");
 	fprintf(stderr, "   -n <number-of-cores>     : specifies number-of-cores in the processor for this test.\n");
 	fprintf(stderr, "                 : default is 1, maximum is 4.\n");
 	fprintf(stderr, "   -t <number-of-threads-per-core>     : specifies number-of-threads-per-core in the processor for this test.\n");
 	fprintf(stderr, "                 : default is 1, maximum is 2.\n");
 	fprintf(stderr, "   -u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]\n");
 	fprintf(stderr, "   -m <mmap-file>     : required, specifies memory-map of processor for this test.\n");
+	// branch predictor table size.
 	fprintf(stderr, "   -b <bp-size>, optional,  branch predictor table size (default=16)\n");
 	fprintf(stderr, "   -D <dcache-size-in-lines>, optional  (default=512)\n");
 	fprintf(stderr, "   -N <icache-size-in-lines>, optional  (default=512)\n");
+	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
-	fprintf(stderr, "   -g, optional, to run the CORE in debug mode.\n");
+	// if you are simulating with limited memory, you can use the -q option to specify memory size.
+	//     e.g. -q 20  (4MB of available memory)..
 	fprintf(stderr, "   -q <number-of-address-bits>, optional, size of memory is 2**<number-of-address-bits>, default is 32.\n");
+	fprintf(stderr, "   -g, optional, to run the CORE in debug mode.\n");
+	// specify  one port per thread (first is for thread 0,0, second for thread 0,1 etc...)
 	fprintf(stderr, "   -p <gdb-port-number>, required with -g, to specify remote debug port.\n");
 	fprintf(stderr, "   -d  : optional, use if doval utility is to be run...\n");
 	fprintf(stderr, "   -r <results-file>  : required with -d, specifies expected register/memory values at end of run.\n");
 	fprintf(stderr, "   -l <log-file>      : required with -d, specifies a log-file of the validation checks.\n");
 	fprintf(stderr, "   -w <reg-writes-dump>: optional. if specified, a log of all register and memory writes is generated.\n");
+	// Not being used...
 	fprintf(stderr, "   -S <log-server-ip-addr>  : optional, specifies a logging-server-ip-addr to compare write traces.\n");
+	// Not being used...
 	fprintf(stderr, "   -P <log-server-ip-port>  : required with -S, specifies a logging-server-port to compare write traces.\n");
+	// Not being used...
 	fprintf(stderr, "   -c <console-server-port-number>, specify port for console server.\n");
 	fprintf(stderr, "   -v optional, verbose flag for printing lots of junk.\n");
 	fprintf(stderr, "   -I <reporting-interval>, optional, for specifying interval at which Instr summary is printed. default is 10000000.\n");
+	// if -R is specified, the memory is initially randomized, else it is initialized to 0.
 	fprintf(stderr, "   -R <randomization-seed>, optional, for randomizing initial memory values (if omitted, memory will be initialized to 0).\n");
 	fprintf(stderr, "   -i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4\n");
+	// cache trace: requests and responses to/from caches for each thread.
 	fprintf(stderr, "   -e <cache-trace-file>, optional, for specifying cache access dump file.\n");
 	fprintf(stderr, "                                                                         \n");
 	fprintf(stderr, "EXAMPLE:  \n");
@@ -381,12 +395,15 @@ int main(int argc, char **argv)
 		}
 	}
 
+	// pipe handler needs to register these as signals!
 	registerResetPorts(NCOREs, NTHREADs);
 
 	fprintf(stderr,"Info: branch-predictor table size=%d.\n", bp_table_size);
 	fprintf(stderr,"Info: dcache-number-of-lines=0x%x.\n", dcache_number_of_lines);
 	fprintf(stderr,"Info: icache-number-of-lines=0x%x.\n", icache_number_of_lines);
 
+	// initialize the bridge targets: that is, tell the bridge how to route
+	// the memory accesses.
 	initBridgeTargets();
 	if(bridge_targets_file != NULL)
 	{

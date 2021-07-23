@@ -21,6 +21,9 @@ MonitorLoggerState* makeMonitorLoggerState (uint32_t core_id, uint32_t thread_id
 							int global_verbose_flag);
 
 
+void setMonitorLoggersInSocketMode();
+
+
 // logger daemon.
 void monitorLogger_core(MonitorLoggerState* mls);
 
