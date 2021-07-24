@@ -1,0 +1,13 @@
+# yaml configuration file for linker/loader of Co-RTOS
+
+Cores: 1  # must agree with the processor used
+ThreadsPerCore: 2  # must agree with the processor used
+
+Programs: # specify all your programs here
+  - Dir: ./00
+    StackSizeInBytes: 8192
+  - Dir: ./01
+    StackSizeInBytes: 8192
+
+
+TotalMemoryInKB: 102400
