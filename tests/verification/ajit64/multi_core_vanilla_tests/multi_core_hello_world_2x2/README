@@ -1,0 +1,7 @@
+Two cores, each with two threads.  Run the sim model with
+
+ -n 2 -t 2
+
+
+options.
+
