@@ -79,7 +79,7 @@ SP1:
 	nop
 
 SP2:
-	! hand off to thread (0,1) 
+	! hand off to thread (1,0) 
 	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
