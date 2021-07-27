@@ -25,15 +25,19 @@ but each level also maintains a copy of the output log
 separately. This helps when one is working on a sub-project.
 
 To cleanup the build of a sub-project in the Ajit toolchain,
-go the project directory and invoke the cleanup script/command
+go to the project directory and invoke the cleanup script/command
 from the directory.
 You can also follow the cleanup script `./clean.sh` to see how each
 sub-project's build is cleaned up.
 
-NOTE: Don't invoke any of the following command as a root/sudo user.
-
 
 ## Building and Installation
+
+NOTE: Don't invoke any of the following command as a root/sudo user.
+
+NOTE: In case of any error please send us a description of the problem,
+along with the `*.log` files generated while installing the toolchain.
+Some important log files are `./build.log` and `./docker_build.log`.
 
 Run the following command from this `README.md`'s directory,
 to set the `AJIT_HOME` environment variable,

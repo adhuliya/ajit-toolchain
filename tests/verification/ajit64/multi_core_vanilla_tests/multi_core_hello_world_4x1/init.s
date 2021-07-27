@@ -10,10 +10,6 @@ _start:
 	wr %l0, %psr
 
 
-	set PT_FLAG, %l6
-	mov 0, %l7
-	st %l7, [%l6]
-
 	! initialize some ASR's
 	wr 0x1, %asr16
 	wr 0x2, %asr17
@@ -31,7 +27,9 @@ WIMSET:
 STACKSETUP:
 
 	! set up stack pointers.
-	mov 0x0, %l2
+	set 0x50520000, %l2
+	! format of asr29
+	! 0x50 0x52 core-id thread-id
 	rd %asr29, %l1
 	subcc %l1, %l2, %g0
 
@@ -43,10 +41,7 @@ STACKSETUP:
 	clr %fp
 
 	! set up virtual -> physical map.
-	! This will be executed by each core.
-	! a waste but does not seem to affect
-	! the correctness since we do not expect
-	! to have any page faults....
+	! This will be executed only by core 0.
 	call page_table_setup 	
 	nop
 
@@ -57,7 +52,7 @@ STACKSETUP:
 	ba AFTER_PTABLE_SETUP
 	nop
 SP1:
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP2
@@ -71,7 +66,7 @@ SP1:
 	nop
 
 SP2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP3
@@ -85,7 +80,7 @@ SP2:
 	nop
 
 SP3:
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
 
 	bnz AFTER_PTABLE_SETUP
@@ -108,16 +103,18 @@ AFTER_PTABLE_SETUP:
 	bnz AFTER_PTABLE_SETUP
 	nop
 
+
+	! context table pointer has to be set in all cores.
 	call set_context_table_pointer
 	nop
 
 
-  	! enable mmu.
+  	! each core enables its mmu.
 	set 0x1, %o0
 	sta %o0, [%g0] 0x4    
 
+	set 0x50520000, %l2
 	rd %asr29, %l1
-	mov 0x0, %l2
 	subcc %l1, %l2, %g0
 
 	bnz CORE1
@@ -133,7 +130,7 @@ AFTER_PTABLE_SETUP:
 
 CORE1: 
 
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE2
@@ -148,7 +145,7 @@ CORE1:
 	nop
 
 CORE2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE3
@@ -163,7 +160,7 @@ CORE2:
 	nop
 
 CORE3:
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  HALT
