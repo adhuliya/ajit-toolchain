@@ -50,17 +50,27 @@
 		as cacheable.
 
 	The VMAP entry is then (we map 0x40080000 to 0x80000, the
-	base addresses must be multiples of 256K).
-	   0x0 0x40008000  0x80000  0x2 0x1  0x3
+	base addresses must be multiples of 256K). Note that the
+	page level is 0x2.
+	   0x0 0x40080000  0x80000  0x2 0x1  0x3
 			
 	16MB data area cacheable for context 0
 		we will map a 16MB virtual page to a
 		16MB physical page and mark this page
 		as cacheable.
 
-	The VMAP entry is then (we map 0x10000000 to 0x0x20000000, the
+	The VMAP entry is then (we map 0x10000000 to 0x20000000, the
 	base addresses must be multiples of 16M).  Note that the
 	page-level is 0x1.
 	   0x0 0x10000000  0x20000000  0x1 0x1  0x3
 		
+NOTE:
 
+	In principle it is possible to map the entire 4GB virtual
+	memory as a single page (note that the physical address is
+	36 bits, and the page-level is 0x0).   For example
+	    0x0 0x0 0x100000000 0x0 0x1 0x3
+
+	This maps the whole virtual address space of context 0 to
+	physical 4GB page starting at 0x100000000 and the entire
+	virtual address page is mapped as cacheable.
