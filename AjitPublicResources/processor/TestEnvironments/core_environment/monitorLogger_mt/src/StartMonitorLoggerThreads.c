@@ -24,6 +24,7 @@ void monitorLogger(void* vmls)
 DEFINE_THREAD_WITH_ARG(monitorLogger, vmls);
 
 MonitorLoggerState*  start_monitor_logger_thread (uint32_t core_id, uint32_t thread_id,
+					char* lpipe_name, 
 					char* reg_write_file,
 					char* long_reg_write_file,
 					char* server_ip_address,
@@ -31,7 +32,8 @@ MonitorLoggerState*  start_monitor_logger_thread (uint32_t core_id, uint32_t thr
 					int verbose_flag)
 {
 
-	MonitorLoggerState* mls = makeMonitorLoggerState (core_id, thread_id, reg_write_file, long_reg_write_file,
+	MonitorLoggerState* mls = makeMonitorLoggerState (core_id, thread_id, lpipe_name,
+								reg_write_file, long_reg_write_file,
 								server_ip_address, server_port_number,
 								verbose_flag);
 	PTHREAD_DECL(monitorLogger);

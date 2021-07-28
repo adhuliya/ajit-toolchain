@@ -6,6 +6,7 @@
 void register_monitor_logger_pipes (MonitorLoggerState* mls);
 MonitorLoggerState*
 	 start_monitor_logger_thread (uint32_t core_id, uint32_t thread_id,
+					char* lpipe_name,
 					char* reg_write_file,
 					char* long_reg_write_file,
 					char* server_ip_address,
