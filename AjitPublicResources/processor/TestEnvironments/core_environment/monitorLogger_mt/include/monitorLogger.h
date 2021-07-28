@@ -16,7 +16,9 @@ typedef struct _MonitorLoggerState {
 	int   global_verbose_flag;
 } MonitorLoggerState;
 MonitorLoggerState* makeMonitorLoggerState (uint32_t core_id, uint32_t thread_id,
-						char* reg_write_file, char* long_reg_write_file,
+						char* lpipe_name,
+						char* reg_write_file, 
+						char* long_reg_write_file,
 						char* server_ip_addr, int server_port_number,
 							int global_verbose_flag);
 

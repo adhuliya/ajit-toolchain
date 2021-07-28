@@ -38,9 +38,12 @@ uint8_t __signature_8 (uint32_t raw_val)
 }
 
 MonitorLoggerState* makeMonitorLoggerState (uint32_t core_id, uint32_t thread_id,
-						char *reg_write_file, char *long_reg_write_file,
-						char* server_ip_addr, int server_port_number,
-							int global_verbose_flag)
+						char* lpipe_name,
+						char *reg_write_file, 
+						char *long_reg_write_file,
+						char* server_ip_addr, 
+						int server_port_number,
+						int global_verbose_flag)
 {
 
 	MonitorLoggerState* mls = (MonitorLoggerState*) malloc (sizeof (MonitorLoggerState));
@@ -51,7 +54,7 @@ MonitorLoggerState* makeMonitorLoggerState (uint32_t core_id, uint32_t thread_id
 	mls->core_id = core_id;
 	mls->thread_id = thread_id;
 
-	sprintf(mls->logger_pipe_name,"AJIT_to_ENV_logger_%d_%d", core_id, thread_id);
+	sprintf(mls->logger_pipe_name,"%s", lpipe_name);
 
 	char file_name [4096];
 
