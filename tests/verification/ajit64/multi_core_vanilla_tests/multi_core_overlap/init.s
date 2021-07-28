@@ -19,9 +19,6 @@ _start:
 	wr %l0, %psr
 
 
-	!set PT_FLAG, %l6
-	!mov 0, %l7
-	!st %l7, [%l6]
 
 WIMSET:
 	set 0x2, %l0		! window 1 is marked invalid... 
@@ -34,7 +31,7 @@ WIMSET:
 STACKSETUP:
 
 	! set up stack pointers.
-	mov 0x0, %l2
+	set 0x50520000, %l2
 	rd %asr29, %l1
 	subcc %l1, %l2, %g0
 
@@ -43,7 +40,7 @@ STACKSETUP:
 
 !---------------------  Core-0 region --------------------------------
 	! for core 0
-	set 0, %sp
+	set 0x50520000, %sp
 	clr %fp
 
 	!
@@ -55,13 +52,13 @@ STACKSETUP:
 
 	set PT_FLAG, %l6
 	mov 1, %l7
-	st %l7, [%l6]
+	sta %l7, [%l6] 0x20
 
 	ba AFTER_PTABLE_SETUP
 	nop
 !---------------------  Core-1,2,3 region --------------------------------
 SP1:
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP2
@@ -77,7 +74,7 @@ SP1:
 
 !---------------------  Core-2,3 region --------------------------------
 SP2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP3
@@ -93,7 +90,7 @@ SP2:
 
 SP3:
 !---------------------  Core-3 region --------------------------------
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
 
 	bnz AFTER_PTABLE_SETUP
@@ -109,7 +106,7 @@ SP3:
 AFTER_PTABLE_SETUP:
 
 	set PT_FLAG, %l6
-	ld [%l6], %l7 
+	lda [%l6] 0x20, %l7 
 
 	mov 0x1, %i0
 	subcc %i0, %l7,  %g0
@@ -129,7 +126,7 @@ AFTER_PTABLE_SETUP:
 	sta %o0, [%g0] 0x4    
 
 	rd %asr29, %l1
-	mov 0x0, %l2
+	set 0x50520000, %l2
 	subcc %l1, %l2, %g0
 
 	bnz CORE1
@@ -148,7 +145,7 @@ AFTER_PTABLE_SETUP:
 !---------------------  Core-1,2,3 region --------------------------------
 CORE1: 
 
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE2
@@ -162,7 +159,7 @@ CORE1:
 
 !---------------------  Core-1,2,3 region --------------------------------
 CORE2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE3
@@ -175,7 +172,7 @@ CORE2:
 
 CORE3:
 !---------------------  Core-1,2,3 region --------------------------------
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  HALT
