@@ -30,7 +30,7 @@ void ajit_cortos_entry_func_010() {
 
 void ajit_cortos_entry_func_101() {
   // wait for a message
-  while(readAjitMessage(0, &msg2));
+  while(!readAjitMessage(0, &msg2));
 
   // process the message
   int *arr = (int*)msg2.a_ptr;
