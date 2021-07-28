@@ -1,15 +1,11 @@
 # yaml configuration file for linker/loader of Co-RTOS
 
 Cores: 1
-ThreadsPerCore: 2
+ThreadsPerCore: 1
 
 ProgramThreads:
   - CortosCallSeq:
-      - ajit_entry_func_001
-    CortosLoop: False
-    StackSizeInBytes: 8192
-  - CortosCallSeq:
-      - ajit_entry_func_010
+      - main
     CortosLoop: False
     StackSizeInBytes: 8192
 

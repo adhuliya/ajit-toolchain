@@ -18,4 +18,6 @@ ProgramThreads:
     StackSizeInBytes: 8192
 
 TotalMemoryInKB: 102400
-# AddBget: True
+AddBget: True
+
+
