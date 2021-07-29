@@ -1,5 +1,7 @@
 SOURCES = cswapa.s
 
+VERSION = 64
+
 RESULTS = 
 g2=0x5
 g1=0x3

@@ -1,5 +1,5 @@
 SOURCES = or.s
-
+VERSION = 64
 RESULTS =
 g2=1
 g3=0x08050401

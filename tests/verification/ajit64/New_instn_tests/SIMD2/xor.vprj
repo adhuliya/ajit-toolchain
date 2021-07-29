@@ -1,5 +1,5 @@
 SOURCES = xor.s
-
+VERSION = 64
 RESULTS =
 g2=0x1
 g3=0x08050401
