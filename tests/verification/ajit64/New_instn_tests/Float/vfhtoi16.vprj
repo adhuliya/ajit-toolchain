@@ -1,5 +1,7 @@
 SOURCES = vfhtoi16.s
 
+VERSION = 64
+
 RESULTS = 
 f0=0x3c663c66
 f1=0x3c663c66

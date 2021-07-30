@@ -12,10 +12,12 @@ if [[ -z $AJIT_PROJECT_HOME ]]; then
   exit 1;
 fi
 
+{
 cd $AJIT_AHIR_DIR;
 source ./ahir_bashrc;
 
 cd $AJIT_PROJECT_HOME;
 ./build.sh;
+} |& tee -a $AJIT_PROJECT_HOME/build.log;
 
 

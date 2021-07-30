@@ -5,6 +5,8 @@ Note: This is tested to work on: Ubuntu 16.04 only.
 The documentation of the Ajit toolchain can be found in the
 `./docs` directory. This readme explains the build and setup process.
 
+We use `$AJIT_HOME` to refer to the directory location of this `README.md` file.
+
 
 Some notes on the build process
 ----------------------------------
@@ -44,14 +46,87 @@ to set the `AJIT_HOME` environment variable,
 
     source ./set_ajit_home
 
+From now on, `$AJIT_HOME` will refer to the directory location of this README.md.
 
-### Install/Setup docker images
+
+### Local Setup: Do a local setup
+
+To setup Ajit Toolchain on the local system run,
+
+    source ./set_ajit_home;   # sets AJIT_HOME
+    ./setup.sh;               # builds the system
+
+Note that if this setup fails, the user should
+refer the `./docker_setup.sh` which stands as a
+reference to a well tested system environment.
+
+#### Local Setup: Clean the slate
+
+In case there is an error in building, then
+before re-starting the build do cleanup the previous files.
+
+To cleanup the local system setup use,
+
+    source $AJIT_HOME/ajit_env; # if not already done
+    $AJIT_HOME/clean.sh;
+
+
+#### Local Setup: Setup environment to start using the toolchain
+
+To setup the environment to start using Ajit Toolchain,
+
+    source ./set_ajit_home;
+    source ./ajit_env;
+
+`./ajit_env` contains all the truth about the global
+environment variables needed for Ajit development and use.
+
+
+#### Local Setup: Setup environment to start using the toolchain
+
+To setup the environment to start using Ajit Toolchain,
+
+    source ./set_ajit_home;
+    source $AJIT_HOME/ajit_env;
+
+`./ajit_env` contains all the truth about the global
+environment variables needed for Ajit development and use.
+
+
+#### Local Setup: Run a test program
+
+To run and test a sample examples,
+
+    source ./set_ajit_home;
+    source $AJIT_HOME/ajit_env;
+    cd $AJIT_HOME/tests/examples/misc/sin-model-test;
+    ./build.sh;
+    ./run_cmodel.sh;
+    ./clean.sh;
+
+The output of `./run_cmodel.sh` should have a line `Tests Successful`.
+If so, the system is probably ready to use.
+To be on a safer side do run all the automated tests as given below.
+
+#### Running (all) automated tests
+
+Run the following sequence of commands as given,
+from the root of the repository,
+
+    source ./set_ajit_home;
+    source $AJIT_HOME/ajit_env;
+    cd $AJIT_HOME/tests; ./test.sh;
+    cd ..; cd ./tests/verfication; ./verify.sh;
+
+
+
+### Docker Setup: Install/Setup docker images
 
 Note: Don't be a root or sudo user when invoking any of the commands.
 
     source ./set_ajit_home;   # sets AJIT_HOME
-    ./install_docker.sh;      # installs docker and more
-    ./docker_setup.sh;        # creates the docker images 
+    $AJIT_HOME/install_docker.sh;      # installs docker and more
+    $AJIT_HOME/docker_setup.sh;        # creates the docker images 
 
     # on success
     cd ./docker/ajit_build_dev; # go to the image utility directory
@@ -64,7 +139,7 @@ Note: Don't be a root or sudo user when invoking any of the commands.
 
 Once the above setup is done, you can refer `./docker/README.md` for more details.
 
-## Run a test program
+## Docker Setup: Run a test program
 
 To run and test a sample examples,
 
@@ -83,7 +158,7 @@ The output of `./run_cmodel.sh` should have a line `Tests Successful`.
 If so, the system is probably ready to use.
 To be on a safer side do run all the automated tests as given below.
 
-### Running (all) automated tests
+### Docker Setup: Running (all) automated tests
 
 Run the following sequence of commands as given,
 from the root of the repository,
@@ -98,39 +173,17 @@ from the root of the repository,
     cd ..; cd ./tests/verfication; ./verify.sh;
 
 
-### Do a local setup
+## Docker Setup: Clean the slate
 
-To setup Ajit Toolchain on the local system run,
+To cleanup the build do the following,
 
-    source ./set_ajit_home;   # sets AJIT_HOME
-    ./setup.sh;               # builds the system
-    source ./ajit_env;        # to setup the environment
-
-Note that if this setup fails, the user should
-refer the `./docker_setup.sh` which stands as a
-reference to a well tested system environment.
-
-
-## Clean the slate
-
-To cleanup the local system setup use,
-
+    source ./set_ajit_home; # if not already done
+    source ./ajit_env; # if not already done
     ./clean.sh;
 
 You can also call the above script from inside
 `ajit_build_dev` image container to clean the
 whole ajit build. 
-
-
-## Setup environment to start using the toolchain
-
-To setup the environment to start using Ajit Toolchain,
-
-    source ./set_ajit_home;
-    source ./ajit_env;
-
-`./ajit_env` contains all the truth about the global
-environment variables needed for Ajit development and use.
 
 
 ## Important Files and Directories

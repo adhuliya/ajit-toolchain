@@ -46,9 +46,10 @@ if [[ ! -e $SRC/update-all-ajit-code-and-run-tests.sh ]]; then
   exit 1;
 fi
 
-if [[ ! -e "$SRC/$DEVELOPMENT" ]]; then
-  echo "ERROR: $SRC/$DEVELOPMENT doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
-  echo -e "\n\nNOT EXITING BUT NOTE THIS!!!!!! Once updated bin-utils is added this msg should be addressed.\n\n" |& tee -a $BUILD_OUTFILE;
-  # exit 1; # uncomment this once development is added
-fi
-
+# # 64 bit addition
+# if [[ ! -e "$SRC/$DEVELOPMENT" ]]; then
+#   echo "ERROR: $SRC/$DEVELOPMENT doesn't exist in the current directory" |& tee -a $BUILD_OUTFILE;
+#   echo -e "\n\nNOT EXITING BUT NOTE THIS!!!!!! Once updated bin-utils is added this msg should be addressed.\n\n" |& tee -a $BUILD_OUTFILE;
+#   # exit 1; # uncomment this once development is added
+# fi
+# 

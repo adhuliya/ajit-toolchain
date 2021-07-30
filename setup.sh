@@ -36,13 +36,14 @@ _OUT_LOG=$AJIT_HOME/build.log;
     echo "##  Setting up ajit_base.";
     echo "################################################";
     sleep 3;
-    bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
+    sudo bash $AJIT_HOME/docker/ajit_base/setup_ajit_base.sh;
   fi
 
   echo "################################################";
   echo "##  Setting up ajit_builds.";
   echo "################################################";
   sleep 3;
+  source $AJIT_HOME/ajit_env;
   bash $AJIT_HOME/docker/ajit_build/setup_ajit_build.sh;
 
 

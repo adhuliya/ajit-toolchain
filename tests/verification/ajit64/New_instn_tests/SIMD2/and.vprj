@@ -1,5 +1,5 @@
 SOURCES = and.s
-
+VERSION = 64
 RESULTS = 
 g2=0xfffffff0
 g3=0xffffffff

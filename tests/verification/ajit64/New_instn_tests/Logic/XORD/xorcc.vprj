@@ -1,6 +1,6 @@
 SOURCES = xorcc.s
 
-
+VERSION = 64
 
 RESULTS = 
 g1=0x80

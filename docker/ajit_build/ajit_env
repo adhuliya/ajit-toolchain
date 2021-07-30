@@ -71,6 +71,10 @@ export PATH=$AJIT_DEV_TREE_COMPILER_DIR/scripts:$PATH;
 # ajit_debug_monitor path
 export PATH=$AJIT_DEBUG_MONITOR_DIR/bin:$PATH
 
+# to test ajit cortos: Author Anshuman Dhuliya
+# export PATH=/home/codeman/downloads-thinkpad/sparcv8-ajit-git/src/cortos:$PATH
+
+
 # points to the C system model executable
 export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";
 

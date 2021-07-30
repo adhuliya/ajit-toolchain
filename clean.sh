@@ -6,13 +6,8 @@ if [[ -z $AJIT_HOME ]]; then
   exit 1;
 fi
 
-if [[ -z $AJIT_CMODEL_DIR ]]; then
-  echo "ERROR: Please set the env variable \$AJIT_CMODEL_DIR";
-  exit 1;
-fi
-
-if [[ -z $AJIT_TOOLS_DIR ]]; then
-  echo "ERROR: Please set the env variable \$AJIT_TOOLS_DIR";
+if [[ -z $AJIT_PROJECT_HOME ]]; then
+  echo "ERROR: Please set the env variable \$AJIT_PROJECT_HOME";
   exit 1;
 fi
 

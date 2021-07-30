@@ -1,0 +1,71 @@
+Overview 
+	Generates a trace file for all instructions executed. 
+
+Introduction 
+	A tracen file gives details such as updated flags, registers etc. for each executed instruction.
+
+
+Generating the trace 
+
+	 Use -w filename.wtrace option in Cmodel to create the trace
+
+
+Reading the trace -
+
+
+There are 4 parts in a trace 
+
+1. PC (program counter). You can check the exact instrution at the PC in the objdump file.
+
+2. Register-log - bits are as follows 
+
+  31          flag to indicate that psr-has-been-updated.
+  30          S
+  29          PS
+  28          ET 
+  27:24       PIL
+  23:20       CWP (4-bits)
+  19          wim-updated
+  18          tbr-updated
+  17          y-updated
+  16          GPR-updated
+  15          0
+  14          0
+  13          double-word GPR update
+  12:8        write-register-id
+  7:0         register signature  calculated as xor of
+                all written bytes from GPR, WIM, TBR, Y
+
+3. Fp-reg log - bits are as follows
+
+   31 write-fpreg-from-fp
+   30 write-fpreg-from-ccu
+   29 write-fsr-from-fp
+   28 write-fsr-from-ccu
+   27 write-fsr
+   26 write-ftt
+   25 write-fcc
+   24 write-h-gpr
+   23:21
+       unused
+   20:16
+       write-reg-id
+   15:8
+       written-fsr-signature
+   7:0 
+       written-gpr-signature
+
+4. Store log - bits are as follows
+
+  returns 32-bit signature for store, based on supplied info.
+  bits are as follows
+  31          store-is-completed
+  30          double-word-store
+  29:24       asi (6 bits used).
+  23:16       byte-mask
+  15:8        address-signature
+               xor of all bytes in address.
+  7:0         data-signature
+                xor of all bytes written.
+
+
