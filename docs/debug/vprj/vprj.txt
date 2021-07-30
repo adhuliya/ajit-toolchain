@@ -1,0 +1,42 @@
+
+
+Overview
+	We can use this script to multiple tests at once. It takes a .vprj file as input. 
+	We need to write a vprj for each test, then, invoking this script would execute all examples.
+
+Writing a .vprj file -
+
+	1. SOURCES   - The source files required for compilation. 
+	2. INCLUDES  - Files required to be included during compilation.
+	3. DEFINES
+	4. RESULTS   - Expected output (refer to docs/debug/post_condition_check/)
+	5. CORES     - No of cores required for Cmodel.
+	6. THREADS   - No of threads required for Cmodel.
+	7. VERSION   - No of version required for Cmodel.
+
+Command to be givem -
+
+                validation_outer_env_v4.py [OPTIONS] [-t TIMEOUT_IN_SECONDS] [-j JOBS_TO_RUN_IN_PARALLEL] [-E EXECCUTABLE_PATH] PATHS...
+     
+        OPTIONS
+             -p: uses remmaped file while running C model, requires vmap.txt in same directory as vprj file
+
+             -L: uses linkerscript present in same directory as vprj file, requires it to be named as Linkerscript.lnk 
+
+             -l : Generate a log of register writes
+                  The files are generated in trace_files/ folder
+                   with extension .C_trace for C model and .Aa_trace for Aa model
+
+             -s : Run in single-stepping mode
+                    Relevant only for Aa/VHDL/FPGA model.
+
+             -T : Generate a detailed trace of activity for each instruction 
+                   The trace file is generated in trace_files/ folder
+                    with extension .long_trace
+                   (CAUTION : A trace file can get very large)
+
+        CLEANUP:
+             validation_outer_env_v3.py -c PATHS...
+                   cleans up the compiled/ log/ and trace_files/ 
+                   folders recursively from PATH
+

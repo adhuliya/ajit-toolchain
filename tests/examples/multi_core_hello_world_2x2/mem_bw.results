@@ -18,3 +18,4 @@ asr15=0xd core 0 thread 0
 asr15=0xd core 0 thread 1
 asr15=0xd core 1 thread 0
 asr15=0xd core 1 thread 1
+asr29=0x50520000 core 0 thread 0

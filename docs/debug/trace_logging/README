@@ -1,0 +1,3 @@
+Trace logging
+	using C model
+	using HW trace logger (on FPGA, via ajit_debug_monitor)

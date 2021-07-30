@@ -19,10 +19,6 @@ _start:
 	wr %l0, %psr
 
 
-	set PT_FLAG, %l6
-	mov 0, %l7
-	st %l7, [%l6]
-
 WIMSET:
 	set 0x2, %l0		! window 1 is marked invalid... 
 	wr %l0, 0x0, %wim	!
@@ -32,10 +28,12 @@ WIMSET:
 	wr	%l0, 0x0, %tbr
 
 STACKSETUP:
+	
+	! core, thread ids.
+	rd %asr29, %l1
 
 	! set up stack pointers.
-	mov 0x0, %l2
-	rd %asr29, %l1
+	set 0x50520000, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP1
@@ -55,13 +53,13 @@ STACKSETUP:
 
 	set PT_FLAG, %l6
 	mov 1, %l7
-	st %l7, [%l6]
+	sta %l7, [%l6] 0x20
 
 	ba AFTER_PTABLE_SETUP
 	nop
 !---------------------  Core-1,2,3 region --------------------------------
 SP1:
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP2
@@ -77,7 +75,7 @@ SP1:
 
 !---------------------  Core-2,3 region --------------------------------
 SP2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz SP3
@@ -93,8 +91,12 @@ SP2:
 
 SP3:
 !---------------------  Core-3 region --------------------------------
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
+
+	! if we get here  and are  not in core 3 we have a problem.
+	bnz HALT
+	nop
 
 	bnz AFTER_PTABLE_SETUP
 	nop
@@ -109,7 +111,7 @@ SP3:
 AFTER_PTABLE_SETUP:
 
 	set PT_FLAG, %l6
-	ld [%l6], %l7 
+	lda [%l6] 0x20, %l7 
 
 	mov 0x1, %i0
 	subcc %i0, %l7,  %g0
@@ -128,8 +130,7 @@ AFTER_PTABLE_SETUP:
 	set 0x1, %o0
 	sta %o0, [%g0] 0x4    
 
-	rd %asr29, %l1
-	mov 0x0, %l2
+	set 0x50520000, %l2
 	subcc %l1, %l2, %g0
 
 	bnz CORE1
@@ -145,7 +146,7 @@ AFTER_PTABLE_SETUP:
 !---------------------  Core-1,2,3 region --------------------------------
 CORE1: 
 
-	mov 0x1, %l2
+	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE2
@@ -159,7 +160,7 @@ CORE1:
 
 !---------------------  Core-1,2,3 region --------------------------------
 CORE2:
-	mov 0x2, %l2
+	set 0x50520200, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  CORE3
@@ -172,7 +173,7 @@ CORE2:
 
 CORE3:
 !---------------------  Core-1,2,3 region --------------------------------
-	mov 0x3, %l2
+	set 0x50520300, %l2
 	subcc %l1, %l2, %g0
 
 	bnz  HALT
@@ -198,7 +199,7 @@ acquire_lock :
 	mov 0x1, %o1
 	! Atomic read of LOCK_FLAG,
 	!  with LOCK_FLAG being swapped with 0x1
-	swap [%o0], %o1
+	swapa [%o0] 0x20, %o1
 	tst %o1
 	! If read-value of LOCK_FLAG is 0,
 	!   then lock has been acquired.
@@ -207,7 +208,7 @@ acquire_lock :
 spin_on_lock:
 	! lock not acquired.. spin until
 	! LOCK_FLAG becomes 0..	
-	ld [%o0], %o1
+	lda [%o0] 0x20, %o1
 	tst %o1
 	bne spin_on_lock
 	nop
@@ -219,10 +220,11 @@ lock_acquired:
 .global release_lock
 release_lock:
 	set LOCK_FLAG, %o0
-	st %g0, [%o0]
+	sta %g0, [%o0] 0x20
 	retl
 	nop
 
+! initialized to 0
 .align 4
       PT_FLAG: .word 0x0
 .align 4

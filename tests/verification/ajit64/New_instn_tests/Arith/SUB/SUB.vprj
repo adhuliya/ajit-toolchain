@@ -1,6 +1,6 @@
 SOURCES = SUB.s
 
-
+VERSION = 64
 
 RESULTS = 
 g1=0x00000080

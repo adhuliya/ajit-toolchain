@@ -1,0 +1,15 @@
+# yaml configuration file for linker/loader of Co-RTOS
+# yaml 10 minutes tutorial:
+#   https://www.youtube.com/watch?v=cdLNKUoMc6c
+
+Cores: 1
+ThreadsPerCore: 1
+
+ProgramThreads:
+  - CortosCallSeq:
+      - main
+    CortosLoop: False
+    StackSizeInBytes: 8192
+
+TotalMemoryInKB: 102400
+# AddBget: True

@@ -112,7 +112,7 @@ DEFINE_THREAD_WITH_ARG(checkErrorStateAndExit, cs);
 void print_usage(char* app_name)
 {
 	fprintf(stderr, "USAGE: ");
-	fprintf(stderr, "   %s ...options...\n");
+	fprintf(stderr, "   %s ...options...\n", app_name);
 	fprintf(stderr, "OPTIONS: ");
 	fprintf(stderr, "   -n <number-of-cores>     : specifies number-of-cores in the processor for this test.\n");
 	fprintf(stderr, "                 : default is 1, maximum is 4.\n");
@@ -527,8 +527,6 @@ int main(int argc, char **argv)
 			enableThreadHardwareServers(core_state_vector[COREID], gdb_flag, doval_flag);
 		}
 
-		// start the core threads now.
-		startCoreThreads(core_state_vector[COREID]);
 	}
 
 	//peripherals
@@ -587,6 +585,14 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+
+	// Start the core threads!
+	for(COREID = 0; COREID < NCOREs; COREID++)
+	{
+		// start the core threads after monitor logger etc has been started.
+		startCoreThreads(core_state_vector[COREID]);
+	}
+
 
 	// bring the CORE's out of reset
 	writeSpecifiedResetValueToAllThreads(NCOREs, NTHREADs, 0);

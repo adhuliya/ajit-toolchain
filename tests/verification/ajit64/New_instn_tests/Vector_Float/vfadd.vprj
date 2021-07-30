@@ -1,5 +1,6 @@
 SOURCES = vfadd.s
 
+VERSION = 64
 
 RESULTS = 
 
