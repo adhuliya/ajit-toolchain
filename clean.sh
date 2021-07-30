@@ -28,10 +28,7 @@ rm -Rf build/;
 rm -Rf docker_build.log;
 rm -Rf build.log;
 
-cd $AJIT_CMODEL_DIR;
-./clean.sh;
-
-cd $AJIT_TOOLS_DIR;
+cd $AJIT_PROJECT_HOME;
 ./clean.sh;
 
 cd $AJIT_TESTS_DIR;

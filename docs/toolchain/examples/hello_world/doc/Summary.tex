@@ -1,0 +1,90 @@
+\documentclass{beamer}
+\usepackage{graphics}
+\title{The ``hello\_world'' example}
+\author{Madhav Desai \\ Department of Electrical Engg.\\ IIT Powai\\ Mumbai 400076}
+
+\begin{document}
+\maketitle
+
+\frame[containsverbatim]{\frametitle{Overview}
+
+\begin{itemize}
+\item Print ``hello\_world'' and stop.
+\item Single core version.
+\begin{itemize}
+\item Without MMU.
+\item With MMU.
+\end{itemize}
+\item Multi  core version.
+\begin{itemize}
+\item With MMU.
+\end{itemize}
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Blank slide: initialization of a processor core}
+}
+
+
+\frame[containsverbatim]{\frametitle{Single core version: setting up the run-time environment without using the MMU}
+
+\begin{itemize}
+\item Set up the stack and frame pointers.
+\begin{itemize}
+\item We use virtual addresses from $0xffff3000$ onwards for memory mapped I/O.
+\item Set the initial stack and frame pointers at 0xffff2ffc since we are not passing
+anything to the main program in this example.
+\item In general, you can set up the initial stack pointer and frame pointer to
+define a stack frame which can be used to pass arguments to your main program.
+\end{itemize}
+\item Set the processor state register (PSR) to enable interrupts.
+\item Set the window invalid mask register to reserve one window for the trap
+handler.
+\item Set the default cacheable bit in the MMU control register.
+\begin{itemize}
+\item This marks all accesses as cacheable (other than the bypass ASI accesses).
+\end{itemize}
+\end{itemize}
+}
+
+\frame[containsverbatim]{\frametitle{Blank Slide}
+}
+
+\frame[containsverbatim]{\frametitle{Single core version: setting up the run-time environment using the MMU}
+
+\begin{itemize}
+\item Same procedure as before, except for changes related to virtual to physical mapping.
+\item Write a VMAP file.
+\begin{itemize}
+\item The script generates an assembly subroutine which sets up the page table in memory.
+\end{itemize}
+\item Call the page table setup assembly subroutine and set the context table pointer.
+\item Enable the MMU.
+\item Run with full protection.
+\end{itemize}
+}
+
+\frame[containsverbatim]{\frametitle{Blank Slide}
+}
+
+\frame[containsverbatim]{\frametitle{Multi core version: setting up the run-time environment using the MMU}
+
+\begin{itemize}
+\item Set up the stack and frame pointers for each core.
+\item Set the processor state register (PSR)  in each core, to enable interrupts.
+\item Set the window invalid mask register in each core, to reserve one window for the trap
+handler.
+\item Write a VMAP file.
+\item Call the page table setup assembly subroutine and set the context table pointer.
+\item Enable the MMU.
+\item Set up locks.
+\item Run.
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Blank Slide}
+}
+
+\end{document}
