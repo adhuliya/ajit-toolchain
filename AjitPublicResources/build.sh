@@ -32,3 +32,4 @@ echo "build tools/ajit_debug_monitor"
 cd tools/ajit_debug_monitor
 scons
 cd $CWD
+
