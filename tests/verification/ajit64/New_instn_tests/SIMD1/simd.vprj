@@ -1,6 +1,6 @@
 SOURCES = simd.s 
 
-
+VERSION = 64
 
 
 RESULTS = 
