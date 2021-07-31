@@ -4,13 +4,11 @@ Cores: 1
 ThreadsPerCore: 2
 
 ProgramThreads:
-  - CortosCallSeq:
+  - CortosInitCalls:
       - ajit_entry_func_001
-    CortosLoop: False
     StackSizeInBytes: 8192
-  - CortosCallSeq:
+  - CortosInitCalls:
       - ajit_entry_func_010
-    CortosLoop: False
     StackSizeInBytes: 8192
 
 TotalMemoryInKB: 102400

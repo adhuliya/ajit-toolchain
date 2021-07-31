@@ -6,9 +6,8 @@ Cores: 1
 ThreadsPerCore: 1
 
 ProgramThreads:
-  - CortosCallSeq:
+  - CortosInitCalls:
       - main
-    CortosLoop: False
     StackSizeInBytes: 8192
 
 TotalMemoryInKB: 102400
