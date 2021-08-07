@@ -12,9 +12,9 @@ PT=$AJIT_MINIMAL_PRINTF_TIMER
 #   trap handlers
 TRAP_HANDLERS=$AAR/asm/trap_handlers.s
 # compile sources.
-SRCS=" -c bugCheck/main.c -s init.s -s $MUTEXES -s $TRAP_HANDLERS -C $AAR/src -C $PT/src"
+SRCS=" -c main.c -s init.s -s $MUTEXES -s $TRAP_HANDLERS -C $AAR/src -C $PT/src"
 # compile includes.
 INCLUDES="-I ./ -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
 # compile the application.
-compileToSparcUclibc.py -g -V bugCheck/VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk 
+compileToSparcUclibc.py -g -V VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk 
 
