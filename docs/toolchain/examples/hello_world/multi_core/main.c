@@ -4,8 +4,8 @@
 #include "core_portme.h"
 
 int lock_address = 0x80000;
-void acquire_mutex_using_swap(lock_address);
-void release_mutex_using_swap(lock_address);
+void acquire_mutex_using_swap(int lock_address);
+void release_mutex_using_swap(int lock_address);
 
 
 void enable_serial()

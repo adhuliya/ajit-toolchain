@@ -56,7 +56,8 @@ STACKSETUP:
 	call enable_serial
 	nop
 
-	! clear the mutex.
+	! clear the mutex.. physically located at 0xd000
+	!	This is to be marked non-cacheable...
 	set 0xd000, %l0
 	st %g0, [%l0]
 
@@ -64,6 +65,8 @@ STACKSETUP:
 	ba AFTER_PTABLE_SETUP
 	nop
 SP1:
+	! All threads except (0,0) reach here..
+
 	! hand off to thread (0,1) 
 	set 0x50520001, %l2
 	subcc %l1, %l2, %g0
@@ -80,7 +83,9 @@ SP1:
 	nop
 
 SP2:
-	! hand off to thread (0,1) 
+	! All threads except (0,0) and (0,1) reach here.
+
+	! hand off to thread (1,0) 
 	set 0x50520100, %l2
 	subcc %l1, %l2, %g0
 
@@ -118,7 +123,7 @@ SP3:
 AFTER_PTABLE_SETUP:
 
 
-	!  threads (0,0) and (0,1) come here, and check if PT_FLAG is set.
+	!  threads (0,0) and (1,0) come here, and check if PT_FLAG is set.
 	set PT_FLAG, %l6
 	ld [%l6], %l7 
 
