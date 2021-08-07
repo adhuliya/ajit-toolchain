@@ -103,10 +103,7 @@ void cpuDcacheAccess (MmuState* ms,
 					addr, asi, &is_raw_hit,  &acc);
 			int access_ok = accessPermissionsOk(request_type, asi, acc);
 
-			is_hit = is_raw_hit &&
-					(lock_mask == 0) &&  // note: locked access must go to 
-								// next level of mem hierarchy.
-					access_ok;
+			is_hit = is_raw_hit && access_ok;
 
 			if(is_hit)
 			{

@@ -19,4 +19,4 @@
 !  for mutex...
 !  for context 0, map 4KB virtual page at base 0x44000 to 4KB non-cacheable
 !  physical page at base 0xd000.   User and Supervisor have rwx access.
-0x0          0x44000        0xd000     0x3    0x0           0x3
+0x0          0x80000        0xd000     0x3    0x0           0x3

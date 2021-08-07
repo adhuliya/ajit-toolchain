@@ -9,7 +9,7 @@
 #
 # Brief Description:
 #   The script walks the directory tree starting from the
-#   working-directory = ./, and collects all *.hsys file
+#   working-directory = ./, and collects all *.hsys files
 #   
 #   It then creates a components package for the specified
 #   libraries by using hierSysGenVhdlComp... from AHIR
