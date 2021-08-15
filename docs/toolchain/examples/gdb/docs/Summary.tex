@@ -1,0 +1,85 @@
+\documentclass{beamer}
+\usepackage{graphics}
+\title{Using GDB to debug The ``hello\_world'' example}
+\author{Madhav Desai \\ Department of Electrical Engg.\\ IIT Powai\\ Mumbai 400076}
+
+\begin{document}
+\maketitle
+
+\frame[containsverbatim]{\frametitle{Recall the hello world example}
+
+\begin{itemize}
+\item Print ``hello\_world'' and stop.
+\item Single core version (with MMU).
+\item Multi  core version (with MMU).
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Blank slide: GDB mechanism to debug a single AJIT thread}
+}
+
+
+\frame[containsverbatim]{\frametitle{Single thread debug}
+
+\begin{itemize}
+\item In shell 1, start the GDB client:
+\begin{verbatim}
+%  sparc-linux-gdb hello_world.elf
+\end{verbatim}
+\item In shell 2, start the C model:
+\begin{verbatim}
+%  ajit_C_system_model -m hello_world.mmap.remapped -g -p 8888
+\end{verbatim}
+\item Go back to shell 1, and specify the target server.
+\begin{verbatim}
+(gdb) target remote:8888
+Remote debugging using :8888
+0x00000000 in _start ()
+(gdb) 
+\end{verbatim}
+You will see that the gdb client will stop at the 
+\begin{verbatim}
+ _start 
+\end{verbatim}
+routine.
+\item Now in shell 2, you can control the execution of the
+program using GDB.
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Blank slide: GDB mechanism to simultaneously debug a multiple AJIT thread}
+}
+
+\frame[containsverbatim]{\frametitle{Multi thread debug for 4 threads (0,0), (0,1), (1,0), (1,1)}
+
+\begin{itemize}
+\item In shells 1,2,3,4 start GDB clients:
+\begin{verbatim}
+prompt>  sparc-linux-gdb hello_world.elf
+\end{verbatim}
+\item In shell 5, start the C model:
+\begin{verbatim}
+prompt>  ajit_C_system_model -m hello_world.mmap.remapped -g -p 8888 -p 8889 -p 8890 -p 8891
+\end{verbatim}
+This assigns port 8888 to GDB session for (0,0), port 8889 for (0,1), port 8890 for (1,0) and
+port 8891 for (1,1).
+\item Go back to shells 1,2,3,4 and specify the target server.
+\begin{verbatim}
+(gdb) target remote:8888
+\end{verbatim}
+etc. Remember to put the port numbers for the GDB clients (in shell 1, use port 8888, in shell 2,
+use 8889 etc.).
+You will see that the gdb client will stop at the 
+\begin{verbatim}
+ _start 
+\end{verbatim}
+routine in each of the shells 1-4.
+\item Now in shells 1-4, you can control the execution of the
+program using GDB on thread (0,0), (0,1), (1,0) and (1,1).
+\end{itemize}
+
+}
+
+\end{document}

@@ -25,7 +25,7 @@
 #include "pipeHandler.h"
 
 
-#include "Ajit_Hardware_Configuration.h"
+#include "default_peripheral_device_addresses.h"
 #include "Ancillary.h"
 #include "ThreadInterface.h"
 #include "ThreadLogging.h"
@@ -413,10 +413,10 @@ int main(int argc, char **argv)
 	{
 		// defaults.
 		addMem ("lowermem", 0x3, 0x0, 0xFFFF2FFF);	 // lower mem program + data.
-		addPeripheral("irc", 0xFFFF3000, 0xFFFF3008);	 // interrupt controller.
-		addPeripheral("timer", 0xFFFF3100, 0xFFFF3108);	 // timer
-		addPeripheral("serial", 0xFFFF3200, 0xFFFF32FF); // serial
-		addMem ("uppermem", 0x3, 0xFFFF3300, 0xFFFFFFFF);// upper mem (for stack).	
+		addPeripheral("irc", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
+		addPeripheral("timer", ADDR_TIMER_MIN, ADDR_TIMER_MAX);	 // timer
+		addPeripheral("serial", ADDR_SERIAL_MIN, ADDR_SERIAL_MAX); // serial
+		addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
 	}
 
 

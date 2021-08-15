@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
-#include "Ajit_Hardware_Configuration.h"
+#include "default_peripheral_device_addresses.h"
 #include "Pipes.h"
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"

@@ -70,6 +70,8 @@ export PATH=$AJIT_DEV_TREE_COMPILER_DIR:$PATH;
 export PATH=$AJIT_DEV_TREE_COMPILER_DIR/scripts:$PATH;
 # ajit_debug_monitor path
 export PATH=$AJIT_DEBUG_MONITOR_DIR/bin:$PATH
+# ajit_debug_monitor_mt path
+export PATH=$AJIT_DEBUG_MONITOR_MT_DIR/bin:$PATH
 
 # to test ajit cortos: Author Anshuman Dhuliya
 #export PATH=/home/codeman/downloads-thinkpad/sparcv8-ajit-git/src/cortos:$PATH
@@ -124,6 +126,7 @@ export AJIT_LIBGCC_INSTALL_DIR=$AJIT_BUILDROOT_HOST_DIR/usr/lib/gcc/sparc-buildr
 
 export AJIT_UCLIBC_HEADERS=$AJIT_BUILDROOT_DIR/output/build/host-binutils-2.22/include;
 export AJIT_ACCESS_ROUTINES=$AJIT_TOOLS_DIR/ajit_access_routines;
+export AJIT_ACCESS_ROUTINES_MT=$AJIT_TOOLS_DIR/ajit_access_routines_mt;
 export AJIT_MINIMAL_PRINTF_TIMER=$AJIT_TOOLS_DIR/minimal_printf_timer; 
 export AJIT_FLASH_IMAGE_DIR=$AJIT_TOOLS_DIR/flash_image;
 
