@@ -36,6 +36,7 @@ void cortos_entry_func_101() {
   while(arr==0);
   *i0 = arr[0];
   *i1 = arr[19];
+  cortos_brel(arr);
   CORTOS_TRACE("Thread 0,1 finished!");
   cortos_exit(0); // safely exit
 }

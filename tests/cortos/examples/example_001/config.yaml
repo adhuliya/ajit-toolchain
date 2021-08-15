@@ -14,4 +14,4 @@ TotalMemoryInKB: 102400
 # AddBget: True
 
 # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-LogLevel: NONE
+LogLevel: INFO

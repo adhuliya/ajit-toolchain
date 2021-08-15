@@ -9,6 +9,10 @@
 #   For testing: time, parallel
 #   Others: libncurses5-dev, gedit
 #   For deviceTreeCompiler: bison, flex
+
+# add repo for python3.6
+  sudo add-apt-repository ppa:deadsnakes/ppa \
+&& \
   apt-get update \
 && \
   apt-get -y install --no-install-recommends \
@@ -42,10 +46,13 @@
     flex \
     libreadline-dev \
     gedit \
+    python3.6 \
 && \
   apt-get -y autoremove \
 && \
   apt-get clean \
+&& \
+  $(curl https://bootstrap.pypa.io/get-pip.py | sudo python3.6) \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
