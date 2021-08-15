@@ -7,7 +7,7 @@
  */
 
 #include<math.h>
-#include "ajit_cortos.h"
+#include "cortos.h"
 
 #define MAX_LIMIT 1000
 
@@ -17,29 +17,31 @@ int *i1 = SHARED_INT_ADDR_1;
 
 void main() {} // important, but keep empty.
 
-void ajit_cortos_entry_func_001() {
+void cortos_entry_func_001() {
   int i;
   for (i = 0; i < MAX_LIMIT; ++i) {
-    ajit_lock_acquire_buzy(0);
+    cortos_lock_acquire_buzy(0);
     *i0 += 1;
-    ajit_lock_release(0);
+    cortos_lock_release(0);
   }
+  cortos_exit(0); // safely exit
 }
 
-void ajit_cortos_entry_func_010() {
+void cortos_entry_func_010() {
   return;
 }
 
-void ajit_cortos_entry_func_101() {
+void cortos_entry_func_101() {
   int i;
   for (i = 0; i < MAX_LIMIT; ++i) {
-    ajit_lock_acquire_buzy(0);
+    cortos_lock_acquire_buzy(0);
     *i0 += 1;
-    ajit_lock_release(0);
+    cortos_lock_release(0);
   }
+  cortos_exit(0); // safely exit
 }
 
-void ajit_cortos_entry_func_110() {
+void cortos_entry_func_110() {
   // b = (int)cos(0);
 }
 
