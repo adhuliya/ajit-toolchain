@@ -34,6 +34,7 @@
     vim-tiny \
     python \
     python3 \
+    python3-pip \
     scons \
     openjdk-8-jre-headless \
     time \
@@ -43,23 +44,12 @@
     flex \
     libreadline-dev \
     gedit \
-    software-properties-common \
-&& \
-  add-apt-repository ppa:deadsnakes/ppa \
-&& \
-  apt-get update \
-&& \
-  apt-get -y install python3.6 \
 && \
   apt-get -y autoremove \
 && \
   apt-get clean \
 && \
-  wget https://bootstrap.pypa.io/get-pip.py \
-&& \
-  python3.6 get-pip.py \
-&& \
-  pip install pyelftools \
+  pip install --no-cache-dir pyelftools \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
