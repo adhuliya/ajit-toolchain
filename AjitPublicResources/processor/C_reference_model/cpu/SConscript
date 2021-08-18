@@ -27,7 +27,7 @@ GNU_PTH_UTILS = AHIR_RELEASE + "/include"
 FUNCTIONLIB_PATH = AHIR_RELEASE + "/functionLibrary/lib"
 FUNCTIONLIB_INCLUDE=AHIR_RELEASE + "/functionLibrary/include"
 env.Append(CPPPATH = FUNCTIONLIB_INCLUDE + ":" + PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:")
-print "COMPILATION FLAGS = ", COMPILATION_FLAGS
+print("COMPILATION FLAGS = ", COMPILATION_FLAGS)
 
 # create a library for the cpu :
 #env.SharedLibrary('./lib/libCpu', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS+' -DDO_VAL  -DGDB' )

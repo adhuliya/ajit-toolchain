@@ -10,15 +10,15 @@ if [[ $DIR != "`pwd`" ]]; then
   exit;  # if not then exit
 fi
 
-_NAME="ajit_build_dev";
-_HOST_MOUNT_DIR="$(dirname $(dirname $(pwd)))"; # i.e. the whole ajit-toolchain git repo
+_NAME="ajit_build_dev_20.04";
+_HOST_MOUNT_DIR="$(dirname $(dirname $(dirname $(pwd))))"; # i.e. the whole ajit-toolchain git repo
 _CONT_MOUNT_POINT="/home/ajit/ajit-toolchain";
 
 
 if [[ $1 != "" ]]; then _TAG="$1"; else _TAG="1.0"; fi
 
 
-chown -R $USER:docker ../..; # change the group owner
+chown -R $USER:docker ../../../..; # change the group owner
 
 
 _IMG_NAME="$_NAME:$_TAG";

@@ -9,13 +9,14 @@
 
 # After running the docker image read: `/home/ajit/README.md`
 # see ./docker/ajit_base/Dockerfile
-FROM ajit_base:1.0
+FROM ajit_base_20.04:1.0
 
 ARG uid
 ARG gid
 ARG user
 ARG group
 
+RUN ln -s /usr/bin/python3 /usr/bin/python3.6
 RUN groupadd -g ${gid} ${group}
 RUN cat /etc/group
 RUN useradd -u ${uid} -g ${gid} -m -d /home/ajit -s /bin/bash ${user}

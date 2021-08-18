@@ -59,7 +59,7 @@
 && \
   python3.6 get-pip.py \
 && \
-  pip install pyelftools \
+  pip install --no-cache-dir pyelftools pyyaml \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

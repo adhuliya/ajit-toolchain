@@ -13,7 +13,7 @@ fi
 if [[ $1 != "" ]]; then _TAG="$1"; else _TAG="1.0"; fi
 
 
-_IMG_NAME="ajit_build_dev";
+_IMG_NAME="ajit_build_dev_20.04";
 _DOCKER_GROUP=docker;
 # get the gid of the docker group on the host system
 _DOCKER_GID=$(getent group $_DOCKER_GROUP | awk -F: '{printf "%d", $3}');

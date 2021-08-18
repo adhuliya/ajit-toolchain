@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # execute or source this file
 
-_IMG_NAME="ajit_build_dev";
+_IMG_NAME="ajit_build_dev_20.04";
 _AJIT_HOME="/home/ajit/ajit-toolchain";
 
 # Attach shell as a normal user:

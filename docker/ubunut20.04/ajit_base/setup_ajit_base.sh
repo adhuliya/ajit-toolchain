@@ -49,7 +49,7 @@
 && \
   apt-get clean \
 && \
-  pip install --no-cache-dir pyelftools \
+  pip install --no-cache-dir pyelftools pyyaml \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
