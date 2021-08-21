@@ -37,6 +37,7 @@ def prepareBuildDir(
   """Prepares a build directory for the initial build of a program."""
   # STEP 1: create the build directory
   util.createDir(confObj.buildDir)
+  util.createDir(confObj.cortosSrcDir)
 
   # STEP 2: copy necessary files
   copyBuildFiles(confObj)
@@ -49,20 +50,25 @@ def copyBuildFiles(
   cwd = os.getcwd()
   os.chdir(confObj.buildDir)
 
-  # STEP 2: Copy files
+  # STEP 2: Copy files that the user is directly interested in.
   cpy.copyProjectFiles(confObj)
-
   cpy.copyInitFile(confObj)
   cpy.copyTrapFile(confObj)
+  cpy.copyCortosHeaderFile(confObj)
+  cpy.copyResultsFile(confObj)
+  cpy.copyBuildshFile(confObj)
+  cpy.copyCleanshFile(confObj)
+  cpy.copyRunCModelFile(confObj)
+
+  # STEP 3: Copy files that the user might not need to look into.
+  os.chdir(confObj.cortosSrcDir)
+
   cpy.copyPageTableFile(confObj)
   cpy.copyVmapFile(confObj)
   cpy.copyLinkerScriptFile(confObj)
-  cpy.copyBuildshFile(confObj)
-  cpy.copyRunCModelFile(confObj)
-  cpy.copyResultsFile(confObj)
+  cpy.copyCortosInternalHeaderFile(confObj)
 
   # copy cortos library support
-  cpy.copyCortosHeaderFile(confObj)
   cpy.copyCortosAsmFile(confObj)
   cpy.copyCortosCFile(confObj)
   cpy.copyCortosPrintfFile(confObj)
@@ -70,7 +76,6 @@ def copyBuildFiles(
   cpy.copyLockFiles(confObj)
   if confObj.addBget:
     cpy.copyCortosBgetFiles(confObj)
-  # cpy.copyQueueFiles(prog, confObj, init)
 
   # STEP 3: return back to the previous directory
   os.chdir(cwd)

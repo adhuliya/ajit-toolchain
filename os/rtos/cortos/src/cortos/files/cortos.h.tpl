@@ -1,24 +1,55 @@
-% qHdrs = confObj.reservedMem.cortosQueueHeaders
-% qQ = confObj.reservedMem.cortosQueues
+
+// NOTE:
+// All symbols for cortos' internal use are prefixed with `__`,
+// and can be mostly found in `cortos_internal.h` header file.
 
 #ifndef CORTOS_H
 #define CORTOS_H
 
 ////////////////////////////////////////////////////////////////////////////////
+// BLOCK START: cortos_global_constants
+////////////////////////////////////////////////////////////////////////////////
+
+// Maximum synchronization vars available to the user.
+#define MAX_SYNC_VARS TODO
+
+// Maximum queues available to the user.
+#define MAX_QUEUES TODO
+
+// Total heap space available in bytes.
+#define TOTAL_HEAP_SPACE_IN_BYTES TODO
+
+// Total scratch space in bytes.
+#define TOTAL_SCRATCH_SPACE_IN_BYTES TODO
+
+// For current logging level see the logging declarations ahead.
+
+////////////////////////////////////////////////////////////////////////////////
+// BLOCK END  : cortos_global_constants
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_locking_declarations
 ////////////////////////////////////////////////////////////////////////////////
+
+// Usage Note:
+// cortos_lock_acquire_buzy(<index: an-integer-index>);
+//   CRITICAL_SECTION_CODE...
+// cortos_lock_release(<index: an-integer-index>);
+// ----or-------or--------
+// status = cortos_lock_acquire(<index: an-integer-index>);
+// if (status == 1) {
+//   CRITICAL_SECTION_CODE...
+//   cortos_lock_release(<index: an-integer-index>);
+// }
+
+// NOTE: Use the same index to synchronize two or more threads.
 
 int cortos_lock_acquire_buzy(int index);
 int cortos_lock_acquire(int index);
 void cortos_lock_release(int index);
-
-// Only for AjitCoRTOS internal use (reserved: hence `_res_` in name.)
-int cortos_res_lock_acquire_buzy(int index);
-int cortos_res_lock_acquire(int index);
-void cortos_res_lock_release(int index);
-
-#define RES_LOCK_INDEX_BGET 0
-#define RES_LOCK_INDEX_PRINTF 1
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_locking_declarations
@@ -29,6 +60,7 @@ void cortos_res_lock_release(int index);
 // BLOCK START: cortos_message_queues_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
+// A cortos' queue message.
 typedef union _CortosMessage32Bytes {
   char charArr[32];
   int intArr[8];
@@ -71,53 +103,18 @@ typedef struct _CortosQueueHeader {
 } CortosQueueHeader;
 
 /*
-Sends a CortosMessage.
+Write a CortosMessage.
   - Returns zero if the queue is full.
   - Returns non-zero if the msg was added.
 */
 int writeCortosMessage(int queueId, CortosMessage *msg);
 
 /*
-Gets a CortosMessage.
+Read a CortosMessage.
   - Returns zero if the queue is empty.
   - Returns non-zero if the msg was put into the *msg location.
 */
 int readCortosMessage(int queueId, CortosMessage *msg);
-
-
-int cortos_q_lock_acquire_buzy(int index);
-int cortos_q_lock_acquire(int index);
-void cortos_q_lock_release(int index);
-
-
-#define Q_START_INDEX 0
-#define AJIT_Q_BASE {{qQ.startAddr}}
-#define AJIT_Q_LEN {{cortosQueueLength}}
-#define AJIT_Q_MSG_SIZE {{cortosQueueMsgSize}}
-
-#define AJIT_Q_HEADER_BASE {{qHdrs.startAddr}}
-#define AJIT_Q_HEADER_SIZE {{cortosQueueHeaderSize}}
-
-#define GET_MSG_ADDR(_BASE, _INDEX) \
-((_BASE) + ((_INDEX) * (AJIT_Q_MSG_SIZE)))
-
-#define INCREMENT_INDEX(_INDEX) \
-(((((_INDEX)+1) % AJIT_Q_LEN)) ? \
-((((_INDEX)+1) % AJIT_Q_LEN)) : Q_START_INDEX)
-
-/*
-This computes the base address of the queue with id `queueId`.
-*/
-#define GET_Q_ADDR(_Q_ID) \
-((AJIT_Q_BASE) + \
-((AJIT_Q_MSG_SIZE) * (AJIT_Q_LEN) * (_Q_ID)));
-
-/*
-This computes the base address of the queue header with id `queueId`.
-*/
-#define GET_Q_HEADER_ADDR(_Q_ID) \
-((AJIT_Q_HEADER_BASE) + \
-((AJIT_Q_HEADER_SIZE) * (_Q_ID)));
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_message_queues_declarations
@@ -131,14 +128,11 @@ This computes the base address of the queue header with id `queueId`.
 
 typedef long cortos_bufsize;
 
-// This function is called only once by AjitCoRTOS.
-void __cortos_bpool(void);
-
 // get/allocate a memory of `size` bytes
 // Note: Some internal space is wasted to make size align to 2^3 boundary.
 void *cortos_bget(cortos_bufsize size);
 
-// release/free an allocated memory
+// release/free an allocated memory chunk
 void cortos_brel(void *buf);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,40 +142,24 @@ void cortos_brel(void *buf);
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_shared_integers_addresses
-////////////////////////////////////////////////////////////////////////////////
-% count = 0
-% intVarsMemRegion = confObj.reservedMem.cortosSharedIntVars
-% for i in range(intVarsMemRegion.sizeInBytes):
-% if i % 4 == 0:
-% addr = intVarsMemRegion.startAddr + i
-#define SHARED_INT_ADDR_{{count}} {{hex(addr)}}  // Decimal: {{addr}}
-% count += 1
-% end
-% end
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_shared_integers_addresses
-////////////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_debug_routines
 ////////////////////////////////////////////////////////////////////////////////
 
-// exits after putting code into asr16.
+// Exit after putting error_code into asr16.
 // Any non-zero code is considered error.
-// Any error code >= 4096 is reserved for CoRTOS.
+// Any error code <= 255 is reserved for CoRTOS.
+// A user code may use 0 for successful exit,
+// or a value >=256 as an error exit code.
+// Cortos exit codes and their meaning:
+//      0       Successful Exit
+//      1       Error in init_00.s
 void cortos_exit(unsigned int error_code);
 
-// Enable serial device to use printf
-void cortos_enable_serial();
-
 // printf routine offered by Cortos
+// This needs the serial device to be enabled.
+// __cortos_enable_serial() enables the serial device and is
+// automatically called in init_00.s file.
 int cortos_printf(const char *fmt, ...);
-
-// specially defined for logging purposes
-int cortos_log_printf(const char *level, const char *fileName,
-  const char *funcName, int lineNum, const char *fmt, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_debug_routines
@@ -206,15 +184,32 @@ int cortos_log_printf(const char *level, const char *fileName,
 % for level in consts.LEVEL_ORDER:
 % if level.value >= confObj.logLevel.value:
 #define CORTOS_{{level.name}}(...) \
-cortos_log_printf("{{level.name}}", __FILE__, __func__, __LINE__, __VA_ARGS__);
+__cortos_log_printf("{{level.name}}", __FILE__, __func__, __LINE__, __VA_ARGS__);
 % else:
 #define CORTOS_{{level.name}}(...)     /*blank*/
 % end
 % end
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_logging_declarations
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// BLOCK START: cortos_scratch_pad_area
+////////////////////////////////////////////////////////////////////////////////
+% count = 0
+% intVarsMemRegion = confObj.reservedMem.cortosSharedIntVars
+% for i in range(intVarsMemRegion.sizeInBytes):
+% if i % 4 == 0:
+% addr = intVarsMemRegion.startAddr + i
+#define SHARED_INT_ADDR_{{count}} {{hex(addr)}}  // Decimal: {{addr}}
+% count += 1
+% end
+% end
+////////////////////////////////////////////////////////////////////////////////
+// BLOCK END  : cortos_scratch_pad_area
 ////////////////////////////////////////////////////////////////////////////////
 
 

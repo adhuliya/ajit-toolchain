@@ -38,7 +38,7 @@ CORTOS_SETUP_THREADS:
   st %l7, [%l6]
 
 % if confObj.enableSerial:
-  call cortos_enable_serial
+  call __cortos_enable_serial
   nop
 % end
 

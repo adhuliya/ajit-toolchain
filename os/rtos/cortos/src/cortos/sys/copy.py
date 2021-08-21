@@ -51,6 +51,20 @@ def copyCortosHeaderFile(
                          ))
 
 
+def copyCortosInternalHeaderFile(
+    confObj: config.UserConfig,
+) -> None:
+  with open(consts.CORTOS_INTERNAL_HEADER_FILE_NAME, "w") as f:
+    f.write(btl.template(f"{consts.CORTOS_INTERNAL_HEADER_FILE_NAME}",
+                         confObj=confObj,
+                         consts=consts,
+                         LogLevel=consts.LogLevel,
+                         cortosQueueLength=consts.DEFAULT_QUEUE_LEN,
+                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE,
+                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE,
+                         ))
+
+
 def copyCortosAsmFile(
     confObj: config.UserConfig,
 ) -> None:
@@ -119,6 +133,14 @@ def copyBuildshFile(
   with open(consts.FINAL_BUILD_SH_FILE_NAME, "w") as f:
     f.write(btl.template(f"build_sh/{consts.FINAL_BUILD_SH_FILE_NAME}",
                            confObj=confObj))
+
+
+def copyCleanshFile(
+    confObj: config.UserConfig,
+) -> None:
+  with open(consts.CLEAN_SH_FILE_NAME, "w") as f:
+    f.write(btl.template(f"build_sh/{consts.CLEAN_SH_FILE_NAME}",
+                         confObj=confObj))
 
 
 def copyRunCModelFile(confObj: config.UserConfig) -> None:

@@ -41,8 +41,8 @@ void cortos_entry_func_101() {
   i = 0;
   while(i < totalMsgs) {
     status = readCortosMessage(0, &msg2);
-    CORTOS_TRACE("Received Message %d", i+1);
     if (status) {
+      CORTOS_TRACE("Received Message %d", i+1);
       *i0 += msg2.intArr[0];
       ++i;
     }
