@@ -424,7 +424,7 @@ int main (int argc, char* argv[])
 	int n = 100;
 	if (argc > 1)
 		n = atoi(argv[1]);
-	run_dhrystone (n);
+	run_dhrystone (NDHRYSTONE_ITERS);
 	return(0);
 }
 #else
@@ -434,7 +434,7 @@ int  ajit_main (void)
 
 	// set cacheable bit in MMU.
 	store_word_mmureg(0x100,(uint32_t*) 0x0);
-	run_dhrystone (100000);
+	run_dhrystone (NDHRYSTONE_ITERS);
 
 	halt();
 	return 0;

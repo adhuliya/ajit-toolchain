@@ -12,7 +12,7 @@ int main ()
 	//
 	// in core_portme...
 	//
-	ee_printf("Hello World!\n");
+	ee_printf("Hello World! Hello Hello!\n");
 
 	return(0);
 }
