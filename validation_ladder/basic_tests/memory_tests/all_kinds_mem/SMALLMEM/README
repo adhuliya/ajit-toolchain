@@ -1,0 +1,11 @@
+A test which checks the following types of
+memory accesses using a simple march algorithm.
+	- to cacheable pages
+	- to non-cacheable pages
+	- bypasses.
+
+This is meant to be used with the 4MB VC709
+AJIT prototype board.
+	VMAP summary.
+		place text at 0x0, data start at 0x8000.
+

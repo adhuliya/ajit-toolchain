@@ -1,0 +1,16 @@
+A test which checks the following types of
+memory accesses using a simple march algorithm.
+	- to cacheable pages
+	- to non-cacheable pages
+	- bypasses.
+
+This setup is for the KC705 board which has
+16MB flash at 0x0, and 128MB DRAM at 0x40000000
+
+The compile script produces two memory maps, 
+and a bootstrap.bin  file.   To run off flash,
+write the bootstrap.bin file into flash and
+boot from pc=0x0, npc=0x4.  To run off DRAM write the
+all_kinds_mem.mmap.remapped to DRAM and
+start at pc=0x40000000, npc=0x40000004
+
