@@ -3,8 +3,10 @@
 //
 // These are mapped statically in the high memory region.
 //   We suggest that 0xffff0000 to 0xffffffff be used to map
-//   peripherals.
+//   peripherals for now.  That is 64KB.
 //
+#define ADDR_IO_MIN				0xFFFF0000
+#define ADDR_IO_MAX				0xFFFFFFFF
 
 
 

@@ -4,6 +4,7 @@ SOURCES = UDIV.s
 
 RESULTS = 
 g1 = 0x80
+g7 = 0x3
 i0 = 0xE0
 l2 = 0x00
 i1 = 0xE0

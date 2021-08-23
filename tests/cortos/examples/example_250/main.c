@@ -1,47 +1,58 @@
 #include<math.h>
-#include "ajit_cortos.h"
+#include "cortos.h"
 
 #define SIZE 80
 
 int *i0 = SHARED_INT_ADDR_0;
 int *i1 = SHARED_INT_ADDR_1;
 
-AjitMessage msg1;
-AjitMessage msg2;
+CortosMessage msg1;
+CortosMessage msg2;
 
 
 void main() {} // important, but keep empty.
 
-void ajit_cortos_entry_func_001() {
+void cortos_entry_func_001() {
   // allocate memory and write data
-  int *a = (int*)ajit_bget(sizeof(int) * 20);
+  CORTOS_DEBUG("Acquiring Memory!");
+  int *a = (int*)cortos_bget(sizeof(int) * 20);
   a[0] = 10;
   a[19] = 11;
 
-  // send ajit message
+  CORTOS_TRACE("This will not get logged.");
+
+  // send message
   msg1.a_code = 1;
   msg1.a_ptr = a;
-  writeAjitMessage(0, &msg1);
+  CORTOS_DEBUG("Sending Message!");
+  writeCortosMessage(0, &msg1);
+
+  cortos_exit(0); //safely exit
 }
 
-void ajit_cortos_entry_func_010() {
+void cortos_entry_func_010() {
   return;
 }
 
-void ajit_cortos_entry_func_101() {
+void cortos_entry_func_101() {
   // wait for a message
-  while(!readAjitMessage(0, &msg2));
+  while(!readCortosMessage(0, &msg2));
+
+  CORTOS_DEBUG("Received Message!");
 
   // process the message
   int *arr = (int*)msg2.a_ptr;
   *i0 = arr[0];
   *i1 = arr[19];
 
+  CORTOS_DEBUG("Releasing Memory!");
   // release the memory
-  ajit_brel(msg2.a_ptr);
+  cortos_brel(msg2.a_ptr);
+
+  cortos_exit(0); //safely exit
 }
 
-void ajit_cortos_entry_func_110() {
+void cortos_entry_func_110() {
   return;
 }
 

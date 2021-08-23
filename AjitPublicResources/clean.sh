@@ -20,7 +20,6 @@ cd -;
 
 echo "Cleaning: AJIT_PROJECT_HOME/processor/C_reference_model";
 cd ./processor/C_reference_model;
-echo "build processor/C_reference_model";
 scons -c;
 cd -;
 
@@ -38,4 +37,8 @@ echo "Cleaning: AJIT_PROJECT_HOME/tools/ajit_debug_monitor";
 cd ./tools/ajit_debug_monitor;
 scons -c;
 cd -;
+
+# remove the dblite files if any
+find -name .sconsign.dblite | xargs rm;
+
 

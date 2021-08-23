@@ -34,9 +34,8 @@ spin_on_swap_lock:
 	ba,a retry_mutex_using_swap
 	nop
 swap_lock_acquired:
+	ret
 	restore
-	retl
-	nop
 !
 ! single argument: %i0 contains the address
 ! of the mutex variable to be cleared.
@@ -45,8 +44,8 @@ swap_lock_acquired:
 release_mutex_using_swap:
 	save %sp, -96, %sp
 	st %g0, [%i0]
+	ret
 	restore
-	retl
 	nop
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -80,8 +79,8 @@ spin_on_ldstub_mutex:
 	ba,a retry_mutex_using_ldstub
 	nop
 ldstub_mutex_acquired:
+	ret
 	restore
-	retl
 	nop
 !
 ! has one argument assumed to be in %i0,
@@ -92,6 +91,6 @@ ldstub_mutex_acquired:
 release_mutex_using_ldstub:
 	save %sp, -96, %sp
 	stub %g0, [%i0]
+	ret
 	restore
-	retl
 	nop

@@ -28,10 +28,13 @@ _start:
 	nop	! writes to tbr may be delayed
 	nop
 	
+	mov 0x10, %g1
+
+	udiv %g1, 0x5, %g7
+
 	!Initialize g1. Upon a trap, g1 should be 
 	!overwritten by the trap number
 	mov 0xBAD, %g1
-
 
 	!======================================
 	! Perform instruction test and store

@@ -1,0 +1,8 @@
+An example in which 4-cores (1 thread each)  are simultaneously writing to
+a shared array.
+
+Use of the cpu-id (asr29) to differentiate the different cores in a 4-core processor.
+
+Note that cpu-0 will setup the page tables.  Each cpu will
+have a different initial stack pointer value.
+
