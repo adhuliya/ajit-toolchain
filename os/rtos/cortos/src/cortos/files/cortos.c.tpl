@@ -57,6 +57,7 @@ int __cortos_log_printf(
   va_list args;
   int n=0;
   unsigned int asrValue;
+  uint64_t clock_time;
 
   __asm__ (
   "  rd %%asr29, %%l1\n"
@@ -68,9 +69,13 @@ int __cortos_log_printf(
 
   __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_PRINTF);
 
+
+  clock_time = cortos_get_clock_time();
+
   n += ee_printf(
-   "CoRTOS: LOG: %s: Thread (%d,%d), File: %s, Func: %s, Line: %d. ",
-   levelName, asrValue & 0xFF00, asrValue & 0xFF, fileName, funcName, lineNum);
+   "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%ld]. ",
+   levelName, asrValue & 0xFF00, asrValue & 0xFF,
+   fileName, lineNum, funcName, clock_time);
 
   va_start(args, fmt);
   ee_vsprintf(buf, fmt, args);
@@ -88,3 +93,14 @@ int __cortos_log_printf(
 
   return n;
 }
+
+
+inline uint64_t cortos_get_clock_time() {
+  return __ajit_get_clock_time();
+}
+
+inline void cortos_sleep(uint32_t clock_cycles) {
+  __ajit_sleep__(clock_cycles);
+}
+
+

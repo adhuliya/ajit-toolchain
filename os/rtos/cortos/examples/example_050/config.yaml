@@ -1,59 +1,18 @@
 # yaml configuration file for linker/loader of Co-RTOS
 
-Cores: 2  # must agree with the processor used
-ThreadsPerCore: 2  # must agree with the processor used
+Cores: 1
+ThreadsPerCore: 2
 
-Programs: # name all your programs cortos_bget.c.tpl or specify here.
-  - dir: /path/to/directory
-    buildCommand: the_command
-    linkerFile: the_liker_file_path
-    core: 0
-    thread: 0
-    stackSizeInKB: 1024
-  - dir: /path/to/directory
-    buildCommand: the_command
-    linkerFile: the_liker_file_path
-    core: 0
-    thread: 0
-    main: true
-    stackSizeInKB: 1024
-  - dir: /path/to/directory
-    buildCommand: the_command
-    linkerFile: the_liker_file_path
-    core: 0
-    thread: 1
-    stackSizeInKB: 4096
-  - dir: /path/to/directory
-    buildCommand: the_command
-    linkerFile: the_liker_file_path
-    core: 1
-    thread: 0
-    stackSizeInKB: 1024
-  - dir: /path/to/directory
-    buildCommand: the_command
-    linkerFile: the_liker_file_path
-    core: 1
-    thread: 1
-    stackSizeInKB: 2048
-
-SynchronizationSemaphores: 4  # trap at runtime too
-
-MessageQueues:
-  - Total: 4
-    Queues:
-      - id: 0
-        len: 16
-        msgLenInBytes: 32
-      - id: 1
-        len: 8
-        msgLenInBytes: 4
-      - id: 2
-        len: 32
-        msgLenInBytes: 8
-      - id: 3
-        len: 16
-        msgLenInBytes: 64
-
-MallocRegionSizeInKB: 10240
+ProgramThreads:
+  - CortosInitCalls:
+      - ajit_entry_func_001
+    StackSizeInBytes: 8192
+  - CortosInitCalls:
+      - ajit_entry_func_010
+    StackSizeInBytes: 8192
 
 TotalMemoryInKB: 102400
+# AddBget: True
+
+# ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
+LogLevel: NONE

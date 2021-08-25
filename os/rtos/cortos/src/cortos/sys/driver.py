@@ -60,6 +60,7 @@ def buildProject(args: argparse.Namespace) -> None:
   """Builds the project for Ajit Processor/CoRTOS."""
   configFileName = args.configFileName
   confObj = config.readYamlConfig(configFileName)
+  confObj.addDebugSupport(args.debug, args.port)
   build.buildProject(confObj)
 
 
@@ -74,10 +75,14 @@ def getParser() -> argparse.ArgumentParser:
   subpar = subParser.add_parser("build", help="Build a project.")
   subpar.set_defaults(func=buildProject)
   # subpar.add_argument('-l', '--logging', action='count', default=0)
+  subpar.add_argument('-g', '--debug', action='store_true',
+                      help="Enable debug build.")
+  subpar.add_argument('-p', '--port', type=int, default=8888,
+                      help="Starting debug server port sequence.")
   subpar.add_argument("configFileName",
                       nargs="?",
                       default=consts.CONFIG_FILE_DEFAULT_NAME,
-                      help="Config file path.")
+                      help=f"{consts.CONFIG_FILE_DEFAULT_NAME} file path.")
 
   # subcommand: print
   subpar = subParser.add_parser("show", help="Show a specific detail")

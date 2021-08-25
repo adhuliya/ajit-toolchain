@@ -1,1 +1,1 @@
-This is a multi-thread example.
+This is a single thread example.
