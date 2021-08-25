@@ -1,14 +1,21 @@
+/**
+A simple example to demonstrate running two functions on
+two separate Ajit Threads.
+*/
+
 #include<math.h>
-#include "ajit_cortos.h"
+#include "cortos.h"
 
 int b;
 
-void main() {}
+void main() {} // important, but kept empty
 
-void ajit_entry_001() {
+void ajit_entry_func_001() {
   b = (int)cos(0);
+  cortos_exit(0); // safely exit
 }
 
-void ajit_entry_010() {
+void ajit_entry_func_010() {
   b = (int)cos(0);
+  cortos_exit(0); // safely exit
 }

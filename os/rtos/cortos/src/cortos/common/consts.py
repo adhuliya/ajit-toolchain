@@ -119,7 +119,10 @@ DEFAULT_RESULTS_FILE_NAME: str = "main.results"
 MMAP_LINE_REGEX: str = r"(?P<address>\w+)\s+(?P<byte>\w+)"
 MMAP_LINE_REGEX_COMPILED = re.compile(MMAP_LINE_REGEX)
 
-LOWER_STACK_BOUNDARY_ADDR: int = 0xF0000000
+# LOWER_STACK_BOUNDARY_ADDR: int = 0xF0000000
+# FIXME: a hack for 4MB memory: start stack at just after 3 MB
+LOWER_STACK_BOUNDARY_ADDR_4MB: int = 0x300000
+LOWER_STACK_BOUNDARY_ADDR: int = LOWER_STACK_BOUNDARY_ADDR_4MB
 
 
 QUEUE_C_FILE: str = "cortos_q.c"
@@ -161,7 +164,8 @@ def getLogLevel(level: int) -> LogLevel:
     return LogLevel(level10)
 
 
-DEFAULT_DEBUG_BUILD: bool = True
+DEFAULT_DEBUG_BUILD: bool = False
+DEFAULT_DEBUG_PORT: int   = 8888
 
 CORTOS_ASM_FILE_NAME: str = "cortos_asm.s"
 CORTOS_C_FILE_NAME: str = "cortos.c"

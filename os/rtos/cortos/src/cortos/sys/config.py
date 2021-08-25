@@ -118,6 +118,8 @@ class UserConfig:
     self.enableSerial: bool = consts.DEFAULT_ENABLE_SERIAL_DEVICE
 
     self.debugBuild: bool = consts.DEFAULT_DEBUG_BUILD
+    # the starting debug port sequence (one for each thread)
+    self.startingDebugPort: int = consts.DEFAULT_DEBUG_PORT
 
     self.initialize()
     print("CoRTOS: Initialized user configuration details.")
@@ -236,6 +238,13 @@ class UserConfig:
     else:
       return consts.HALT_ERROR_LABEL
 
+
+  def addDebugSupport(self,
+      debug: bool = consts.DEFAULT_DEBUG_BUILD,
+      port: int = consts.DEFAULT_DEBUG_PORT,
+  ):
+    self.debugBuild = debug
+    self.startingDebugPort = port
 
   def __str__(self):
     return (
