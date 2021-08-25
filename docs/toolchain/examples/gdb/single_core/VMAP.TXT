@@ -1,0 +1,15 @@
+! context   virtual-base   phy-base  level   cacheable?  acc-perms
+!
+!  for context 0, map 256KB virtual page at base 0x0 to 256 KB cacheable
+!  physical page at base 0x0.   User and Supervisor have rwx access.
+0x0          0x0            0x0        0x2    0x1           0x3
+!  for context 0, map 4KB virtual page at base 0x40000 to 4KB cacheable
+!  physical page at base 0x8000.   User and Supervisor have rwx access.
+0x0          0x40000        0x8000     0x3    0x1           0x3
+!  for the stack:
+!  for context 0, map 4KB virtual page at base 0xffff2000 to 4KB cacheable
+!  physical page at base 0x9000.   User and Supervisor have rwx access.
+0x0          0xffff2000     0x9000     0x3    0x1           0x3
+!
+!  page sizes =  4GB (0x0),  16MB (0x1), 256KB (0x2), 4KB (0x3)
+!

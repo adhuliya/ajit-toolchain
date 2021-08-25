@@ -7,3 +7,4 @@ rsync -avz $SRC/processor/verification processor/   --exclude "*.o" --exclude ".
 rsync -avz $SRC/processor/validation  processor/   --exclude "*.o" --exclude ".a" 
 rsync -avz $SRC/processor/C_reference_model processor/  --exclude "*.o" --exclude ".a" 
 rsync -avz $SRC/os/kernels/pico os/kernels/  --exclude "*.o" --exclude ".a" 
+rsync -avz $SRC/processor/c_common  processor/   --exclude "*.o" --exclude ".a" 

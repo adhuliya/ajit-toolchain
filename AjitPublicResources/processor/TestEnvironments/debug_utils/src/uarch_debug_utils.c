@@ -63,8 +63,10 @@ void dbg_send_debug_command(uint32_t cmd_val)
 			char pipe_name[256];
 			sprintf(pipe_name, "COMMAND_TO_DEBUG_SERVER_%d_%d", core_id, thread_id);
 			write_uint32(pipe_name, cmd_val);
+#ifdef DEBUG_MODE
 			fprintf(stderr,"Info:dbg_send_debug_command (%d,%d): 0x%x.\n", 
 						core_id, thread_id, cmd_val);
+#endif
 		}
 		else
 		{
@@ -91,8 +93,10 @@ uint32_t dbg_get_debug_response()
 			char pipe_name[256];
 			sprintf(pipe_name, "RESPONSE_FROM_DEBUG_SERVER_%d_%d", core_id, thread_id);
 			ret_val = read_uint32(pipe_name);
+#ifdef DEBUG_MODE
 			fprintf(stderr,"Info:dbg_get_debug_response (%d,%d): 0x%x.\n", 
 						core_id, thread_id, ret_val);
+#endif
 		}
 		else
 		{

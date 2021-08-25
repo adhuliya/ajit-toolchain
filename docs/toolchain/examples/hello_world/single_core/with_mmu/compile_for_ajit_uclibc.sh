@@ -4,7 +4,7 @@ makeLinkerScript.py -t 0x0 -d 0x40000 -o customLinkerScript.lnk
 MAIN=hello_world
 # support infrastructure.
 #   for enabling serial device etc.
-AAR=$AJIT_ACCESS_ROUTINES
+AAR=$AJIT_ACCESS_ROUTINES_MT
 #   timer.
 PT=$AJIT_MINIMAL_PRINTF_TIMER
 #   trap handlers
