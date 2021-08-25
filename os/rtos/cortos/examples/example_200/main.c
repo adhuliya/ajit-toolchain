@@ -1,3 +1,5 @@
+/** Allocate memory and share between two threads. */
+
 #include<math.h>
 #include "cortos.h"
 

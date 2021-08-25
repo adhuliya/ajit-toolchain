@@ -7,11 +7,6 @@ ProgramThreads:
   - CortosInitCalls:
       - cortos_entry_func_001
       - cortos_entry_func_010
-      - exit_func
-    CortosLoopCalls:
-      - cortos_entry_func_010
-      - func_01
-      - func_02
     StackSizeInBytes: 8192
   - CortosInitCalls:
       - cortos_entry_func_101

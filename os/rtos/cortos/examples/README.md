@@ -23,14 +23,13 @@ A project consists of the following necessary components,
   in this directory. Specifically the following config files are a good
   reference point,
   
-        ./example_001/config.yaml
-        ./example_050/config.yaml
-        ./example_100/config.yaml
-        ./example_150/config.yaml
-        ./example_200/config.yaml
-        ./example_250/config.yaml
-
-
+   * [./example_001/config.yaml](example_001/config.yaml)
+   * [./example_050/config.yaml](example_050/config.yaml)
+   * [./example_100/config.yaml](example_100/config.yaml)
+   * [./example_150/config.yaml](example_150/config.yaml)
+   * [./example_200/config.yaml](example_200/config.yaml)
+   * [./example_250/config.yaml](example_250/config.yaml)
+     
 
 ## How to run the examples?
 In each example_XXX project directory do the following,

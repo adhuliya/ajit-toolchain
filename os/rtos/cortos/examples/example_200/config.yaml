@@ -14,6 +14,8 @@ ProgramThreads:
     StackSizeInBytes: 8192
 
 TotalMemoryInKB: 102400
+
+# Required: for memory management support.
 AddBget: True
 
 LogLevel: TRACE

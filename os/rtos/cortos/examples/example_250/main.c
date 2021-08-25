@@ -1,3 +1,5 @@
+/** Allocate memory and communicate via queue.
+*/
 #include<math.h>
 #include "cortos.h"
 

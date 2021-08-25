@@ -3,6 +3,7 @@
 Cores: 1
 ThreadsPerCore: 2
 
+# Required: Which function runs on which Ajit Thread.
 ProgramThreads:
   - CortosInitCalls:
       - ajit_entry_func_001

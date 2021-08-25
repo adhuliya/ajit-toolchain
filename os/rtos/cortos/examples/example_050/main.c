@@ -1,9 +1,14 @@
+/**
+A simple example to demonstrate running two functions on
+two separate Ajit Threads.
+*/
+
 #include<math.h>
 #include "cortos.h"
 
 int b;
 
-void main() {}
+void main() {} // important, but kept empty
 
 void ajit_entry_func_001() {
   b = (int)cos(0);

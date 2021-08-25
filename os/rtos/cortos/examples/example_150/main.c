@@ -1,3 +1,9 @@
+/** A reader-writer test program.
+
+A writer sends four values to the reader.
+The reader collects the values and sums them up.
+*/
+
 #include<math.h>
 #include "cortos.h"
 
@@ -10,7 +16,7 @@ CortosMessage msg1;
 CortosMessage msg2;
 
 
-void main() {} // important, but keep empty.
+void main() {} // important, but kept empty.
 
 void cortos_entry_func_001() {
   msg1.intArr[0] = 1;
