@@ -63,8 +63,10 @@ void dbg_send_debug_command(uint32_t cmd_val)
 			char pipe_name[256];
 			sprintf(pipe_name, "COMMAND_TO_DEBUG_SERVER_%d_%d", core_id, thread_id);
 			write_uint32(pipe_name, cmd_val);
+#ifdef DEBUG_MODE
 			fprintf(stderr,"Info:dbg_send_debug_command (%d,%d): 0x%x.\n", 
 						core_id, thread_id, cmd_val);
+#endif
 		}
 		else
 		{
@@ -91,8 +93,10 @@ uint32_t dbg_get_debug_response()
 			char pipe_name[256];
 			sprintf(pipe_name, "RESPONSE_FROM_DEBUG_SERVER_%d_%d", core_id, thread_id);
 			ret_val = read_uint32(pipe_name);
+#ifdef DEBUG_MODE
 			fprintf(stderr,"Info:dbg_get_debug_response (%d,%d): 0x%x.\n", 
 						core_id, thread_id, ret_val);
+#endif
 		}
 		else
 		{
@@ -420,7 +424,8 @@ int dbg_load_mmap(char* memoryMapFile)
 				current_read_word = (data <<  8*(3 - (addr & 0x3)));
 		}
 
-		if ((current_word_address != (addr & 0xffffffffc)) || (eof_reached))
+		uint32_t masked_addr = addr & 0xfffffffc;
+		if ((current_word_address != masked_addr) || (eof_reached))
 		{
 			dbg_write_mem(0x20, current_word_address, current_read_word);
 			if(global_verbose_flag)
@@ -436,7 +441,7 @@ int dbg_load_mmap(char* memoryMapFile)
 			}
 
 
-			current_word_address = (addr & 0xfffffffc);
+			current_word_address = masked_addr;
 			current_read_word = (data <<  8*(3 - (addr & 0x3)));
 
 			written_word_count++;
@@ -446,7 +451,7 @@ int dbg_load_mmap(char* memoryMapFile)
 				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
 			}
 		}
-		else if (current_word_address == (addr & 0xffffffffc))
+		else if (current_word_address == masked_addr)
 		{
 			current_read_word = current_read_word | (data <<  8*(3 - (addr & 0x3)));
 		}

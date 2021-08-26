@@ -1,0 +1,8 @@
+A simple example which shows the use of the cpu-id (asr29)
+to program the different cores in a 4-core processor.
+
+Run with options
+
+	-n 4
+
+

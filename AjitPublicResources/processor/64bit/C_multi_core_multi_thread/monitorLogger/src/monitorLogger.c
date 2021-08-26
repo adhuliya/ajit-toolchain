@@ -7,7 +7,22 @@
 #include "pthreadUtils.h"
 #include "Pipes.h"
 #include "SocketLib.h"
+#include "SockPipes.h"
 #include "monitorLogger.h"
+
+int in_socket_mode = 0;
+
+uint32_t ml_read_uint32(char* pname)
+{
+	uint32_t ret_val = 0;
+	if(in_socket_mode) 
+		ret_val = sock_read_uint32(pname);
+	else
+		ret_val = read_uint32(pname);
+
+	return(ret_val);
+}
+
 
 
 // utility function.
@@ -328,7 +343,7 @@ void monitorLogger_core(MonitorLoggerState* mls)
 		//  12:8        write-register-id
 		//  7:0         register signature  calculated as xor of
 		//		  all written bytes from GPR, WIM, TBR, Y
-		uint32_t reg_write_log = read_uint32(mls->logger_pipe_name);
+		uint32_t reg_write_log = ml_read_uint32(mls->logger_pipe_name);
 
 
 		// bits are as follows
@@ -349,7 +364,7 @@ void monitorLogger_core(MonitorLoggerState* mls)
 		//   7:0 
 		//       written-gpr-signature
 		//
-		uint32_t fp_reg_write_log = read_uint32(mls->logger_pipe_name);
+		uint32_t fp_reg_write_log = ml_read_uint32(mls->logger_pipe_name);
 
 
 
@@ -362,10 +377,10 @@ void monitorLogger_core(MonitorLoggerState* mls)
 		//		  xor of all bytes in address.
 		//  7:0		data-signature
 		//                xor of all bytes written.
-		uint32_t store_log = read_uint32(mls->logger_pipe_name);
+		uint32_t store_log = ml_read_uint32(mls->logger_pipe_name);
 
 		// 32-bit PC
-		uint32_t pc_log = read_uint32(mls->logger_pipe_name);
+		uint32_t pc_log = ml_read_uint32(mls->logger_pipe_name);
 		if(mls->reg_write_file)
 		{
 

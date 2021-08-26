@@ -109,32 +109,20 @@ uint8_t isTlbNewHit(MmuState* ms,
 	uint32_t va_tag_L0 = context;				 	  //use for level 0 pte
 
 	uint64_t ld;
-	ret_val = lookupSetAssociativeMemory(ms->tlb_3, 
-				(va_tag_L3 >> ms->tlb_3->log_number_of_sets), 
-				ms->tlb_3->set_index_mask & va_tag_L3, &ld);
+	ret_val = lookupSetAssociativeMemory(ms->tlb_0, 
+			(va_tag_L0 >> ms->tlb_0->log_number_of_sets), 
+			ms->tlb_0->set_index_mask & va_tag_L0, &ld);
 	if(ret_val)
 	{
 		*pte = ld;
-		*pte_level = 3;
-	}
-
-	if(!ret_val)
-	{
-		ret_val = lookupSetAssociativeMemory(ms->tlb_2, 
-							(va_tag_L2 >> ms->tlb_2->log_number_of_sets), 
-							ms->tlb_2->set_index_mask & va_tag_L2, &ld);
-		if(ret_val)
-		{
-			*pte = ld;
-			*pte_level = 2;
-		}
+		*pte_level = 0;
 	}
 
 	if(!ret_val)
 	{
 		ret_val = lookupSetAssociativeMemory(ms->tlb_1, 
-							(va_tag_L1 >> ms->tlb_1->log_number_of_sets), 
-							ms->tlb_1->set_index_mask & va_tag_L1, &ld);
+				(va_tag_L1 >> ms->tlb_1->log_number_of_sets), 
+				ms->tlb_1->set_index_mask & va_tag_L1, &ld);
 		if(ret_val)
 		{
 			*pte = ld;
@@ -144,19 +132,33 @@ uint8_t isTlbNewHit(MmuState* ms,
 
 	if(!ret_val)
 	{
-		ret_val = lookupSetAssociativeMemory(ms->tlb_0, 
-							(va_tag_L0 >> ms->tlb_0->log_number_of_sets), 
-							ms->tlb_0->set_index_mask & va_tag_L0, &ld);
+		ret_val = lookupSetAssociativeMemory(ms->tlb_2, 
+				(va_tag_L2 >> ms->tlb_2->log_number_of_sets), 
+				ms->tlb_2->set_index_mask & va_tag_L2, &ld);
 		if(ret_val)
 		{
 			*pte = ld;
-			*pte_level = 0;
+			*pte_level = 2;
 		}
 	}
+
+	if(!ret_val)
+	{
+		ret_val = lookupSetAssociativeMemory(ms->tlb_3, 
+				(va_tag_L3 >> ms->tlb_3->log_number_of_sets), 
+				ms->tlb_3->set_index_mask & va_tag_L3, &ld);
+		if(ret_val)
+		{
+			*pte = ld;
+			*pte_level = 3;
+		}
+	}
+
+
 	return ret_val;
 }
 
-		
+
 
 
 

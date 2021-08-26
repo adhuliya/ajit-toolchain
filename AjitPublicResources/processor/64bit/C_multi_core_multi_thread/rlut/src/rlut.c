@@ -8,6 +8,8 @@
 #include "tlbs.h"
 #include "rlut.h"
 #include "ASI_values.h"
+#include "Ajit_Hardware_Configuration.h"
+
 char *dcache_inval_pipe_names[] = 
 		{
 			"NOBLOCK_RLUT_DCACHE_INVALIDATE_0", 
@@ -234,8 +236,11 @@ void setupRlutManager (int ncpus, int icache_size_in_lines, int dcache_size_in_l
 		initRlut(&(rlut_manager.icache_rluts[I]),  I , 1, icache_size_in_lines);
 		initRlut(&(rlut_manager.dcache_rluts[I]),  I , 0, dcache_size_in_lines);
 		
-		register_pipe(dcache_inval_pipe_names[I], 2, 32, PIPE_FIFO_NON_BLOCK_READ);
-		register_pipe(icache_inval_pipe_names[I], 2, 32, PIPE_FIFO_NON_BLOCK_READ);
+		register_pipe(dcache_inval_pipe_names[I], INVALIDATE_QUEUE_SIZE, 32, PIPE_FIFO_NON_BLOCK_READ);
+		set_watermark(dcache_inval_pipe_names[I], INVALIDATE_QUEUE_SIZE/2);
+	
+		register_pipe(icache_inval_pipe_names[I], INVALIDATE_QUEUE_SIZE, 32, PIPE_FIFO_NON_BLOCK_READ);
+		set_watermark(icache_inval_pipe_names[I], INVALIDATE_QUEUE_SIZE/2);
 	}
 }
 

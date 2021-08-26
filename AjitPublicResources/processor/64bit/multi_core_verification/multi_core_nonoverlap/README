@@ -1,0 +1,10 @@
+An example in which 4-cores are simultaneously writing to
+four distinct arrays, which are not overlapping.
+
+Use of the cpu-id (asr29) to program the different cores in a 4-core processor.
+
+Note that cpu-0 will setup the page tables.  Each cpu will
+have a different initial stack pointer value.
+
+
+

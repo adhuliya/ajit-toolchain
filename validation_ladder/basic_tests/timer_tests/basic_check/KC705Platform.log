@@ -1,0 +1,21 @@
+********************************************
+Date: 24 June 2021
+Bitfile date: 21 June 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705 FPGA
+********************************************                                                                                               
+
+Starting at 0x6
+Time before printing is: low - 0xa748d0dd, high - 0x6
+Time after printing is: low - 0xa74af2ab, high - 0x6
+         New Time after printing is: low - 0xa7591fb4, high - 0x6
+         New Time after printing is: low - 0xa760ef73, high - 0x6
+         New Time after printing is: low - 0xa768c002, high - 0x6
+         New Time after printing is: low - 0xa77090c4, high - 0x6
+         New Time after printing is: low - 0xa7786150, high - 0x6
+         New Time after printing is: low - 0xa78031dc, high - 0x6
+         New Time after printing is: low - 0xa7880268, high - 0x6
+         New Time after printing is: low - 0xa78fd32a, high - 0x6
+
+
+

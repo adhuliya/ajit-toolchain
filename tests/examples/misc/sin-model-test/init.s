@@ -2,7 +2,7 @@
 .section .text.ajitstart
 _start:
 	set -4096, %sp
-  set -4096, %fp
+  	set -4096, %fp
 	!clr %fp
 
 	set 0x1, %l0		! window 1 is marked invalid...  we start at window 7

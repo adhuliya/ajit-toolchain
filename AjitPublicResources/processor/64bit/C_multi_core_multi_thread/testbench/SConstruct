@@ -49,7 +49,11 @@ CONSOLE_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/console/
 CHAR_SERVER_LIB=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/lib"
 CHAR_SERVER_INCLUDE=AJIT_HOME+"/processor/TestEnvironments/core_environment/char_client_server/include"
 
-env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:"+MONITOR_LOGGER_INCLUDE + ":" + CONSOLE_INCLUDE+ ":"+CHAR_SERVER_INCLUDE + ":" + HALFPREC_INCLUDE)
+env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":" + GNU_PTH_UTILS + ":" + "./include:"+MONITOR_LOGGER_INCLUDE + ":" + CONSOLE_INCLUDE+ ":"+CHAR_SERVER_INCLUDE + ":" + HALFPREC_INCLUDE + ":")
+
+# C_COMMON include
+C_COMMON_INCLUDE=AJIT_HOME + '/processor/c_common/include'
+env.Append(CPPPATH = C_COMMON_INCLUDE + ":")
 
 
 

@@ -1,17 +1,19 @@
 ********************************************
-Date: 18 March 2021
-Bitfile date: 30 Jan 2021
+Date: 24 June 2021
+Bitfile date: 21 June 2021
 bin-utils from ajit-toolchain/marshal branch
 Platform: Xilinx KC705
 ********************************************
-                                                                                                                                              
+                                       
+Starting                                                                                           
 INTERVAL : 
-	MIN=100319.000000, 
-	MAX=100340.000000, 
-	MEAN=100320.031250, 
-	
-	STD.DEVIATION=0.050524 
-
+	MIN=100270.000000, 
+	MAX=100316.000000, 
+	MEAN=100309.929688, 
+	STD.DEVIATION=0.103942 
 Observation:3 values of INTERVAL are stated above. 
+
 This is the time peroid between when an interrupt is generated,
 a flag is set and then flag is cleared.
+
+

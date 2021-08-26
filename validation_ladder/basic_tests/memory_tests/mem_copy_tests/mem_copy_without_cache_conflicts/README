@@ -1,17 +1,22 @@
-A test which copies blocks of data
-from one location to the other and 
-gives back the time taken to perform
-this operation.
+A test which copies blocks of data from one location to the 
+other and gives back the time taken to perform this operation. 
+
+The memory locations where data transactions are performed
+are chosen such that there are absolutely no cache conflicts.(see test.c)
 
 	KC705Platform.log file contains output of this 
 	program tested on the KC705 FPGA Platform.
 
-	Bitfile Generation date: 30 Jan 2021 
+	Bitfile Generation date: 17 Jan 2021 
 
 Usage for the KC705 Platform: 
 	1. Source the bin-utils required for AJIT processor.
 	2. Compile the program by running compile_for_ajit_uclibc.sh 
-		script
+	script by passing additional parameters such as starting address 
+	of text area, starting address of data section and specify the 
+	memory-map file accordingly
+	eg:
+	./compile_for_ajit_uclibc.sh 0x40000000 0x40040000 VMAPHIGH.txt
 	3. Using the 'run_at_high_mem.s' script 
 		with ajit_debug_monitor will load the memory
 		map of application at high memory and start.

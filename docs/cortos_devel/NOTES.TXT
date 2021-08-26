@@ -1,0 +1,93 @@
+
+	Mutex using swap.
+
+		acquire using   swap instr.
+		
+		1. version normal
+				swap (addr,reg)
+
+					addr can be 
+						cacheable
+						non-cacheable.
+
+		1. version alternate
+				swapa (asi, addr,reg)
+
+					where asi = 0x20 - 0x2f
+						bypass asi's.
+	
+
+	3 cases
+		swap (cacheable_addr, reg)
+		swap (non_cacheable_addr, reg)
+			addr is virtual address.
+
+		swapa (bypass_asi, addr, reg)
+			here addr must be physical address.
+
+
+	Programmer "invisible" schemes:
+		
+		- addresses are part of text, specified using skip?
+			how to mark it non-cacheable?
+
+		- assign a specific page for lock addresses
+
+		  Use the "highest" page for lock addresses.
+
+			0xffffe000    cacheable locks.	
+			0xfffff000    non-cacheable locks  4KB.
+
+
+		Also
+			0xffff3000 to 0xffffd000   pages for IO.
+		For stacks
+
+			start from 0xffff2000 going upwards...
+
+
+
+	Page-tables
+	  context_table_pointer in mmu points to the base of context array.
+		context[0 to 255] 
+			l0 page (1-entry)
+				l1 tables [..]
+					l2 tables [...]
+				    		l3 tables [...]
+
+
+	disable the mmu
+	prepare page table in memory
+	(ensure that mmu context table pointer is current)	
+	write to mmu context register	
+        -----------------------------
+	enable the mmu
+
+
+	Virtual memory constraints
+	--------------------------------
+		bottom 16MB we will reserve for flash memory.
+			0x0 - 0x00ffffff
+		
+		application text
+			0x01000000 +
+		application data 
+			upto 0xfff00000
+		ajit-internal-storage
+			mem-pool for malloc
+					including protection bounds.
+			queues
+			scratch 
+		stack
+			16MB for stack.
+					including protection bounds.
+			0xfe000000 to 0xff000000
+		I/O
+			0xffff0000 to 0xffffd000
+		non-cacheable locks
+			0xffffe000 (4KB page)
+		cacheable locks
+			0xfffff000 (4KB page)
+
+
+

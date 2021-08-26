@@ -9,6 +9,7 @@
 #   For testing: time, parallel
 #   Others: libncurses5-dev, gedit
 #   For deviceTreeCompiler: bison, flex
+
   apt-get update \
 && \
   apt-get -y install --no-install-recommends \
@@ -42,11 +43,27 @@
     flex \
     libreadline-dev \
     gedit \
+<<<<<<< HEAD
     git \
+=======
+    software-properties-common \
+&& \
+  add-apt-repository ppa:deadsnakes/ppa \
+&& \
+  apt-get update \
+&& \
+  apt-get -y install python3.6 \
+>>>>>>> 1414aeafc1dd958386ccdbf51788ad1baa1dbbd9
 && \
   apt-get -y autoremove \
 && \
   apt-get clean \
+&& \
+  wget https://bootstrap.pypa.io/get-pip.py \
+&& \
+  python3.6 get-pip.py \
+&& \
+  pip install --no-cache-dir pyelftools pyyaml \
 && \
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

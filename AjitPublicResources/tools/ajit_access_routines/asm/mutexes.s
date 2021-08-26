@@ -15,6 +15,7 @@
 .global acquire_mutex_using_swap
 acquire_mutex_using_swap :
 	save %sp, -96, %sp
+retry_mutex_using_swap:
 	mov 0x1, %l5 
 	!  LOCK_FLAG is swapped with 0x1
 	swap [%i0], %l5
@@ -30,10 +31,10 @@ spin_on_swap_lock:
 	tst %l5
 	bne spin_on_swap_lock
 	nop
-	ba,a acquire_mutex_using_swap
+	ba,a retry_mutex_using_swap
 	nop
 swap_lock_acquired:
-	retl
+	ret
 	restore
 !
 ! single argument: %i0 contains the address
@@ -43,8 +44,9 @@ swap_lock_acquired:
 release_mutex_using_swap:
 	save %sp, -96, %sp
 	st %g0, [%i0]
-	retl
+	ret
 	restore
+	nop
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  LDSTUB version				          !!
@@ -57,6 +59,7 @@ release_mutex_using_swap:
 !
 acquire_mutex_using_ldstub :
 	save %sp, -96, %sp
+retry_mutex_using_ldstub:
 	mov 0x1, %o1
 	ldstub [%i0], %o1
 	tst %o1
@@ -73,10 +76,12 @@ spin_on_ldstub_mutex:
 	nop
 	! Someone has released the lock
 	! Try to acquire it!
-	ba,a acquire_mutex_using_ldstub
+	ba,a retry_mutex_using_ldstub
+	nop
 ldstub_mutex_acquired:
-	retl
+	ret
 	restore
+	nop
 !
 ! has one argument assumed to be in %i0,
 ! which specifies the address of the mutex
@@ -86,5 +91,6 @@ ldstub_mutex_acquired:
 release_mutex_using_ldstub:
 	save %sp, -96, %sp
 	stub %g0, [%i0]
-	retl
+	ret
 	restore
+	nop

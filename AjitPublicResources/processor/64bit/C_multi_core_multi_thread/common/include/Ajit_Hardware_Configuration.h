@@ -1,10 +1,6 @@
 // Ajit_Hardware_Configuration.h
 // Global Cofiguration settings for the Ajit processor model
 
-
-
-#include"Ajit_Device_Addresses.h" // Specifies addresses used by memory-mapped devices
-
 #define MAX_NCORES 		4
 #define MAX_NTHREADS_PER_CORE 	2
 
@@ -133,3 +129,6 @@
 
 #define TRAP_PENALTY		16
 
+
+// invalidate queue size.
+#define INVALIDATE_QUEUE_SIZE	1024

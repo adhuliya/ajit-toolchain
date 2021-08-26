@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 				break;
 			case 'v': 
 				global_verbose_flag = 1;
-				uart_verbose_flag = 1;
+				//uart_verbose_flag = 1;
 				break;
 			case 'b':
 				uart_blocking_flag = 1;
@@ -344,7 +344,7 @@ int main(int argc, char **argv)
 	startDebugInterpreter();
 
 
-#ifdef SUPPORT_RIFFA)
+#ifdef SUPPORT_RIFFA
 	if(riffa_flag)
 		close_fpga();
 #endif

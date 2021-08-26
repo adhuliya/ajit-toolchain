@@ -7,15 +7,16 @@
 #define TESTLENGTH 256
 #define NSWEEPS    16
 
-// mapped to VA_DATA_SECTION_START  + 0x10000
+// mapped to VA_DATA_SECTION_START  + 0x10000 for low mem
+// mapped to VA_DATA_SECTION_START at 0x40040000 and above for high mem
 unsigned int *noncacheable_mem = (unsigned int *) (VA_DATA_SECTION_START + 0x2000); 
 unsigned int *bypass_mem       = (unsigned int *) (VA_DATA_SECTION_START + 0x3000); 
 unsigned int *cacheable_mem    = (unsigned int *) (VA_DATA_SECTION_START + 0x4000); 
 
-float convertToSeconds(uint32_t ut)
+float convertToSeconds(long ut)
 {
-	float result = (256.0/CLK_FREQUENCY)*((float) ut);
-	return(result);
+	float result = (256.0/CLK_FREQUENCY)*((float)ut);
+	return result;
 }
 
 int march_test (int bypass_flag, unsigned int* a, int length)
@@ -113,7 +114,6 @@ int main()
 
 	int err = 0;
 	uint32_t t0 = ajit_barebones_clock();
-
 	int I;
 	for(I = 0; I < NSWEEPS; I++)
 	{
@@ -124,9 +124,8 @@ int main()
 		}
 	}
 	uint32_t t1 = ajit_barebones_clock();
-	ee_printf("Non-cacheable: Time = %f.\n",  convertToSeconds(t1 - t0));
+	ee_printf("Non-cacheable: Time in ticks = %u\n",(t1 - t0));
 
-	
 
 	t0 = ajit_barebones_clock();
 	for(I = 0; I < NSWEEPS; I++)
@@ -138,7 +137,7 @@ int main()
 		}
 	}
 	t1 = ajit_barebones_clock();
-	ee_printf("Bypass: Time = %f.\n",  convertToSeconds(t1 - t0));
+	ee_printf("Bypass: Time in ticks = %u\n",(t1 - t0));
 
 
 	t0 = ajit_barebones_clock();
@@ -151,7 +150,7 @@ int main()
 		}
 	}
 	t1 = ajit_barebones_clock();
-	ee_printf("Cacheable: Time = %f.\n",  convertToSeconds(t1 - t0));
+	ee_printf("Cacheable: Time in ticks = %u\n",(t1 - t0));
 
 	err = march_test_byte(0,(uint8_t*) noncacheable_mem,TESTLENGTH);
 	if(err)
@@ -169,18 +168,17 @@ int main()
 		ee_printf("Error cacheable byte\n");
 	}
 
-        ee_printf("Started march-test run for bypass memory\n");
-        err = march_test(1,bypass_mem,TESTLENGTH/4);
-        if(err)
-        {
-         	ee_printf("Error bypass\n");
-        }
-        else if(err==0)
-        { 
-					ee_printf("\tFinished march-test for by-passed locations\n"); 
-				}
-
-        ee_printf("Started march-test run for non-cacheable memory\n");
+  ee_printf("Started march-test run for bypass memory\n");
+  err = march_test(1,bypass_mem,TESTLENGTH/4);
+  if(err)
+   {
+    	ee_printf("Error bypass\n");
+   }
+  else if(err==0)
+   { 
+	 ee_printf("\tFinished march-test for by-passed locations\n"); 
+	 }
+	ee_printf("Started march-test run for non-cacheable memory\n");
 	err = march_test(0,noncacheable_mem,TESTLENGTH/4);
 	if(err)
 	{ 
@@ -191,8 +189,8 @@ int main()
 		ee_printf("\tFinished march-test for non-cacheable locations\n"); 
 	}       
 
-	ee_printf("\t\t\t Done with word-sized march tests \r\n");
-	ee_printf("\t\t\t Starting with byte-sized march test \r\n"); 
+	ee_printf("\tDone with word-sized march tests \r\n");
+	ee_printf("\r\tStarting with byte-sized march test \r\n"); 
 	err = march_test_byte(0,(uint8_t*) noncacheable_mem,TESTLENGTH);
 	if(err)
 	{

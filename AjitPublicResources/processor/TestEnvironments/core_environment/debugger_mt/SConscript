@@ -1,0 +1,13 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS=' -g -DSW -Wall '
+Export('COMPILATION_FLAGS')
+DEBUG_COMPILATION_FLAGS = COMPILATION_FLAGS + ' -DDEBUG'
+Export('DEBUG_COMPILATION_FLAGS')
+
+SConscript(['spi_common/SConscript'])
+SConscript(['gpb/SConscript'])
+SConscript(['doval/SConscript'])
+
+

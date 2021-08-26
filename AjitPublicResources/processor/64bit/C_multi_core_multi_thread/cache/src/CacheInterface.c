@@ -22,6 +22,8 @@
 #include "Ancillary.h"
 #include "ASI_values.h"
 
+extern int global_verbose_flag;
+
 MUTEX_DECL(__trace_mutex__);
 
 FILE* cache_trace_file = NULL;
@@ -183,6 +185,11 @@ void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address
 		c->cache_lines[I].valid = 0;
 		c->number_of_invalidates++;
 	}
+
+	if(global_verbose_flag)
+		fprintf(stderr,"Info: %s core-id=%d, invalidated 0x%lx.\n", 
+					(c->is_icache ? "icache" : "dcache"), 
+					c->cpu_id, (va_line_address << 6)); 
 }
 
 void lookupCache (WriteThroughAllocateCache* c,
@@ -336,6 +343,10 @@ uint32_t probeCoherencyInvalidateRequest(int cpu_id, int icache_flag)
 {
 	uint32_t ret_val  = 0;
 	ret_val = read_uint32 (getCacheInvalPipeName(cpu_id,icache_flag));
+
+	if(global_verbose_flag)
+		fprintf(stderr,"Read from invalidate pipe (cpu_id=%d, icache=%d).\n", cpu_id, icache_flag);
+		
 	return(ret_val);
 }
 
@@ -396,8 +407,9 @@ void dumpCpuIcacheAccessTrace
 	MUTEX_LOCK(__trace_mutex__);
 
 	fprintf(cache_trace_file,
-			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x\n",
-			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr);
+			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x %s\n",
+			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr,
+						((mmu_fsr != 0) ? "fsr!" : ""));
 	fflush(cache_trace_file);
 	
 	MUTEX_UNLOCK(__trace_mutex__);

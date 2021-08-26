@@ -1,0 +1,49 @@
+
+Basic linear algebra routines.
+
+These should use the vf* instructions to improve performance.
+
+
+single precision float.
+	
+	_a64_dots
+	_a64_sscal
+	_a64_saxpy
+	_a64_sasum
+	_a64_isamax
+
+half-precision float.
+
+	_a64_doth
+	_a64_hscal
+	_a64_haxpy
+	_a64_hasum
+	_a64_ihamax
+
+u8
+
+	_a64_dotu8
+	_a64_u8scal
+	_a64_u8axpy
+	_a64_u8sum
+	_a64_iu8amax
+
+
+u16
+
+	_a64_dotu16
+	_a64_u16scal
+	_a64_u16axpy
+	_a64_u16sum
+	_a64_iu16amax
+
+
+u32
+
+	_a64_dotu32
+	_a64_u32scal
+	_a64_u32axpy
+	_a64_u32sum
+	_a64_iu32amax
+
+

@@ -1,0 +1,26 @@
+********************************************
+Date: 24 June 2021
+Bitfile date: 21 June 2021
+bin-utils from ajit-toolchain/marshal branch
+Platform: Xilinx KC705 FPGA
+********************************************
+
+
+Non-cacheable: Time in ticks = 625
+Bypass: Time in ticks = 737
+Cacheable: Time in ticks = 261
+Started march-test run for bypass memory
+        Finished march-test for by-passed locations
+Started march-test run for non-cacheable memory
+        Finished march-test for non-cacheable locations
+        Done with word-sized march tests 
+
+
+        Starting with byte-sized march test 
+
+        Finished byte-sized march-test for non-cacheable locations
+        Finished byte-sized march-test for bypassed locations
+        Finished byte-sized march-test for cacheable locations
+done
+
+

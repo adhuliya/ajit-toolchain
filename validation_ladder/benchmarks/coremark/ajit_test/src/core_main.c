@@ -94,6 +94,7 @@ MAIN_RETURN_TYPE ajit_main(void) {
 #else
 MAIN_RETURN_TYPE ajit_main(int argc, char *argv[]) {
 #endif
+		
 	ee_u16 i,j=0,num_algorithms=0;
 	ee_s16 known_id=-1,total_errors=0;
 	ee_u16 seedcrc=0;

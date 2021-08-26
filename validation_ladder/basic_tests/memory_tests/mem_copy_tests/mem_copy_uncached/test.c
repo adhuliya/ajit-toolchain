@@ -18,7 +18,7 @@ int init_src_array()
 	}
 }
 
-
+ 
 int run_test(int length, int NREPS, double* t)
 {
 	int err = 0;

@@ -29,9 +29,15 @@ void setupPageTables()
 	//Context table:
 	ContextTable[0] = convertPhyAddrToPTD(((uint32_t)process1_L1PageTable));
 
+	// initially all are invalid..
+	uint32_t i;
+	for(i=0;i<256;i++) 
+	{
+		process1_L1PageTable[i] =0x00;
+	}
+
 	//Create L1 page table entries
 	//Map all instruction-area such that VA=PA, with full permissions
-	uint32_t i;
 	for(i=0x00;i<=0x0F;i++)
 	{
 		uint32_t PPN = (i<<12);
@@ -135,8 +141,8 @@ int  __attribute__((section(".text.main")))  startTest()
 	
 	
 	//write a test data in memory using physical addr
-	uint32_t *ptr_A=(uint32_t*) 0xA0000000; 
-	uint32_t *ptr_VA=(uint32_t*) 0x10000000; 
+	uint32_t *ptr_A=(uint32_t*) 0xA0040000; 
+	uint32_t *ptr_VA=(uint32_t*) 0x10040000; 
 	*ptr_A = 0xA0A0A0A0;
 	*ptr_VA= 0x10101010;
 
@@ -145,15 +151,20 @@ int  __attribute__((section(".text.main")))  startTest()
 	store_word_mmureg(MMU_control_word, (uint32_t*) MMU_REG_CONTROL);
 
 	//read the data using virtual address.
-	__asm__ __volatile__("set 0x10000000, %l3 \n\t");
+	__asm__ __volatile__("set 0x10040000, %l3 \n\t");
 	__asm__ __volatile__("ld  [%l3], %g4");  //g4 should be 0xA0A0A0A0
 
 	
 	//now perform a probe and check if we get the expected PTE
-	uint32_t probe_value = mmu_probe((uint32_t*)( 0x10000000 | 0x400));
+	uint32_t probe_value = mmu_probe((uint32_t*)( 0x10040000 | 0x400));
 	//write the probe value in  register g6
 	__asm__ __volatile__("mov %0, %%g6\n\t" : :"r"(probe_value));
 
+	//now perform a probe to unmapped area and and check if we get 0
+	//  Note: this sets the FSR, FAR pair, but does not generate an interrupt.
+	probe_value = mmu_probe((uint32_t*)( 0x20040000 | 0x400));
+	//write the probe value in  register g6
+	__asm__ __volatile__("mov %0, %%g7\n\t" : :"r"(probe_value));
 
 	//halt
 	__asm__ __volatile__("ta 0; nop; nop;");

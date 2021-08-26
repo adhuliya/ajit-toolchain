@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "Ajit_Hardware_Configuration.h"
 #include "Opcodes.h"
@@ -495,7 +496,19 @@ uint32_t executeLdstub(Opcode op,
 
 
 	uint8_t mae2 = 0;
-	if(!is_trap)
+	if(is_trap)
+	{
+		// read from init-pc to clear downstream MP locks.	
+		uint32_t ign_rdata;
+		uint8_t  ign_mae = 0;
+		
+		// do a dummy read from initial pc. to clear the lock.
+		readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+
+		// should never return an mae on bypass access from init pc.
+		assert(!ign_mae);
+	}
+	else
 	{
 		writeData(state->mmu_state, state->dcache,  addr_space, address, byte_mask, 0xFFFFFFFF, &mae2);
 		
@@ -511,12 +524,12 @@ uint32_t executeLdstub(Opcode op,
 	}
 
 	// clear the LdstByte flag.
-	if(!is_trap)
-		setPbBlockLdstByte(state, 0);
+	setPbBlockLdstByte(state, 0);
+
 	if(mae2)
 	{
-	tv = setBit32(tv, _TRAP_, 1);
-	tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
+		tv = setBit32(tv, _TRAP_, 1);
+		tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
 	}
 
 	uint8_t is_trap1 = getBit32(tv, _TRAP_);
@@ -606,7 +619,7 @@ uint32_t executeSwap( Opcode op,
 	{
 		// wait until BlockLdstByte and BlockLdstWord are both 0
 		testAndSetBlockLdstFlags(state, 0, 1);
-		uint8_t load_byte_mask = ((address & 0x4) == 0) ? 0xf0 : 0x0f;
+		uint8_t load_byte_mask = 0xf;
 		lockAndReadData(state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
 		if(mae1)
 		{
@@ -618,7 +631,18 @@ uint32_t executeSwap( Opcode op,
 	uint8_t is_trap = getBit32(tv, _TRAP_);
 	uint8_t skip_write =  is_trap;
 	uint8_t mae2 = 0;
-	if(!skip_write)
+	if(skip_write)
+	{
+		uint32_t ign_rdata;
+		uint8_t  ign_mae = 0;
+		
+		// do a dummy read from initial pc.
+		readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+
+		// should never return an mae on bypass access from init pc.
+		assert(!ign_mae);
+	}
+	else
 	{
 		writeData(state->mmu_state, state->dcache,  addr_space, address, 0xF, temp,&mae2);
 		
@@ -632,8 +656,10 @@ uint32_t executeSwap( Opcode op,
 		reg_update_flags->store_word_low=temp;
 
 	}
-	if(!is_trap)
-		setPbBlockLdstWord(state, 0);
+		
+	// lock is cleared even if there is a trap.
+	setPbBlockLdstWord(state, 0);
+
 	if(mae2)
 	{
 		tv = setBit32(tv, _TRAP_, 1) ;
@@ -714,13 +740,16 @@ uint32_t executeCswap( Opcode op,
 
 	uint8_t  mae 	   = 0;
 
+	// byte mask for 32-bit read  (this is expanded to 64-bit read in lockAndReadData).
+	uint8_t byte_mask = 0xf;
+
 	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
 	{
 		uint32_t read_data;
 		lockAndReadData(state->mmu_state,  
 					state->dcache, 
 					addr_space, 
-					0xF,
+					byte_mask,
 					address,
 					&mae, 	
 					&read_data);
@@ -729,6 +758,17 @@ uint32_t executeCswap( Opcode op,
 		{
 			tv = setBit32(tv, _TRAP_, 1) ;
 			tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
+	
+	
+			// read from init-pc to clear downstream MP locks.	
+			uint32_t ign_rdata;
+			uint8_t  ign_mae = 0;
+		
+			// do a dummy read from initial pc.
+			readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+
+			// should never return an mae on bypass access from init pc.
+			assert(!ign_mae);
 		}
 		else
 		{
@@ -738,7 +778,7 @@ uint32_t executeCswap( Opcode op,
 				writeData(state->mmu_state, 
 						state->dcache,  
 						addr_space, address, 
-						0xF, 
+						byte_mask, 
 						operand3,
 						&mae);
 				*result = read_data;
@@ -754,7 +794,7 @@ uint32_t executeCswap( Opcode op,
 						state->dcache,  
 						addr_space, 
 						address, 
-						0xF, 
+						byte_mask, 
 						read_data,
 						&mae);
 

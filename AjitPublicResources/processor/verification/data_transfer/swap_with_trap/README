@@ -1,0 +1,2 @@
+Swap with traps.  Checks that the lock release happens
+correctly even if the swap has a trap in the first access.

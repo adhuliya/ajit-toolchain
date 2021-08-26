@@ -1,5 +1,6 @@
 SOURCES = cswap.s
 
+VERSION = 64
 
 RESULTS = 
 g2=0x6

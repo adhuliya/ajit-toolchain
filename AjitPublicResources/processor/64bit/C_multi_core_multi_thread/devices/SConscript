@@ -8,6 +8,7 @@ AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
 AJIT_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
 
 env.Append(CPPPATH = "./:" + AJIT_C_REF_MODEL + "/common/include:" )
+env.Append(CPPPATH = AJIT_HOME + "/processor/c_common/include:" )
 
 
 #AHIR-related

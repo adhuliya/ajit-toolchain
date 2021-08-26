@@ -4,8 +4,6 @@
 #include "core_portme.h"
 #include "math.h" 
 
-#define CHUNK 1024
-
 // 2X the cache size.
 uint32_t src_array [ 64 * CHUNK ];
 uint32_t dest_array[ 64 * CHUNK ];

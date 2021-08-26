@@ -1,0 +1,25 @@
+# yaml configuration file for linker/loader of Co-RTOS
+# yaml 10 minutes tutorial:
+#   https://www.youtube.com/watch?v=cdLNKUoMc6c
+
+# Required: Number of cores and threads per core.
+Cores: 1
+ThreadsPerCore: 1
+
+# Required: Specify the total memory of the system.
+TotalMemoryInKB: 4096
+# AddBget: True
+
+# Optional: Specify the log level. Default is NONE.
+# ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
+LogLevel: DEBUG
+
+# Required: Which functions execute on which ajit thread.
+ProgramThreads:
+  - CortosInitCalls:
+      - main
+# One can also specify an infinite loop on the function:
+#   CortosLoopCalls:
+#     - main
+    StackSizeInBytes: 8192
+
