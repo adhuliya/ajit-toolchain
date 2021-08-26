@@ -81,7 +81,7 @@ Probable cause: assert statements.
 /*  Declare the interface, including the requested buffer size type,
     bufsize.  */
 
-#include "bget.h"
+#include "__bget.h"
 
 #define MemSize     int 	      /* Type for size arguments to memxxx()
 					 functions such as memcmp(). */
