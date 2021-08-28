@@ -20,6 +20,6 @@
 #define ADDR_SERIAL_CONTROL_REGISTER 0xFFFF3200
 //Tx and Rx are 8-bit registers
 //and must be accessed using byte-operations only.
-#define ADDR_SERIAL_TX_REGISTER      0xFFFF3210
-#define ADDR_SERIAL_RX_REGISTER      0xFFFF3220
+#define ADDR_SERIAL_TX_REGISTER      0xFFFF3204
+#define ADDR_SERIAL_RX_REGISTER      0xFFFF3208
 

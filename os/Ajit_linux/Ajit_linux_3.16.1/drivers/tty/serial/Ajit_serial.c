@@ -36,8 +36,8 @@
 
 //Offsets for serial device registers 
 #define CONTROL_REG	0x0
-#define TX_REG		0x10
-#define RX_REG		0x20
+#define TX_REG		0x04
+#define RX_REG		0x08
 
 //Bit positions in the serial control register
 #define BIT_TX_EN	0x0
