@@ -43,9 +43,7 @@
     flex \
     libreadline-dev \
     gedit \
-<<<<<<< HEAD
     git \
-=======
     software-properties-common \
 && \
   add-apt-repository ppa:deadsnakes/ppa \
@@ -53,7 +51,6 @@
   apt-get update \
 && \
   apt-get -y install python3.6 \
->>>>>>> 1414aeafc1dd958386ccdbf51788ad1baa1dbbd9
 && \
   apt-get -y autoremove \
 && \
