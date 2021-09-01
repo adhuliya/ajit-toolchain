@@ -1,7 +1,7 @@
 
 // NOTE:
 // All symbols for cortos' internal use are prefixed with `__`,
-// and can be mostly found in `cortos_internal.h` header file.
+// and can be mostly found in `__cortos.h` header file.
 
 #ifndef CORTOS_H
 #define CORTOS_H
