@@ -31,8 +31,8 @@
 	
 //Defined in Ajit_Hardware_Configuration.h:
 //Interrupt levels for interrupting sources in sparc
-//#define TIMER_IRL  0x10
-//#define SERIAL_IRL 0x12
+//#define TIMER_IRL  10
+//#define SERIAL_IRL 12
 
 //time in microsends for which the output 
 //thread sleeps when there is no activity

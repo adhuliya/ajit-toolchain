@@ -43,6 +43,17 @@ void disableInterruptController(int core_id, int thread_id);
 
 // set bit [interrupt_id] = 1 in control register for core, thread
 void enableInterrupt(int core_id, int thread_id, int interrupt_id);
+// enable all 15 interrupts on core/thread.
+void enableAllInterrupts(int core_id, int thread_id);
+
+
+// Note: mask[15:1] is written into control register[15:1]
+// for (core_id, thread_id).  Other bits of the control register
+// are not modified.  Use with care.   This should be called
+// only when the IRC is disabled.
+void setInterruptMask(int core_id, int thread_id, uint32_t mask);
+
+
 // set bit [interrupt_id] = 0 in control register for core, thread
 void disableInterrupt(int core_id, int thread_id, int interrupt_id);
 

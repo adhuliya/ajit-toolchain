@@ -73,9 +73,10 @@
 //If set to 1, a thread modelling the interurpt controller
 //is started.
 
-//Interrupt levels for interrupting sources in sparc
-#define TIMER_IRL  10
-#define SERIAL_IRL 12
+//Interrupt levels for interrupting sources in basic system
+#define TIMER_IRL    10
+#define SERIAL_IRL   12
+#define EXTERNAL_IRL 13
 
 
 //----------------------------------

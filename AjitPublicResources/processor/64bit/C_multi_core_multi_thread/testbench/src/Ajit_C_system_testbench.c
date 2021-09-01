@@ -36,7 +36,7 @@
 #include "Mmu.h"
 #include "memory.h"
 #include "Timer.h"
-#include "InterruptController.h"
+#include "InterruptControllerMT.h"
 #include "Serial.h"
 #include "console.h"
 
@@ -413,10 +413,10 @@ int main(int argc, char **argv)
 	{
 		// defaults.
 		addMem ("lowermem", 0x3, 0x0, 0xFFFF2FFF);	 // lower mem program + data.
-		addPeripheral("irc", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
+		addPeripheral("irc_mt", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
 		addPeripheral("timer", ADDR_TIMER_MIN, ADDR_TIMER_MAX);	 // timer
 		addPeripheral("serial", ADDR_SERIAL_MIN, ADDR_SERIAL_MAX); // serial
-		addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
+		// addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
 	}
 
 
@@ -530,7 +530,7 @@ int main(int argc, char **argv)
 	}
 
 	//peripherals
-	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IRC_threads();
+	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IrcMt_threads(NCOREs, NTHREADs);
 	if(USE_TIMER_MODEL)  start_timer_threads();
 	if(USE_SERIAL_MODEL) 
 	{
