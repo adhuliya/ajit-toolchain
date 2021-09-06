@@ -5,9 +5,9 @@
 #include "__cortos.h"
 
 
-int writeCortosMessage(int queueId, CortosMessage *msg) {
+int cortos_writeMessage(int queueId, CortosMessage *msg) {
   int status = 0; // 1 = msg written
-  CortosQueueHeader *header = 0;
+  __CortosQueueHeader *header = 0;
   CortosMessage *dest = 0;
 
   header = __GET_Q_HEADER_ADDR(queueId);
@@ -38,9 +38,9 @@ int writeCortosMessage(int queueId, CortosMessage *msg) {
 }
 
 
-int readCortosMessage(int queueId, CortosMessage *msg) {
+int cortos_readMessage(int queueId, CortosMessage *msg) {
   int status = 0; // 1 = msg written
-  CortosQueueHeader *header = 0;
+  __CortosQueueHeader *header = 0;
   CortosMessage *dest = 0;
 
   header = __GET_Q_HEADER_ADDR(queueId);

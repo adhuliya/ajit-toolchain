@@ -97,26 +97,17 @@ typedef union _CortosMessage32Bytes {
 } CortosMessage;
 
 
-typedef struct _CortosQueueHeader {
-  int totalMsgs; // current total messages
-  int readIndex;
-  int writeIndex;
-  int __; // to pad 4 bytes to make it 16 bytes.
-} CortosQueueHeader;
-
-/*
-Write a CortosMessage.
+/* Write a CortosMessage.
   - Returns zero if the queue is full.
   - Returns non-zero if the msg was added.
 */
-int writeCortosMessage(int queueId, CortosMessage *msg);
+int cortos_writeMessage(int queueId, CortosMessage *msg);
 
-/*
-Read a CortosMessage.
+/* Read a CortosMessage.
   - Returns zero if the queue is empty.
   - Returns non-zero if the msg was put into the *msg location.
 */
-int readCortosMessage(int queueId, CortosMessage *msg);
+int cortos_readMessage(int queueId, CortosMessage *msg);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_message_queues_declarations
@@ -209,6 +200,7 @@ inline uint64_t cortos_get_clock_time();
 
 // sleep for specified number of clock cycles
 inline void cortos_sleep(uint32_t clock_cycles);
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_utility_routines
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,6 +210,11 @@ inline void cortos_sleep(uint32_t clock_cycles);
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_scratch_pad_area
 ////////////////////////////////////////////////////////////////////////////////
+
+// Here is a list of addresses to 4 byte locations that the
+// user can use for any miscellaneous reading, writing,
+// and sharing between the threads.
+
 % count = 0
 % intVarsMemRegion = confObj.reservedMem.cortosSharedIntVars
 % for i in range(intVarsMemRegion.sizeInBytes):
@@ -227,6 +224,7 @@ inline void cortos_sleep(uint32_t clock_cycles);
 % count += 1
 % end
 % end
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_scratch_pad_area
 ////////////////////////////////////////////////////////////////////////////////
