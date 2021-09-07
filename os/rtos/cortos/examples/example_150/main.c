@@ -21,19 +21,19 @@ void main() {} // important, but kept empty.
 void cortos_entry_func_001() {
   msg1.intArr[0] = 1;
   CORTOS_TRACE("Sending Message 1");
-  writeCortosMessage(0, &msg1);
+  cortos_writeMessage(0, &msg1);
 
   msg1.intArr[0] = 2;
   CORTOS_TRACE("Sending Message 2");
-  writeCortosMessage(0, &msg1);
+  cortos_writeMessage(0, &msg1);
 
   msg1.intArr[0] = 6;
   CORTOS_TRACE("Sending Message 3");
-  writeCortosMessage(0, &msg1);
+  crotos_writeMessage(0, &msg1);
 
   msg1.intArr[0] = 1;
   CORTOS_TRACE("Sending Message 4");
-  writeCortosMessage(0, &msg1);
+  cortos_writeMessage(0, &msg1);
 
   cortos_exit(0);
 }
@@ -46,7 +46,7 @@ void cortos_entry_func_101() {
   int i, status;
   i = 0;
   while(i < totalMsgs) {
-    status = readCortosMessage(0, &msg2);
+    status = cortos_readMessage(0, &msg2);
     if (status) {
       CORTOS_TRACE("Received Message %d", i+1);
       *i0 += msg2.intArr[0];

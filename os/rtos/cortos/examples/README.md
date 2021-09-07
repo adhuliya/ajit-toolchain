@@ -161,26 +161,19 @@ follow in the instructions given above.
     } CortosMessage;
     
     
-    typedef struct _CortosQueueHeader {
-    int totalMsgs; // current total messages
-    int readIndex;
-    int writeIndex;
-    int __; // to pad 4 bytes to make it 16 bytes.
-    } CortosQueueHeader;
-    
     /*
     Write a CortosMessage.
     - Returns zero if the queue is full.
     - Returns non-zero if the msg was added.
       */
-      int writeCortosMessage(int queueId, CortosMessage *msg);
+    int cortos_writeMessage(int queueId, CortosMessage *msg);
     
     /*
     Read a CortosMessage.
     - Returns zero if the queue is empty.
     - Returns non-zero if the msg was put into the *msg location.
       */
-      int readCortosMessage(int queueId, CortosMessage *msg);
+    int cortos_readMessage(int queueId, CortosMessage *msg);
     
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_message_queues_declarations
@@ -277,6 +270,7 @@ follow in the instructions given above.
     
     // sleep for specified number of clock cycles
     inline void cortos_sleep(uint32_t clock_cycles);
+
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_utility_routines
     ////////////////////////////////////////////////////////////////////////////////
@@ -286,6 +280,11 @@ follow in the instructions given above.
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK START: cortos_scratch_pad_area
     ////////////////////////////////////////////////////////////////////////////////
+
+    // Here is a list of addresses to 4 byte locations that the
+    // user can use for any miscellaneous reading, writing,
+    // and sharing between the threads.
+
     #define SHARED_INT_ADDR_0 0x138  // Decimal: 312
     #define SHARED_INT_ADDR_1 0x13c  // Decimal: 316
     #define SHARED_INT_ADDR_2 0x140  // Decimal: 320

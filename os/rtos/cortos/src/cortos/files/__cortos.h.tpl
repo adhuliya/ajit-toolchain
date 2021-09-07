@@ -36,6 +36,14 @@ int __cortos_q_lock_acquire(int index);
 void __cortos_q_lock_release(int index);
 
 
+typedef struct _CortosQueueHeader {
+  int totalMsgs; // current total messages
+  int readIndex;
+  int writeIndex;
+  int __; // to pad 4 bytes to make it 16 bytes.
+} __CortosQueueHeader;
+
+
 #define __Q_START_INDEX 0
 #define __AJIT_Q_BASE {{qQ.startAddr}}
 #define __AJIT_Q_LEN {{cortosQueueLength}}

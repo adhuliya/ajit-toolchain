@@ -42,7 +42,7 @@ compileToSparcUclibc.py \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \
   -I . \
   -I ${_CORTOS_SRC_DIR} \
-  -I ${_AAR}/include \
+  -I ${_AAR_MT}/include \
   -I ${_PT}/include \
   -s ${_CORTOS_INIT_00} \
   -s ${_CORTOS_ASM} \
