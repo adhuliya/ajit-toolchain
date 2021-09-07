@@ -15,7 +15,7 @@ uint32_t readInterruptControlRegister(int core_id, int thread_id)
 void     writeInterruptControlRegister(int core_id, int thread_id, uint32_t value)
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
-	__ajit_store_word_mmu_bypass__(addr,value);
+	__ajit_store_word_mmu_bypass__(value, addr);
 
 }
 
@@ -38,6 +38,7 @@ void disableInterruptController(int core_id, int thread_id)
 
 
 // set bit [interrupt_id] = 1 in control register for core, thread
+// NOTE: this function does not touch bit 0.
 void enableInterrupt(int core_id, int thread_id, int interrupt_id)
 {
 	uint32_t cv = readInterruptControlRegister(core_id,thread_id);
@@ -45,7 +46,8 @@ void enableInterrupt(int core_id, int thread_id, int interrupt_id)
 	writeInterruptControlRegister(core_id, thread_id, cv);
 }
 
-// enable all 15 interrupts on core/thread.
+// set bits [15:1] in control register core (core_id,thread_id) to 1.
+// NOTE: this function does not touch bit 0.
 void enableAllInterrupts(int core_id, int thread_id)
 {
 	uint32_t cv = readInterruptControlRegister(core_id,thread_id);
@@ -53,10 +55,19 @@ void enableAllInterrupts(int core_id, int thread_id)
 	writeInterruptControlRegister(core_id, thread_id, cv);
 }
 
+// set bits [15:0] in control register core (core_id,thread_id) to 1.
+// NOTE: this function sets bit 0.
+void enableInterruptControllerAndAllInterrupts(int core_id, int thread_id)
+{
+	writeInterruptControlRegister(core_id, thread_id, 0xffff);
+}
+
+
 // Note: mask[15:1] is written into control register[15:1]
 // for (core_id, thread_id).  Other bits of the control register
 // are not modified.  Use with care.   This should be called
 // only when the IRC is disabled.
+// NOTE: this function does not touch bit 0.
 void setInterruptMask(int core_id, int thread_id, uint32_t mask)
 {
 	uint32_t cv = readInterruptControlRegister(core_id,thread_id);

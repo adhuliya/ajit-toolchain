@@ -21,6 +21,7 @@ char* sock_pipe_name = NULL;
 
 void setRxQueueServerInSocketMode(char* pname) 
 {
+	fprintf(stderr,"Info: setRxQueueServerInSocketMode(%s).\n", pname);
 	socket_mode = 1;
 	sock_pipe_name = strdup(pname);
 }
@@ -89,6 +90,7 @@ int popByte(MultiThreadRxQueue* mcrq, uint8_t* b)
 
 void multiThreadRxDaemon()
 {
+	fprintf(stderr,"Info: started multiThreadRxDaemon.\n");
 	while(1)
 	{
 		uint8_t core_id, thread_id;
@@ -138,6 +140,7 @@ void startMultiThreadRxDaemon()
 	{
 		for (J = 0; J < NTHREADS_PER_CORE; J++)
 		{
+			fprintf(stderr,"Info: initialized multiThreadRxQueue (%d, %d).\n", I, J);
 			initMultiThreadRxQueue(&(thread_queues[I][J]));
 		}
 	}

@@ -176,7 +176,7 @@ int main () {
 		#ifdef AJIT
 		
 		//	__ajit_write_irc_control_register__(1);	//enable irc	
-		__AJIT_WRITE_IRC_CONTROL_REGISTER__(1);
+		__AJIT_WRITE_IRC_CONTROL_REGISTER__(0xffff);
 		//After above instruction anytime interrupt can work
 		add_delay();
 		//__ajit_write_irc_control_register__(0);	//disable irc

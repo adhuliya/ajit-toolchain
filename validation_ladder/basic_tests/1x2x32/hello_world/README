@@ -1,0 +1,5 @@
+One core with two threads.
+
+ -n 1 -t 2
+
+

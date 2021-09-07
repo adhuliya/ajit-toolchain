@@ -5,16 +5,15 @@ MAIN=hello_world
 # support infrastructure.
 #   for enabling serial device etc.
 AAR_MT=$AJIT_PROJECT_HOME/tools/ajit_access_routines_mt
-AAR=$AJIT_ACCESS_ROUTINES
 MUTEXES=$AAR_MT/asm/mutexes.s
 #   timer.
 PT=$AJIT_MINIMAL_PRINTF_TIMER
 #   trap handlers
-TRAP_HANDLERS=$AAR/asm/trap_handlers.s
+TRAP_HANDLERS=$AAR_MT/asm/trap_handlers.s
 # compile sources.
-SRCS=" -c main.c -s init.s -s $MUTEXES -s $TRAP_HANDLERS -C $AAR/src -C $PT/src"
+SRCS=" -c main.c -s init.s -s $MUTEXES -s $TRAP_HANDLERS -C $AAR_MT/src -C $PT/src"
 # compile includes.
-INCLUDES="-I ./ -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
+INCLUDES="-I ./ -I $AAR_MT/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
 # compile the application.
 compileToSparcUclibc.py -g -V VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk 
 
