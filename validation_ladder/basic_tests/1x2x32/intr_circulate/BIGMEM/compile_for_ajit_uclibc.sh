@@ -8,7 +8,7 @@ AAR=$AJIT_ACCESS_ROUTINES_MT
 PT=$AJIT_MINIMAL_PRINTF_TIMER
 #   trap handlers
 # compile sources.
-SRCS=" -c ../main.c -c ../rsum.c  -s ../init.s -s ../trap_handlers.s -s ../generic_isr_mt.s -C $AAR/src -C $PT/src"
+SRCS=" -c ../main.c -c ../rsum.c  -s ../init.s -s ../trap_handlers.s -s $AAR/asm/generic_isr_mt.s -C $AAR/src -C $PT/src"
 # compile includes.
 INCLUDES="-I ../ -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
 # compile the application.

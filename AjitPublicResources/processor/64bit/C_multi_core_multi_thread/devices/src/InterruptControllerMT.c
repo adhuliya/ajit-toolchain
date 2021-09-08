@@ -190,6 +190,9 @@ void start_IrcMt_threads(int ncores, int nthreads_per_core)
 	{
 		for(J=0; J < nthreads_per_core; J++)
 		{
+			irc_mt_state[I][J].core_id = I;
+			irc_mt_state[I][J].thread_id = J;
+			
 			initialize_IrcMt_state (& (irc_mt_state[I][J]));			
 			PTHREAD_DECL(IrcMt_Control);
 			PTHREAD_DECL(IrcMt_Output);

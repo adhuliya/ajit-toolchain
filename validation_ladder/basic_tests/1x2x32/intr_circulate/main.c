@@ -5,6 +5,10 @@
 
 int done_00 = 0;
 int done_01 = 0;
+
+int R00 = 0;
+int R01 = 1;
+
 int rsum (int N);
 
 void enable_serial()
@@ -20,8 +24,8 @@ void enable_interrupts()
 	uint8_t core_id, thread_id;
 	ajit_get_core_and_thread_id(&core_id, &thread_id);
 
-	ee_printf("enabled interrupts for (%d, %d)\n", core_id, thread_id);
 	enableInterruptControllerAndAllInterrupts(core_id, thread_id);
+	ee_printf("enabled interrupts for (%d, %d)\n", core_id, thread_id);
 
 }
 
@@ -39,6 +43,7 @@ void rotate_interrupts()
 	ajit_get_core_and_thread_id(&core_id, &thread_id);
 	ee_printf("rotated interrupts for (%d, %d)\n", core_id, thread_id);
 	enableInterruptControllerAndAllInterrupts(core_id, (1-thread_id));
+	ee_printf("enabled interrupts for (%d, %d)\n", core_id, 1-thread_id);
 }
 
 
@@ -52,7 +57,10 @@ void generic_interrupt_handler()
 
 	uint8_t core_id, thread_id;
 	ajit_get_core_and_thread_id(&core_id, &thread_id);
-	ee_printf("Hello world from %d%d\n", core_id, thread_id);
+	if(thread_id == 0)
+		ee_printf("Hello world from %d%d R00=%d.\n", core_id, thread_id, R00);
+	else
+		ee_printf("Hello world from %d%d R01=%d.\n", core_id, thread_id, R01);
 
 	if(rx == 'q') 
 	{
@@ -74,19 +82,14 @@ void generic_interrupt_handler()
 
 void main_00 () 
 {
-	int C = 0;
 	while(1)
 	{
-		C++;
-		int R = C;
 
 		int I;
-
 		for(I = 0; I < 16; I++)
 		{
-			R = R + rsum(I);
+			R00 = R00 + rsum(I);
 		}
-		ee_printf("main_00: R = %d\n", R);
 		
 		if(done_00 && done_01)
 			break;
@@ -95,20 +98,15 @@ void main_00 ()
 
 void main_01 () 
 {
-	ee_printf("Entered 01\n");
-	int C = 0;
+
 	while(1)
 	{
-		C++;
-		int R = C;
-
 		int I;
 		for(I = 0; I < 16; I++)
 		{
-			R = R + rsum(I);
+			R01 = R01 + rsum(I);
 		}
 		
-		ee_printf("main_01: R = %d\n", R);
 		if(done_00 && done_01)
 			break;
 	}
