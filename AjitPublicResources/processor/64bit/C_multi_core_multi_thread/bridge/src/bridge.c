@@ -257,8 +257,7 @@ int sysMemBusRequest (int core_id,
 		}
 		else
 		{
-			fprintf(stderr,"\nERROR: unmapped address 0x%x at bridge.\n",addr);
-			assert(0);
+			fprintf(stderr,"\nWarning: unmapped address 0x%x at bridge.\n",addr);
 		}
 	}
 
