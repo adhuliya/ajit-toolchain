@@ -1,0 +1,417 @@
+	The AJIT debug monitor utility for multiple threads.
+		Madhav Desai
+
+1. Overview
+------------
+
+    The AJIT debug monitor utility uses the
+    hardware debug interface unit in the AJIT
+    processor in order to control execution in 
+    a system which uses the AJIT processor core.
+
+    The setup of the debug monitor utility is
+    shown below.  
+    --------------------------------------------------------------
+     ajit_debug_monitor_mt   <--- uart --->   AJIT multi-threaded
+       runs on PC 			      FPGA prototype
+    --------------------------------------------------------------
+
+2. Synopsys
+------------
+
+    The AJIT debug monitor utility is invoked at the command line 
+
+    ajit_debug_monitor_mt -u <tty-dev> [-n <ncores>] [-t <nthreads-per-core>] 
+
+    The options are
+      -u tty-dev required, when the processor core is 
+        mapped to an FPGA board, with a serial UART (tty-dev)
+        being used as the debug connection.
+      -n <ncores> , optional, specify number of cores
+                        (default = 1, maximum = 4)
+      -n <nthreads_per_core> , optional, specify number of threads
+			in each core (default = 1, maximum = 2)
+        
+
+3. Ajit debug monitor MT interprter
+---------------------------------
+
+    The AJIT debug monitor provides the user with a command
+    shell for an interpreter.   The command prompt is 
+\begin{verbatim}
+    ajit[0:0]> 
+\end{verbatim}
+
+    The two numbers 0:0 in the prompt specify the core and
+    thread id which is currently being controlled/observed
+    in the monitor.
+
+    To change the core and thread being monitored, we can
+    at any time use
+
+    ajit[0:0]>  t 0 1
+    
+    This will change the core and thread id if possible
+    (note the -n and -t options above).  The prompt now 
+   changes to
+
+    ajit[0:1]>
+   
+
+    For each prompt, the user can supply a command.  The
+    commands are classified as follows (exactly as in the
+    ajit debug_monitor for the single thread case):
+
+	 Reset/mode control/observe.
+	 Initial PC/NPC/PSR control/observe.
+	 State register control/observe.
+	 Integer general purpose register observe/control.
+	 Floating-point general purpose register observe/control.
+	 Memory control/observe.
+	 Load memory map file.
+	 Run script file.
+	 Start/stop GDB server.
+	 Help, quit, log.
+
+3.1 Reset/mode control/observe
+--------------------------------
+
+	Using the interpreter, it is possible to control the
+	reset values applied to the core, as well as to observe
+	the mode it is running in.
+
+
+    w rst <reset-val>
+        	Write reset-val to the 4-bit CPU reset input to
+        	the AJIT core.  The value must be an integer value,
+        	specified either using the hex (0x...) or decimal format.
+    
+        e.g. 
+            w rst 0x1
+        puts the processor in reset mode, and
+            w rst 0x0
+        brings it out of reset.
+
+	rst values constitute a 4-bit field,
+	with the bit-fields being interpreted as follows:
+         [3]  :  if set, the processor will produce a logging
+                    trace (this is reserved, and may not be
+                    supported in your platform).
+         [2]  :  if set, the processor will run in single-step 
+                    mode.
+         [1]  :  if set, connect to debugger before executing
+                    first instruction, after reset is released
+         [0]  :  if set, initialize the CPU, Caches, MMU. This
+                    must be cleared to start running code.
+
+    r mode 
+        Read CPU mode.  This is a 4-bit value, and should
+        have one of the following values
+
+        value    meaning    
+        0x0     uninitialized mode
+        0x9     in reset mode.
+        0x2     in normal run mode.
+        0x3     in error mode.
+
+	Note: the processor core will stay in reset mode as long as the
+	least significant bit of the controlled rst value is 1.
+
+3.2   Initial PC/NPC/PSR control/observe
+--------------------------------------------
+
+	We can set the initial value of PC, NPC, PSR so that
+	the processor starts (post-reset-release) from the desired
+	instruction and status register state.
+
+    w ipc <init-pc-val>
+        Set the initial PC at which the processor core starts
+        when it comes out of reset.
+        e.g.
+            w ipc 0x40000000
+        means the when the CPU comes out of reset,  the initial
+        PC is 0x40000000.
+    r ipc
+        returns the value of initial PC.
+
+    w inpc <init-npc-val>
+        Set the initial NPC at which the processor core starts
+        when it comes out of reset.
+        e.g.
+            w inpc 0x40000004
+        means the when the CPU comes out of reset,  the initial
+        NPC is 0x40000004.
+    r inpc
+        returns the value of initial NPC.
+
+    w ipsr <init-psr-val>
+        Set the initial PSR at which the processor core starts
+        when it comes out of reset.
+        e.g.
+            w ipsr 0x10c0
+        means the when the CPU comes out of reset,  the initial
+        PSR is 0x10c0.
+    r ipsr
+        returns the value of initial PSR.
+
+3.3 State register control/observe
+------------------------------------
+	It is possible to control and observe  the current value
+	of the state registers using the interpreter.
+
+    w psr/wim/tbr/y <hex-value>
+        Set the current value of one of PSR/WIM/TBR/Y registers
+        to hex-value.
+
+        e.g.
+            w wim 0x1 
+        sets the WIM value in the processor core to 0x1.
+
+    r psr/wim/tbr/y 
+        Read the current value of PSR/WIM/TBR/Y registers.
+
+        e.g.
+            r tbr
+        returns the current value of the TBR.
+
+    w asr <asr-id> <asr-value>
+        Set the current value of one of ASR[asr-id] to asr-value.
+
+        e.g.
+            w asr 0x1  0xff
+        sets the value of ASR[0x1]  to 0xff.
+
+    r asr <asr-id>
+        Read the current value of ASR[asr-id] register.
+
+        e.g..
+            r asr 0x1
+        returns the current value of ASR[0x1].
+
+3.4 Integer general purpose register control/observe
+------------------------------------------------------
+	It is possible to observe control/observe the general purpose register 
+	values using the interpreter.
+
+
+    w iureg <reg-id> <reg-value>
+        Set the current value of one of integer general purpose
+        register [reg-id] to reg-value
+
+        e.g.
+            w iureg 0x7  0xff
+
+        sets the value of R[0x7]  to 0xff.
+
+    r iureg <reg-id>
+        Read the current value of the  integer unit R[reg-id] register.
+
+        e.g..
+            r iureg 0xf
+        returns the current value of R[0xf].
+
+3.4 Floating point general purpose register control/observe
+-----------------------------------------------------
+	It is possible to observe control/observe the floating point register 
+	values using the interpreter.
+
+    w fpreg <reg-id> <reg-value>
+        Set the current value of one of floating point general purpose
+        register [reg-id] to reg-value
+
+        e.g.
+            w fpreg 0x7  0x10000000
+
+        sets the value of F[0x7]  to 0x10000000.
+
+    r fpreg <reg-id>
+        Read the current value of the  floating point unit F[reg-id] register.
+
+        e.g..
+            r fpreg 0xf
+        returns the current value of F[0xf].
+
+3.5 Memory control/observe
+----------------------------
+	It is possible to observe control/observe any memory location
+	using the interpreter (including the various supported ASI's).
+	Observation and control is possible at the word (32-bit) level 
+	only.
+
+    w mem <asi-value> <addr-value> <write-value>
+        Write 32-bit write-value to address addr-value in memory space defined by 
+        asi asi-value. Address is force aligned to 32-bit access by setting bottom
+        two bits 0.
+
+        e.g.
+            w mem 0xa  0x0 0xffffffff
+        sets the value of mem[0x0] with asi=0xa  to 0xffffffff.
+
+    r mem <asi-value> <addr-value>
+        Read the current 32-bit value of the  memory (identified by asi) location 
+        addr-value.
+
+        e.g..
+            r mem 0xa 0x0
+        returns the current value of mem[0x0], with memory defined by asi=asi-value.
+
+3.6 Load memory map file
+---------------------------
+
+	It is possible to load a memory map into system memory by using
+	the interprter.  The memory map file consists of byte-address, byte-value
+	pairs, both specified in hex format.
+
+    m <mmap-file> 
+        load the memory map in mmap-file to the processor
+        memory.
+
+
+3.7 Execute script file
+-------------------------
+
+	A list of debug monitor commands can be listed in a file,
+	and the file can be executed as a script. Comment lines in
+	the script start with a "!" character.
+
+    s <script-file>
+        execute the AJIT debug monitor commands listed in the script-file.
+  
+    e.g. script file
+    ! Comment: reset the core..
+    w rst 0x1
+    ! load mmap file.
+    m mmap.txt
+    ! bring core out of reset.
+    w rst 0x0
+    ! read mode
+    r mode
+
+3.8 Start/stop GDB server
+---------------------------
+
+	The AJIT debug monitor can start a GDB debug server on the
+	host machine to allow GDB to remotely connect to the current thread
+	and control a debugging session.  Note that the GDB connection and
+	the AJIT debug monitor use the same connection to communicate with
+	the host.  Thus, when GDB is active, the debug monitor should be
+	quiet.
+   
+   g  start <port-id>
+        Start the GDB server to listen on port port-id.
+   g  stop
+        Stop the GDB server.
+
+
+3.9 Help, quit, log
+---------------------
+
+	These are  useful commands to get basic online help, 
+	to quit the interpreter, and to generate a command log
+	for re-use.
+    q
+        quit the monitor.
+
+    h
+        print a help message.
+
+    l <log-file>
+        generate a log of successful commands
+        into log-file.
+
+4.0  Setting up the environment
+----------------------------------
+
+    We assume that the processor model is set up and ready to use.
+        The processor+system is mapped to an FPGA card, with the debug interface
+        being mapped to UART (card can be standalone, FPGA must be programmed).
+        The reset switch inputs to the processor on the FPGA card  must be 0.
+
+    Further the AJIT tool chain must be set up on the host machine.
+
+5.0 Typical use cycle
+-------------------------
+
+	Suppose we are monitoring a one core, four thread processor.
+	In typical use, one follows the sequence (script file shown below):
+
+	! put the thread (0,0) in reset 
+	w rst 0x1
+	! set initial values for pc/npc/psr in thread (0,0).
+	w ipc 0x0
+	w inpc 0x4
+	w ipsr 0x10c0
+	! put the thread (0,1) in reset 
+	t 0 1
+	w rst 0x1
+	! set the initial values for pc/npc/psr in thread (0,1)
+	w ipc 0x0
+	w inpc 0x4
+	w ipsr 0x10c0
+	! download the memory map (m <mmap-file>)
+	m ADD.mmap
+	! release the reset for the current thread 0 1
+	w rst 0x0
+	! change thread to 0 0 
+	t 0 0
+	! release the reset for the current thread 0 0
+	w rst 0x0
+
+	Now both threads are running and you can monitor
+	their modes.
+	
+	r mode
+        t 0 1 
+	r mode 
+        .. etc ..
+	! quit / go back to reset mode and try again.
+	q 
+
+
+	You can start a GDB server through the debug monitor. 
+	The debug monitor and GDB server use the same connection 
+	to the processor.  Thus, once you start a GDB server, you 
+	cannot resume normal debug monitor activity.  
+
+	The following sequence must be followed for a 1-core two
+	thread system.
+
+	! put thread 0 0 in reset mode 
+	w rst 0x1
+	! set initial values for pc/npc/psr for thread 0 0
+	w ipc 0x0
+	w inpc 0x4
+	w ipsr 0x10c0
+	! put thread 0 1 in reset mode.
+	t 0 1
+	w rst 0x1
+	! set initial values for pc/npc/psr for thread 0 1
+	w ipc 0x0
+	w inpc 0x4
+	w ipsr 0x10c0
+	! download the memory map (m <mmap-file>)
+	m ADD.mmap
+	! start GDB server on port 8889 for thread 0 1
+	g start 8889
+	! change thread to 0 0
+	t 0 0
+	! start GDB server on port 8888 for thread 0 0
+	g start 8888
+	! bring thread 0 0 out of reset, but in debug-mode
+	w rst 0x2
+	! change to thread 0 1
+	t 0 1
+	! bring thread 0 1 out of reset, but in debug-mode
+	w rst 0x2
+	!
+	! From here on, the debug monitor should
+	! be quiet until the  debugging session is
+	! over.  Two GDB clients will be needed
+	! to connect to the two GDB servers started
+	! above..
+	.. eventually ...
+	q
+
+	Note that at the end of the GDB session, you need to quit the
+	debug monitor.
+
