@@ -52,18 +52,7 @@ STACKSETUP:
 	mov 1, %l7
 	st %l7, [%l6]
 
-	! Thread (0,0) enables the serial device
-	call enable_serial
-	nop
 
-	! Thread (0,0) enables the interrupts.
-	call enable_interrupts
-	nop
-
-	! clear the mutex.. physically located at 0x4000d000
-	!	This is to be marked non-cacheable...
-	set 0x4000d000, %l0
-	st %g0, [%l0]
 
 	!  Thread (0,0) jumps to AFTER_PTABLE_SETUP.
 	ba AFTER_PTABLE_SETUP
@@ -107,6 +96,17 @@ AFTER_PTABLE_SETUP:
   	! enable mmu.. write 0x1 into mmu control register.
 	set 0x1, %o0
 	sta %o0, [%g0] 0x4    
+
+	! Thread (0,0) enables the serial device
+	!!! NOTE:  this must be called after the MMU has
+	!!!        been enabled... because it loads strings
+	!!!	   from memory using virtual addresses.
+	call enable_serial
+	nop
+
+	! Thread (0,0) enables the interrupts.
+	call enable_interrupts
+	nop
 
 	! jump to run threads.
 	ba RUN_THREADS
