@@ -16,6 +16,34 @@
 
 FILE* log_file = NULL;
 
+int ajit_debug_interpreter_mt_ncores = 1;
+int ajit_debug_interpreter_mt_nthreads_per_core = 1;
+void setDebugInterpreterNcoresNthreadsPerCore(int n, int t)
+{
+	if(n <= MAX_NCORES)
+		ajit_debug_interpreter_mt_ncores = n;
+	else
+		fprintf(stderr,"Error: number of cores can be at most %d.\n", MAX_NCORES);
+
+	if(n <= MAX_NTHREADS_PER_CORE)
+		ajit_debug_interpreter_mt_nthreads_per_core = t;
+	else
+		fprintf(stderr,"Error: number of threads-per-core can be at most %d.\n", 
+										MAX_NTHREADS_PER_CORE);
+}
+
+int getDebugInterpreterNcores()
+{	
+	return(ajit_debug_interpreter_mt_ncores);
+}
+
+int getDebugInterpreterNthreads_per_core()
+{	
+	return(ajit_debug_interpreter_mt_nthreads_per_core);
+}
+
+
+
 int debug_interpreter_multi_core_mode = 0;
 void setDebugInterpreterInMultiCoreMode(int mcm) 
 {
@@ -343,8 +371,8 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				//
 				// For 4 cores and up to 8 threads only for now.
 				//
-				if((arg1 >= 0) && (arg1 < MAX_NCORES) && 
-							(arg2 >= 0) && (arg2 < MAX_NTHREADS_PER_CORE))
+				if((arg1 >= 0) && (arg1 < ajit_debug_interpreter_mt_ncores) && 
+						(arg2 >= 0) && (arg2 < ajit_debug_interpreter_mt_nthreads_per_core))
 				{
 					debug_interpreter_current_core_id = arg1;	
 					debug_interpreter_current_thread_id = arg2;	
@@ -359,8 +387,10 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				else
 				{
 					fprintf(stderr,"Error: illegal core,thread id.\n");
-					fprintf(stderr,"    legal core-id   is 0 to %d.\n", MAX_NCORES-1);
-					fprintf(stderr,"    legal thread-id is 0 to %d.\n", MAX_NTHREADS_PER_CORE-1);
+					fprintf(stderr,"    legal core-id   is 0 to %d.\n", 
+								ajit_debug_interpreter_mt_ncores-1);
+					fprintf(stderr,"    legal thread-id is 0 to %d.\n", 
+								ajit_debug_interpreter_mt_nthreads_per_core-1);
 				}
 			}
 			break;
@@ -692,9 +722,12 @@ void startDebugInterpreter()
 	// Configure readline to auto-complete paths when the tab key is hit.
     	//rl_bind_key('\t', rl_complete);
 
+	char  prompt_buffer[64];
 	while(1)
 	{
-		char* input_line = readline("ajit> ");
+		sprintf(prompt_buffer,"ajit[%d:%d]> ", debug_interpreter_current_core_id, 
+								debug_interpreter_current_thread_id);
+		char* input_line = readline(prompt_buffer);
 		//fprintf(stderr,"command-line=%s\n", input_line);
 
 		char log_buffer[LINESIZE+1];

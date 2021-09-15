@@ -1,8 +1,8 @@
 .section .text.ajitstart
 .global _start;
 _start:
-	set -256, %sp
-	clr %fp
+	set 0xfff00ff0, %sp
+	set 0xfff00ff0, %fp
 
 	set 0x1, %l0		! window 0 is marked invalid...  we start at window 7
 	wr %l0, 0x0, %wim	!

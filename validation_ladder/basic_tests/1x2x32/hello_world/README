@@ -1,0 +1,7 @@
+One core with two threads.
+
+ -n 1 -t 2
+
+Runs successfully in hardware.
+
+

@@ -27,7 +27,7 @@ void cortos_entry_func_001() {
   msg1.a_code = 1;
   msg1.a_ptr = a;
   CORTOS_DEBUG("Sending Message!");
-  writeCortosMessage(0, &msg1);
+  cortos_writeMessage(0, &msg1);
 
   cortos_exit(0); //safely exit
 }
@@ -38,7 +38,7 @@ void cortos_entry_func_010() {
 
 void cortos_entry_func_101() {
   // wait for a message
-  while(!readCortosMessage(0, &msg2));
+  while(!cortos_readMessage(0, &msg2));
 
   CORTOS_DEBUG("Received Message!");
 

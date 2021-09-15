@@ -6,6 +6,21 @@
 #include "RequestTypeValues.h"
 #include "Ancillary.h"
 
+void sendPeripheralAccessCommand(const char* req_pipe,
+					uint8_t rwbar,
+					uint8_t byte_mask,
+					uint32_t address,
+					uint32_t write_data)
+{
+	uint64_t cmd = 
+		(((uint64_t) rwbar) << 63) |
+		(((uint64_t) (0xf & byte_mask)) << 59) |
+		(((uint64_t) address) << 32) | 
+		((uint64_t) write_data);
+	write_uint64(req_pipe, cmd);
+}
+
+
 void getPeripheralAccessCommand(const char* req_pipe,
 					uint8_t *rwbar,
 					uint8_t *byte_mask,

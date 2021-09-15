@@ -230,8 +230,7 @@ int sysMemBusRequest (int core_id,
 		else
 		{
 			//this is an invalid request
-			fprintf(stderr,"\nERROR: invalid request type %d to memoryAccess thread",request_type);
-			assert(0);
+			fprintf(stderr,"\nWarning: invalid request type %d to memoryAccess thread",request_type);
 		}
 
 		if(global_verbose_flag)
@@ -258,8 +257,7 @@ int sysMemBusRequest (int core_id,
 		}
 		else
 		{
-			fprintf(stderr,"\nERROR: unmapped address 0x%x at bridge.\n",addr);
-			assert(0);
+			fprintf(stderr,"\nWarning: unmapped address 0x%x at bridge.\n",addr);
 		}
 	}
 

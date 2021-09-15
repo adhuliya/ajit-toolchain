@@ -21,11 +21,12 @@
 #include "uarch_debug_interpreter.h"
 #include "pthreadUtils.h"
 #include "spi_common.h"
+#include "GDBtoAJITbridge.h"
 #include "debugServerMultiThread.h"
 #include "RxQueueServer.h"
 
-#define NCORES 		  4
-#define NTHREADS_PER_CORE 2
+#define MAX_NCORES 		  4
+#define MAX_NTHREADS_PER_CORE 	  2
 
 
 #define __SLEEP__(x)  usleep(x);
@@ -87,13 +88,16 @@ void Handle_Ctrl_C(int signal)
 
 void print_usage(char* app_name)
 {
-	fprintf(stderr, "USAGE:   %s [-h] [-H] [-E] [-u serial-dev-name] \n", 
+	fprintf(stderr, "USAGE:   %s [-n <ncores>] [-t <nthreads-per-core>] [-h] [-H] [-E] [-u serial-dev-name] \n", 
 			app_name);
+	fprintf(stderr, "   -n <ncores>        : optional, specifies number of cores (default = 1).\n");
+	fprintf(stderr, "   -t <nthreads>      : optional, specifies number of threads-per-core (default = 1).\n");
 	fprintf(stderr, "   -u <serial-dev>    : optional, specifies serial device to use for debug interface.\n");
 	fprintf(stderr, "   -H                 : optional, use if you are monitoring a VHDL sim via socket.\n");
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
+	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
 }
 
 MUTEX_DECL_NONSTATIC(__g_mutex__);
@@ -137,6 +141,9 @@ int main(int argc, char **argv)
 	int console_server_port = -1;
 	int use_aggregator = 0;
 
+	int ncores =   1;
+	int nthreads_per_core = 1;
+
 	time_t start_t, end_t, total_t;
 
 	signal(SIGINT,  Handle_Ctrl_C);
@@ -154,14 +161,11 @@ int main(int argc, char **argv)
 	uart_verbose_flag = 0;
 
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHEAvu:c:bM:")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:b")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
 				return(0);
-				break;
-			case 'M':
-				mmap_file_name = strdup(optarg);
 				break;
 			case 'v': 
 				global_verbose_flag = 1;
@@ -181,19 +185,30 @@ int main(int argc, char **argv)
 				// VHDL sim uses aggregator.
 				use_aggregator = 1;
 				break;
-			case 'A':
-				mode_specified = 1;
-				aa2c_flag = 1;
-				break;
-			case 'E':
-				mode_specified = 1;
-				riffa_flag = 1;
-
-				// PCIE sim always uses aggregator.
-				use_aggregator = 1;
-				break;
 			case 'c':
 				console_server_port = atoi(optarg);
+				break;
+			case 'n':
+				ncores = atoi(optarg);	
+				if(ncores <= MAX_NCORES)
+					fprintf(stderr,"Info: number of cores = %d.\n", ncores);
+				else
+				{
+					fprintf(stderr,"Error: number of cores should be at most %d.\n", 
+										MAX_NCORES);
+					ncores = 1;
+				}
+				break;
+			case 't':
+				nthreads_per_core = atoi(optarg);	
+				if(nthreads_per_core <= MAX_NTHREADS_PER_CORE)
+					fprintf(stderr,"Info: number of threads per core = %d.\n", nthreads_per_core);
+				else
+				{
+					fprintf(stderr,"Error: number of threads per core should be at most %d.\n",
+									 MAX_NTHREADS_PER_CORE);
+					nthreads_per_core = 1;
+				}
 				break;
 			default: 
 				fprintf(stderr,"Error: unknown option %c\n", opt);
@@ -257,11 +272,15 @@ int main(int argc, char **argv)
 
 	setDebugUtilsInMultiCoreMode(1);
 
+	// use debug server for GDB connection....
+	setUseDebugServer(1);
+
 	startMultiThreadRxDaemon();
 
-	startPerThreadDebugServerDaemons(NCORES,NTHREADS_PER_CORE);
+	startPerThreadDebugServerDaemons(ncores,nthreads_per_core);
 	
 	// start the debug interpreter.
+	setDebugInterpreterNcoresNthreadsPerCore(ncores,nthreads_per_core);
 	startDebugInterpreter();
 
 	return (main_ret_val);

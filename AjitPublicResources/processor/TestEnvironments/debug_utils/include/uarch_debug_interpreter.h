@@ -40,6 +40,10 @@ typedef enum __InterpreterCommand {
 	TRACEDUMP // "t d <trace-file>"
 } InterpreterCommand;
 
+void setDebugInterpreterNcoresNthreadsPerCore(int n, int t);
+int getDebugInterpreterNcores();
+int getDebugInterpreterNthreadsPerCore();
+
 void setDebugInterpreterInMultiCoreMode(int mcm);
 int getDebugInterpreterInMultiCoreMode();
 
