@@ -50,14 +50,17 @@ def printConfigFile(configFileName: FileNameT) -> None:
   print("ConfigFileData: Original:")
   print(conf.data)
 
-  print()
+  print("#" * 64)
   conf = config.UserConfig(conf.data)
   print("ConfigFileData: Processed:")
   print(conf)
 
 
 def buildProject(args: argparse.Namespace) -> None:
-  """Builds the project for Ajit Processor/CoRTOS."""
+  """Builds the project for Ajit Processor/CoRTOS.
+  It creates a configuration object and starts the build process
+  which uses the object.
+  """
   configFileName = args.configFileName
   confObj = config.readYamlConfig(configFileName)
   confObj.addDebugSupport(args.debug, args.port)
@@ -89,7 +92,7 @@ def getParser() -> argparse.ArgumentParser:
   subpar.set_defaults(func=printDetail)
   # subpar.add_argument('-l', '--logging', action='count', default=0)
   subpar.add_argument("object",
-                      choices=["config", "init"],
+                      choices=["config", "init", "header"],
                       help="Object to print.")
   subpar.add_argument("configFileName",
                       nargs="?",

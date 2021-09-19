@@ -8,29 +8,6 @@
 
 #include <stdint.h>
 
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_global_constants
-////////////////////////////////////////////////////////////////////////////////
-
-// Maximum synchronization vars available to the user.
-#define MAX_SYNC_VARS TODO
-
-// Maximum queues available to the user.
-#define MAX_QUEUES TODO
-
-// Total heap space available in bytes.
-#define TOTAL_HEAP_SPACE_IN_BYTES TODO
-
-// Total scratch space in bytes.
-#define TOTAL_SCRATCH_SPACE_IN_BYTES TODO
-
-// For current logging level see the logging declarations ahead.
-
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_global_constants
-////////////////////////////////////////////////////////////////////////////////
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_locking_declarations
@@ -163,6 +140,14 @@ int cortos_printf(const char *fmt, ...);
 // BLOCK START: cortos_logging_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
+// The programmer can log messages in CoRTOS using logging macros.
+// These macros pass the arguments to printf function internally.
+// For example, to log a TRACE message
+//      CORTOS_TRACE("Current count: %d", count);
+// When the user disables all logging or some log levels,
+// all the macros of disabled log levels expand to a blank space,
+// which removes the logging message entirely.
+
 #define LOG_LEVEL_ALL       10
 #define LOG_LEVEL_TRACE     20
 #define LOG_LEVEL_DEBUG     30
@@ -178,8 +163,10 @@ int cortos_printf(const char *fmt, ...);
 % if level.value >= confObj.logLevel.value:
 #define CORTOS_{{level.name}}(...) \
 __cortos_log_printf("{{level.name}}", __FILE__, __func__, __LINE__, __VA_ARGS__);
+
 % else:
 #define CORTOS_{{level.name}}(...)     /*blank*/
+
 % end
 % end
 

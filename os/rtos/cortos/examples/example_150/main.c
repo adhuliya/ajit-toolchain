@@ -29,7 +29,7 @@ void cortos_entry_func_001() {
 
   msg1.intArr[0] = 6;
   CORTOS_TRACE("Sending Message 3");
-  crotos_writeMessage(0, &msg1);
+  cortos_writeMessage(0, &msg1);
 
   msg1.intArr[0] = 1;
   CORTOS_TRACE("Sending Message 4");

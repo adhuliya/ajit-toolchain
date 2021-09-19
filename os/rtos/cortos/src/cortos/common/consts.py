@@ -54,7 +54,7 @@ All synchronization variables sit here.
 4 bytes for each sync variable.
 """
 
-ALL_QUEUES_SIZE = 4096 # bytes
+ALL_QUEUES_SPACE_IN_BYTES = 4096 # bytes
 """
 All the queues sit here.
 """
@@ -65,12 +65,14 @@ TOTAL_SHARED_INT_VARS = 256 # n integers
 
 DEFAULT_TOTAL_QUEUES = 32
 DEFAULT_QUEUE_LEN = 32
-DEFAULT_QUEUE_MSG_SIZE = 32  # bytes (at least 8 bytes)
-QUEUE_HEADER_SIZE = 16  # bytes
-DEFAULT_ALL_QUEUE_SIZE = (DEFAULT_TOTAL_QUEUES
-                          * DEFAULT_QUEUE_LEN * DEFAULT_QUEUE_MSG_SIZE)
-DEFAULT_TOTAL_QUEUE_SIZE = DEFAULT_QUEUE_MSG_SIZE * DEFAULT_QUEUE_LEN # bytes
-DEFAULT_MAX_QUEUES_POSSIBLE = ALL_QUEUES_SIZE // DEFAULT_TOTAL_QUEUE_SIZE
+DEFAULT_QUEUE_MSG_SIZE_IN_BYTES = 32  # bytes (at least 8 bytes)
+QUEUE_HEADER_SIZE_IN_BYTES = 16  # bytes
+DEFAULT_ALL_QUEUE_SIZE_IN_BYTES = (DEFAULT_TOTAL_QUEUES
+                                   * DEFAULT_QUEUE_LEN
+                                   * DEFAULT_QUEUE_MSG_SIZE_IN_BYTES)
+DEFAULT_QUEUE_SIZE_IN_BYTES = DEFAULT_QUEUE_MSG_SIZE_IN_BYTES * DEFAULT_QUEUE_LEN # bytes
+DEFAULT_MAX_QUEUES_POSSIBLE = (ALL_QUEUES_SPACE_IN_BYTES
+                               // DEFAULT_QUEUE_SIZE_IN_BYTES)
 
 
 DEFAULT_MEM_SIZE_IN_KB = 100 * 1024
@@ -89,6 +91,7 @@ CORTOS_SRC_DIR_NAME: str = "cortos_src"
 
 ELF_FILE_NAME: str = "main.elf"
 MMAP_FILE_NAME: str = "main.mmap"
+REMMAP_FILE_NAME: str = "main.mmap.remapped"
 
 TRAP_FILE_NAME: str = "trap_handlers.s"
 PAGE_TABLE_FILE_NAME: str = "setup_page_tables.s"
@@ -132,6 +135,10 @@ CORTOS_BGET_C_FILE: str = "cortos_bget.c"
 BGET_C_FILE: str = "__bget.c"
 BGET_H_FILE: str = "__bget.h"
 
+CORTOS_ASM_FILE_NAME: str = "cortos_asm.s"
+CORTOS_C_FILE_NAME: str = "cortos.c"
+CORTOS_PRINTF_FILE_NAME: str = "__cortos_ee_printf.c"
+
 
 DEFAULT_BGET_MEM_SIZE_IN_BYTES: int = 1024 * 100   # bytes
 
@@ -152,22 +159,37 @@ class LogLevel(Enum):
 
 DEFAULT_LOG_LEVEL: LogLevel = LogLevel.ALL
 
-LEVEL_ORDER = sorted([v for _, v in LogLevel.__members__.items()], key=lambda x: x.value)
+LEVEL_ORDER = sorted([v for _, v in LogLevel.__members__.items()],
+                     key=lambda x: x.value)
 
 def getLogLevel(level: int) -> LogLevel:
-  level10 = level * 10
-  if level10 == 0:
+  """Used for converting log level (possibly) given via command line.
+  A higher level value leads to more amount of logging.
+  level  ---> LogLevel
+    <=0        NONE
+    1          CRITICAL
+    2          ERROR
+    3          INFO
+    4          DEBUG
+    5          TRACE
+    >=6        ALL
+  """
+  if level <= 0:
     return LogLevel.NONE
-  elif level10 >= LogLevel.CRITICAL.value:
-    return LogLevel(LogLevel.CRITICAL.value)
-  else:
-    return LogLevel(level10)
+  elif level == 1:
+    return LogLevel.CRITICAL
+  elif level == 2:
+    return LogLevel.ERROR
+  elif level == 3:
+    return LogLevel.INFO
+  elif level == 4:
+    return LogLevel.DEBUG
+  elif level == 5:
+    return LogLevel.TRACE
+  elif level >= 6:
+    return LogLevel.ALL
 
 
 DEFAULT_DEBUG_BUILD: bool = False
 DEFAULT_DEBUG_PORT: int   = 8888
-
-CORTOS_ASM_FILE_NAME: str = "cortos_asm.s"
-CORTOS_C_FILE_NAME: str = "cortos.c"
-CORTOS_PRINTF_FILE_NAME: str = "__cortos_ee_printf.c"
 
