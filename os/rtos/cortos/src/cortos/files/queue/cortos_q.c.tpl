@@ -4,6 +4,29 @@
 #include "cortos.h"
 #include "__cortos.h"
 
+char queueIdArray[__MAX_QUEUES];
+
+int cortos_reserveQueue() {
+  int i, qid = -1;
+  __cortos_lock_acquire_buzy(__RES_LOCK_GET_Q_ID);
+  for (i=0; i < __MAX_QUEUES; ++i) {
+    if(queueIdArray[i] == 0) {
+      queueIdArray[i] = 1;
+      qid = i;
+      break;
+    }
+  }
+  __cortos_lock_release(__RES_LOCK_GET_Q_ID);
+  return qid;
+}
+
+void cortos_freeQueue(int queueId) {
+  if (queueId >= 0 && queueId < __MAX_QUEUES) {
+    __cortos_lock_acquire_buzy(__RES_LOCK_GET_Q_ID);
+    queueIdArray[queueId] = 0;
+    __cortos_lock_release(__RES_LOCK_GET_Q_ID);
+  }
+}
 
 int cortos_writeMessage(int queueId, CortosMessage *msg) {
   int status = 0; // 1 = msg written

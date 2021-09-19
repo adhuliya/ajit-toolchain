@@ -30,6 +30,16 @@ int cortos_lock_acquire_buzy(int index);
 int cortos_lock_acquire(int index);
 void cortos_lock_release(int index);
 
+// Reserve an unused lock variable id from cortos.
+//   It returns the lock variable id of the lock reserved.
+//   If no lock is available it returns -1.
+// Once a lock is reserved it is held by the caller,
+// until it is freed.
+int cortos_reserveLockVar();
+
+// Free a lock variable for reuse by cortos.
+void cortos_freeLockVar(int lockId);
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_locking_declarations
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +95,16 @@ int cortos_writeMessage(int queueId, CortosMessage *msg);
   - Returns non-zero if the msg was put into the *msg location.
 */
 int cortos_readMessage(int queueId, CortosMessage *msg);
+
+// Reserve an unused queue from cortos.
+//   It returns the queue id of the queue reserved.
+//   If no queue is available it returns -1.
+// Once a queue is reserved it is held by the caller,
+// until it is freed.
+int cortos_reserveQueue();
+
+// Free a queue for reuse by cortos.
+void cortos_freeQueue(int queueId);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_message_queues_declarations
