@@ -58,6 +58,7 @@ int __cortos_log_printf(
   int n=0;
   unsigned int asrValue;
   uint64_t clock_time;
+  unsigned int *time;
 
   __asm__ (
   "  rd %%asr29, %%l1\n"
@@ -71,11 +72,12 @@ int __cortos_log_printf(
 
 
   clock_time = cortos_get_clock_time();
+  time = &clock_time;
 
   n += ee_printf(
-   "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%ld]. ",
+   "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%lu,%lu]. ",
    levelName, asrValue & 0xFF00, asrValue & 0xFF,
-   fileName, lineNum, funcName, clock_time);
+   fileName, lineNum, funcName, *time, *(time+1));
 
   va_start(args, fmt);
   ee_vsprintf(buf, fmt, args);
