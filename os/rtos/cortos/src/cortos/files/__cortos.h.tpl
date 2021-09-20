@@ -11,8 +11,14 @@
 #include "cortos.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_global_constants
+// BLOCK START: cortos_memory_layout
 ////////////////////////////////////////////////////////////////////////////////
+
+// All these memory layout macros (without the leading '__')
+// are also defined in the cortos.h header file.
+
+// First Address 0x0:
+// Few instruction to start the bootup initializtion.
 
 // Memory region reserved for cortos' misc internal use.
 #define __RESERVED_MEM_START_ADDR {{ confObj.reservedMem.cortosReserved.startAddr }}
@@ -56,16 +62,18 @@
 #define __HEAP_END_ADDR {{ confObj.reservedMem.cortosBgetMemory.getLastByteAddr() }}
 #define __TOTAL_HEAP_SIZE_IN_BYTES {{ confObj.bgetMemSizeInBytes }}
 
-// Program stacks.
+// ALL INSTRUCTIONS start after {{ confObj.reservedMem.cortosBgetMemory.getLastByteAddr() }}:
+// 1. Logic to start all the threads.
+// 2. All user program instructions sit here.
+
+// All program stacks sit here.
 % for i, prog in enumerate(confObj.programs):
 #define __PROG_{{i}}_STACK_START_ADDR {{ prog.stackStartAddr }}
 #define __PROG_{{i}}_STACK_SIZE {{ prog.stackSizeInBytes }}
 % end
 
-// For current logging level see the logging declarations.
-
 ////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_global_constants
+// BLOCK END  : cortos_memory_layout
 ////////////////////////////////////////////////////////////////////////////////
 
 
