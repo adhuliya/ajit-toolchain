@@ -2,7 +2,7 @@
 #
 # Makefile for the linux kernel.
 #
-EXTRA_CFLAGS := -I$(src)/../Ajit/
+EXTRA_CFLAGS := -I$(src)/../Ajit/ # AJIT
 
 asflags-y := -ansi
 ccflags-y := -Werror
@@ -29,7 +29,7 @@ obj-y                   += traps_$(BITS).o
 
 # IRQ
 obj-y                   += irq_$(BITS).o
-obj-$(CONFIG_SPARC32)   += sun4m_irq.o sun4d_irq.o Ajit_irq.o
+obj-$(CONFIG_SPARC32)   += sun4m_irq.o sun4d_irq.o Ajit_irq.o # AJIT
 
 obj-y                   += process_$(BITS).o
 obj-y                   += signal_$(BITS).o

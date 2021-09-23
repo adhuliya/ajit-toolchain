@@ -1,12 +1,14 @@
-//Ajit_irq.c
+// Ajit_irq.c
 //
-//Board-specific routines for handling timer and serial 
-//interrupts and linking them with the kernel.
-//The routines here are derived from leon_kernel.c
+// Board-specific routines for handling timer and serial 
+// interrupts and linking them with the kernel.
+// The routines here are derived from leon_kernel.c
 //
-//Authors:
-//Neha Karanjkar
-//Aniket Deshmukh
+// Authors:
+// Neha Karanjkar
+// Aniket Deshmukh
+// Vishnu Easwaran E
+// Modified: September 2021
 
 
 #include <linux/slab.h>
@@ -26,16 +28,114 @@
 #include <asm/prom.h> //to access the device tree
 #include <linux/delay.h>
 
+//Device information to be populated
+//by reading the device-tree
+static unsigned int ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER = 0; // make this base address
+static unsigned int ADDR_INTERRUPT_CONTROLLER_MIN = 0; // AJIT mt addition
+static unsigned int ADDR_TIMER_CONTROL_REGISTER = 0;
+static unsigned int TIMER_IRQ_LEVEL = 0;
+static unsigned int TIMER_TICK_REAL_FREQUENCY = 0;
+static unsigned int TIMER_TICK_VIRTUAL_FREQUENCY = 0;
+
+// BEGIN: From ajit_access_routines.c
+inline void __ajit_store_word_mmu_bypass__(uint32_t value, u32 addr)
+{
+	//uint32_t asi = 0x20 | (highest_4_bits_of_phy_addr & 0xf);
+	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr),
+			     "i"(ASI_M_BYPASS) : "memory");
+}
+
+inline u32 __ajit_load_word_mmu_bypass__(u32 addr)
+{
+        u32 retval;
+        __asm__ __volatile__("lda [%1] %2, %0\n\t" :
+                             "=r"(retval) : "r"(addr), "i"(ASI_M_BYPASS));
+        return retval;
+}
+// END: ajit_access_routines.c
+
+// BEGIN: From ajit_mt_irc.c
+u32 readInterruptControlRegister(int core_id, int thread_id)
+{
+	u32 addr = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
+	u32 ret_val = __ajit_load_word_mmu_bypass__(addr);
+	return(ret_val);
+}
+
+void writeInterruptControlRegister(int core_id, int thread_id, u32 value)
+{
+	u32 addr = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
+	__ajit_store_word_mmu_bypass__(value, addr);
+
+}
+
+
+// set bit [0] = 1 in control register for core, thread
+void enableInterruptController(int core_id, int thread_id)
+{
+	u32 cv = readInterruptControlRegister(core_id,thread_id);
+	cv = cv | 0x1;
+	writeInterruptControlRegister(core_id, thread_id, cv);
+}
+
+// set bit [0] = 0 in control register for core, thread
+void disableInterruptController(int core_id, int thread_id)
+{
+	u32 cv = readInterruptControlRegister(core_id,thread_id);
+	cv = cv &  (~ 0x1);
+	writeInterruptControlRegister(core_id, thread_id, cv);
+}
+
+
+// set bit [interrupt_id] = 1 in control register for core, thread
+// NOTE: this function does not touch bit 0.
+void enableInterrupt(int core_id, int thread_id, int interrupt_id)
+{
+	u32 cv = readInterruptControlRegister(core_id,thread_id);
+	cv = cv | (1 << interrupt_id);
+	writeInterruptControlRegister(core_id, thread_id, cv);
+}
+
+// set bits [15:1] in control register core (core_id,thread_id) to 1.
+// NOTE: this function does not touch bit 0.
+void enableAllInterrupts(int core_id, int thread_id)
+{
+	u32 cv = readInterruptControlRegister(core_id,thread_id);
+	cv = cv | 0xfffe;
+	writeInterruptControlRegister(core_id, thread_id, cv);
+}
+
+// set bits [15:0] in control register core (core_id,thread_id) to 1.
+// NOTE: this function sets bit 0.
+void enableInterruptControllerAndAllInterrupts(int core_id, int thread_id)
+{
+	writeInterruptControlRegister(core_id, thread_id, 0xffff);
+}
+// END: ajit_mt_irc.c
+
+// Have to rewrite functions to consider multiple cores and thread while interrupting
+// 
+// unsigned int Ajit_build_device_irq(struct platform_device *op,
+// 					   unsigned int real_irq);
+// 
+// void Ajit_clear_clock_irq(void); --> void Ajit_clear_clock_irq(int core_id, int thread_id);
+// 
+// void  Ajit_init_timers(void); --> void Ajit_init_timers(int core_id, int thread_id);
+// 
+// void  Ajit_init_IRQ(void); --> void  Ajit_init_IRQ(int core_id, int thread_id);
+// 
+// void Ajit_write_IRC_control_word(int value); --> void Ajit_write_IRC_control_word(int core_id, int thread_id, u32 value);
+
+static int core_id = 0;
+static int thread_id = 0;
 
 
 static int Ajit_read_timer_register(int* paddr);
 static void Ajit_write_timer_control_word(int value);
-void Ajit_write_IRC_control_word(int value);
-
-
+void Ajit_write_IRC_control_word(u32 value); // updated for new IRC scheme
 
 //Read timer register.
-//Reading clears the timer interrupt
+// ?? Reading clears the timer interrupt ??
 static inline int Ajit_read_timer_register(int* paddr)
 {
         int retval;
@@ -78,15 +178,6 @@ static struct irq_chip Ajit_irq = {
 };
 
 
-//Device information to be populated
-//by reading the device-tree
-static unsigned int ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER=0;
-static unsigned int ADDR_TIMER_CONTROL_REGISTER=0;
-static unsigned int TIMER_IRQ_LEVEL=0;
-static unsigned int TIMER_TICK_REAL_FREQUENCY=0;
-static unsigned int TIMER_TICK_VIRTUAL_FREQUENCY=0;
-
-
 //read the device tree to obtain
 //hardware information.
 static void read_dev_tree(void)
@@ -110,7 +201,8 @@ static void read_dev_tree(void)
 	if (!node) { prom_printf("\nERROR: While reading device tree, could not find node ajit_interrupt_controller.\n"); return; }
 	prop = of_find_property(node, "reg", &len);
 	if (!prop) { prom_printf("\nERROR: While reading device tree, could not find property reg in node ajit_interrupt_controller.\n"); return; }
-	ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER = *(unsigned int *)prop->value;
+	ADDR_INTERRUPT_CONTROLLER_MIN = *(unsigned int *)prop->value;
+	ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
 	prom_printf("\nRead information from device tree: ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER=0x%x",ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER);
 	
 	//get information about the timer device
@@ -144,10 +236,6 @@ static void read_dev_tree(void)
 	}
 }
 
-
-
-
-
 //Write control word to timer register
 //using MMU-bypass ASI
 static inline void Ajit_write_timer_control_word(int value)
@@ -158,10 +246,11 @@ static inline void Ajit_write_timer_control_word(int value)
 
 //Write control word to Interrupt control register
 //using MMU-bypass ASI
-void Ajit_write_IRC_control_word(int value)
+void Ajit_write_IRC_control_word(u32 value)
 {
-	int* paddr = (int*)ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
-	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(paddr),  "i"(ASI_M_BYPASS) : "memory");
+	// int* paddr = (int*)ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
+	// __asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(paddr),  "i"(ASI_M_BYPASS) : "memory");
+	writeInterruptControlRegister(core_id, thread_id, value);
 }
 
 
@@ -251,14 +340,16 @@ static void Ajit_clear_clock_irq(void)
 	timer_control_word=(timer_control_word<<1)|1;
 
 	//Disable IRC
-	Ajit_write_IRC_control_word(0x00);
+	// Ajit_write_IRC_control_word(0x00);
+	disableInterruptController(core_id, thread_id);
 	//Disable timer
 	Ajit_write_timer_control_word(0x00);
 	// mitigate the race condition.
 	// wait till bit 0 is 0
 	while(!(Ajit_read_timer_register(paddr)<<31 == 0)) {}
 	//Enable the IRC
-	Ajit_write_IRC_control_word(0x01);
+	// Ajit_write_IRC_control_word(0x01);
+	enableInterruptControllerAndAllInterrupts(core_id, thread_id);
 	//Enable timer
 	Ajit_write_timer_control_word(timer_control_word);
 }
@@ -280,7 +371,7 @@ static void Ajit_clear_clock_irq(void)
 static void  Ajit_start_timer(void)
 {
 	uint32_t timer_control_word;
-	uint32_t IRC_control_word;
+	// uint32_t IRC_control_word;
 	
 	//Initialize timer connected to 
 	//hardware interrupt level10
@@ -297,15 +388,16 @@ static void  Ajit_start_timer(void)
 	Ajit_write_timer_control_word(timer_control_word);
 	
 	//Enable the IRC
-	IRC_control_word =1; //bit[0] is enable bit
+	// IRC_control_word =1; //bit[0] is enable bit
 	//write control word in IRC
-	Ajit_write_IRC_control_word(IRC_control_word);
+	// Ajit_write_IRC_control_word(IRC_control_word);
+	enableInterruptControllerAndAllInterrupts(core_id, thread_id);
 
 }
 
 void  Ajit_disable_timer(void)
 {
-	uint32_t timer_control_word;
+	// uint32_t timer_control_word;
 	
 	//Disable timer interrupts
 		
@@ -313,10 +405,12 @@ void  Ajit_disable_timer(void)
 	//bit 0     : timer_enable
 	//bits 31:1 : timer_count to generate interrupts with 
 	//a frequency = HZ
-	timer_control_word=0x00;
+	// timer_control_word=0x00;
 
 	//write timer control word
-	Ajit_write_timer_control_word(timer_control_word);
+	// Ajit_write_timer_control_word(timer_control_word);
+	disableInterruptController(core_id, thread_id);
+
 }
 
 

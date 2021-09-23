@@ -1,9 +1,11 @@
-//Ajit_serial.c
-//
-//Ajit serial driver (derived from uartlite.c)
-//Neha Karanjkar
-//April 2016
-//Modified: January 2017
+// Ajit_serial.c
+// 
+// Ajit serial driver (derived from uartlite.c)
+// Neha Karanjkar
+// April 2016
+// Modified: January 2017
+// Vishnu Easwaran E
+// Modified: September 2021
 
 
 #include <linux/kernel.h>
@@ -36,8 +38,8 @@
 
 //Offsets for serial device registers 
 #define CONTROL_REG	0x0
-#define TX_REG		0x04
-#define RX_REG		0x08
+#define TX_REG		0x04 // revised device address
+#define RX_REG		0x08 // revised device address
 
 //Bit positions in the serial control register
 #define BIT_TX_EN	0x0
@@ -68,11 +70,13 @@
 //	serial device.
 //
 static int AJIT_SERIAL_IRQ = 0;
-static int ADDR_SERIAL_REGISTER_BASE =0; 
+static int ADDR_SERIAL_REGISTER_BASE = 0;
+static int core_id = 0;
+static int thread_id = 0;
 
 
 
-//Routines for reads/writes to device registers
+//BEGIN: Routines for reads/writes to device registers
 static u8 Ajit_in8(void __iomem *addr)
 {
 	return ioread8(addr);
@@ -92,6 +96,7 @@ static void Ajit_out32(u32 val, void __iomem *addr)
 {
 	iowrite32be(val, addr);
 }
+//END: Routines for reads/writes to device registers
 
 struct Ajit_register_ops 
 {
@@ -325,18 +330,20 @@ static irqreturn_t Ajit_isr(int irq, void *dev_id)
 	//prom_printf("\nAjit_isr()");
 	
 	//Disable IRC
-	Ajit_write_IRC_control_word(0x00);
+	// Ajit_write_IRC_control_word(0x00);
+	disableInterruptController(core_id, thread_id); // AJIT mt; disables IRC as a whole
 	do {
-		busy  = Ajit_receive(port);
+		busy = Ajit_receive(port);
 		n++;
 	} while (busy);
 	
 	//prom_printf("\nReturned from Ajit_receive(). n = %d",n);
 	//Enable IRC
-	Ajit_write_IRC_control_word(0x01);
+	// Ajit_write_IRC_control_word(0x01);
+	enableInterruptController(core_id, thread_id); // AJIT mt
 
-	// work done? 
-	if (n >= 1) 
+	// work done?
+	if (n >= 1)
 	{
 		tty_flip_buffer_push(&port->state->port);
 		//prom_printf("\nReturn IRQ_HANDLED");
