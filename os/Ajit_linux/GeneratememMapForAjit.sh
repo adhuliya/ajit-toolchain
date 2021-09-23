@@ -34,13 +34,23 @@ fi
 
 
 echo "================================================="
-echo " STEP 1: "
+echo " STEP 1.1: "
 echo "  copying kernel source code (using rync)"
 echo "  from: ./Ajit_linux_3.16.1/"
 echo "  to  : ./buildroot-2014.08/output/build/linux-custom"
 echo "================================================="
 
 rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./Ajit_linux_3.16.1/ ./buildroot-2014.08/output/build/linux-custom
+
+
+echo "================================================="
+echo " STEP 1.2: "
+echo "  copying Busybox source code (using rync)"
+echo "  from: ./busybox-1.22.1/"
+echo "  to  : ./buildroot-2014.08/output/build/busybox-1.22.1"
+echo "================================================="
+
+rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./busybox-1.22.1/ ./buildroot-2014.08/output/build/busybox-1.22.1
 
 
 echo " Running make clean inside linux build directory"
