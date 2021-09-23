@@ -22,6 +22,8 @@ fi
 
 if ! [ -d "$BUILDROOT_BUILD_DIR" ]; then
   tar -xvf $BUILDROOT_TAR
+  mkdir -p $BUILDROOT_BUILD_DIR/dl && \
+  cp br2-dl/* $BUILDROOT_BUILD_DIR/dl
 fi
 
 if ! [ -d "$LINUX_BUILD_DIR" ]; then
