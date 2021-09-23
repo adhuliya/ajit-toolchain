@@ -63,6 +63,7 @@ Although the `cortos.h` is dynamically generated file, a sample output
 is provided below for convenience. For the most up-to-date content
 follow in the instructions given above.
 
+
     // NOTE:
     // All symbols for cortos' internal use are prefixed with `__`,
     // and can be mostly found in `__cortos.h` header file.
@@ -72,29 +73,69 @@ follow in the instructions given above.
     
     #include <stdint.h>
     
+    
     ////////////////////////////////////////////////////////////////////////////////
-    // BLOCK START: cortos_global_constants
+    // BLOCK START: cortos_memory_layout
     ////////////////////////////////////////////////////////////////////////////////
     
-    // Maximum synchronization vars available to the user.
-    #define MAX_SYNC_VARS TODO
+    // First Address 0x0:
+    // Few instruction to start the bootup initializtion.
     
-    // Maximum queues available to the user.
-    #define MAX_QUEUES TODO
+    // Memory region reserved for cortos' misc internal use.
+    #define RESERVED_MEM_START_ADDR 56
+    #define RESERVED_MEM_END_ADDR 311
+    
+    // Details related to the user scratch space.
+    #define SCRATCH_SPACE_START_ADDR 312
+    #define SCRATCH_SPACE_END_ADDR 1335
+    #define TOTAL_SCRATCH_SPACE_IN_BYTES 1024
+    
+    // Details of the cortos reserved lock vars (not available to the user)
+    #define RES_LOCK_VARS_START_ADDR 1336
+    #define RES_LOCK_VARS_END_ADDR 1463
+    #define MAX_RES_LOCK_VARS 32
+    
+    // Details of the lock vars available to the user.
+    #define LOCK_VARS_START_ADDR 1464
+    #define LOCK_VARS_END_ADDR 1591
+    #define MAX_LOCK_VARS 32
+    
+    // Details of the lock vars available to the user.
+    #define Q_LOCK_VARS_START_ADDR 1592
+    #define Q_LOCK_VARS_END_ADDR 1719
+    #define MAX_Q_LOCK_VARS 32
+    
+    // Details of the queue header array (one queue header per queue).
+    #define Q_HEADERS_START_ADDR 1720
+    #define Q_HEADERS_END_ADDR 2231
+    #define MAX_Q_HEADERS 32
+    
+    // Queues available to the user (all the queues sit here).
+    #define QUEUE_START_ADDR 2232
+    #define QUEUE_END_ADDR 34999
+    #define MAX_QUEUES 32
+    #define QUEUE_MSG_SIZE_IN_BYTES 32
+    #define MAX_ELEMENTS_PER_QUEUE 32
+    #define MAX_QUEUE_SIZE_IN_BYTES (MAX_ELEMENTS_PER_QUEUE * QUEUE_MSG_SIZE_IN_BYTES)
     
     // Total heap space available in bytes.
-    #define TOTAL_HEAP_SPACE_IN_BYTES TODO
+    #define HEAP_START_ADDR 35000
+    #define HEAP_END_ADDR 137399
+    #define TOTAL_HEAP_SIZE_IN_BYTES 102400
     
-    // Total scratch space in bytes.
-    #define TOTAL_SCRATCH_SPACE_IN_BYTES TODO
+    // ALL INSTRUCTIONS start after 137399:
+    // 1. Logic to start all the threads.
+    // 2. All user program instructions sit here.
     
-    // For current logging level see the logging declarations ahead.
+    // All program stacks sit here.
+    #define PROG_0_STACK_START_ADDR 3153920
+    #define PROG_0_STACK_SIZE 8192
+    #define PROG_1_STACK_START_ADDR 3162112
+    #define PROG_1_STACK_SIZE 8192
     
     ////////////////////////////////////////////////////////////////////////////////
-    // BLOCK END  : cortos_global_constants
+    // BLOCK END  : cortos_memory_layout
     ////////////////////////////////////////////////////////////////////////////////
-    
-    
     
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK START: cortos_locking_declarations
@@ -117,6 +158,16 @@ follow in the instructions given above.
     int cortos_lock_acquire(int index);
     void cortos_lock_release(int index);
     
+    // Reserve an unused lock variable id from cortos.
+    //   It returns the lock variable id of the lock reserved.
+    //   If no lock is available it returns -1.
+    // Once a lock is reserved it is held by the caller,
+    // until it is freed.
+    int cortos_reserveLockVar();
+    
+    // Free a lock variable for reuse by cortos.
+    void cortos_freeLockVar(int lockId);
+    
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_locking_declarations
     ////////////////////////////////////////////////////////////////////////////////
@@ -128,52 +179,60 @@ follow in the instructions given above.
     
     // A cortos' queue message.
     typedef union _CortosMessage32Bytes {
-    char charArr[32];
-    int intArr[8];
-    float floatArr[8];
-    double doubleArr[4];
+      char charArr[32];
+      int intArr[8];
+      float floatArr[8];
+      double doubleArr[4];
     
-    struct {
-    int a_code;
-    void *a_ptr; // pointer to a location
-    int *a_size; // in bytes
-    int a_intArr[5];
-    };
+      struct {
+        int a_code;
+        void *a_ptr; // pointer to a location
+        int *a_size; // in bytes
+        int a_intArr[5];
+      };
     
-    struct {
-    int b_code;
-    int b_intArr[7];
-    };
+      struct {
+        int b_code;
+        int b_intArr[7];
+      };
     
-    struct {
-    int c_code;
-    char c_charArr[28];
-    };
+      struct {
+        int c_code;
+        char c_charArr[28];
+      };
     
-    struct {
-    int d_code;
-    int d_val1;
-    double d_d1;
-    double d_d2;
-    double d_d3;
-    };
+      struct {
+        int d_code;
+        int d_val1;
+        double d_d1;
+        double d_d2;
+        double d_d3;
+      };
     
     } CortosMessage;
     
     
-    /*
-    Write a CortosMessage.
-    - Returns zero if the queue is full.
-    - Returns non-zero if the msg was added.
-      */
+    /* Write a CortosMessage.
+      - Returns zero if the queue is full.
+      - Returns non-zero if the msg was added.
+    */
     int cortos_writeMessage(int queueId, CortosMessage *msg);
     
-    /*
-    Read a CortosMessage.
-    - Returns zero if the queue is empty.
-    - Returns non-zero if the msg was put into the *msg location.
-      */
+    /* Read a CortosMessage.
+      - Returns zero if the queue is empty.
+      - Returns non-zero if the msg was put into the *msg location.
+    */
     int cortos_readMessage(int queueId, CortosMessage *msg);
+    
+    // Reserve an unused queue from cortos.
+    //   It returns the queue id of the queue reserved.
+    //   If no queue is available it returns -1.
+    // Once a queue is reserved it is held by the caller,
+    // until it is freed.
+    int cortos_reserveQueue();
+    
+    // Free a queue for reuse by cortos.
+    void cortos_freeQueue(int queueId);
     
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_message_queues_declarations
@@ -229,6 +288,14 @@ follow in the instructions given above.
     // BLOCK START: cortos_logging_declarations
     ////////////////////////////////////////////////////////////////////////////////
     
+    // The programmer can log messages in CoRTOS using logging macros.
+    // These macros pass the arguments to printf function internally.
+    // For example, to log a TRACE message
+    //      CORTOS_TRACE("Current count: %d", count);
+    // When the user disables all logging or some log levels,
+    // all the macros of disabled log levels expand to a blank space,
+    // which removes the logging message entirely.
+    
     #define LOG_LEVEL_ALL       10
     #define LOG_LEVEL_TRACE     20
     #define LOG_LEVEL_DEBUG     30
@@ -237,21 +304,29 @@ follow in the instructions given above.
     #define LOG_LEVEL_CRITICAL  60
     #define LOG_LEVEL_NONE      100
     
-    #define CORTOS_LOG_LEVEL 30
-    #define CORTOS_LOG_LEVEL_NAME "DEBUG"
+    #define CORTOS_LOG_LEVEL 20
+    #define CORTOS_LOG_LEVEL_NAME "TRACE"
     
     #define CORTOS_ALL(...)     /*blank*/
-    #define CORTOS_TRACE(...)     /*blank*/
+    
+    #define CORTOS_TRACE(...) \
+    __cortos_log_printf("TRACE", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     #define CORTOS_DEBUG(...) \
     __cortos_log_printf("DEBUG", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     #define CORTOS_INFO(...) \
     __cortos_log_printf("INFO", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     #define CORTOS_ERROR(...) \
     __cortos_log_printf("ERROR", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     #define CORTOS_CRITICAL(...) \
     __cortos_log_printf("CRITICAL", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     #define CORTOS_NONE(...) \
     __cortos_log_printf("NONE", __FILE__, __func__, __LINE__, __VA_ARGS__);
+    
     
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_logging_declarations
@@ -270,7 +345,7 @@ follow in the instructions given above.
     
     // sleep for specified number of clock cycles
     inline void cortos_sleep(uint32_t clock_cycles);
-
+    
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_utility_routines
     ////////////////////////////////////////////////////////////////////////////////
@@ -280,11 +355,11 @@ follow in the instructions given above.
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK START: cortos_scratch_pad_area
     ////////////////////////////////////////////////////////////////////////////////
-
+    
     // Here is a list of addresses to 4 byte locations that the
     // user can use for any miscellaneous reading, writing,
     // and sharing between the threads.
-
+    
     #define SHARED_INT_ADDR_0 0x138  // Decimal: 312
     #define SHARED_INT_ADDR_1 0x13c  // Decimal: 316
     #define SHARED_INT_ADDR_2 0x140  // Decimal: 320
@@ -541,6 +616,7 @@ follow in the instructions given above.
     #define SHARED_INT_ADDR_253 0x52c  // Decimal: 1324
     #define SHARED_INT_ADDR_254 0x530  // Decimal: 1328
     #define SHARED_INT_ADDR_255 0x534  // Decimal: 1332
+    
     ////////////////////////////////////////////////////////////////////////////////
     // BLOCK END  : cortos_scratch_pad_area
     ////////////////////////////////////////////////////////////////////////////////
@@ -548,4 +624,3 @@ follow in the instructions given above.
     
     
     #endif
-    

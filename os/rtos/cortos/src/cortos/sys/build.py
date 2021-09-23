@@ -7,6 +7,7 @@ Functionality to build the project for the Ajit processor.
 
 All the logic to build is present here, or invoked from here.
 """
+
 from io import StringIO
 import os
 import os.path as osp
@@ -46,19 +47,21 @@ def prepareBuildDir(
 def copyBuildFiles(
     confObj: config.UserConfig,
 ) -> None:
+  """After directory creations, it copies all the user files."""
+
   # STEP 1: cd into the build directory
   cwd = os.getcwd()
   os.chdir(confObj.buildDir)
 
-  # STEP 2: Copy files that the user is directly interested in.
+  # STEP 2: Copy files that the user may need to change or look at.
   cpy.copyProjectFiles(confObj)
   cpy.copyInitFile(confObj)
   cpy.copyTrapFile(confObj)
   cpy.copyCortosHeaderFile(confObj)
   cpy.copyResultsFile(confObj)
   cpy.copyBuildshFile(confObj)
-  cpy.copyCleanshFile(confObj)
   cpy.copyRunCModelFile(confObj)
+  cpy.copyCleanshFile(confObj)
 
   # STEP 3: Copy files that the user might not need to look into.
   os.chdir(confObj.cortosSrcDir)
