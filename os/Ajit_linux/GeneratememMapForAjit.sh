@@ -48,11 +48,11 @@ rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude C
 echo "================================================="
 echo " STEP 1.2: "
 echo "  copying Busybox source code (using rync)"
-echo "  from: ./busybox-1.22.1/"
+echo "  from: ./Ajit_busybox-1.22.1/"
 echo "  to  : ./buildroot-2014.08/output/build/busybox-1.22.1"
 echo "================================================="
 
-rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./busybox-1.22.1/ ./buildroot-2014.08/output/build/busybox-1.22.1
+rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./Ajit_busybox-1.22.1/ ./buildroot-2014.08/output/build/busybox-1.22.1
 
 
 echo " Running make clean inside linux build directory"
