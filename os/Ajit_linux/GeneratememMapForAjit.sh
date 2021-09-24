@@ -66,7 +66,7 @@ echo "================================================="
 
 cd buildroot-2014.08
 
-# make clean
+make clean
 
 if [ "$1" -eq 2 ]; then
   # Original defconfig with just the initial ramfs
