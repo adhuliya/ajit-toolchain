@@ -1,5 +1,6 @@
 # config where libs are statically linked
 # devtmpfs
+# <2> rootfs-tmpfs with static-libs & dynamic device list
 
 BR2_sparc=y
 BR2_DEFCONFIG="$(CONFIG_DIR)/defconfig"
@@ -13,3 +14,4 @@ BR2_ROOTFS_OVERLAY="$(BR2_EXTERNAL)/board/overlay/rootfs"
 BR2_PACKAGE_DHRYSTONE=y
 BR2_PACKAGE_STRACE=y
 BR2_PACKAGE_WHETSTONE=y
+BR2_PACKAGE_BUSYBOX_CONFIG="$(BR2_EXTERNAL)/bb_config/Ajit_bb.config"

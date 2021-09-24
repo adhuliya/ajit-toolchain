@@ -1,4 +1,5 @@
-# Config that have dynamically linkked libs
+# Config that have dynamically linked libs
+# <0> rootfs-tmpfs with dynamic-lib & static device list
 
 BR2_sparc=y
 BR2_DEFCONFIG="$(CONFIG_DIR)/defconfig"
@@ -17,3 +18,4 @@ BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE="$(BR2_EXTERNAL)/board/Ajit_minimal_linux_ke
 BR2_LINUX_KERNEL_VMLINUX=y
 BR2_TARGET_ROOTFS_INITRAMFS=y
 # BR2_TARGET_ROOTFS_TAR is not set
+BR2_PACKAGE_BUSYBOX_CONFIG="$(BR2_EXTERNAL)/bb_config/Ajit_bb.config"
