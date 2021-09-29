@@ -37,6 +37,9 @@ This code is based on a file that contains the following:
 
 */
 
+//AD: added to support float out-of-the-box
+#define HAS_FLOAT
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdint.h>

@@ -88,6 +88,10 @@ def copyCortosPrintfFile(
     f.write(btl.template(f"{consts.CORTOS_PRINTF_FILE_NAME}",
                          confObj=confObj))
 
+  with open(consts.CORTOS_PRINTF_CVT_FILE_NAME, "w") as f:
+    f.write(btl.template(f"{consts.CORTOS_PRINTF_CVT_FILE_NAME}",
+                         confObj=confObj))
+
 
 def copyLockFiles(
     confObj: config.UserConfig,

@@ -120,7 +120,7 @@ def runBuildScript(confObj: config.UserConfig) -> None:
 
 def computeStackAddr(confObj: config.UserConfig) -> None:
   """Compute the stack starting address of each program."""
-  lastFreeAddr = consts.LOWER_STACK_BOUNDARY_ADDR
+  lastFreeAddr = confObj.leastValidStackAddr
 
   for prog in confObj.programs:
     stackSize = prog.stackSizeInBytes if prog.stackSizeInBytes\
