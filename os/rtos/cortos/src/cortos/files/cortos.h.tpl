@@ -8,6 +8,11 @@
 
 #include <stdint.h>
 
+// A flag for the programmer to know if the environment
+// is provided by CORTOS or not.
+#define CORTOS
+
+#define CORTOS_THREADS {{len(confObj.programs)}}
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_memory_layout
@@ -270,6 +275,14 @@ inline uint64_t cortos_get_clock_time();
 
 // sleep for specified number of clock cycles
 inline void cortos_sleep(uint32_t clock_cycles);
+
+// Returns the thread id of the system.
+// 0 for Thread 00
+// 1 for Thread 01
+// 2 for Thread 10
+// 3 for Thread 11
+// ...
+char cortos_get_thread_id();
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_utility_routines
