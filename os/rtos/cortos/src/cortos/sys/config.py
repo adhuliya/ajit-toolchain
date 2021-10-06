@@ -28,6 +28,7 @@ YML_PROG_INIT_CALL_SEQ = "CortosInitCalls"
 YML_PROG_LOOP_CALL_SEQ = "CortosLoopCalls"
 
 YML_MEM_SIZE_IN_KB = "TotalMemoryInKB"
+YML_STACK_MIN_ADDR = "LeastValidStackAddr"
 YML_TOTAL_LOCK_VARS = "TotalLockVars"
 YML_ADD_BGET = "AddBget"
 
@@ -106,9 +107,13 @@ class UserConfig:
     self.totalResLockVars = consts.DEFAULT_RES_LOCK_VARS
 
     self.totalQueues = consts.DEFAULT_TOTAL_QUEUES
-    self.totalQueuesSize = consts.DEFAULT_TOTAL_QUEUE_SIZE
-    self.totalQueueHeadersSize = self.totalQueues * consts.QUEUE_HEADER_SIZE
+    self.elementsPerQueue = consts.DEFAULT_QUEUE_LEN
+    self.queueMsgSize = consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES
+    self.queueSizeInBytes = consts.DEFAULT_QUEUE_SIZE_IN_BYTES
+    self.totalQueueHeadersSize = (self.totalQueues
+                                  * consts.QUEUE_HEADER_SIZE_IN_BYTES)
 
+    self.leastValidStackAddr = consts.LOWER_STACK_BOUNDARY_ADDR_4MB
     self.bgetMemSizeInBytes = consts.DEFAULT_BGET_MEM_SIZE_IN_BYTES
     self.totalSharedIntVars = consts.TOTAL_SHARED_INT_VARS
     self.reservedMem: Opt[DataMemoryRegions] = None
@@ -149,6 +154,10 @@ class UserConfig:
     self.totalLockVars = (self.data[YML_TOTAL_LOCK_VARS]
                           if YML_TOTAL_LOCK_VARS in self.data
                           else consts.DEFAULT_LOCK_VARS)
+
+    self.leastValidStackAddr = (self.data[YML_STACK_MIN_ADDR]
+                                if YML_STACK_MIN_ADDR in self.data
+                                else consts.LOWER_STACK_BOUNDARY_ADDR_4MB)
 
     self.reservedMem = DataMemoryRegions(self)
 
@@ -326,6 +335,10 @@ class MemoryRegion(util.PrettyStr):
     return self.startAddr + self.sizeInBytes
 
 
+  def getLastByteAddr(self):
+    return self.getNextToLastByteAddr() - 1
+
+
 class DataMemoryRegions:
   def __init__(self,
       confObj: UserConfig,
@@ -360,7 +373,7 @@ class DataMemoryRegions:
     self.sizeInBytes += self.cortosLockVars.sizeInBytes
 
     startAddr = self.cortosLockVars.getNextToLastByteAddr()
-    regionSize = confObj.totalQueuesSize * 4
+    regionSize = confObj.totalQueues * 4
     self.cortosQueueLockVars = MemoryRegion(startAddr, regionSize)
     self.sizeInBytes += self.cortosQueueLockVars.sizeInBytes
 
@@ -370,7 +383,7 @@ class DataMemoryRegions:
     self.sizeInBytes += self.cortosQueueHeaders.sizeInBytes
 
     startAddr = self.cortosQueueHeaders.getNextToLastByteAddr()
-    regionSize = confObj.totalQueuesSize
+    regionSize = confObj.queueSizeInBytes * confObj.totalQueues
     self.cortosQueues = MemoryRegion(startAddr, regionSize)
     self.sizeInBytes += self.cortosQueues.sizeInBytes
 

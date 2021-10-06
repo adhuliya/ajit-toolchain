@@ -46,8 +46,8 @@ def copyCortosHeaderFile(
                          consts=consts,
                          LogLevel=consts.LogLevel,
                          cortosQueueLength=consts.DEFAULT_QUEUE_LEN,
-                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE,
-                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE,
+                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES,
+                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE_IN_BYTES,
                          ))
 
 
@@ -60,8 +60,8 @@ def copyCortosInternalHeaderFile(
                          consts=consts,
                          LogLevel=consts.LogLevel,
                          cortosQueueLength=consts.DEFAULT_QUEUE_LEN,
-                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE,
-                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE,
+                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES,
+                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE_IN_BYTES,
                          ))
 
 
@@ -86,6 +86,10 @@ def copyCortosPrintfFile(
 ) -> None:
   with open(consts.CORTOS_PRINTF_FILE_NAME, "w") as f:
     f.write(btl.template(f"{consts.CORTOS_PRINTF_FILE_NAME}",
+                         confObj=confObj))
+
+  with open(consts.CORTOS_PRINTF_CVT_FILE_NAME, "w") as f:
+    f.write(btl.template(f"{consts.CORTOS_PRINTF_CVT_FILE_NAME}",
                          confObj=confObj))
 
 

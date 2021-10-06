@@ -8,29 +8,74 @@
 
 #include <stdint.h>
 
+// A flag for the programmer to know if the environment
+// is provided by CORTOS or not.
+#define CORTOS
+
+#define CORTOS_THREADS {{len(confObj.programs)}}
+
 ////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_global_constants
+// BLOCK START: cortos_memory_layout
 ////////////////////////////////////////////////////////////////////////////////
 
-// Maximum synchronization vars available to the user.
-#define MAX_SYNC_VARS TODO
+// First Address 0x0:
+// Few instruction to start the bootup initializtion.
 
-// Maximum queues available to the user.
-#define MAX_QUEUES TODO
+// Memory region reserved for cortos' misc internal use.
+#define RESERVED_MEM_START_ADDR {{ confObj.reservedMem.cortosReserved.startAddr }}
+#define RESERVED_MEM_END_ADDR {{ confObj.reservedMem.cortosReserved.getLastByteAddr() }}
+
+// Details related to the user scratch space.
+#define SCRATCH_SPACE_START_ADDR {{ confObj.reservedMem.cortosSharedIntVars.startAddr }}
+#define SCRATCH_SPACE_END_ADDR {{ confObj.reservedMem.cortosSharedIntVars.getLastByteAddr() }}
+#define TOTAL_SCRATCH_SPACE_IN_BYTES {{ confObj.totalSharedIntVars * 4 }}
+
+// Details of the cortos reserved lock vars (not available to the user)
+#define RES_LOCK_VARS_START_ADDR {{ confObj.reservedMem.cortosResLockVars.startAddr }}
+#define RES_LOCK_VARS_END_ADDR {{ confObj.reservedMem.cortosResLockVars.getLastByteAddr() }}
+#define MAX_RES_LOCK_VARS {{ confObj.totalResLockVars }}
+
+// Details of the lock vars available to the user.
+#define LOCK_VARS_START_ADDR {{ confObj.reservedMem.cortosLockVars.startAddr }}
+#define LOCK_VARS_END_ADDR {{ confObj.reservedMem.cortosLockVars.getLastByteAddr() }}
+#define MAX_LOCK_VARS {{ confObj.totalLockVars }}
+
+// Details of the lock vars available to the user.
+#define Q_LOCK_VARS_START_ADDR {{ confObj.reservedMem.cortosQueueLockVars.startAddr }}
+#define Q_LOCK_VARS_END_ADDR {{ confObj.reservedMem.cortosQueueLockVars.getLastByteAddr() }}
+#define MAX_Q_LOCK_VARS {{ confObj.totalQueues }}
+
+// Details of the queue header array (one queue header per queue).
+#define Q_HEADERS_START_ADDR {{ confObj.reservedMem.cortosQueueHeaders.startAddr }}
+#define Q_HEADERS_END_ADDR {{ confObj.reservedMem.cortosQueueHeaders.getLastByteAddr() }}
+#define MAX_Q_HEADERS {{ confObj.totalQueues }}
+
+// Queues available to the user (all the queues sit here).
+#define QUEUE_START_ADDR {{ confObj.reservedMem.cortosQueues.startAddr }}
+#define QUEUE_END_ADDR {{ confObj.reservedMem.cortosQueues.getLastByteAddr() }}
+#define MAX_QUEUES {{ confObj.totalQueues }}
+#define QUEUE_MSG_SIZE_IN_BYTES {{ confObj.queueMsgSize }}
+#define MAX_ELEMENTS_PER_QUEUE {{ confObj.elementsPerQueue }}
+#define MAX_QUEUE_SIZE_IN_BYTES (MAX_ELEMENTS_PER_QUEUE * QUEUE_MSG_SIZE_IN_BYTES)
 
 // Total heap space available in bytes.
-#define TOTAL_HEAP_SPACE_IN_BYTES TODO
+#define HEAP_START_ADDR {{ confObj.reservedMem.cortosBgetMemory.startAddr }}
+#define HEAP_END_ADDR {{ confObj.reservedMem.cortosBgetMemory.getLastByteAddr() }}
+#define TOTAL_HEAP_SIZE_IN_BYTES {{ confObj.bgetMemSizeInBytes }}
 
-// Total scratch space in bytes.
-#define TOTAL_SCRATCH_SPACE_IN_BYTES TODO
+// ALL INSTRUCTIONS start after {{ confObj.reservedMem.cortosBgetMemory.getLastByteAddr() }}:
+// 1. Logic to start all the threads.
+// 2. All user program instructions sit here.
 
-// For current logging level see the logging declarations ahead.
+// All program stacks sit here.
+% for i, prog in enumerate(confObj.programs):
+#define PROG_{{i}}_STACK_START_ADDR {{ prog.stackStartAddr }}
+#define PROG_{{i}}_STACK_SIZE {{ prog.stackSizeInBytes }}
+% end
 
 ////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_global_constants
+// BLOCK END  : cortos_memory_layout
 ////////////////////////////////////////////////////////////////////////////////
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_locking_declarations
@@ -52,6 +97,16 @@
 int cortos_lock_acquire_buzy(int index);
 int cortos_lock_acquire(int index);
 void cortos_lock_release(int index);
+
+// Reserve an unused lock variable id from cortos.
+//   It returns the lock variable id of the lock reserved.
+//   If no lock is available it returns -1.
+// Once a lock is reserved it is held by the caller,
+// until it is freed.
+int cortos_reserveLockVar();
+
+// Free a lock variable for reuse by cortos.
+void cortos_freeLockVar(int lockId);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_locking_declarations
@@ -109,6 +164,16 @@ int cortos_writeMessage(int queueId, CortosMessage *msg);
 */
 int cortos_readMessage(int queueId, CortosMessage *msg);
 
+// Reserve an unused queue from cortos.
+//   It returns the queue id of the queue reserved.
+//   If no queue is available it returns -1.
+// Once a queue is reserved it is held by the caller,
+// until it is freed.
+int cortos_reserveQueue();
+
+// Free a queue for reuse by cortos.
+void cortos_freeQueue(int queueId);
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_message_queues_declarations
 ////////////////////////////////////////////////////////////////////////////////
@@ -163,6 +228,14 @@ int cortos_printf(const char *fmt, ...);
 // BLOCK START: cortos_logging_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
+// The programmer can log messages in CoRTOS using logging macros.
+// These macros pass the arguments to printf function internally.
+// For example, to log a TRACE message
+//      CORTOS_TRACE("Current count: %d", count);
+// When the user disables all logging or some log levels,
+// all the macros of disabled log levels expand to a blank space,
+// which removes the logging message entirely.
+
 #define LOG_LEVEL_ALL       10
 #define LOG_LEVEL_TRACE     20
 #define LOG_LEVEL_DEBUG     30
@@ -178,8 +251,10 @@ int cortos_printf(const char *fmt, ...);
 % if level.value >= confObj.logLevel.value:
 #define CORTOS_{{level.name}}(...) \
 __cortos_log_printf("{{level.name}}", __FILE__, __func__, __LINE__, __VA_ARGS__);
+
 % else:
 #define CORTOS_{{level.name}}(...)     /*blank*/
+
 % end
 % end
 
@@ -200,6 +275,14 @@ inline uint64_t cortos_get_clock_time();
 
 // sleep for specified number of clock cycles
 inline void cortos_sleep(uint32_t clock_cycles);
+
+// Returns the thread id of the system.
+// 0 for Thread 00
+// 1 for Thread 01
+// 2 for Thread 10
+// 3 for Thread 11
+// ...
+char cortos_get_thread_id();
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_utility_routines

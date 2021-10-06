@@ -1,0 +1,16 @@
+# yaml configuration file for linker/loader of Co-RTOS
+
+Cores: 1
+ThreadsPerCore: 2
+
+ProgramThreads:
+  - CortosInitCalls:
+      - main
+    StackSizeInBytes: 8192
+  - CortosInitCalls:
+      - main
+    StackSizeInBytes: 8192
+
+TotalMemoryInKB: 102400
+
+LogLevel: DEBUG
