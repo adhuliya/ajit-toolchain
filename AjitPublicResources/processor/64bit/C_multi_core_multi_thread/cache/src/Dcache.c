@@ -221,7 +221,6 @@ void cpuDcacheAccess (MmuState* ms,
 	}
 
 	unlock_cache(dcache);
-
 }
 
 	

@@ -57,6 +57,8 @@ typedef struct __Rlut {
 	int       is_icache_rlut;
 	int 	  cpu_id;
 	int       cache_size_in_lines;
+	int 	  cache_set_size;
+	int 	  data_width;
 	
 	// PA -> VA
 	setAssociativeMemory* pa_tlb;
@@ -69,7 +71,7 @@ typedef struct __Rlut {
 	pthread_mutex_t rlut_mutex;
 } Rlut;
 
-void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines);
+void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines, int cache_set_size);
 void     flushRlut(Rlut* r);
 
 // return (1 << 32) | va[31:6] on match
@@ -87,7 +89,7 @@ typedef struct __RlutManager {
 	Rlut dcache_rluts[MAX_N_CPUS];
 } RlutManager;
 
-void setupRlutManager (int ncpus, int icache_size_in_lines, int dcache_size_in_lines);
+void setupRlutManager (int ncpus, int icache_size_in_lines, int icache_associativity, int dcache_size_in_lines, int dcache_associativity);
 uint32_t lookupAndUpdateRlutInManager(int cpu_id, uint32_t pa_line_addr, uint32_t va_line_addr, int icache_flag);
 uint32_t lookupRlutInManager(int cpu_id, uint32_t pa_line_addr, int icache_flag);
 void flushRlutInManager(int cpu_id, int icache_flag);

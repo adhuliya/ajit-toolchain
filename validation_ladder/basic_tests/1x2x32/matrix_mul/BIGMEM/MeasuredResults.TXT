@@ -1,0 +1,8 @@
+for 128x128
+	thread00 512469    
+	thread01 512199                                                                                                   
+
+using mulSelBlock 
+	(odd/even distribution does not thrash the cache).
+
+Speedup relative to 1x1x32 is approx. 1.6X

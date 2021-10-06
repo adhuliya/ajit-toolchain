@@ -70,6 +70,10 @@ typedef struct _WriteThroughAllocateCache {
 	int log_number_of_lines;
 
 
+	int number_of_sets;
+	int log_number_of_sets;
+	int set_size;
+	int last_updated_offset_in_set[MAX_NUMBER_OF_LINES];
 
 	CacheLine cache_lines[MAX_NUMBER_OF_LINES];
 	char from_rlut_pipe_name [256];
@@ -86,12 +90,16 @@ typedef struct _WriteThroughAllocateCache {
 	
 } WriteThroughAllocateCache;
 
+
+uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va);
+uint32_t cacheSetId	  (WriteThroughAllocateCache* c, uint32_t va);
+
 int cacheLineId (WriteThroughAllocateCache* c, uint32_t va);
 int cacheLineOffset (uint32_t va);
 uint32_t vaTag(WriteThroughAllocateCache* c, uint32_t va);
 
 
-WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines);
+WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines, int set_size);
 void initCache (WriteThroughAllocateCache* c);
 void lookupCache (WriteThroughAllocateCache* c,
 			uint32_t va, uint8_t asi, 

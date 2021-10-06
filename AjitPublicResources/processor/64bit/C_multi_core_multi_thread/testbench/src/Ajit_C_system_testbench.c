@@ -124,6 +124,8 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -b <bp-size>, optional,  branch predictor table size (default=16)\n");
 	fprintf(stderr, "   -D <dcache-size-in-lines>, optional  (default=512)\n");
 	fprintf(stderr, "   -N <icache-size-in-lines>, optional  (default=512)\n");
+	fprintf(stderr, "   -A <dcache-associativity-in-lines>, optional  (default=1)\n");
+	fprintf(stderr, "   -Q <icache-associativity-in-lines>, optional  (default=1)\n");
 	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	// if you are simulating with limited memory, you can use the -q option to specify memory size.
@@ -213,6 +215,8 @@ int main(int argc, char **argv)
 	signal(SIGINT,  Handle_Ctrl_C);
 	signal(SIGTERM, Handle_Segfault);
 
+	int dcache_associativity = 1;
+	int icache_associativity = 1;
 
 	//process the arguments:
 	char* mmap_file_name  = NULL;
@@ -259,7 +263,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:A:Q:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -271,8 +275,16 @@ int main(int argc, char **argv)
 			case 'D':
 				dcache_number_of_lines = atoi(optarg);
 				break;
+			case 'A':
+				dcache_associativity = atoi(optarg);
+				fprintf(stderr,"Info: dcache associativity=%d.\n", dcache_associativity);
+				break;
 			case 'N':
 				icache_number_of_lines = atoi(optarg);
+				break;
+			case 'Q':
+				icache_associativity = atoi(optarg);
+				fprintf(stderr,"Info: icache associativity=%d.\n", icache_associativity);
 				break;
 			case 'e':
 				cache_trace_file_name = strdup(optarg);
@@ -416,7 +428,9 @@ int main(int argc, char **argv)
 		addPeripheral("irc_mt", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
 		addPeripheral("timer", ADDR_TIMER_MIN, ADDR_TIMER_MAX);	 // timer
 		addPeripheral("serial", ADDR_SERIAL_MIN, ADDR_SERIAL_MAX); // serial
-		// addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
+
+		// Note: this is problematic 
+		addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
 	}
 
 
@@ -487,7 +501,7 @@ int main(int argc, char **argv)
 
 
 	// set up the RLUTs
-	setupRlutManager(NCOREs, icache_number_of_lines, dcache_number_of_lines);
+	setupRlutManager(NCOREs, icache_number_of_lines, icache_associativity, dcache_number_of_lines, dcache_associativity);
 
 	
 	//Now lets prepare the environment:
@@ -516,7 +530,8 @@ int main(int argc, char **argv)
 			makeCoreState(COREID, 
 						NTHREADs,
 						u_mode, bp_table_size, 
-						icache_number_of_lines, dcache_number_of_lines,
+						icache_number_of_lines, icache_associativity,
+						dcache_number_of_lines, dcache_associativity,
 						global_verbose_flag, init_pc);
 		setThreadReportingInterval(core_state_vector[COREID], reporting_interval);
 

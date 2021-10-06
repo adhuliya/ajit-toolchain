@@ -3,7 +3,7 @@
 #include "core_portme.h"
 #include "math.h" 
 
-#define ORDER 4
+#define ORDER 64
 #define REPETITIONS 2
 
 // 
@@ -46,7 +46,7 @@ int main()
 		writeB();
 		checkA();
 	}
-	// ee_printf("done %d\n", I);
+	ee_printf("done %d\n", I);
 	return (0);
 }
 
