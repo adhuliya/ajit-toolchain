@@ -205,26 +205,33 @@ void initCache (WriteThroughAllocateCache* c)
 }
 
 // invalidate the line at the specified index.
-//  Note: line address is VA[31:6]
+//  Note: line address is VA[31:6].. top bits are ignore, since we
+//  only need to figure out the set_id.
+//
 void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address)
 {
 	c->number_of_invalidate_requests++;
 
-	int I;
-	if(c->set_size > 1)
-		I = cacheLineId(c, (va_line_address << LOG_BYTES_PER_CACHE_LINE));
-	else
-		I =  (va_line_address & ((1 << c->log_number_of_lines) - 1));
-
-	if((I >= 0) && (c->cache_lines[I].valid))
+	int set_id = cacheSetId(c, (va_line_address << LOG_BYTES_PER_CACHE_LINE));
+	if(set_id >= 0) 
 	{
-		c->cache_lines[I].valid = 0;
+		int I;
+		for(I = 0; I < c->set_size; I++)
+		{	
+			int J = (set_id * c->set_size) + I;
+			if(c->cache_lines[J].valid)
+			{
+				c->cache_lines[J].valid = 0;
+			}
+		}
 		c->number_of_invalidates++;
 
 		if(global_verbose_flag)
-			fprintf(stderr,"Info: %s core-id=%d, invalidated 0x%lx.\n", 
+			fprintf(stderr,"Info: %s core-id=%d, invalidated set %d (reduced va=0x%lx).\n", 
 					(c->is_icache ? "icache" : "dcache"), 
-					c->cpu_id, (va_line_address << 6)); 
+					c->cpu_id, 
+					set_id, 
+					(va_line_address << 6)); 
 	}
 }
 
@@ -236,7 +243,7 @@ uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va)
 
 	uint32_t set_id = cacheSetId(c,va);
 	assert (cacheLineId(c,va) < 0);
-	
+
 	int I;
 	for(I = 0; I < c->set_size; I++)
 	{
@@ -268,8 +275,8 @@ uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va)
 
 
 void lookupCache (WriteThroughAllocateCache* c,
-			uint32_t va, uint8_t asi, 
-			uint8_t *hit,   uint8_t *acc)
+		uint32_t va, uint8_t asi, 
+		uint8_t *hit,   uint8_t *acc)
 {
 	int I = cacheLineId(c, va);
 	uint32_t va_tag = vaTag (c, va);
@@ -289,9 +296,9 @@ void lookupCache (WriteThroughAllocateCache* c,
 }
 
 void updateCacheLine (WriteThroughAllocateCache* c,
-			uint8_t acc, 
-			uint32_t line_addr, 
-			uint64_t* line_data)
+		uint8_t acc, 
+		uint32_t line_addr, 
+		uint64_t* line_data)
 {
 	int I = cacheLineId (c, line_addr);
 	if(I < 0)

@@ -56,7 +56,8 @@ int myLog2(int x)
 // 
 // Added: If the cache associativity is 2^u, and if
 //   u == 0, we need to keep only 3-bits of data.
-//   Else, we need to keep 32-12=20 bits of data.
+// Added: if cache associativity is 2^u we keep
+//	3-u bits of data (entire set will be invalidated)
 //   
 uint32_t reduceVaLineAddr(Rlut* r, uint32_t va_line_addr)
 {
@@ -68,8 +69,8 @@ uint32_t reduceVaLineAddr(Rlut* r, uint32_t va_line_addr)
 	//   	  [14:12]  for direct mapped cache.
 	//   	     (data_width = 3)
 	//   or
-	//        [31:12]  for set associative cache.
-	//   	     (data_width = 20)
+	//        [13:12]  for 2-way set associative cache.
+	//   	     (data_width = 2)
 	//
 	ret_val  = (va_line_addr >> (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)) & ((1 << r->data_width)  - 1);
 
@@ -86,7 +87,8 @@ uint32_t reduceVaLineAddr(Rlut* r, uint32_t va_line_addr)
 // reduced VA is either
 //     [14:12]  of actual VA for direct mapped cache.
 //   OR
-//     [31:12]  of actual VA for set associative cache.
+//     [13:12]  of actual VA for 2-way set associative cache.
+// etc.  
 //
 uint32_t reconstructVaLineAddr(Rlut* r, uint32_t pa_line_addr, uint32_t reduced_va_line_addr)
 {
@@ -134,17 +136,27 @@ void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines, int c
 	assert(set_size > 0);
 
 	int tag_width  = (PHYSICAL_ADDR_WIDTH - LOG_CACHE_LINE_SIZE) - myLog2(set_size);
+	
+	//
+	// OK. Here we take a decision..
+	//    For a VIVT set associative cache, we invalidate the entire set!
+	//    This allows us to use fewer bits....
+	//
 	r->data_width = 
-		((r->cache_set_size == 1) ?
-			((LOG_CACHE_SIZE + LOG_CACHE_LINE_SIZE) - LOG_BASE_PAGE_SIZE) :
-				(32 - LOG_BASE_PAGE_SIZE));
+		((myLog2(cache_size_in_lines) + LOG_CACHE_LINE_SIZE - (r->cache_set_size-1)) - LOG_BASE_PAGE_SIZE);
 
-	r->pa_tlb      = findOrAllocateSetAssociativeMemory((is_icache ? 9 : 10),
+	// no trivial caches for now..!
+	assert(r->data_width > 0);
+
+	r->pa_tlb      = findOrAllocateSetAssociativeMemory((cpu_id*1000) + (is_icache ? 9 : 10),
 									tag_width, 
 									r->data_width, 
 									myLog2(mem_size),
 									myLog2(set_size));
 
+	fprintf(stderr,"Info: initialized rlut for core %d (icache=%d), data_width=%d.\n",
+				cpu_id, is_icache, r->data_width);
+				
   	pthread_mutex_init (&(r->rlut_mutex), NULL);
 }
 
