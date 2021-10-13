@@ -68,13 +68,13 @@ cd buildroot-2014.08
 
 make clean
 
-if [ "$1" -eq 2 ]; then
+if [ "$1" -eq 1 ]; then
   # Original defconfig with just the initial ramfs
   echo ""
   echo "****Defconfig: Ajit_defconfig****"
   echo ""
   make BR2_EXTERNAL=$PWD/../Ajit_buildroot_configs Ajit_defconfig
-elif ! [ "$1" -eq 1]; then
+elif ! [ "$1" -eq 2]; then
   echo ""
   echo "****Defconfig: Ajit_rootfs_$1_defconfig****"
   echo ""
