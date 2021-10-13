@@ -9,8 +9,8 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
   echo "Usage: $0 <DEFCONFIG>"
   echo ""
   echo "DEFCONFIG values"
-  echo "    <1> rootfs-tmpfs with satic-lib & static device list"
-  echo "    <2> legacy initramfs system config;no rootfs-tmpfs present"
+  echo "    <1> legacy initramfs system config;no rootfs-tmpfs present"
+  echo "    <2> rootfs-tmpfs with satic-lib & static device list"
   exit 1
 fi
 
