@@ -35,3 +35,6 @@ is replaced by:
 !	.byte	((_dt_blob_abs_end - _dt_blob_start) >> 8) & 0xff
 !	.byte	(_dt_blob_abs_end - _dt_blob_start) & 0xff
 
+Note: By default the clock freq is set for C model. 
+	Run "fpga_script.sh" and "c_script.sh" for toggling to corresponding 
+	clock frequencies.
