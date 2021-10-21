@@ -34,6 +34,7 @@ export AJIT_BUILDROOT_BIN_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/bin";
 export AJIT_UCLIBC_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/sparc-buildroot-linux-uclibc";
 
 export AJIT_CORTOS_DIR="$AJIT_HOME/os/rtos/cortos";
+export AJIT_LINUX_DIR="$AJIT_HOME/os/Ajit_linux";
 
 ################################################################
 ## END  : SETUP_BASE_PATHS
