@@ -30,8 +30,8 @@ BUILD INSTRUCTIONS:
 		./GeneratememMapForAjit.sh <DEFCONFIG>
 
 		DEFCONFIG values
-		    <1> rootfs-tmpfs with satic-lib & static device list
-		    <2> legacy initramfs system config;no rootfs-tmpfs present [HAS THE LATENCY FIX]
+		    <1> legacy initramfs system config;no rootfs-tmpfs present [HAS THE LATENCY FIX]
+		    <2> rootfs-tmpfs with satic-lib & static device list [HAS THE LATENCY FIX]
 
 	followed by
 
@@ -39,8 +39,8 @@ BUILD INSTRUCTIONS:
 
 	Note: paths to the bin-utils must be setup before doing this.
 	Note: device-tree-compiler needs to be installed.
-	Note: by default clock frequency is set for c-mode in the device-tree. 
-		Refer "Ajit_device_tree/README" for knowing how to switch it for FPGA.
+	Note: by default clock frequency is set for the c-model in the device-tree. 
+		Refer "Ajit_device_tree/README" for knowing how to change it for FPGA.
 
 --------------------------------------------------------------------------------------------------------
 Ajit Linux System:
