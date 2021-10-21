@@ -5,8 +5,8 @@ _start:
 	sta %o0, [%g0] 0x4      ! set the default cacheable bit in the mmu to 1. mmu stays disabled.
 
 	! stack and frame pointers start just below IO mem.
-	set 0xffff2f00, %sp
-	set 0xffff2f00, %fp
+	set 0xfff02f00, %sp
+	set 0xfff02f00, %fp
 
 	set 0x1, %l0		! window 0 is marked invalid...  we start at window 7 after reset trap
 	wr %l0, 0x0, %wim	!

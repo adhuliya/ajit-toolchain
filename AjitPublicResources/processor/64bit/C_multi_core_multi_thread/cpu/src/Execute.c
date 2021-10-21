@@ -251,18 +251,6 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	uint8_t is_alternate = ((op >= _STBA_) && (op <= _STDA_));
 	uint8_t is_privileged = ((is_alternate || op == _STDFQ_ || op == _STDCQ_) && (!s));
 
-	//
-	//
-	// flush the ICACHE if it is an mmu-ctrl-register write.
-	//
-	//
-	if((asi == ASI_MMU_REGISTER) || (asi == ASI_MMU_FLUSH_PROBE))
-	{
-#ifdef DEBUG
-		fprintf(stderr,"\tInfo:executeStore: Flushing ICACHE due to MMU-CTRl-REGISTER-WRITE/FLUSH-PROBE (asi=0x%x) \n", asi);
-#endif
-		flushCache(state->icache);
-	}
 
 	if(is_privileged)
 	{
@@ -276,9 +264,26 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 		setPageBit((CoreState*) state->parent_core_state, address); // flag all pages that were accessed.
 		if( !s) addr_space = 10;
 		else    addr_space = 11;
-	}else
+	}
+	else
 	{
-		if(s) addr_space = asi;
+		if(s) 
+		{
+			addr_space = asi;
+			//
+			//
+			// flush the ICACHE if it is an mmu-ctrl-register write.
+			//
+			//
+			if((addr_space == ASI_MMU_REGISTER) || (addr_space == ASI_MMU_FLUSH_PROBE))
+			{
+#ifdef DEBUG
+				fprintf(stderr,"\tInfo:executeStore: Flushing ICACHE due to MMU-CTRl-REGISTER-WRITE/FLUSH-PROBE (asi=0x%x) \n", asi);
+#endif
+				flushCache(state->icache);
+			}
+		}
+
 	}
 
 	uint8_t is_fp_trap = (((op == _STF_) || (op == _STDF_) || (op == _STFSR_) || (op == _STDFQ_)) && ((!ef) || !getBpFPUPresent(state)));
@@ -316,9 +321,9 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	if(invalid_fp_reg)
 	{
 
-	tv =  setBit32(tv, _TRAP_, 1) ;
-	tv =  setBit32(tv, _INVALID_FP_REGISTER_, 1) ;
-	status_reg->fsr = setSlice32(fsr, 16, 14, 6) ;
+		tv =  setBit32(tv, _TRAP_, 1) ;
+		tv =  setBit32(tv, _INVALID_FP_REGISTER_, 1) ;
+		status_reg->fsr = setSlice32(fsr, 16, 14, 6) ;
 	}
 
 	// Note - Not implemented invalid_fp_register, no fp queue and no cp queue
@@ -344,7 +349,7 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 		}
 		else if (getSlice32(address, 1, 0) == 2) byte_mask = 0x3 ;
 	}
-	
+
 	if ((op == _STB_) || (op == _STBA_))
 
 	{
@@ -357,11 +362,11 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	uint8_t is_dw = (op == _STD_) || (op == _STDA_) || (op == _STDF_) || (op == _STDC_) || (op == _STDFQ_) || (op == _STDCQ_);
 	uint8_t is_trap1 = getBit32(tv, _TRAP_);
 	uint8_t mae1 = 0;
-	
+
 	if(!is_trap1)	
 	{
-			if(!is_dw)
-			{
+		if(!is_dw)
+		{
 				//perform a memory access if this is not a double-word store
 				writeData(state->mmu_state, state->dcache,
 						addr_space, address, byte_mask, data0, &mae1);

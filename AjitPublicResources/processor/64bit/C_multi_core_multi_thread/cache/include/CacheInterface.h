@@ -134,7 +134,7 @@ void cpuIcacheAccess (MmuState* ms,
 void dumpCpuIcacheAccessTrace
 		(WriteThroughAllocateCache* icache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
-				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr);
+				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr, uint8_t is_hit);
  
 void cpuDcacheAccess (MmuState* ms, 
 			WriteThroughAllocateCache* dcache,
@@ -145,7 +145,7 @@ void dumpCpuDcacheAccessTrace
 		     (WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,
-				uint8_t mae, uint64_t read_data);
+				uint8_t mae, uint64_t read_data, uint8_t is_hit);
 
 
 void printCacheStatistics (WriteThroughAllocateCache* c);

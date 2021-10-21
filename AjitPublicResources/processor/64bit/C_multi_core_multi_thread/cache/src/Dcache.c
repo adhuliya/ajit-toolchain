@@ -25,6 +25,7 @@ void cpuDcacheAccess (MmuState* ms,
 {
 	
 	lock_cache(dcache);
+	uint8_t is_hit = 0;
 
 	// service all the coherency related invalidates..
 	while(1)
@@ -94,7 +95,6 @@ void cpuDcacheAccess (MmuState* ms,
 	}
 	else if (!is_stbar && !is_nop)
 	{
-		uint8_t is_hit  = 0;
 		if(is_cached_mem_access)
 		{
 
@@ -217,7 +217,7 @@ void cpuDcacheAccess (MmuState* ms,
 	if(getCacheTraceFile() != NULL)
 	{
 		dumpCpuDcacheAccessTrace(dcache, asi, addr, request_type, byte_mask, write_data,
-							*mae, *read_data);
+							*mae, *read_data, is_hit);
 	}
 
 	unlock_cache(dcache);

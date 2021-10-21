@@ -491,14 +491,15 @@ int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c)
 void dumpCpuIcacheAccessTrace
 		(WriteThroughAllocateCache* icache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
-				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr)
+				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr, uint8_t is_hit)
 {
 	MUTEX_LOCK(__trace_mutex__);
 
 	fprintf(cache_trace_file,
-			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x %s\n",
+			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x %s %s\n",
 			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr,
-						((mmu_fsr != 0) ? "fsr!" : ""));
+						((mmu_fsr != 0) ? "fsr!" : ""),
+						(is_hit ? "hit": ""));
 	fflush(cache_trace_file);
 	
 	MUTEX_UNLOCK(__trace_mutex__);
@@ -508,13 +509,14 @@ void dumpCpuDcacheAccessTrace
 		     (WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,
-				uint8_t mae, uint64_t read_data)
+				uint8_t mae, uint64_t read_data, uint8_t is_hit)
 {
 	MUTEX_LOCK(__trace_mutex__);
 
 	fprintf(cache_trace_file,
-			">>>>D (%d) 0x%x 0x%x 0x%x 0x%x 0x%llx :  0x%x 0x%llx\n",
-			dcache->cpu_id, asi, addr, request_type, byte_mask, write_data, mae, read_data);
+			">>>>D (%d) 0x%x 0x%x 0x%x 0x%x 0x%llx :  0x%x 0x%llx %s\n",
+			dcache->cpu_id, asi, addr, request_type, byte_mask, write_data, mae, read_data,
+					(is_hit ? "hit": ""));
 	fflush(cache_trace_file);
 
 	MUTEX_UNLOCK(__trace_mutex__);

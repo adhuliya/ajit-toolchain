@@ -1,0 +1,7 @@
+Starting
+Done initialising array                                                                                           
+1K: err=0 t=0.123700 seconds                                                                                      
+4K: err=0 t=0.488211 seconds                                                                                      
+16K: err=0 t=1.943114 seconds                                                                                     
+64K: err=0 t=7.762458 seconds                                                                                     
+Done       

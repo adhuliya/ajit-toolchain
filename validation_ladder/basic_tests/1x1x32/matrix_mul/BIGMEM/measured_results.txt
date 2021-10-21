@@ -1,0 +1,8 @@
+KC705 with DRAM prototype..
+
+4-way set associative caches.
+	main: start_time=29263653, end_time=30135415, elapsed=871762                                                                                                     
+
+Direct mapped caches
+	main: start_time=18068488, end_time=18942127, elapsed=873639                                                                                                     
+
