@@ -41,3 +41,40 @@ BUILD INSTRUCTIONS:
 	Note: device-tree-compiler needs to be installed.
 	Note: by default clock frequency is set for c-mode in the device-tree. 
 		Refer "Ajit_device_tree/README" for knowing how to switch it for FPGA.
+
+--------------------------------------------------------------------------------------------------------
+Ajit Linux System:
+------------------
+Overview
+========
+
+	Ajit Linux is based on Linux 3.16.1. Major additions for the Ajit platform are
+		- Ajit_irq: The interrupt handling in lieu with Ajit interrupt handler. 
+				Board-specific routines for handling timer and serial interrupts 
+				and linking them with the kernel.
+		- Ajit_serial: Driver for Ajit serial device
+		- Ajit_srmmu: Ajit cache and tlb flush/read operations
+		- A set of architecture specific code modifications in "/arch/sparc" subdirectory
+
+	For detailed overview, please refer "Documentation/README". "AJITREFS.txt" provide diff of the modifications. 
+
+Adding files to Linux image
+===========================
+
+Buildroot, the build system we use, has a feature to add files on target filesystem.
+
+	Ajit Linux contains uClibc, which is a C library implementation. Following are the 
+	steps to be followed for creating an Ajit Linux image that contain a custom program binary.
+		- write your program and compile it using the cross-compile tools provided along with this project.
+		Keep in mind of the libc present in Ajit Linux
+		- place your binary in "Ajit_buildroot_configs/board/rootfs/overlay/home"
+		- make the binary an executable for convenience
+		- Follow the build process as described in "Building an Ajit Linux Image" section
+
+	The resulting image will have the custom binary in "/home" directory. Once the image in booted in your 
+	target, which will be the C-model or FPGA, navigate to "/home" and run the binary as usual.
+
+	An example program setup is provided at "example_program/hello_world".
+
+	Note: If you choose to build with option <2>, then place the binary at "Ajit_buildroot_configs/board/overlay/rootfs/home"
+	Note: "ajit_env" must be setup properly
