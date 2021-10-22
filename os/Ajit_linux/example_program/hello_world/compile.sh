@@ -7,4 +7,4 @@ SRC="$NAME.c"
 BIN="$NAME.bin"
 
 # compile using the cross-compiler
-sparc-linux-gcc $SRC -o $BIN
+sparc-linux-gcc -static -O3 $SRC -o $BIN
