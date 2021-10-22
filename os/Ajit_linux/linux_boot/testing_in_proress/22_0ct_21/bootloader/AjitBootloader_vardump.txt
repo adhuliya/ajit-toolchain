@@ -1,0 +1,48 @@
+
+Symbol table '.symtab' contains 45 entries:
+   Num:    Value  Size Type    Bind   Vis      Ndx Name
+     0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: f0000000     0 SECTION LOCAL  DEFAULT    1 
+     2: f0000c80     0 SECTION LOCAL  DEFAULT    2 
+     3: f0000c98     0 SECTION LOCAL  DEFAULT    3 
+     4: f0000cc0     0 SECTION LOCAL  DEFAULT    4 
+     5: 00000000     0 SECTION LOCAL  DEFAULT    5 
+     6: 00000000     0 FILE    LOCAL  DEFAULT  ABS AjitBootloader.c
+     7: f00008b0    40 FUNC    LOCAL  DEFAULT    1 mmu_bypass_load
+     8: f00008d8    36 FUNC    LOCAL  DEFAULT    1 mmu_bypass_store
+     9: f00008fc    40 FUNC    LOCAL  DEFAULT    1 mmu_bypass_store_byte
+    10: f0000924    68 FUNC    LOCAL  DEFAULT    1 enableTx
+    11: f0000968    52 FUNC    LOCAL  DEFAULT    1 writetoTx
+    12: f000099c    88 FUNC    LOCAL  DEFAULT    1 getTxfull
+    13: f00009f4   104 FUNC    LOCAL  DEFAULT    1 pv_nbputchar
+    14: f0000a5c   128 FUNC    LOCAL  DEFAULT    1 ajit_putstring
+    15: f0000cc4     4 OBJECT  LOCAL  DEFAULT    4 EMPTY_sync_hook
+    16: f00003a0     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_start
+    17: f00003a0     0 NOTYPE  LOCAL  DEFAULT    1 _dt_header
+    18: f00008ab     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_abs_end
+    19: f00003d8     0 NOTYPE  LOCAL  DEFAULT    1 _dt_struct_start
+    20: f00007fc     0 NOTYPE  LOCAL  DEFAULT    1 _dt_strings_start
+    21: f00003c8     0 NOTYPE  LOCAL  DEFAULT    1 _dt_reserve_map
+    22: f00008ab     0 NOTYPE  LOCAL  DEFAULT    1 _dt_strings_end
+    23: f00007fc     0 NOTYPE  LOCAL  DEFAULT    1 _dt_struct_end
+    24: f00008ab     0 NOTYPE  LOCAL  DEFAULT    1 _dt_blob_end
+    25: f0000cc8   280 OBJECT  GLOBAL DEFAULT    4 Ajit_romvec
+    26: f00008ab     0 NOTYPE  GLOBAL DEFAULT    1 dt_strings_end
+    27: f00003a0     0 NOTYPE  GLOBAL DEFAULT    1 dt_header
+    28: f0000cbc     1 OBJECT  GLOBAL DEFAULT    3 AJIT_PROMDEV_TTYA
+    29: f0000cb8     4 OBJECT  GLOBAL DEFAULT    3 avail_p
+    30: f00002dc   196 FUNC    GLOBAL DEFAULT    1 bootloader
+    31: f0000c9c    12 OBJECT  GLOBAL DEFAULT    3 totphys
+    32: f00003a0     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_start
+    33: f0000c98     4 OBJECT  GLOBAL DEFAULT    3 Ajit_romvec_ptr
+    34: f00007fc     0 NOTYPE  GLOBAL DEFAULT    1 dt_struct_end
+    35: f00003c8     0 NOTYPE  GLOBAL DEFAULT    1 dt_reserve_map
+    36: f0000cc0     4 OBJECT  GLOBAL DEFAULT    4 null_ptr
+    37: f0000000   732 FUNC    GLOBAL DEFAULT    1 main
+    38: f0000adc   420 FUNC    GLOBAL DEFAULT    1 get_Ajit_romvec
+    39: f0000cb4     4 OBJECT  GLOBAL DEFAULT    3 totphys_p
+    40: f00008ab     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_end
+    41: f00007fc     0 NOTYPE  GLOBAL DEFAULT    1 dt_strings_start
+    42: f0000ca8    12 OBJECT  GLOBAL DEFAULT    3 avail
+    43: f00008ab     0 NOTYPE  GLOBAL DEFAULT    1 dt_blob_abs_end
+    44: f00003d8     0 NOTYPE  GLOBAL DEFAULT    1 dt_struct_start
