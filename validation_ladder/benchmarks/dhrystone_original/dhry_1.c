@@ -16,29 +16,24 @@
  */
 
 #include <stdint.h>
+#ifdef AJIT
+#include <ajit_access_routines.h>
+#include <core_portme.h>
+#define PRINTF ee_printf
+#define EE_TICKS_PER_SEC (100000000/256)
+#else
+#define PRINTF printf
+#endif
 #include "dhry.h"
 
 #ifdef AJIT
-inline void put_g1(uint32_t val)
+
+int __enable_serial()
 {
-	__asm__ __volatile__("mov %0, %%g1\n\t" : :"r"(val));
+	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
+	return(0);
 }
-inline void put_g2(uint32_t val)
-{
-	__asm__ __volatile__("mov %0, %%g2\n\t" : :"r"(val));
-}
-inline void put_g3(uint32_t val)
-{
-	__asm__ __volatile__("mov %0, %%g3\n\t" : :"r"(val));
-}
-inline void put_g4(uint32_t val)
-{
-	__asm__ __volatile__("mov %0, %%g4\n\t" : :"r"(val));
-}
-inline void put_g5(uint32_t val)
-{
-	__asm__ __volatile__("mov %0, %%g5\n\t" : :"r"(val));
-}
+
 inline void halt()
 {
 	__asm__ __volatile__("ta 0; nop; nop;");
@@ -78,20 +73,8 @@ Enumeration     Func_1 ();
 #endif
 
 /* variables for time measurement: */
-
-#ifdef TIMES
-struct tms      time_info;
-//extern  int     times ();
-                /* see library function "times" */
-#define Too_Small_Time 120
-                /* Measurements should last at least about 2 seconds */
-#endif
-#ifdef TIME
-extern long     time();
-                /* see library function "time"  */
 #define Too_Small_Time 2
                 /* Measurements should last at least 2 seconds */
-#endif
 
 long            Begin_Time,
                 End_Time,
@@ -140,33 +123,25 @@ void run_dhrystone (int Number_Of_Runs)
         /* Warning: With 16-Bit processors and Number_Of_Runs > 32000,  */
         /* overflow may occur for this array element.                   */
 
-#ifndef AJIT
-  printf ("\n");
-  printf ("Dhrystone Benchmark, Version 2.1 (Language: C)\n");
-  printf ("\n");
+  PRINTF ("\n");
+  PRINTF ("Dhrystone Benchmark, Version 2.1 (Language: C)\n");
+  PRINTF ("\n");
   if (Reg)
   {
-    printf ("Program compiled with 'register' attribute\n");
-    printf ("\n");
+    PRINTF ("Program compiled with 'register' attribute\n");
+    PRINTF ("\n");
   }
   else
   {
-    printf ("Program compiled without 'register' attribute\n");
-    printf ("\n");
+    PRINTF ("Program compiled without 'register' attribute\n");
+    PRINTF ("\n");
   }
-  printf ("\n");
+  PRINTF ("\n");
 
-  printf ("Execution starts, %d runs through Dhrystone\n", Number_Of_Runs);
+  PRINTF ("Execution starts, %d runs through Dhrystone\n", Number_Of_Runs);
 
  
-#ifdef TIMES
-  times (&time_info);
-  Begin_Time = (long) time_info.tms_utime;
-#endif
-#ifdef TIME
-  Begin_Time = time ( (long *) 0);
-#endif
-#endif 
+  Begin_Time = ajit_barebones_clock();
 
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
@@ -217,96 +192,82 @@ void run_dhrystone (int Number_Of_Runs)
   /**************/
   /* Stop timer */
   /**************/
-#ifndef AJIT
-  
-#ifdef TIMES
-  times (&time_info);
-  End_Time = (long) time_info.tms_utime;
-#endif
-#ifdef TIME
-  End_Time = time ( (long *) 0);
-#endif
+  End_Time = ajit_barebones_clock();
 
-  printf ("Execution ends\n");
-  printf ("\n");
-  printf ("Final values of the variables used in the benchmark:\n");
-  printf ("\n");
-  printf ("Int_Glob:            %d\n", Int_Glob);
-  printf ("        should be:   %d\n", 5);
-  printf ("Bool_Glob:           %d\n", Bool_Glob);
-  printf ("        should be:   %d\n", 1);
-  printf ("Ch_1_Glob:           %d\n", Ch_1_Glob);
-  printf ("        should be:   %d\n", 'A');
-  printf ("Ch_2_Glob:           %d\n", Ch_2_Glob);
-  printf ("        should be:   %d\n", 'B');
-  printf ("Arr_1_Glob[8]:       %d\n", Arr_1_Glob[8]);
-  printf ("        should be:   %d\n", 7);
-  printf ("Arr_2_Glob[8][7]:    %d\n", Arr_2_Glob[8][7]);
-  printf ("        should be:   Number_Of_Runs + 10\n");
-  printf ("Ptr_Glob->\n");
-  printf ("  Ptr_Comp:          %d\n", (int) Ptr_Glob->Ptr_Comp);
-  printf ("        should be:   (implementation-dependent)\n");
-  printf ("  Discr:             %d\n", Ptr_Glob->Discr);
-  printf ("        should be:   %d\n", 0);
-  printf ("  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
-  printf ("        should be:   %d\n", 2);
-  printf ("  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
-  printf ("        should be:   %d\n", 17);
-  printf ("  Str_Comp:          %s\n", Ptr_Glob->variant.var_1.Str_Comp);
-  printf ("        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
-  printf ("Next_Ptr_Glob->\n");
-  printf ("  Ptr_Comp:          %d\n", (int) Next_Ptr_Glob->Ptr_Comp);
-  printf ("        should be:   (implementation-dependent), same as above\n");
-  printf ("  Discr:             %d\n", Next_Ptr_Glob->Discr);
-  printf ("        should be:   %d\n", 0);
-  printf ("  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
-  printf ("        should be:   %d\n", 1);
-  printf ("  Int_Comp:          %d\n", Next_Ptr_Glob->variant.var_1.Int_Comp);
-  printf ("        should be:   %d\n", 18);
-  printf ("  Str_Comp:          %s\n",
+  PRINTF ("Execution ends\n");
+  PRINTF ("\n");
+  PRINTF ("Final values of the variables used in the benchmark:\n");
+  PRINTF ("\n");
+  PRINTF ("Int_Glob:            %d\n", Int_Glob);
+  PRINTF ("        should be:   %d\n", 5);
+  PRINTF ("Bool_Glob:           %d\n", Bool_Glob);
+  PRINTF ("        should be:   %d\n", 1);
+  PRINTF ("Ch_1_Glob:           %d\n", Ch_1_Glob);
+  PRINTF ("        should be:   %d\n", 'A');
+  PRINTF ("Ch_2_Glob:           %d\n", Ch_2_Glob);
+  PRINTF ("        should be:   %d\n", 'B');
+  PRINTF ("Arr_1_Glob[8]:       %d\n", Arr_1_Glob[8]);
+  PRINTF ("        should be:   %d\n", 7);
+  PRINTF ("Arr_2_Glob[8][7]:    %d\n", Arr_2_Glob[8][7]);
+  PRINTF ("        should be:   Number_Of_Runs + 10\n");
+  PRINTF ("Ptr_Glob->\n");
+  PRINTF ("  Ptr_Comp:          %d\n", (int) Ptr_Glob->Ptr_Comp);
+  PRINTF ("        should be:   (implementation-dependent)\n");
+  PRINTF ("  Discr:             %d\n", Ptr_Glob->Discr);
+  PRINTF ("        should be:   %d\n", 0);
+  PRINTF ("  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
+  PRINTF ("        should be:   %d\n", 2);
+  PRINTF ("  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
+  PRINTF ("        should be:   %d\n", 17);
+  PRINTF ("  Str_Comp:          %s\n", Ptr_Glob->variant.var_1.Str_Comp);
+  PRINTF ("        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+  PRINTF ("Next_Ptr_Glob->\n");
+  PRINTF ("  Ptr_Comp:          %d\n", (int) Next_Ptr_Glob->Ptr_Comp);
+  PRINTF ("        should be:   (implementation-dependent), same as above\n");
+  PRINTF ("  Discr:             %d\n", Next_Ptr_Glob->Discr);
+  PRINTF ("        should be:   %d\n", 0);
+  PRINTF ("  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
+  PRINTF ("        should be:   %d\n", 1);
+  PRINTF ("  Int_Comp:          %d\n", Next_Ptr_Glob->variant.var_1.Int_Comp);
+  PRINTF ("        should be:   %d\n", 18);
+  PRINTF ("  Str_Comp:          %s\n",
                                 Next_Ptr_Glob->variant.var_1.Str_Comp);
-  printf ("        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
-  printf ("Int_1_Loc:           %d\n", Int_1_Loc);
-  printf ("        should be:   %d\n", 5);
-  printf ("Int_2_Loc:           %d\n", Int_2_Loc);
-  printf ("        should be:   %d\n", 13);
-  printf ("Int_3_Loc:           %d\n", Int_3_Loc);
-  printf ("        should be:   %d\n", 7);
-  printf ("Enum_Loc:            %d\n", Enum_Loc);
-  printf ("        should be:   %d\n", 1);
-  printf ("Str_1_Loc:           %s\n", Str_1_Loc);
-  printf ("        should be:   DHRYSTONE PROGRAM, 1'ST STRING\n");
-  printf ("Str_2_Loc:           %s\n", Str_2_Loc);
-  printf ("        should be:   DHRYSTONE PROGRAM, 2'ND STRING\n");
-  printf ("\n");
+  PRINTF ("        should be:   DHRYSTONE PROGRAM, SOME STRING\n");
+  PRINTF ("Int_1_Loc:           %d\n", Int_1_Loc);
+  PRINTF ("        should be:   %d\n", 5);
+  PRINTF ("Int_2_Loc:           %d\n", Int_2_Loc);
+  PRINTF ("        should be:   %d\n", 13);
+  PRINTF ("Int_3_Loc:           %d\n", Int_3_Loc);
+  PRINTF ("        should be:   %d\n", 7);
+  PRINTF ("Enum_Loc:            %d\n", Enum_Loc);
+  PRINTF ("        should be:   %d\n", 1);
+  PRINTF ("Str_1_Loc:           %s\n", Str_1_Loc);
+  PRINTF ("        should be:   DHRYSTONE PROGRAM, 1'ST STRING\n");
+  PRINTF ("Str_2_Loc:           %s\n", Str_2_Loc);
+  PRINTF ("        should be:   DHRYSTONE PROGRAM, 2'ND STRING\n");
+  PRINTF ("\n");
 
   User_Time = End_Time - Begin_Time;
 
   if (User_Time < Too_Small_Time)
   {
-    printf ("Measured time too small to obtain meaningful results\n");
-    printf ("Please increase number of runs\n");
-    printf ("\n");
+    PRINTF ("Measured time too small to obtain meaningful results\n");
+    PRINTF ("Please increase number of runs\n");
+    PRINTF ("\n");
   }
   else
   {
-#ifdef TIME
-    Microseconds = (float) User_Time * Mic_secs_Per_Second 
-                        / (float) Number_Of_Runs;
-    Dhrystones_Per_Second = (float) Number_Of_Runs / (float) User_Time;
-#else
-    Microseconds = (float) User_Time * Mic_secs_Per_Second 
-                        / ((float) HZ * ((float) Number_Of_Runs));
-    Dhrystones_Per_Second = ((float) HZ * (float) Number_Of_Runs)
-                        / (float) User_Time;
-#endif
-    printf ("Microseconds for one run through Dhrystone: ");
-    printf ("%6.1f \n", Microseconds);
-    printf ("Dhrystones per Second:                      ");
-    printf ("%6.1f \n", Dhrystones_Per_Second);
-    printf ("\n");
+    Microseconds = (((float) User_Time) * 2.56)/Number_Of_Runs;
+    Dhrystones_Per_Second = 1.0e6/Microseconds;
+
+    PRINTF ("Number_Of_Runs=%d, Begin_Time=%d, End_Time=%d, User_time=%d, us=%f\n", 
+				Number_Of_Runs, Begin_Time, End_Time, User_Time, Microseconds);
+    PRINTF ("Microseconds for one run through Dhrystone: ");
+    PRINTF ("%f \n", Microseconds);
+    PRINTF ("Dhrystones per Second:                      ");
+    PRINTF ("%f \n", Dhrystones_Per_Second);
+    PRINTF ("\n");
   }
-#endif
   
 }
 
@@ -404,49 +365,13 @@ void Proc_5 () /* without parameters */
 } /* Proc_5 */
 
 
-#ifndef AJIT
-int main (int argc, char* argv[])
+void  ajit_main (void)
 {
-	int n = 100;
-	if (argc > 1)
-		n = atoi(argv[1]);
-	run_dhrystone (n);
-	fprintf(stderr,"0x%x\n", ((uint32_t) Int_Glob));
-	fprintf(stderr,"0x%x\n", ((uint32_t) Bool_Glob));
-	fprintf(stderr,"0x%x\n", ((uint32_t) Ch_1_Glob));
-	fprintf(stderr,"0x%x\n", ((uint32_t) Arr_1_Glob[8]));
-	return(0);
-}
-#else
-int  ajit_main (void)
-{
-	// set cacheable bit in MMU.
-	store_word_mmureg(0x100,(uint32_t*) 0x0);
-	
-	//initial value of ASR
-	__asm__ __volatile__( "rd %asr30, %l3 \n\t ");
-        __asm__ __volatile__( "rd %asr31, %l4 \n\t ");
-	__asm__ __volatile__( "wr %l3, 0x00, %asr24 \n\t");	
-	__asm__ __volatile__( "wr %l4, 0x00, %asr25 \n\t");	
-
-
-	run_dhrystone (1);
-  
-	put_g2((uint32_t) Int_Glob);
-	put_g3((uint32_t) Bool_Glob);
-	put_g4((uint32_t) Ch_1_Glob);
-	put_g5((uint32_t) Arr_1_Glob[8]);
-
-	//getting final value of ASR
-        __asm__ __volatile__( "rd %asr30, %l3 \n\t ");
-        __asm__ __volatile__( "rd %asr31, %l4 \n\t ");
-	__asm__ __volatile__( "wr %l3, 0x00, %asr26 \n\t");	
-	__asm__ __volatile__( "wr %l4, 0x00, %asr27 \n\t");	
-
-	halt ();
-	return 0;
+	__enable_serial();
+	run_dhrystone (NDHRYSTONE_ITERS);
+	halt();
+	return;
 }
 
-#endif
 
 
