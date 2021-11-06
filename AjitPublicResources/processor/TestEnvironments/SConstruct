@@ -1,6 +1,6 @@
-#SConscript(['cpu_env_models/SConscript'])
 SConscript(['debug_utils/SConscript'])
-#SConscript(['cpu_env_to_riffa/SConscript'])
 SConscript(['core_environment/SConscript'])
+#SConscript(['cpu_env_models/SConscript'])
+#SConscript(['cpu_env_to_riffa/SConscript'])
 #SConscript(['axi_environment/SConscript'])
 #SConscript(['cpu_env_to_riffa_twin_cpu/SConscript'])

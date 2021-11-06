@@ -138,6 +138,7 @@ BGET_H_FILE: str = "__bget.h"
 CORTOS_ASM_FILE_NAME: str = "cortos_asm.s"
 CORTOS_C_FILE_NAME: str = "cortos.c"
 CORTOS_PRINTF_FILE_NAME: str = "__cortos_ee_printf.c"
+CORTOS_PRINTF_CVT_FILE_NAME: str = "__cvt.c"
 
 
 DEFAULT_BGET_MEM_SIZE_IN_BYTES: int = 1024 * 100   # bytes

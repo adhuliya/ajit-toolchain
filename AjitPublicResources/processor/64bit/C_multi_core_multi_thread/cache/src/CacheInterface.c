@@ -82,20 +82,38 @@ uint64_t insertBytes (uint64_t x, uint8_t byte_mask, uint64_t wval)
 void writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint32_t va, uint8_t byte_mask)
 {
 	int I = cacheLineId (c, va);
+	assert(I >= 0);
+
 	int offset = cacheLineOffset (va);
 
 	uint64_t vwal = c->cache_lines[I].cache_line[offset];
 	vwal = insertBytes (vwal,byte_mask, write_data);
 	c->cache_lines[I].cache_line[offset] = vwal;
+}
 
-
+uint32_t cacheSetId    (WriteThroughAllocateCache* c, uint32_t va)
+{
+	uint32_t set_index =  
+		(va >> LOG_BYTES_PER_CACHE_LINE) % c->number_of_sets;
+	return(set_index);	
 }
 
 int cacheLineId (WriteThroughAllocateCache* c, uint32_t va)
 {
-	va = (va >> LOG_BYTES_PER_CACHE_LINE);
-	int ret_val = (va % c->number_of_lines);
-	return(ret_val);
+	int ret_val = -1;
+	uint32_t set_id = cacheSetId(c, va);
+	int I;
+	for(I = 0; I < c->set_size; I++)
+	{
+		int J = (set_id * c->set_size) + I;
+		if(c->cache_lines[J].valid &&
+			(c->cache_lines[J].va_tag == vaTag(c,va)))
+		{
+			ret_val = J;
+			break;
+		}
+	}
+	return(ret_val);	
 }
 
 int cacheLineOffset (uint32_t va)
@@ -106,19 +124,22 @@ int cacheLineOffset (uint32_t va)
 
 uint32_t vaTag(WriteThroughAllocateCache* c, uint32_t va)
 {
-	uint32_t ret_val  = (va >> (LOG_BYTES_PER_CACHE_LINE + c->log_number_of_lines));
+	uint32_t ret_val  = 
+		(va >> (LOG_BYTES_PER_CACHE_LINE + c->log_number_of_sets));
 	return(ret_val);
 }
 
 uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint32_t va)
 {
 	int index = cacheLineId(c, va);
+	assert(index >= 0);
+
 	int offset = cacheLineOffset(va);
 	uint64_t retval = (c->cache_lines[index]).cache_line[offset];
 	return(retval);
 }
 
-WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines)
+WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines, int set_size)
 {
 	assert(number_of_lines <= MAX_NUMBER_OF_LINES);
 
@@ -130,6 +151,10 @@ WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number
 	nc->number_of_lines = number_of_lines;
 	nc->log_number_of_lines = calculate_log2(number_of_lines);
 
+	nc->number_of_sets = (number_of_lines/set_size);
+	nc->log_number_of_sets = calculate_log2(nc->number_of_sets);
+	nc->set_size       = set_size;
+	
 	initCache(nc);	
 
 	if(is_icache)
@@ -170,31 +195,88 @@ void initCache (WriteThroughAllocateCache* c)
 	c->number_of_invalidates = 0;
 	c->number_of_locked_accesses=0;
 
+	int I; 
+	for(I = 0; I < MAX_NUMBER_OF_LINES; I++)
+		c->last_updated_offset_in_set[I] = -1;
+
 	flushCache(c);	
 
 	pthread_mutex_init (&(c->cache_mutex), NULL);
 }
 
 // invalidate the line at the specified index.
+//  Note: line address is VA[31:6].. top bits are ignore, since we
+//  only need to figure out the set_id.
+//
 void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address)
 {
 	c->number_of_invalidate_requests++;
-	int I = (va_line_address % c->number_of_lines);
-	if(c->cache_lines[I].valid)
-	{
-		c->cache_lines[I].valid = 0;
-		c->number_of_invalidates++;
-	}
 
-	if(global_verbose_flag)
-		fprintf(stderr,"Info: %s core-id=%d, invalidated 0x%lx.\n", 
+	int set_id = cacheSetId(c, (va_line_address << LOG_BYTES_PER_CACHE_LINE));
+	if(set_id >= 0) 
+	{
+		int I;
+		for(I = 0; I < c->set_size; I++)
+		{	
+			int J = (set_id * c->set_size) + I;
+			if(c->cache_lines[J].valid)
+			{
+				c->cache_lines[J].valid = 0;
+			}
+		}
+		c->number_of_invalidates++;
+
+		if(global_verbose_flag)
+			fprintf(stderr,"Info: %s core-id=%d, invalidated set %d (reduced va=0x%lx).\n", 
 					(c->is_icache ? "icache" : "dcache"), 
-					c->cpu_id, (va_line_address << 6)); 
+					c->cpu_id, 
+					set_id, 
+					(va_line_address << 6)); 
+	}
 }
 
+
+uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va)
+{
+	uint32_t ret_val;
+	int invalid_found = 0;
+
+	uint32_t set_id = cacheSetId(c,va);
+	assert (cacheLineId(c,va) < 0);
+
+	int I;
+	for(I = 0; I < c->set_size; I++)
+	{
+		int J = (set_id*c->set_size) + I;
+		if(!(c->cache_lines[J].valid)	)
+		{
+			invalid_found = 1;	
+			ret_val = J;
+
+			c->last_updated_offset_in_set[set_id] = I;
+
+			break;
+		}
+	}
+
+	if(!invalid_found)
+	{
+		uint32_t index_within_set = (c->last_updated_offset_in_set[set_id] + 1) % c->set_size;
+
+		ret_val      = (set_id * c->set_size) + index_within_set;
+		c->cache_lines[ret_val].valid = 0;
+
+		c->last_updated_offset_in_set[set_id] = index_within_set;
+	}
+
+	return(ret_val);
+}
+
+
+
 void lookupCache (WriteThroughAllocateCache* c,
-			uint32_t va, uint8_t asi, 
-			uint8_t *hit,   uint8_t *acc)
+		uint32_t va, uint8_t asi, 
+		uint8_t *hit,   uint8_t *acc)
 {
 	int I = cacheLineId(c, va);
 	uint32_t va_tag = vaTag (c, va);
@@ -202,7 +284,7 @@ void lookupCache (WriteThroughAllocateCache* c,
 	*hit = 0;
 	*acc = 0;
 
-	if(c->cache_lines[I].valid)
+	if((I >= 0) && (c->cache_lines[I].valid))
 	{
 		if(c->cache_lines[I].va_tag == va_tag)
 		{
@@ -210,14 +292,19 @@ void lookupCache (WriteThroughAllocateCache* c,
 			*acc = c->cache_lines[I].acc;
 		}
 	}
+	return;
 }
 
 void updateCacheLine (WriteThroughAllocateCache* c,
-			uint8_t acc, 
-			uint32_t line_addr, 
-			uint64_t* line_data)
+		uint8_t acc, 
+		uint32_t line_addr, 
+		uint64_t* line_data)
 {
 	int I = cacheLineId (c, line_addr);
+	if(I < 0)
+	{
+		I = allocateCacheLine(c,line_addr);
+	}
 
 	c->cache_lines[I].valid = 1;
 	c->cache_lines[I].acc = acc;
@@ -344,8 +431,10 @@ uint32_t probeCoherencyInvalidateRequest(int cpu_id, int icache_flag)
 	uint32_t ret_val  = 0;
 	ret_val = read_uint32 (getCacheInvalPipeName(cpu_id,icache_flag));
 
+#ifdef DEBUG_PRINTF
 	if(global_verbose_flag)
 		fprintf(stderr,"Read from invalidate pipe (cpu_id=%d, icache=%d).\n", cpu_id, icache_flag);
+#endif
 		
 	return(ret_val);
 }

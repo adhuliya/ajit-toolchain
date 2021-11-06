@@ -3,8 +3,8 @@
 #include "core_portme.h"
 #include "math.h" 
 
-#define ORDER 4
-#define REPETITIONS 2
+#define ORDER 256
+#define REPETITIONS 4
 
 // 
 unsigned int *A = (unsigned int *) 0x40002000; 
@@ -46,7 +46,7 @@ int main()
 		writeB();
 		checkA();
 	}
-	// ee_printf("done %d\n", I);
+	ee_printf("done %d\n", I);
 	return (0);
 }
 

@@ -12,6 +12,7 @@ _CORTOS_VMAP="$_CORTOS_SRC_DIR/vmap.txt";
 _CORTOS_ASM="$_CORTOS_SRC_DIR/cortos_asm.s";
 _CORTOS_C="$_CORTOS_SRC_DIR/cortos.c";
 _CORTOS_PRINTF="$_CORTOS_SRC_DIR/__cortos_ee_printf.c";
+_CORTOS_PRINTF_CVT="$_CORTOS_SRC_DIR/__cvt.c";
 _CORTOS_LOCK_UNLOCK="$_CORTOS_SRC_DIR/cortos_lock_unlock.s";
 _CORTOS_RES_LOCK_UNLOCK="$_CORTOS_SRC_DIR/__cortos_lock_unlock.s";
 _CORTOS_Q_LOCK_UNLOCK="$_CORTOS_SRC_DIR/__cortos_q_lock_unlock.s";
@@ -56,6 +57,7 @@ compileToSparcUclibc.py \
   -c ${_CORTOS_MSG_QUEUE} \
   -c ${_CORTOS_C} \
   -c ${_CORTOS_PRINTF} \
+  -c ${_CORTOS_PRINTF_CVT} \
   -C ${_AAR}/src \
 % if False: # removed the original ee_printf
   -C ${_PT}/src \

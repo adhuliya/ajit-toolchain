@@ -28,14 +28,16 @@ void init_core(CoreState* s,
 			uint32_t number_of_threads,
 			uint32_t isa_mode,
 			int bp_table_size,
-			int icache_number_of_lines, int dcache_number_of_lines,
+			uint32_t icache_number_of_lines,  uint32_t icache_associativity,
+			uint32_t dcache_number_of_lines,  uint32_t dcache_associativity,
 			uint8_t report_traps, uint32_t init_pc);
 CoreState* makeCoreState(
 				uint32_t core_id, 
 				uint32_t number_of_threads,
 				uint32_t isa_mode,
 				uint32_t bp_table_size,
-				uint32_t icache_number_of_lines, uint32_t dcache_number_of_lines,
+				uint32_t icache_number_of_lines,  uint32_t icache_associativity,
+				uint32_t dcache_number_of_lines,  uint32_t dcache_associativity,
 				uint8_t report_traps, uint32_t init_pc);
 			
 

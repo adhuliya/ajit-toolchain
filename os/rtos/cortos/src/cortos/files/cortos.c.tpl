@@ -131,3 +131,22 @@ void cortos_freeLockVar(int lockId) {
   }
 }
 
+// Returns the thread id of the system.
+// 0 for Thread 00
+// 1 for Thread 01
+// 2 for Thread 10
+// 3 for Thread 11
+// ...
+char cortos_get_thread_id() {
+  unsigned int asrValue;
+
+  __asm__ (
+  "  rd %%asr29, %%l1\n"
+  "  mov %%l1, %0\n"
+  :"=r" (asrValue)
+  :
+  :"%l1"
+  );
+
+  return (((asrValue & 0xFF00) >> 8) * 2) + (asrValue & 0xFF);
+}
