@@ -43,12 +43,12 @@ echo "================================================="
 rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./Ajit_linux_3.16.1/ ./buildroot-2014.08/output/build/linux-custom
 
 
-echo "================================================="
-echo " STEP 1.2: "
-echo "  copying Busybox source code (using rync)"
-echo "  from: ./Ajit_busybox-1.22.1/"
-echo "  to  : ./buildroot-2014.08/output/build/busybox-1.22.1"
-echo "================================================="
+# echo "================================================="
+# echo " STEP 1.2: "
+# echo "  copying Busybox source code (using rync)"
+# echo "  from: ./Ajit_busybox-1.22.1/"
+# echo "  to  : ./buildroot-2014.08/output/build/busybox-1.22.1"
+# echo "================================================="
 
 rsync -av --exclude .svn --exclude .git --exclude .hg --exclude .bzr --exclude CVS ./Ajit_busybox-1.22.1/ ./buildroot-2014.08/output/build/busybox-1.22.1
 
@@ -65,8 +65,6 @@ echo "  Running 'make' inside buildroot folder."
 echo "================================================="
 
 cd buildroot-2014.08
-
-make clean
 
 if [ "$1" -eq 1 ]; then
   # Original defconfig with just the initial ramfs
