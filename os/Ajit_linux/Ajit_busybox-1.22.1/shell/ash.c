@@ -8784,6 +8784,9 @@ setinteractive(int on)
 				"\n\n",
 				bb_banner,
 				"built-in shell (ash)"
+                		"\n\n"
+                		"Ajit Patched"
+                		"\n\n"
 			);
 			did_banner = 1;
 		}
