@@ -51,7 +51,7 @@ prom_getbootargs(void)
 
 		//AJIT: Comment out the V0 stuff above, and
 		//just make bootargs equal to a fixed string
-		strlcpy(barg_buf, " debug lpj=10000 loglevel=7 console=ttyS0 ", sizeof(barg_buf));
+		strlcpy(barg_buf, " debug loglevel=7 console=ttyS0 ", sizeof(barg_buf));
 		break;
 	case PROM_V2:
 	case PROM_V3:
