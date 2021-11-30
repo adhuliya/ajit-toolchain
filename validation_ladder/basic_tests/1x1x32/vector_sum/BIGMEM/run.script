@@ -1,0 +1,7 @@
+t 0 0
+w rst 1
+m vector_sum.mmap.remapped
+w ipc 0x40000000
+w inpc 0x40000004
+w rst 0
+
