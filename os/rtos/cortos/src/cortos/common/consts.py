@@ -192,5 +192,6 @@ def getLogLevel(level: int) -> LogLevel:
 
 
 DEFAULT_DEBUG_BUILD: bool = False
+DEFAULT_OPT_LEVEL: int = 2
 DEFAULT_DEBUG_PORT: int   = 8888
 

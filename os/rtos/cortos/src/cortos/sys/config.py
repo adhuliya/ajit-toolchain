@@ -123,6 +123,7 @@ class UserConfig:
     self.enableSerial: bool = consts.DEFAULT_ENABLE_SERIAL_DEVICE
 
     self.debugBuild: bool = consts.DEFAULT_DEBUG_BUILD
+    self.optLevel: int = consts.DEFAULT_OPT_LEVEL  # 0, 1 or 2
     # the starting debug port sequence (one for each thread)
     self.startingDebugPort: int = consts.DEFAULT_DEBUG_PORT
 
@@ -254,6 +255,17 @@ class UserConfig:
   ):
     self.debugBuild = debug
     self.startingDebugPort = port
+
+
+  def addOptLevel(self,
+      optLevel0: bool = False,
+      optLevel1: bool = False,
+      optLevel2: bool = False,
+  ) -> None:
+    self.optLevel = 0 if optLevel0 else self.optLevel
+    self.optLevel = 1 if optLevel1 else self.optLevel
+    self.optLevel = 2 if optLevel2 else self.optLevel
+
 
   def __str__(self):
     return (
