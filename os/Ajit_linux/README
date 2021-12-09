@@ -7,7 +7,7 @@ ABOUT:
 CONTENTS:
 	Ajit_linux_3.16.1/ 	: Kernel source code for Ajit processor
 				   created by modifying the linux kernel 3.16.1
-	br2-dl/			: Contains the sources of al ecessary packages for
+	br2-dl/			: Contains the sources of al necessary packages for
 				   Linux build
 	busybox-1.22.1/		: Busybox source code with 'latency' issue fixed.
 	Ajit_buildroot_configs/ : kernel & BR2 configurations for Ajit_linux
@@ -27,18 +27,14 @@ BUILD INSTRUCTIONS:
 -------------------
 	To build the OS, run
 
-		./GeneratememMapForAjit.sh <DEFCONFIG>
+		./build.sh <DEFCONFIG>
 
 		DEFCONFIG values
-		    <1> legacy initramfs system config;no rootfs-tmpfs present [HAS THE LATENCY FIX]
+		    <1> legacy initramfs system config; no rootfs-tmpfs present [HAS THE LATENCY FIX]
 		    <2> rootfs-tmpfs with satic-lib & static device list [HAS THE LATENCY FIX]
+	
+	Once successfully built, you should find the build output in ./build directory
 
-	followed by
-
-		./vmLinuzToMemmapAtf0004000.sh
-
-	Note: paths to the bin-utils must be setup before doing this.
-	Note: device-tree-compiler needs to be installed.
 	Note: by default clock frequency is set for the c-model in the device-tree. 
 		Refer "Ajit_device_tree/README" for knowing how to change it for FPGA.
 
@@ -56,7 +52,7 @@ Overview
 		- Ajit_srmmu: Ajit cache and tlb flush/read operations
 		- A set of architecture specific code modifications in "/arch/sparc" subdirectory
 
-	For detailed overview, please refer "Documentation/README". "AJITREFS.txt" provide diff of the modifications. 
+	For detailed overview, please refer "Documentation/README". Also, "AJITREFS.txt" provide diff of the modifications. 
 
 Adding files to Linux image
 ===========================

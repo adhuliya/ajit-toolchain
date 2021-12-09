@@ -5,6 +5,6 @@ Prerequisites:
         - ajit_env is sourced, giving access to available tools
 
 Step 1: Run compile.sh; this cross-compile your program with sparc-linux-gcc
-Step 2: Run copy.sh; this copy the corresponding executable/binary to the Overlay directory
+Step 2: Run copy.sh; this copy the corresponding executable/binary to the Overlay directories
 
 After the above steps are successfully performed, we can proceed with Ajit_linux build.
