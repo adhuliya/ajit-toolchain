@@ -55,6 +55,30 @@ inline void __ajit_clear_all_gp_registers__()
 	
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// scratch pad: 32x32 registers..
+//////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t ajit_read_from_scratch_pad (uint32_t scratch_pad_index)
+{
+	uint32_t ret_val = 0;
+	if(scratch_pad_index < 32)
+	{
+		uint32_t* base_ptr = (uint32_t*) ADDR_SCRATCH_PAD_MEMORY_MIN;
+		ret_val = base_ptr[scratch_pad_index];
+	}
+	return(ret_val);
+}
+
+void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value)
+{
+	if(scratch_pad_index < 32)
+	{
+		uint32_t* base_ptr = (uint32_t*) ADDR_SCRATCH_PAD_MEMORY_MIN;
+		base_ptr[scratch_pad_index] = write_value;
+	}
+}
+
+
 //
 // This reads the contents of ASR-29.  The four bytes in the
 // return value are

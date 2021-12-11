@@ -21,4 +21,16 @@ KC705 100MHz, With DRAM, 4-way set-associative DCACHE, ICACHE
    MFLOPS(2)       =    21.8391
    MFLOPS(3)       =    29.3763
    MFLOPS(4)       =    35.8268
+
+KC705 100MHz, With DRAM, 4-way set-associative DCACHE, ICACHE
+		8-way set associative L2 (64KB) writeback cache.
+
+	      December 11, 2021
                                         
+  Iterations      =   32000000
+   NullTime (usec) =     0.0000
+   MFLOPS(1)       =    24.8804
+   MFLOPS(2)       =    21.8391
+   MFLOPS(3)       =    29.3763
+   MFLOPS(4)       =    35.8268
+

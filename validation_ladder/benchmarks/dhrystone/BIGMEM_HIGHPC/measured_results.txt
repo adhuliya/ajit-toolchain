@@ -1,0 +1,7 @@
+11/12/2021
+	KC705 (with dram, spi)
+	with 32KB 4-way set associative L1, 64KB 8-way set associative L2 (writeback)
+
+Number_Of_Runs=1000000, Begin_Time=20723635, End_Time=21727547, User_time=1003912
+Microseconds for one run through Dhrystone: 2.570015 
+Dhrystones per Second:                      389102.843750 

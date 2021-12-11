@@ -158,6 +158,8 @@ int main () {
 	int c;
 	STACK s;
 
+	
+
 	initStack(&s);
 
 #ifdef AJIT
@@ -168,6 +170,20 @@ int main () {
 #ifdef AJIT
 	__enable_serial_interrupt();
 #endif
+	// test the scratchpad...
+	uint32_t I;
+	for(I = 0; I < 32; I++)
+	{
+		ajit_write_to_scratch_pad (I,I);
+		uint32_t rval = ajit_read_from_scratch_pad(I);
+		if(rval != I)
+		{
+			PRINTF("Warning: missing scratch_pad: scratch_pad[%d]=%d, expected %d.\n", I, rval, I);
+			break;
+		}
+	}
+	PRINTF("Info: finished scratch_pad test.\n");
+	
 	
 	PRINTF("?? : \n");		//for ee_printf \n is delimiter
 	while(1){

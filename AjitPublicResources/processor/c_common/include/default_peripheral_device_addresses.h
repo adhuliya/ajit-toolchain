@@ -13,6 +13,16 @@
 // Devices will be allocated an address chunk of either
 //     16/32/256/512/1024/.../1024*1024 bytes
 
+//
+//	Scratch-pad memory.
+//	This is a zero-initialized 32x32 memory used for
+//      bootup, stats across cores etc..
+//           1KB of memory allocated to this block
+//           (alignment!)
+//
+#define ADDR_SCRATCH_PAD_MEMORY_MIN 			0xFFFF2c00 
+#define ADDR_SCRATCH_PAD_MEMORY_MAX 			0xFFFF2ffc 
+
 
 //
 //	Interrupt controller
@@ -78,6 +88,6 @@
 #define ADDR_TRACE_LOGGER_MAX_ADDR_REGISTER		0xFFFF3508
 #define ADDR_TRACE_LOGGER_TRIGGER_REGISTER		0xFFFF350c
 #define ADDR_TRACE_LOGGER_SAMPLE_COUNT_REGISTER		0xFFFF3510
-#define ADDR_TRACE_LOGGER_MAX				0xFFFF3500
+#define ADDR_TRACE_LOGGER_MAX				0xFFFF351c
 
 #endif

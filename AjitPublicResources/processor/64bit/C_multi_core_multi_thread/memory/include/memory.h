@@ -54,4 +54,5 @@ void     vGetDoubleWordInMemory(uint32_t address, uint64_t* rd);
 void    setDoubleWordInMemory(uint32_t address, uint64_t double_word, uint8_t byte_mask);
 
 void accessMemU64 (uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata, uint64_t* rdata);
+void setMemoryTraceFile(FILE* fp);
 

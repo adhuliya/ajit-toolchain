@@ -38,6 +38,7 @@
 #include "Timer.h"
 #include "InterruptControllerMT.h"
 #include "Serial.h"
+#include "ScratchPad.h"
 #include "console.h"
 
 #include "StartAjitThreads.h"
@@ -151,6 +152,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4\n");
 	// cache trace: requests and responses to/from caches for each thread.
 	fprintf(stderr, "   -e <cache-trace-file>, optional, for specifying cache access dump file.\n");
+	fprintf(stderr, "   -f <mem-trace-file>, optional, for specifying mem access dump file.\n");
 	fprintf(stderr, "                                                                         \n");
 	fprintf(stderr, "EXAMPLE:  \n");
 	fprintf(stderr, "          %s -m add_test.mmap -d -l add_test.log -r add_test.results -w add_test.wtrace \n", app_name);
@@ -206,6 +208,7 @@ int   global_verbose_flag = 0;
 char* bridge_targets_file = NULL;
 
 
+
 int main(int argc, char **argv)
 {
 	int main_ret_val = 0;
@@ -242,6 +245,7 @@ int main(int argc, char **argv)
 	char* 	reg_write_file_name = NULL;
 	char*   long_reg_write_file_name = NULL;
 	char*   cache_trace_file_name = NULL;
+	char*   mem_trace_file_name = NULL;
 	logger_server_ip_address = NULL;
 	logger_server_port_number=-1;
 	int opt;
@@ -263,7 +267,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:A:Q:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -289,6 +293,10 @@ int main(int argc, char **argv)
 			case 'e':
 				cache_trace_file_name = strdup(optarg);
 				fprintf(stderr,"Info: cache trace file=%s.\n", cache_trace_file_name);
+				break;
+			case 'f':
+				mem_trace_file_name = strdup(optarg);
+				fprintf(stderr,"Info: memory trace file=%s.\n", mem_trace_file_name);
 				break;
 			case 'n':
 				NCOREs = atoi(optarg);
@@ -407,6 +415,23 @@ int main(int argc, char **argv)
 		}
 	}
 
+	if(mem_trace_file_name != NULL)
+	{
+		FILE* mt_file = NULL;
+		if(strcmp(mem_trace_file_name,"stdout") == 0)
+			mt_file = stdout;	
+		else
+			mt_file = fopen(mem_trace_file_name,"w");
+
+		if(mt_file != NULL)
+		{
+			setMemoryTraceFile(mt_file);
+		}
+		else
+		{
+			fprintf(stderr,"Error: could not open memory trace file %s\n", mem_trace_file_name);
+		}
+	}
 	// pipe handler needs to register these as signals!
 	registerResetPorts(NCOREs, NTHREADs);
 
@@ -424,10 +449,11 @@ int main(int argc, char **argv)
 	else
 	{
 		// defaults.
-		addMem ("lowermem", 0x3, 0x0, 0xFFFF2FFF);	 // lower mem program + data.
+		addMem ("lowermem", 0x3, 0x0, 0xFFFEFFFF);	 // lower mem program + data.
 		addPeripheral("irc_mt", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
 		addPeripheral("timer", ADDR_TIMER_MIN, ADDR_TIMER_MAX);	 // timer
 		addPeripheral("serial", ADDR_SERIAL_MIN, ADDR_SERIAL_MAX); // serial
+		addPeripheral("scratch_pad", ADDR_SCRATCH_PAD_MEMORY_MIN, ADDR_SCRATCH_PAD_MEMORY_MAX); // scratch-pad
 
 		// Note: this is problematic 
 		addMem ("uppermem", 0x3, 0xFFFF4000, 0xFFFFFFFF);// upper mem (for whatever).	
@@ -547,6 +573,7 @@ int main(int argc, char **argv)
 	//peripherals
 	if(USE_INTERRUPT_CONTROLLER_MODEL) start_IrcMt_threads(NCOREs, NTHREADs);
 	if(USE_TIMER_MODEL)  start_timer_threads();
+	if(USE_SCRATCH_PAD_MODEL)  start_scratch_pad_threads();
 	if(USE_SERIAL_MODEL) 
 	{
 		start_serial_threads();
