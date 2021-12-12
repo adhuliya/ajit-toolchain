@@ -1,7 +1,7 @@
 #copy the mmap
-cp ../Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./boot_loader_plus_kernel_mmap/ 
+cp ../build/Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./boot_loader_plus_kernel_mmap/ 
 
-#  Memory map file for OS + bootloader.
+# Memory map file for OS + bootloader.
 # generate mmap.remapped file for application.
 cd flash_contents/
 # generate assembly code for mmap..
