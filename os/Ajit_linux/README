@@ -18,7 +18,7 @@ CONTENTS:
 				   viewing, modifying and saving kernel configurations.
 
 REFERENCE MATERIAL THAT CAN BE FETCHED FROM THE NET:
-	linux-3.16.1.tar.xz	: the origin linux 3.16.1 kernel.
+	linux-3.16.1.tar.xz	: the original linux 3.16.1 kernel.
 
 Build Instructions:
 -------------------

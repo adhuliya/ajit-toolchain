@@ -7,7 +7,7 @@ DEVICE_TREE_BUILD_DIR=$BUILD_DIR/Ajit_device_tree
 BOOTLOADER_BUILD_DIR=$BUILD_DIR/Ajit_bootloader
 LINUX_BUILD_DIR=$BUILDROOT_BUILD_DIR/output/build/linux-custom
 BUSYBOX_BUILD_DIR=$BUILDROOT_BUILD_DIR/output/build/busybox-1.22.1
-
+OVERLAY_DIR=$CWD/Ajit_overlay
 
 # Check for presence of Argumentsand throw an error when there is none or invalid one.
 if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
@@ -82,6 +82,16 @@ echo " Running make clean inside linux build directory"
 cd $LINUX_BUILD_DIR
 make clean
 
+echo "================================================="
+echo " STEP 1.3: "
+echo "  copying Overlay to rootfs"
+echo "  from: ./Ajit_overlay /"
+echo "  to  : ./Ajit_buildroot_configs/board/rootfs_overlay/home"
+echo "        ./Ajit_buildroot_configs/board/overlay/rootfs/home"
+echo "================================================="
+
+cp -r $OVERLAY_DIR $AJIT_LINUX_DIR/Ajit_buildroot_configs/board/rootfs_overlay/home
+cp -r $OVERLAY_DIR $AJIT_LINUX_DIR/Ajit_buildroot_configs/board/overlay/rootfs/home
 
 echo "================================================="
 echo " STEP 2: "
