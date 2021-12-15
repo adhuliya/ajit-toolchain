@@ -1,6 +1,7 @@
 //Program for RPN calculator  using serial interrupts
 #include <stdint.h>
 #include <stdio.h>
+#include <setjmp.h>
 #include "stack.h"
 char expr[MAX_SIZE];		//Arrays are automatically initialized with all NULL elements , int equivalent to '\0'
 #ifdef AJIT
@@ -153,10 +154,19 @@ int calculate(char* expr, STACK* s){
 	return c;
 }
 
+	
+jmp_buf env;
+void print_set_jmp()
+{
+	PRINTF("called print_set_jmp\n");
+	longjmp(env, 1);
+}
+
 int main () {
 
 	int c;
 	STACK s;
+
 
 	
 
@@ -170,6 +180,9 @@ int main () {
 #ifdef AJIT
 	__enable_serial_interrupt();
 #endif
+	int j_ret = setjmp (env);
+	if(j_ret == 0)
+		print_set_jmp();
 	// test the scratchpad...
 	uint32_t I;
 	for(I = 0; I < 32; I++)

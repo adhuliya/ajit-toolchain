@@ -1,0 +1,17 @@
+A test which checks the following types of
+memory accesses using a simple march algorithm.
+	- to cacheable pages
+	- to non-cacheable pages
+	- bypasses.
+
+There are two ways to test this
+
+	SMALLMEM
+		Using the AJIT VC709 prototype with 4MB
+		of RAM startng at physical address 0x0
+
+	BIGMEM
+		Using the AJIT KC705 prototype with 16MB
+		Flash starting at 0x0, and 128MB DRAM starting
+		at 0x40000000+
+
