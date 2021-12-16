@@ -1,39 +1,30 @@
+TLDR;
+=====
+
 ABOUT:
 	This folder contains the most current sources 
 	for the Linux kernel ported to Ajit processor, 
-	and the kernel configurations.
-
+	, the kernel configurations, patched Busybox source 
+	an corresponding configuration.
 
 CONTENTS:
-	Ajit_linux_3.16.1/ 	: Kernel source code for Ajit processor
+	build.sh		: Script for building Ajit-linux images
+	clean.sh		: Script for cleaning Ajit-linux build output
+	
+	Ajit_linux_3.16.1/ 	: Linux kernel source code for Ajit processor
 				   created by modifying the linux kernel 3.16.1
-	br2-dl/			: Contains the sources of al necessary packages for
+	br2-dl/			: Contains the sources of all necessary packages for
 				   Linux build
 	busybox-1.22.1/		: Busybox source code with 'latency' issue fixed.
-	Ajit_buildroot_configs/ : kernel & BR2 configurations for Ajit_linux
+	Ajit_buildroot_configs/ : Kernel & Buildroot configurations for Ajit_linux
 		board/overlay/	: contents that go into the initial filesystem
-
+	Ajit_overlay		: Directory to keep custom binaries for the rootfs
 	Documentation/		: Steps for generating the kernel image,
-				   running it on Ajit C model,
+				   running it on the Ajit C model,
 				   viewing, modifying and saving kernel configurations.
 
 REFERENCE MATERIAL THAT CAN BE FETCHED FROM THE NET:
 	linux-3.16.1.tar.xz	: the original linux 3.16.1 kernel.
-
-Build Instructions:
--------------------
-	To build the OS, run
-
-		./build.sh <DEFCONFIG>
-
-		DEFCONFIG values
-		    <1> legacy initramfs system config; no rootfs-tmpfs present [HAS THE LATENCY FIX]
-		    <2> rootfs-tmpfs with satic-lib & static device list [HAS THE LATENCY FIX]
-	
-	Once successfully built, you should find the build output in the ./build directory
-
-	Note: by default clock frequency is set for the c-model in the device-tree. 
-		Refer "Ajit_device_tree/README" for knowing how to change it for FPGA.
 
 --------------------------------------------------------------------------------------------------------
 Ajit Linux System:
@@ -53,22 +44,36 @@ Overview
 	For detailed overview, please refer "Documentation/README". Also, "AJITREFS.txt" 
 	provide diff of the modifications. 
 
+Build Instructions:
+===================
+
+	To build Ajit-linux, run
+
+		./build.sh <DEFCONFIG>
+
+		DEFCONFIG values
+		    <1> legacy initramfs system config; no rootfs-tmpfs present [HAS THE LATENCY FIX]
+		    <2> rootfs-tmpfs with satic-lib & static device list [HAS THE LATENCY FIX]
+	
+	Once successfully built, you should find the build output in the "./build" directory
+
+	Note: by default clock frequency is set for the c-model in the device-tree. 
+		Refer "Ajit_device_tree/README" for knowing how to change it for FPGA.
+
 Adding files to Linux image
 ===========================
 
-Buildroot, the build system we use, has a feature to add files on target filesystem.
+Buildroot, the build system we use, has a feature to add files to target filesystem.
 
 	Following are the steps to be followed for creating an Ajit Linux image 
 	that contain a custom program binary.
 		- write your program and compile it using the cross-compile tools provided along with this project.
-		- place your binary in "Ajit_buildroot_configs/board/rootfs/overlay/home"
+		- place your binary in the "./Ajit_overlay" directory
 		- make the binary an executable using "chmod" utility
 		- Follow the build process as described in "Build Instructions" section
 
-	The resulting image will have the custom binary in "/home" directory in the root filesystem. 
+	The resulting image will have the custom binary in "/home/Ajit_overlay" directory in the root filesystem. 
 	Once the image in booted in your target, which will be the C-model or FPGA, navigate 
-	to "/home" and run the binary as usual.
+	to "/home/Ajit_overlay" and run the binary as usual.
 
 	An example program setup is provided at "example_program/hello_world".
-
-	Note: If you choose to build with option <2>, then place the binary at "Ajit_buildroot_configs/board/overlay/rootfs/home"

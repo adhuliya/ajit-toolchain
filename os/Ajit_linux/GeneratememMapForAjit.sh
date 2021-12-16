@@ -10,7 +10,7 @@ BUSYBOX_BUILD_DIR=$BUILDROOT_BUILD_DIR/output/build/busybox-1.22.1
 OVERLAY_DIR=$CWD/Ajit_overlay
 
 # Check for presence of Argumentsand throw an error when there is none or invalid one.
-if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
+if [ "$#" -ne 1 ] || [ "$1" -lt 1 ] || [ "$1" -gt 2 ]; then
   echo "ERROR: Invalid or missing argument...."
   echo "Usage: $0 <DEFCONFIG>"
   echo ""
