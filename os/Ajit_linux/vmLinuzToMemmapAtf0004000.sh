@@ -30,3 +30,16 @@ cp $BUILDROOT_BUILD_DIR/output/images/vmlinux $BUILD_DIR/Generated_memory_map.f0
 cd $BUILD_DIR/Generated_memory_map.f0004000/
 vmlinuxToMemmapRevised.py AjitBootloader.elf vmlinux 0xf0004000 -o Output.f0004000 
 cd $CWD
+
+echo "================================================="
+echo " "
+echo "  If there were no errors, the memory map will be created in "
+echo "  build/Generated_memory_map.f0004000/Output/mem_map.txt"
+echo " "
+echo "================================================="
+
+echo "================================================="
+echo " "
+echo "  You can refer the log file of build in ./build/biuld.log"
+echo " "
+echo "================================================="
