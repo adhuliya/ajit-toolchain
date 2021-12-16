@@ -13,7 +13,7 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
   exit 1
 fi
 
-}
+{
 ./GeneratememMapForAjit.sh $1 && \
 echo "" && \
 ./vmLinuzToMemmapAtf0004000.sh
