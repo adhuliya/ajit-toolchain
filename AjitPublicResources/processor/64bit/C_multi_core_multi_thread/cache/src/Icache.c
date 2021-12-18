@@ -22,7 +22,7 @@ int icache_forward_to_mmu(int asi)
 }
 
 
-void cpuIcacheAccess (MmuState* ms,
+void cpuIcacheAccess (int cpu_id, MmuState* ms,
 				WriteThroughAllocateCache* icache,
 				uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t* mae, uint64_t* instr_pair, uint32_t* mmu_fsr)

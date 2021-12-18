@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <assert.h>
 #include "CacheInterface.h"
 #include "Ancillary.h"
@@ -17,14 +18,23 @@
 
 extern pthread_mutex_t cache_mutex;
 
-void cpuDcacheAccess (MmuState* ms,
+void cpuDcacheAccess (int cpu_id,
+			MmuState* ms,
 			WriteThroughAllocateCache* dcache,
 				uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,
 				uint8_t* mae, uint64_t* read_data)
 {
+	// Spin until cpu_id can enter..
+	while(1)
+	{
+		lock_cache(dcache);
+		if(!dcache->lock_flag || (dcache->lock_cpu_id == cpu_id))
+			break;
+		unlock_cache(dcache);
+		usleep (1000);
+	}
 	
-	lock_cache(dcache);
 	uint8_t is_hit = 0;
 
 	// service all the coherency related invalidates..
@@ -52,7 +62,16 @@ void cpuDcacheAccess (MmuState* ms,
 	// lock flag is the 6th bit.
 	uint8_t lock_mask    = (request_type & 0x40);
 	if(lock_mask != 0)
+	{
 		dcache->number_of_locked_accesses++;	
+		dcache->lock_flag = 1;
+		dcache->lock_cpu_id = cpu_id;
+	}
+	else
+	{
+		dcache->lock_flag = 0;
+	}
+	
 	
 
 	// the top bit is the new thread bit, which is ignored.

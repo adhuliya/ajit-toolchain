@@ -86,6 +86,9 @@ typedef struct _WriteThroughAllocateCache {
 	uint32_t mmu_control_register;
 	uint8_t  mmu_context_register;
 
+	uint8_t  lock_flag;
+	uint8_t  lock_cpu_id;
+
 	pthread_mutex_t cache_mutex;
 	
 } WriteThroughAllocateCache;
@@ -127,7 +130,8 @@ void decodeIcacheRequest (uint8_t asi,
 uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint32_t va);
 void     writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint32_t va, uint8_t byte_mask);
 
-void cpuIcacheAccess (MmuState* ms, 
+void cpuIcacheAccess (int cpu_id, 
+			MmuState* ms, 
 			WriteThroughAllocateCache* icache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t* mae, uint64_t* instr_pair, uint32_t* mmu_fsr);
@@ -136,7 +140,8 @@ void dumpCpuIcacheAccessTrace
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr, uint8_t is_hit);
  
-void cpuDcacheAccess (MmuState* ms, 
+void cpuDcacheAccess (int cpu_id, 
+			MmuState* ms, 
 			WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,

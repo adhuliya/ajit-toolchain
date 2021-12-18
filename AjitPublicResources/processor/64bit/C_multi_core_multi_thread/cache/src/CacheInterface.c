@@ -199,6 +199,9 @@ void initCache (WriteThroughAllocateCache* c)
 	for(I = 0; I < MAX_NUMBER_OF_LINES; I++)
 		c->last_updated_offset_in_set[I] = -1;
 
+	c->lock_flag = 0;
+	c->lock_cpu_id = 0;
+
 	flushCache(c);	
 
 	pthread_mutex_init (&(c->cache_mutex), NULL);
