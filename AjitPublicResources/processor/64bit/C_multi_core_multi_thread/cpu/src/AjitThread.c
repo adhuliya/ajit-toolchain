@@ -26,6 +26,8 @@
 #include "rlut.h"
 #include "ImplementationDependent.h"
 
+extern int global_verbose_flag;
+
 
 void increment_instruction_count(ThreadState* s) 
 { 
@@ -712,6 +714,12 @@ void generateLogMessage( ThreadState *s)
 		f->store_word_low);
 
 	pc_log = f->pc;
+
+	
+	if(global_verbose_flag)
+	{
+		fprintf(stderr,"Info:psr_update: pc=0x%lx psr=0x%lx\n", f->pc, r->psr);
+	}
 
 	//if(f->pc) pc_log = f->pc; //pc was updated inside an instruction
 	//else      pc_log = r->pc; //pc to be logged is same as the current pc

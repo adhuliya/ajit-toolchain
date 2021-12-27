@@ -1,6 +1,24 @@
 #ifndef ajit_mt_irc___
 #define ajit_mt_irc___
 
+//
+// Generic interrupt handler structure for bare-metal.
+// There are 15 interrupt handlers.  Each will have 
+// a C implementation which assumes that there
+// is a single argument (the TBR value).  From the
+// TBR value, the generic handler should figure out 
+// which interrupt it is and then call the function in
+// the array.  Each function pointer in the array points
+// to a function with form:  void foo ();
+//
+void ajit_initialize_interrupt_handlers_to_null();
+void ajit_set_interrupt_handler (uint32_t interrupt_level, void (* foo) ());
+
+// From the TBR, figure out the interrupt level and
+// call the interrupt handler in the array (if it is not null).
+// If it is null, halt the machine!
+void ajit_generic_interrupt_handler(uint32_t tbr_value);
+
 // Interrupt scheme for AJIT multi-core.
 //   1. There is one interrupt control register for every
 //      thread.  The addresses for these registers are as

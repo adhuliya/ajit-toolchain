@@ -5,10 +5,10 @@
 #include "dispatch.h"
 #include "athread.h"
 
-volatile int mutex_var;
+extern int mutex_var;
 static int COUNTER = 0;
 
-athreadManager global_atm;
+volatile athreadManager volatile global_atm;
 
 // set to 1 when thread 01 can be started.
 volatile int start_thread_01 = 0;
@@ -16,24 +16,27 @@ volatile int start_thread_01 = 0;
 void printCounter(int atid, int tid, void* arg)
 {
 			
-	volatile int mutex_ptr = (int) &mutex_var;
+	int mutex_ptr = (int) &mutex_var;
 	acquire_mutex_using_swap(mutex_ptr);
 	ee_printf("CPU %d, athread %d: __dispatch_fn (%d).\n", tid, atid, *((int*) arg));
 	COUNTER = *((int*) arg) + 1;
 	release_mutex_using_swap(mutex_ptr);
 }
 
-void enable_serial()
+void __enable_serial__()
 {
+	mutex_var = 0;
+
 	// enable the serial device.
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE | RX_INTR_ENABLE );
-	ee_printf("enabled serial.\n"); 
+	ee_printf("enabled serial, set mutex_var=%d.\n", mutex_var); 
 }
 
 void runLoop(int tid)
 {
 	void (*__dispatch_fn)(int, int,void*) = &printCounter;
 
+	ee_printf("entered runLoop(%d).\n", tid); 
 	while(1)
 	{
 		void* arg;
@@ -70,7 +73,11 @@ void runLoop(int tid)
 
 void main_00 () 
 {
+
+
 	void (*__dispatch_fn)(int, int,void*) = &printCounter;
+	mutex_var = 0;
+	ee_printf("entered main_00, set mutex=%d\n", mutex_var);
 
 	// initialize the ATHREAD manager.
 	athreadInit(&global_atm);

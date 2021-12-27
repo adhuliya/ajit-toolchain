@@ -101,7 +101,7 @@ AFTER_PTABLE_SETUP:
 	!!! NOTE:  this must be called after the MMU has
 	!!!        been enabled... because it loads strings
 	!!!	   from memory using virtual addresses.
-	call enable_serial
+	call __enable_serial__
 	nop
 
 

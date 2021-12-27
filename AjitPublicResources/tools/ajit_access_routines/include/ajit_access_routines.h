@@ -81,7 +81,6 @@ void __ajit_sleep__(uint32_t clock_cycles);
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  MMU related stuff
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
 //
 // SPARC-V8 defines a number of address spaces for accessing special
 // registers etc.  The address space identifier (ASI) is an 8-bit
@@ -101,7 +100,9 @@ void __ajit_sleep__(uint32_t clock_cycles);
 #define ASI_MMU_REGISTER 		0x04	// MMU register
 #define ASI_MMU_FLUSH_PROBE	 	0x03    // used in doing an MMU FLUSH/PROBE
 #define ASI_FLUSH_I_D_CONTEXT		0x13	// A write with this ASI causes the data cache to be flushed.
-#define ASI_MMU_BYPASS			0x20    // 0x20 to 0x2f is the range of bypass asi's.
+#define ASI_MMU_BYPASS			0x20
+#define ASI_MMU_BYPASS_N(n)		(0x20 + n)
+					 	// 0x20 to 0x2f is the range of bypass asi's.
 						// with the bottom 4 bits becoming the top-4 bits
 						// of the physical address (ingenious?)  We will
 						// treat these top 4 bits as 0 when mapping device
@@ -152,6 +153,16 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr);
 #define __AJIT_STORE_UBYTE_MMU_BYPASS__(addr,value) {\
 	__asm__ __volatile__("stuba %0, [%1] %2\n\t" : : "r"(value), "r"(addr), "i"(ASI_MMU_BYPASS) : "memory");}
 
+#define __AJIT_STORE_WORD_MMU_BYPASS_N__(N,addr,value) {\
+	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr), "i"(ASI_MMU_BYPASS_N(N)) : "memory");}
+
+
+//
+// Use bypass ASI to read directly from physical address!
+//
+inline void	 __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address);
+inline uint32_t  __ajit_load_word_from_physical_address__(uint64_t physical_address);
+
 //
 // load word from mmu register
 //
@@ -164,6 +175,9 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
         __asm__ __volatile__("lda [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
 #define __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr,value) {\
         __asm__ __volatile__("lduba [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
+
+#define __AJIT_LOAD_WORD_MMU_BYPASS_N__(N, addr,value) {\
+        __asm__ __volatile__("lda [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS_N(N)));}
 
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,5 +427,52 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 //---------------------------------------------------------------------------------------------
 #define __AJIT_NOP()  {__asm__ __volatile__("nop;");}
 
+//---------------------------------------------------------------------------------------------
+// HALT
+//---------------------------------------------------------------------------------------------
+#define __AJIT_HALT()  {__asm__ __volatile__("ta 0;");}
+
+//---------------------------------------------------------------------------------------------
+// backup and restore floating point registers.
+//---------------------------------------------------------------------------------------------
+#define __AJIT_SAVE_FP_REGS__(addr) {\
+	__asm__ __volatile__("std %%f0, [%0] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f2, [%0 + 8] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f4, [%0 + 16] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f6, [%0 + 24] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f8, [%0 + 32] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f10, [%0 + 40] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f12, [%0 + 48] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f14, [%0 + 56] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f16, [%0 + 64] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f18, [%0 + 72] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f20, [%0 + 80] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f22, [%0 + 88] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f24, [%0 + 96] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f26, [%0 + 104] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f28, [%0 + 112] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("std %%f30, [%0 + 120] \n\t" : : "r"(addr) : "memory");\
+	__asm__ __volatile__("st  %%fsr, [%0 + 124] \n\t" : : "r"(addr) : "memory");\
+}
+
+#define __AJIT_RESTORE_FP_REGS__(addr) {\
+	__asm__ __volatile__("ldd  [%0],  %%f0 \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 8],  %%f2   \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 16], %%f4   \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 24], %%f6   \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 32], %%f8   \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 40], %%f10  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 48], %%f12  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 56], %%f14  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 64], %%f16  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 72], %%f18  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 80], %%f20  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 88], %%f22  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 96], %%f24  \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 104], %%f26 \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 112], %%f28 \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ldd  [%0 + 120], %%f30 \n\t" : : "r"(addr));\
+	__asm__ __volatile__("ld   [%0 + 124], %%fsr \n\t" : : "r"(addr));\
+}
 
 #endif
