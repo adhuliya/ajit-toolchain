@@ -1,4 +1,4 @@
-! an improved generic isr model for the case when an interrupt handler
+! An improved generic isr model for the case when an interrupt handler
 ! does a lot of user-level work.
 
 !
@@ -16,8 +16,13 @@
 !
 !  Note: T is is trap handler window and may be invalid!
 !
-!  l0 contains PSR
-!  l3 contains TBR
+!  ASSUMPTIONS
+!    Invalid stack pointers are initialized to 0x0.
+!           This is critical in order to manage the 
+!           stack on an interrupt.
+!    l0 contains PSR
+!    l3 contains TBR
+!
 .section .text.traphandlers
 .global generic_vectored_isr
 generic_vectored_isr:
@@ -63,12 +68,24 @@ handle_invalid_T:
    restore
 
 continue_with_valid_T:
+
+   ! Save the %sp for recovery.
    mov %sp, %l7
 
    !
    ! give T a stack pointer
    !
-   sub %fp, 320, %sp
+   cmp %sp, 0x0
+
+   ! if %sp is 0, get it from %fp.
+   be,a continue_with_stack
+   sub %fp, 96, %sp
+
+   ! If $sp is not zero, it is valid,
+   ! and expand the stack.
+   sub %sp, 96, %sp
+
+continue_with_stack:
 
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    ! save state in stack of window T.
@@ -132,10 +149,10 @@ continue_with_valid_T:
 
    !
    ! You have come back from the actual handler..
-   ! Interrupts are still disabled...
-   !
+   ! Interrupts are still disabled... 
 
-   ! Step 5: make window T+1 available for RETT!
+   ! But traps are enabled...  
+   !  make window T+1 available for RETT!
    restore
    save
 
@@ -146,7 +163,6 @@ recover_and_leave:
    !
    add %sp, 96, %sp
 
-   ! Step 6
    !   get back the psr and global registers,in regs,y
    ld [%sp],  %l7  
    wr %l7, %psr
@@ -163,12 +179,12 @@ recover_and_leave:
    ld  [%sp + 72], %l6
    ld  [%sp + 76], %l7
 
+   ! revert to the pre-existing stack pointer
    mov %l6, %sp
    mov %l7, %y
 
 jmpl_and_return:
 
-   ! Step 8 
    !   go home.. guaranteed that the
    !   return window is valid 
    jmpl %r17, %r0

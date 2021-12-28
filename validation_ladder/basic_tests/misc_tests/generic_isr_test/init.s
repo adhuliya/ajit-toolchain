@@ -1,6 +1,9 @@
 .section .text.ajitstart
 .global _start;
 _start:
+	call clear_stack_pointers
+	nop
+
 	set 0xfff00f00, %sp
 	set 0xfff00ff0, %fp
 

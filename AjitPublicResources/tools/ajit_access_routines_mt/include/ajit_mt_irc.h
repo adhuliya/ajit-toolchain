@@ -1,24 +1,34 @@
 #ifndef ajit_mt_irc___
 #define ajit_mt_irc___
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// The interrupt handler structure for bare-metal is set up as follows.
+// 
+// First, it is assumed that all invalid stack pointers are initialized to
+// to 0 (clear_stack_pointers must be called in the init.s script).
 //
-// Generic interrupt handler structure for bare-metal.
-// There are 15 interrupt handlers.  Each will have 
-// a C implementation which assumes that there
-// is a single argument (the TBR value).  From the
-// TBR value, the generic handler should figure out 
-// which interrupt it is and then call the function in
-// the array.  Each function pointer in the array points
+// On an interrupt, the function ajit_generic_interrupt_handler is
+// called with a tbr value.  Base on the tbr value, the  generic
+// interrupt handler calls an interrupt level specific handler.
+// 
+// There are 15 interrupt specific handlers which populate
+// a function pointer array.  Each function pointer in the array points
 // to a function with form:  void foo ();
-//
-void ajit_initialize_interrupt_handlers_to_null();
-void ajit_set_interrupt_handler (uint32_t interrupt_level, void (* foo) ());
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// sets all interrupt specific handlers to null.
+void ajit_initialize_interrupt_handlers_to_null();
+// set function pointer of specific handler for interrupt_level.
+void ajit_set_interrupt_handler (uint32_t interrupt_level, void (* foo) ());
 // From the TBR, figure out the interrupt level and
 // call the interrupt handler in the array (if it is not null).
 // If it is null, halt the machine!
 void ajit_generic_interrupt_handler(uint32_t tbr_value);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// The AJIT multi-thread interrupt controller is a powerful mechanism
+// for mapping interrupts to hardware threads.
+//
 // Interrupt scheme for AJIT multi-core.
 //   1. There is one interrupt control register for every
 //      thread.  The addresses for these registers are as
@@ -48,8 +58,7 @@ void ajit_generic_interrupt_handler(uint32_t tbr_value);
 //             (after masking) is observed in the enabled state.
 //          d. stays in the interrupting state until the irc
 //              is disabled.
-//
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 uint32_t readInterruptControlRegister(int core_id, int thread_id);
 void     writeInterruptControlRegister(int core_id, int thread_id, uint32_t value);
 
