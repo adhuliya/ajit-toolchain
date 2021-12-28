@@ -25,7 +25,9 @@ int __enable_serial_interrupt()
 
 void __serial_interrupt_handler()
 {
+#ifdef DEBUG_MODE
 	PRINTF("in __serial_interrupt_handler.\n");
+#endif
 
 	uint32_t fp_regs[34];
 	uint32_t fp_addr = (uint32_t) &(fp_regs[0]);
@@ -40,7 +42,11 @@ void __serial_interrupt_handler()
 		exit_flag = 1;
 	}
  
+#ifdef DEBUG_MODE
 	PRINTF("Received %c, exit flag =%d\n",B, exit_flag);
+#endif
+
+	__ajit_serial_putchar__(B);
 
 	__AJIT_RESTORE_FP_REGS__ (fp_addr);
 }
