@@ -7,8 +7,7 @@
 
 % include("build_init/parts/init_threads_start.s")
 
-!! a removed include for now.
-!! % include("build_init/parts/init_init_routines.s")
+% include("build_init/parts/init_init_routines.s")
 
 % include("build_init/parts/init_footer.s")
 

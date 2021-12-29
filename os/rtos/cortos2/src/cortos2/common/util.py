@@ -342,7 +342,7 @@ def getSizeInBytes(
 
   if sizeInBytes is None:
     sizeInKiloBytes = getConfigurationParameter(data, ["SizeInKiloBytes"], default=None)
-    sizeInBytes = None if sizeInKiloBytes is None else sizeInKiloBytes * 1024 * 1024
+    sizeInBytes = None if sizeInKiloBytes is None else sizeInKiloBytes * 1024
 
   if sizeInBytes is None:
     sizeInMegaBytes = getConfigurationParameter(data, ["SizeInMegaBytes"], default=None)

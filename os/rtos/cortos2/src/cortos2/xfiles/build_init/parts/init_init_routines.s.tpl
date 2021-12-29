@@ -1,4 +1,4 @@
-% memoryStartAddr = confObj.memoryLayout.memory.startAddr
+% memoryStartAddr = confObj.memoryLayout.memory.ram.physicalStartAddr
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! BLOCK START: init_allocated_memory_to_zero
