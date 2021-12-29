@@ -1,0 +1,19 @@
+# yaml configuration file for linker/loader of Co-RTOS
+
+Cores: 1
+ThreadsPerCore: 2
+
+# Required: Which function runs on which Ajit Thread.
+ProgramThreads:
+  - CortosInitCalls:
+      - ajit_entry_func_001
+    StackSizeInBytes: 8192
+  - CortosInitCalls:
+      - ajit_entry_func_010
+    StackSizeInBytes: 8192
+
+TotalMemoryInKB: 102400
+# AddBget: True
+
+# ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
+LogLevel: NONE
