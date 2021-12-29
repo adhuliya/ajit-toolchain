@@ -1,0 +1,22 @@
+# yaml configuration file for linker/loader of Co-RTOS
+
+Cores: 1
+ThreadsPerCore: 2
+
+ProgramThreads:
+  - CortosInitCalls:
+      - cortos_entry_func_001
+      - cortos_entry_func_010
+    StackSizeInBytes: 8192
+  - CortosInitCalls:
+      - cortos_entry_func_101
+      - cortos_entry_func_110
+    StackSizeInBytes: 8192
+
+TotalMemoryInKB: 102400
+
+# Required: for memory management support.
+AddBget: True
+
+LogLevel: TRACE
+
