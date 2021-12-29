@@ -8,11 +8,11 @@
 int clock_time(void)
 {
   uint32_t tval  = ajit_barebones_clock();					
-  int seconds    = (tval/ EE_TICKS_PER_SECOND );
+  int ret_val    = tval / EE_TICKS_PER_SECOND;
 #ifdef DEBUG
-  ee_printf ("AJIT clock_time = %d (tval=%d).\n", seconds, tval);
+  ee_printf ("AJIT clock_time = %d (tval=%d).\n", ret_val, tval);
 #endif
-  return seconds;
+  return ret_val;
 }
 
 #endif

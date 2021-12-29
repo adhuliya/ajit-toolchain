@@ -3,7 +3,55 @@
 #include "ajit_access_routines.h"
 #include "device_addresses.h"
 #include "ajit_mt_irc.h"
+#include "core_portme.h"
 
+void (*ajit_global_interrupt_handlers[16]) ();
+
+void ajit_initialize_interrupt_handlers_to_null()
+{
+	int I;
+	for(I = 0; I < 16; I++)
+		ajit_global_interrupt_handlers[I] = NULL;
+}
+
+void ajit_set_interrupt_handler (uint32_t interrupt_level, void (* foo) ())
+{
+	if(interrupt_level < 16)
+		ajit_global_interrupt_handlers[interrupt_level] = foo;
+		
+}
+
+void ajit_generic_interrupt_handler(uint32_t tbr_value)
+{
+	uint8_t core_id, thread_id;
+	ajit_get_core_and_thread_id(&core_id, &thread_id);
+	disableInterruptController(core_id, thread_id);	
+
+	int err = 0;
+	uint32_t trap_type = (tbr_value >> 4) & 0xff;
+	if((trap_type >= 0x11) && (trap_type <= 0x1f))	
+	{
+		uint32_t ilevel = (trap_type - 0x10);
+		void (*fn_ptr)() = ajit_global_interrupt_handlers[ilevel];
+		if(fn_ptr != NULL)
+		{
+			(*fn_ptr) ();
+		}
+		else
+		{
+			err = 1;
+		}
+	}
+	else
+		err = 1;
+
+	enableInterruptController(core_id, thread_id);	
+
+	if(err)
+	{
+		__AJIT_HALT();
+	}
+}
 
 uint32_t readInterruptControlRegister(int core_id, int thread_id)
 {

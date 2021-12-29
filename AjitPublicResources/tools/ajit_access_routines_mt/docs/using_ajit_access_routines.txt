@@ -60,20 +60,32 @@
 				sets stack pointer in each window to 0.
 
 
-	include/ and src/
-	
+	include/ 
 		ajit_access_routines.h
-		device_addresses.h
+			base access routines of all kinds.
 
-		ajit_access_routines.c
-
-		Provide routines to access the processor's base 
-		functions.  These include
 			- routines to read/write from MMU registers
 			- routines to flush icache/dcache.
 			- routines to access default peripherals.
 			- routines to access AJIT instructions
 				fsqrtd,fsqrts,fitod,fitos,fdtoi,fstoi
+
+		device_addresses.h
+			device addresses for the vanilla and 
+			strawberry evaluation platforms.
+
+		ajit_mmap.h
+			utilities for managing page tables.
+			more info in the header file itself.
+
+		ajit_mt_irc.h
+			interrupt management. 
+			more info in the header file itself.
+	src/
+		ajit_access_routines.c
+		ajit_mt_irc.c
+		ajit_mmap.c
+
 
 3.  Notes on accessing peripherals
 
@@ -108,3 +120,10 @@
 	You will need to include the assembly files, the
 	include/ directory and the src/ directory to the
 	compileToSparc script. 
+
+	The following headers should be included in 
+	your source files.
+	
+	#include "ajit_access_routines.h"
+	#include "ajit_mt_irc.h"
+	#include "ajit_mmap.h"

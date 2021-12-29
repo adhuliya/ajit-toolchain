@@ -422,8 +422,9 @@ static int clock_time(void)
 #endif /* not AJIT */
 
 static int timer_expired(struct timer *t)
-{ return (int)(clock_time() - t->start) >= (int)t->interval; }
+{ int ret_val =  (int)(clock_time() - t->start) >= (int)t->interval;  
+	if(ret_val) ee_printf("timer_expired(%d)\n", t->interval); return(ret_val);}
 
 static void timer_set(struct timer *t, int interval)
-{ t->interval = interval; t->start = clock_time(); }
+{ t->interval = interval; t->start = clock_time(); ee_printf("timer_set(%d)\n", interval);}
 /*---------------------------------------------------------------------------*/

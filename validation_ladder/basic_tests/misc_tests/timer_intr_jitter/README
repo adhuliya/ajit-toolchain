@@ -1,0 +1,11 @@
+A program which can be used to characterize interrupt
+overhead. A count-down timer is programmed to interrupt
+the processor.  
+
+The ISR keeps track of the interval from the last interrupt.
+The timer is reinitialized by the ISR.  The count-down interval is set to 1ms.
+
+This allows us to compute the min/max/avg, std-deviation of intervals 
+between successive interrupts.
+	
+

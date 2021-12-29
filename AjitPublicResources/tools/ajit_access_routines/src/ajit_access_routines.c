@@ -211,6 +211,136 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr)
 			     "i"(ASI_MMU_BYPASS) : "memory");
 }
 
+inline void __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address)
+{
+	uint32_t la = physical_address;
+
+	uint64_t ms = (physical_address >> 32) & 0xf;
+	uint32_t tms = (ms & 0xf);
+	switch(tms)
+	{
+		// Is there a less ugly way to do this?
+
+		case 0:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(0,la,value);
+			break;
+		case 1:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(1,la,value);
+			break;
+		case 2:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(2,la,value);
+			break;
+		case 3:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(3,la,value);
+			break;
+		case 4:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(4,la,value);
+			break;
+		case 5:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(5,la,value);
+			break;
+		case 6:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(6,la,value);
+			break;
+		case 7:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(7,la,value);
+			break;
+		case 8:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(8,la,value);
+			break;
+		case 9:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(9,la,value);
+			break;
+		case 10:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(10,la,value);
+			break;
+		case 11:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(11,la,value);
+			break;
+		case 12:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(12,la,value);
+			break;
+		case 13:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(13,la,value);
+			break;
+		case 14:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(14,la,value);
+			break;
+		case 15:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(15,la,value);
+			break;
+		default:
+			break;
+		
+	}
+}
+
+inline uint32_t __ajit_load_word_from_physical_address__(uint64_t physical_address)
+{
+	uint32_t value = 0;
+	uint64_t ms = (physical_address >> 32) & 0xf;
+	uint32_t la = (physical_address & 0xffffffff);
+
+	uint32_t tms = (ms & 0xf);
+	switch(tms)
+	{
+		// Is there a less ugly way to do this?
+		case 0:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(0,la,value);
+			break;
+		case 1:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(1,la,value);
+			break;
+		case 2:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(2,la,value);
+			break;
+		case 3:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(3,la,value);
+			break;
+		case 4:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(4,la,value);
+			break;
+		case 5:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(5,la,value);
+			break;
+		case 6:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(6,la,value);
+			break;
+		case 7:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(7,la,value);
+			break;
+		case 8:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(8,la,value);
+			break;
+		case 9:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(9,la,value);
+			break;
+		case 10:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(10,la,value);
+			break;
+		case 11:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(11,la,value);
+			break;
+		case 12:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(12,la,value);
+			break;
+		case 13:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(13,la,value);
+			break;
+		case 14:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(14,la,value);
+			break;
+		case 15:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(15,la,value);
+			break;
+		default:
+			break;
+		
+	}
+	return(value);
+}
+
+
 
 
 //

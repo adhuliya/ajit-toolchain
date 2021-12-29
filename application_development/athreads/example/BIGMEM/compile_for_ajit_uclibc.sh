@@ -10,10 +10,10 @@ PT=$AJIT_MINIMAL_PRINTF_TIMER
 ATHREADS=$AJIT_HOME/application_development/athreads/
 #   trap handlers
 # compile sources.
-SRCS=" -c ../main.c -C $ATHREADS/src  -s ../init.s -s $AAR/asm/trap_handlers.s -s $AAR/asm/mutexes.s -C $AAR/src -C $PT/src"
+SRCS=" -c ../main.c -c ../globals.c  -C $ATHREADS/src  -s ../init.s -s $AAR/asm/trap_handlers.s -s $AAR/asm/mutexes.s -C $AAR/src -C $PT/src"
 # compile includes.
 INCLUDES="-I ../ -I $ATHREADS/include -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
 DEFS=" -D NDEBUG_MODE "
 # compile the application.
-compileToSparcUclibc.py -o 2 -V VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk  $DEFS
+compileToSparcUclibc.py -g -V VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk  $DEFS
 
