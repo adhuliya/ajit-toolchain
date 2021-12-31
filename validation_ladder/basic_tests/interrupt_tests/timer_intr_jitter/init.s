@@ -22,13 +22,13 @@ _start:
 	call set_context_table_pointer
 	nop
 
-	! enable traps.
-	set 0x10E7, %l0	
-	wr %l0, %psr
-
   	! enable mmu.
 	set 0x1, %o0
 	sta %o0, [%g0] 0x4    
+
+	! enable traps, go to user mode.
+	set 0x1067, %l0	
+	wr %l0, %psr
 
 	call main
 	nop

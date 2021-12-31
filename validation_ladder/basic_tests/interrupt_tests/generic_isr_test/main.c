@@ -12,13 +12,13 @@ int exit_flag = 0;
 
 int __enable_serial()
 {
-	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
+	__ajit_write_serial_control_register_via_vmap__ ( TX_ENABLE | RX_ENABLE);
 	return(0);
 }
 
 int __enable_serial_interrupt()
 {
-	__ajit_write_serial_control_register__ (TX_ENABLE | RX_ENABLE |RX_INTR_ENABLE);
+	__ajit_write_serial_control_register_via_vmap__ (TX_ENABLE | RX_ENABLE |RX_INTR_ENABLE);
 	return(0);
 }
 
@@ -34,8 +34,7 @@ void __serial_interrupt_handler()
 
 	__AJIT_SAVE_FP_REGS__ (fp_addr);
 
-	uint32_t B;
-	__AJIT_READ_SERIAL_RX_REGISTER__(B);
+	uint32_t B = __ajit_read_serial_rx_register_via_vmap__();
 
 	if(B == 'q')
 	{
@@ -46,7 +45,7 @@ void __serial_interrupt_handler()
 	PRINTF("Received %c, exit flag =%d\n",B, exit_flag);
 #endif
 
-	__ajit_serial_putchar__(B);
+	__ajit_serial_putchar_via_vmap__(B);
 
 	__AJIT_RESTORE_FP_REGS__ (fp_addr);
 }

@@ -8,7 +8,7 @@
 
 int __enable_serial()
 {
-	__ajit_write_serial_control_register__ (TX_ENABLE | RX_ENABLE);
+	__ajit_write_serial_control_register_via_vmap__ (TX_ENABLE | RX_ENABLE);
 	return(0);
 }
 
@@ -52,10 +52,10 @@ uint64_t last_time_64;
 void timer_interrupt_handler()
 {
 	// clear timer control register.
-	__ajit_write_timer_control_register__ (0x0);
+	__ajit_write_timer_control_register_via_vmap__ (0x0);
 
 	// reenable the timer, right away..
-	__ajit_write_timer_control_register__ (TIMERINITVAL);	
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
 
 #ifdef DEBUG_MODE
 	PRINTF("Info: entered timer_interrupt_handler (E=%d).\n", E);
@@ -122,7 +122,7 @@ int main ()
 	enableInterruptControllerAndAllInterrupts(0,0);
 
 	// reenable the timer, right away..
-	__ajit_write_timer_control_register__ (TIMERINITVAL);	
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
 
 	while(1)
 	{

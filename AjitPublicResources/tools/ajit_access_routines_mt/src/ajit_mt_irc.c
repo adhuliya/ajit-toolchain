@@ -56,15 +56,22 @@ void ajit_generic_interrupt_handler(uint32_t tbr_value)
 uint32_t readInterruptControlRegister(int core_id, int thread_id)
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
+#ifdef USE_VMAP
+	uint32_t ret_val = *((uint32_t*) addr);
+#else
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
+#endif
 	return(ret_val);
 }
 
 void     writeInterruptControlRegister(int core_id, int thread_id, uint32_t value)
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_MIN + (4*((2*core_id) + thread_id));
+#ifdef USE_VMAP
+	*((uint32_t*)addr) = value;
+#else
 	__ajit_store_word_mmu_bypass__(value, addr);
-
+#endif
 }
 
 

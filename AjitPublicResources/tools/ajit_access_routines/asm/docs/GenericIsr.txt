@@ -1,5 +1,5 @@
 
-	Writing a Generic ISR is a pain in the...
+		A Generic ISR
 
 		Madhav Desai
 
@@ -21,19 +21,29 @@
 	The frame pointer of T is 
 		FP(T) = SP(W)
 
-	SP(T) is not set.
+	SP(T) may or may not be set.
+
+	If it is not set, it will be 0x0 since
+	we initialize all stack pointers to 0x0
+	in the startup sequence.
 
 	T may be valid or invalid.
 
 3. The action
 ----------------
+
 	If T is invalid, make T-1 invalid
 		by saving its registers to stack
 
 	Give T a new stack.. (***)
-		SP(T) = FP(T) - 320
+		Save SP(T) into X
 
-	Save T's psr, globals, input-regs, %l1,%l2, %sp
+		If SP(T) is not defined (ie, is 0x0)
+			SP(T) = FP(T) - 320
+		else
+			SP(T) = SP(T) - 320
+
+	Save T's psr, X (original SP(T)), globals, input-regs, %l1,%l2, 
 	registers into this stack.
 
 	Make the of T bigger to allow window overflow
@@ -48,5 +58,14 @@
 	Recover T's psr, globals, input_regs, %l1, %l2, %sp
 	registers from the stack (***) marked above.
 
-	jmpl/rett. home.
+	jmpl/rett and move on..
 		
+
+4. Summary
+-----------------
+
+	Our generic ISR uses the same stack that the
+	program is using.  This makes things less complicated
+	than using a separate ISR stack!
+
+

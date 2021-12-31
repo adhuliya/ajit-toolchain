@@ -431,6 +431,22 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 // HALT
 //---------------------------------------------------------------------------------------------
 #define __AJIT_HALT()  {__asm__ __volatile__("ta 0;");}
+#define __AJIT_SW_TRAP_0()  {__asm__ __volatile__("ta 0;");}
+#define __AJIT_SW_TRAP_1()  {__asm__ __volatile__("ta 1;");}
+#define __AJIT_SW_TRAP_2()  {__asm__ __volatile__("ta 2;");}
+#define __AJIT_SW_TRAP_3()  {__asm__ __volatile__("ta 3;");}
+#define __AJIT_SW_TRAP_4()  {__asm__ __volatile__("ta 4;");}
+#define __AJIT_SW_TRAP_5()  {__asm__ __volatile__("ta 5;");}
+#define __AJIT_SW_TRAP_6()  {__asm__ __volatile__("ta 6;");}
+#define __AJIT_SW_TRAP_7()  {__asm__ __volatile__("ta 7;");}
+#define __AJIT_SW_TRAP_8()  {__asm__ __volatile__("ta 8;");}
+#define __AJIT_SW_TRAP_9()  {__asm__ __volatile__("ta 9;");}
+#define __AJIT_SW_TRAP_10()  {__asm__ __volatile__("ta 10;");}
+#define __AJIT_SW_TRAP_11()  {__asm__ __volatile__("ta 11;");}
+#define __AJIT_SW_TRAP_12()  {__asm__ __volatile__("ta 12;");}
+#define __AJIT_SW_TRAP_13()  {__asm__ __volatile__("ta 13;");}
+#define __AJIT_SW_TRAP_14()  {__asm__ __volatile__("ta 14;");}
+#define __AJIT_SW_TRAP_15()  {__asm__ __volatile__("ta 15;");}
 
 //---------------------------------------------------------------------------------------------
 // backup and restore floating point registers.

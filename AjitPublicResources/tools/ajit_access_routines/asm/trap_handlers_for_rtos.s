@@ -268,24 +268,24 @@ HW_trap_0x7e: ta 0; nop; nop; nop;
 HW_trap_0x7f: ta 0; nop; nop; nop;
 
 software_trap_table_base:
-# ta 0 
-SW_trap_0x80: ta 0; nop; nop; nop;
-# ta 1 ... etc. 
-SW_trap_0x81: ta 0; nop; nop; nop;
-SW_trap_0x82: ta 0; nop; nop; nop;
-SW_trap_0x83: ta 0; nop; nop; nop;
-SW_trap_0x84: ta 0; nop; nop; nop;
-SW_trap_0x85: ta 0; nop; nop; nop;
-SW_trap_0x86: ta 0; nop; nop; nop;
-SW_trap_0x87: ta 0; nop; nop; nop;
-SW_trap_0x88: ta 0; nop; nop; nop;
-SW_trap_0x89: ta 0; nop; nop; nop;
-SW_trap_0x8a: ta 0; nop; nop; nop;
-SW_trap_0x8b: ta 0; nop; nop; nop;
-SW_trap_0x8c: ta 0; nop; nop; nop;
-SW_trap_0x8d: ta 0; nop; nop; nop;
-SW_trap_0x8e: ta 0; nop; nop; nop;
-SW_trap_0x8f: ta 0; nop; nop; nop;
+# ta 0,1,2, ....
+# For the moment, we will allow software traps 0-15. 
+SW_trap_0x80: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x81: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x82: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x83: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x84: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x85: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x86: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x87: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x88: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x89: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8a: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8b: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8c: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8d: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8e: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x8f: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x90: ta 0; nop; nop; nop;
 SW_trap_0x91: ta 0; nop; nop; nop;
 SW_trap_0x92: ta 0; nop; nop; nop;

@@ -610,7 +610,11 @@ void uart_send_char(char c) {
 	//
 	while(1)
 	{
-		int success = 	__ajit_serial_putchar__ (c);
+#ifdef USE_VMAP
+		int success = 	__ajit_serial_putchar_via_vmap__ (c);
+#else
+		int success = 	__ajit_serial_putchar_via_vmap__ (c);
+#endif
 		if(success)
 			break;
 	}
@@ -621,7 +625,11 @@ void uart_send_char(char c) {
 	while (1)
 	{
 		uint32_t ctrl_reg = 0;
+#ifdef USE_VMAP
+		ctrl_reg = __ajit_read_serial_control_register_via_vmap__();
+#else
 		__AJIT_READ_SERIAL_CONTROL_REGISTER__(ctrl_reg);
+#endif
 		if(!(ctrl_reg & TX_FULL) || !(ctrl_reg & TX_ENABLE))
 			break;
 	}

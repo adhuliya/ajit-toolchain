@@ -5,6 +5,12 @@
 // These are mapped statically in the high memory region.
 //   We suggest that 0xffff0000 to 0xffffffff be used to map
 //   peripherals.
+#define ADDR_IO_MIN				0xFFFF0000
+#define ADDR_IO_MAX				0xFFFFFFFF
+
+#define ADDR_SCRATCH_PAD_MEMORY_MIN 			0xFFFF2c00 
+#define ADDR_SCRATCH_PAD_MEMORY_MAX 			0xFFFF2ffc 
+
 //
 #define ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER 	0xFFFF3000 // AJIT default-interrupt-controller control register (word).
 #define ADDR_TIMER_CONTROL_REGISTER 			0xFFFF3100 // AJIT default-countdown-timer control register (word).
