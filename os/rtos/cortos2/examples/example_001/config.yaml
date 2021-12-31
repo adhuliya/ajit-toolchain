@@ -86,7 +86,7 @@ Software:
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    SizeInKiloBytes: 100
+    SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
 #   Locks: # Locks for synchronization between threads.

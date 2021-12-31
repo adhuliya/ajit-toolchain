@@ -25,7 +25,6 @@ class MemoryRegion(util.PrettyStr):
     self.oneLineDescription = oneLineDescription
     self.sizeInBytes = sizeInBytes
     self.pageTableLevels: List[Tuple[consts.PageTableLevel, int]] = []
-    self.initPageTableLevels()
     self.context = context
     self.virtualStartAddr = virtualStartAddr
     self.physicalStartAddr = physicalStartAddr
@@ -33,6 +32,8 @@ class MemoryRegion(util.PrettyStr):
     self.permissions = permissions
     self.regionType = regionType
     self.initToZero = initToZero
+
+    self.initPageTableLevels()
 
 
   @staticmethod
@@ -76,11 +77,14 @@ class MemoryRegion(util.PrettyStr):
     page table entries.
     """
     self.pageTableLevels = []
+    firstPageSizeInBytes = None
 
     sizeInBytes = self.sizeInBytes
     for level in sorted((x for x in consts.PageTableLevel), key=lambda x: x.value):
       pageSizeInBytes = consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[level]
       numOfPages = sizeInBytes // pageSizeInBytes
+      if firstPageSizeInBytes is None:
+        firstPageSizeInBytes = pageSizeInBytes if numOfPages else None
       self.pageTableLevels.append((level, numOfPages))
       sizeInBytes -= numOfPages * pageSizeInBytes
 
@@ -88,10 +92,14 @@ class MemoryRegion(util.PrettyStr):
     if sizeInBytes > 0:
       assert sizeInBytes < consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[consts.PageTableLevel.LEVEL3], \
         f"{sizeInBytes} should be lower than 4KB."
+      if firstPageSizeInBytes is None:
+        firstPageSizeInBytes = \
+          consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[consts.PageTableLevel.LEVEL3]
       self.pageTableLevels.append((consts.PageTableLevel.LEVEL3, 1))
 
-    if self.name == "TextSection": #delit
-      print(f"REGION:{self.name}: {self.pageTableLevels}") # print the region #delit
+    assert firstPageSizeInBytes is not None, f"{self.name}, {self.sizeInBytes}"
+    self.virtualStartAddr = util.alignAddress(self.virtualStartAddr, firstPageSizeInBytes)
+    self.physicalStartAddr = util.alignAddress(self.physicalStartAddr, firstPageSizeInBytes)
 
 
   def getFirstByteAddr(self, virtualAddr: bool = True) -> int:
