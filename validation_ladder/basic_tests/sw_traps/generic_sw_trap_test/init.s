@@ -5,7 +5,6 @@ _start:
 	nop
 
 	set 0xfff00f00, %sp
-	set 0xfff00ff0, %fp
 
 	set 0x1, %l0		! window 7 is marked invalid...  we start at window 7
 	sll %l0, 7, %l0         !

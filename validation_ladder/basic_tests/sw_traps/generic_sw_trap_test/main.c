@@ -33,7 +33,7 @@ void __t5_handler(uint32_t arg1, uint32_t arg2, uint32_t arg3)
 
 void read_physical_memory (uint32_t address, uint32_t value_pointer)
 {
-	__AJIT_SW_TRAP_5();
+	__AJIT_SW_TRAP(5);
 }
 
 
@@ -54,6 +54,14 @@ int main ()
 		PRINTF("0x%x = PMEM[0x%x]\n", v, 0x40000000 + (index << 2));
 	}
 
+
+	uint32_t rval = 0x01234567;
+	uint32_t rrval = 0x0;
+	__AJIT_SET_IU_REGISTER(1,rval);
+	__AJIT_GET_IU_REGISTER(1,rrval);
+		
+	PRINTF("IU reg rval=0x%x, rrval = 0x%x\n", rval, rrval);
+	
 
 	return(0);
 }

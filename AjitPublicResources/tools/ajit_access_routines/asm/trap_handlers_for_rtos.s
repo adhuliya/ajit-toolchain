@@ -269,8 +269,8 @@ HW_trap_0x7f: ta 0; nop; nop; nop;
 
 software_trap_table_base:
 # ta 0,1,2, ....
-# For the moment, we will allow software traps 0-15. 
-SW_trap_0x80: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
+SW_trap_0x80: ta 0; nop; nop; nop;
+# For the moment, we will allow users to use software traps 1-15. 
 SW_trap_0x81: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x82: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x83: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 

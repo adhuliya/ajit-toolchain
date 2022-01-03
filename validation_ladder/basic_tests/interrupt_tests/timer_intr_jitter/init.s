@@ -2,13 +2,15 @@
 .global _start;
 _start:
 	call clear_stack_pointers
+	nop
 
 	! set the stack in window 7
-	set -256, %sp
+	! set 0xfff0eff0, %fp
+	set 0xfff0ef00, %sp
 
 	set 0x1, %l0		!  we start at window 7, mark it invalid
 	sll %l0, 7, %l0
-	wr %l0, 0x0, %wim	
+	wr %l0, 0x0,  %wim	
 
 	! trap table.
 	set	trap_table_base, %l0
