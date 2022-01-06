@@ -1,0 +1,55 @@
+
+ticks for 128x128 = 873630
+
+with 4-way D, 2-way I cache.
+	It does worse than the 2-way D cache!!
+
+Statistics for ICACHE cpuid=0
+    number-of-accesses=25581771
+    number-of-hits=25581644
+    number-of-misses=127
+Statistics for DCACHE cpuid=0
+    number-of-accesses=4276738
+    number-of-flushes=2
+    number-of-bypasses=227
+    number-of-hits=2139289
+    number-of-misses=2137220
+    number-of-write_hits=46172
+    number-of-write_misses=19475
+    number-of-read_hits=2093117
+    number-of-read_misses=2117745
+
+with 2-way set associative I + D cache.
+
+Statistics for ICACHE cpuid=0
+    number-of-accesses=25588578
+    number-of-hits=25588451
+    number-of-misses=127
+Statistics for DCACHE cpuid=0
+    number-of-accesses=4277539
+    number-of-flushes=2
+    number-of-bypasses=576
+    number-of-hits=3116063
+    number-of-misses=1160898
+    number-of-write_hits=298
+    number-of-write_misses=65504
+    number-of-read_hits=3115765
+    number-of-read_misses=1095394
+
+with direct mapped I + D cache.
+
+Statistics for ICACHE cpuid=0
+    number-of-accesses=25581806
+    number-of-hits=25581679
+    number-of-misses=127
+Statistics for DCACHE cpuid=0
+    number-of-accesses=4276742
+    number-of-flushes=2
+    number-of-bypasses=226
+    number-of-hits=2089098
+    number-of-misses=2187416
+    number-of-write_hits=97
+    number-of-write_misses=65552
+    number-of-read_hits=2089001
+    number-of-read_misses=2121864
+

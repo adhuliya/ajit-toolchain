@@ -1,0 +1,36 @@
+{
+        // See https://go.microsoft.com/fwlink/?LinkId=733558
+        // for the documentation about the tasks.json format
+        "version": "2.0.0",
+        "tasks": [
+                // {
+                //         "label": "AJIT env",
+                //         "type": "shell",
+                //         "command": "cd ../../../../ && source set_ajit_home && source ajit_env",
+                //         "group": "build",
+                //         "presentation": {
+                //                 "reveal": "always",
+                //               }
+                // },
+                {
+                        "label": "AJIT compile",
+                        // "dependsOn": ["AJIT env"],
+                        "type": "shell",
+                        "command": "cd ${cwd}/BIGMEM && ./compile_for_ajit_uclibc.sh",
+                        "group": "build",
+                        "presentation": {
+                                "reveal": "always",
+                                "panel": "shared"
+                              }
+                },
+                {
+                        "label": "AJIT clean",
+                        "type": "shell",
+                        "command": "cd ${cwd}/BIGMEM && ./clean.sh",
+                        "group": "build",
+                        "presentation": {
+                                "reveal": "always",
+                              }
+                }
+        ]
+}
