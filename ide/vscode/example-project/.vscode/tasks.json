@@ -1,6 +1,7 @@
 {
         // See https://go.microsoft.com/fwlink/?LinkId=733558
         // for the documentation about the tasks.json format
+        // Created by Vishnu Easwaran E for Ajit-toolchain.
         "version": "2.0.0",
         "tasks": [
                 // {
@@ -13,10 +14,10 @@
                 //               }
                 // },
                 {
-                        "label": "AJIT compile",
-                        // "dependsOn": ["AJIT env"],
+                        "label": "AJIT compile BIGMEM",
+                        // "dependsOn": ["AJIT env"], // individual task creates individual teminal prcocesses; FAILED
                         "type": "shell",
-                        "command": "cd ${cwd}/BIGMEM && ./compile_for_ajit_uclibc.sh",
+                        "command": "cd ${relativeFileDirname}/BIGMEM && ./compile_for_ajit_uclibc.sh",
                         "group": "build",
                         "presentation": {
                                 "reveal": "always",
@@ -24,9 +25,29 @@
                               }
                 },
                 {
-                        "label": "AJIT clean",
+                        "label": "AJIT clean BIGMEM",
                         "type": "shell",
-                        "command": "cd ${cwd}/BIGMEM && ./clean.sh",
+                        "command": "cd ${relativeFileDirname}/BIGMEM && ./clean.sh",
+                        "group": "build",
+                        "presentation": {
+                                "reveal": "always",
+                              }
+                },
+                {
+                        "label": "AJIT compile SMALLMEM",
+                        // "dependsOn": ["AJIT env"], // individual task creates individual teminal prcocesses; FAILED
+                        "type": "shell",
+                        "command": "cd ${relativeFileDirname}/SMALLMEM && ./compile_for_ajit_uclibc.sh",
+                        "group": "build",
+                        "presentation": {
+                                "reveal": "always",
+                                "panel": "shared"
+                              }
+                },
+                {
+                        "label": "AJIT clean SMALLMEM",
+                        "type": "shell",
+                        "command": "cd ${relativeFileDirname}/SMALLMEM && ./clean.sh",
                         "group": "build",
                         "presentation": {
                                 "reveal": "always",
