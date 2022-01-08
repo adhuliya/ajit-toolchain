@@ -115,6 +115,10 @@ int cortos_reserveLockVar();
 // Free a lock variable for reuse by cortos.
 void cortos_freeLockVar(int lockId);
 
+// Similar to the above two API's but for cacheable locks.
+int cortos_reserveLockVar_cacheable();
+void cortos_freeLockVar_cacheable(int lockId);
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_locking_declarations
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +138,7 @@ typedef union _CortosMessage32Bytes {
   struct {
     int a_code;
     void *a_ptr; // pointer to a location
-    int *a_size; // in bytes
+    int a_size; // in bytes
     int a_intArr[5];
   };
 

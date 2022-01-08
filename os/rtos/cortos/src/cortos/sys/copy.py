@@ -3,7 +3,7 @@
 # Author: Anshuman Dhuliya (AD) (anshumandhuliya@gmail.com)
 
 """
-Routines to copy various files.
+Routines to copy various xfiles.
 
 All the routines assume that the current working directory is the destination.
 """
@@ -34,7 +34,9 @@ def copyVmapFile(
     confObj: config.UserConfig,
 ) -> None:
   with open(consts.VMAP_FILE_NAME, "w") as f:
-    f.write(btl.template(f"{consts.VMAP_FILE_NAME}"))
+    f.write(btl.template(f"{consts.VMAP_FILE_NAME}",
+      confObj=confObj,
+    ))
 
 
 def copyCortosHeaderFile(
@@ -107,15 +109,17 @@ def copyLinkerScriptFile(
     confObj: config.UserConfig,
 ) -> None:
   with open(consts.LINKER_SCRIPT_FILE_NAME, "w") as f:
-    f.write(btl.template(f"linker_scripts/{consts.LINKER_SCRIPT_00_FILE_NAME}"))
+    f.write(btl.template(f"linker_scripts/{consts.LINKER_SCRIPT_00_FILE_NAME}",
+            confObj=confObj,
+    ))
 
 
 def copyProjectFiles(
     confObj: config.UserConfig,
 ) -> None:
-  # copy all .c files
+  # copy all .c xfiles
   util.runCommand(f"cp {confObj.rootDir}/*.c .")
-  # copy all .h files
+  # copy all .h xfiles
   util.runCommand(f"cp {confObj.rootDir}/*.h .", suppressError=True)
   # copy results file
   if confObj.resultsFile:

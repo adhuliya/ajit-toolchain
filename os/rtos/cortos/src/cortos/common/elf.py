@@ -5,7 +5,7 @@
 # DEPENDENCY: pyelftools
 
 """
-Operations on elf files.
+Operations on elf xfiles.
 
 Install the elftools package:
 

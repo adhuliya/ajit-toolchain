@@ -10,7 +10,7 @@ ENTRY(_start)
 __DYNAMIC = 0;
 SECTIONS
 {
-  . = 0x00000000; /* (0,0) starts at zero.*/
+  . = {{hex(confObj.ramStartAddr)}}; /* (0,0) starts at zero.*/
   .text ALIGN(4) : {
     KEEP(*(.text.ajitstart))  /* NOTE: in file `init.s` */
     KEEP(*(.text.ajitstart.cortosloop))  /* NOTE: in file `init.s` */

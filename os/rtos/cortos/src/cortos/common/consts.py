@@ -42,7 +42,7 @@ INIT_HEADER_SIZE = 4 * 13
 The size of the init.s header just before the allocation area.
 """
 
-RESERVED_REGION_SIZE = 256 # bytes
+RESERVED_REGION_SIZE_IN_BYTES = 256 # bytes
 """
 This space is reserved for misc use by Ajit in the future.
 """
@@ -192,6 +192,6 @@ def getLogLevel(level: int) -> LogLevel:
 
 
 DEFAULT_DEBUG_BUILD: bool = False
-DEFAULT_OPT_LEVEL: int = 2
-DEFAULT_DEBUG_PORT: int   = 8888
+DEFAULT_OPT_LEVEL: int = 0
+DEFAULT_FIRST_DEBUG_PORT: int   = 8888
 

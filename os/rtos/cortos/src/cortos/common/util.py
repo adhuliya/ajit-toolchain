@@ -98,7 +98,7 @@ def appendToFile(fileName: str, content: str):
 
 
 def getAllFilePaths(directory: str) -> List[str]:
-  """Returns the full file names of all the files
+  """Returns the full file names of all the xfiles
   (recursively) withing the given directory."""
   for root, dirs, files in os.walk(directory):
     for d in dirs:
@@ -170,7 +170,7 @@ def prepareDestinationDirectory(
     copyDirectoryContents(absSrcDirPath, absDestDirPath)
   else:
     # STEP 3.2:
-    # Selectively copy files if they don't exist in the destination dir
+    # Selectively copy xfiles if they don't exist in the destination dir
     prefixLen = len(absSrcDirPath) + 1
     for absSrcFilePath in getAllFilePaths(absSrcDirPath):
       relFilePath = absSrcFilePath[prefixLen:] # remove prefix
