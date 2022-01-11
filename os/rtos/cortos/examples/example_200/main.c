@@ -9,7 +9,7 @@ int b;
 int *i0 = SHARED_INT_ADDR_0;
 int *i1 = SHARED_INT_ADDR_1;
 int totalMsgs = 4;
-int *arr = 0;
+int * volatile arr = 0;
 
 CortosMessage msg1;
 CortosMessage msg2;
