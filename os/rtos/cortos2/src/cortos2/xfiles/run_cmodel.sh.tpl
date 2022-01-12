@@ -11,8 +11,10 @@ ajit_C_system_model \
   -p {{confObj.software.build.firstDebugPort+i}} \
 % end
 % end
+  -i {{hex(confObj.hardware.memory.ram.physicalStartAddr)}} \
   -m ${_MAIN}.mmap \
   -w ${_MAIN}.wtrace \
   -d \
   -r {{confObj.software.projectFiles.resultsFile}} \
-  -l ${_MAIN}.log;
+  -l ${_MAIN}.log \
+;
