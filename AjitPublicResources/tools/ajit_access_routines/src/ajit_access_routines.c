@@ -55,6 +55,30 @@ inline void __ajit_clear_all_gp_registers__()
 	
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// scratch pad: 32x32 registers..
+//////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t ajit_read_from_scratch_pad (uint32_t scratch_pad_index)
+{
+	uint32_t ret_val = 0;
+	if(scratch_pad_index < 32)
+	{
+		uint32_t* base_ptr = (uint32_t*) ADDR_SCRATCH_PAD_MEMORY_MIN;
+		ret_val = base_ptr[scratch_pad_index];
+	}
+	return(ret_val);
+}
+
+void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value)
+{
+	if(scratch_pad_index < 32)
+	{
+		uint32_t* base_ptr = (uint32_t*) ADDR_SCRATCH_PAD_MEMORY_MIN;
+		base_ptr[scratch_pad_index] = write_value;
+	}
+}
+
+
 //
 // This reads the contents of ASR-29.  The four bytes in the
 // return value are
@@ -186,6 +210,136 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr)
 	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr),
 			     "i"(ASI_MMU_BYPASS) : "memory");
 }
+
+inline void __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address)
+{
+	uint32_t la = physical_address;
+
+	uint64_t ms = (physical_address >> 32) & 0xf;
+	uint32_t tms = (ms & 0xf);
+	switch(tms)
+	{
+		// Is there a less ugly way to do this?
+
+		case 0:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(0,la,value);
+			break;
+		case 1:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(1,la,value);
+			break;
+		case 2:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(2,la,value);
+			break;
+		case 3:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(3,la,value);
+			break;
+		case 4:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(4,la,value);
+			break;
+		case 5:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(5,la,value);
+			break;
+		case 6:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(6,la,value);
+			break;
+		case 7:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(7,la,value);
+			break;
+		case 8:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(8,la,value);
+			break;
+		case 9:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(9,la,value);
+			break;
+		case 10:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(10,la,value);
+			break;
+		case 11:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(11,la,value);
+			break;
+		case 12:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(12,la,value);
+			break;
+		case 13:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(13,la,value);
+			break;
+		case 14:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(14,la,value);
+			break;
+		case 15:
+			__AJIT_STORE_WORD_MMU_BYPASS_N__(15,la,value);
+			break;
+		default:
+			break;
+		
+	}
+}
+
+inline uint32_t __ajit_load_word_from_physical_address__(uint64_t physical_address)
+{
+	uint32_t value = 0;
+	uint64_t ms = (physical_address >> 32) & 0xf;
+	uint32_t la = (physical_address & 0xffffffff);
+
+	uint32_t tms = (ms & 0xf);
+	switch(tms)
+	{
+		// Is there a less ugly way to do this?
+		case 0:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(0,la,value);
+			break;
+		case 1:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(1,la,value);
+			break;
+		case 2:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(2,la,value);
+			break;
+		case 3:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(3,la,value);
+			break;
+		case 4:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(4,la,value);
+			break;
+		case 5:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(5,la,value);
+			break;
+		case 6:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(6,la,value);
+			break;
+		case 7:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(7,la,value);
+			break;
+		case 8:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(8,la,value);
+			break;
+		case 9:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(9,la,value);
+			break;
+		case 10:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(10,la,value);
+			break;
+		case 11:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(11,la,value);
+			break;
+		case 12:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(12,la,value);
+			break;
+		case 13:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(13,la,value);
+			break;
+		case 14:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(14,la,value);
+			break;
+		case 15:
+			__AJIT_LOAD_WORD_MMU_BYPASS_N__(15,la,value);
+			break;
+		default:
+			break;
+		
+	}
+	return(value);
+}
+
 
 
 

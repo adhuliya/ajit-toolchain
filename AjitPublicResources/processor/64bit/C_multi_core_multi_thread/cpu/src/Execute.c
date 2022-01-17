@@ -139,12 +139,14 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 		uint8_t byte_mask = calculateReadByteMask(op, address);
 		if(lock_flag)
 		{
-			lockAndReadData64(state->mmu_state, state->dcache, 
+			lockAndReadData64(state->thread_id,
+					state->mmu_state, state->dcache, 
 					addr_space, byte_mask,  address, &mae1, &data64);
 		}
 		else
 		{
-			readData64(state->mmu_state, state->dcache, 
+			readData64(state->thread_id,
+					state->mmu_state, state->dcache, 
 					addr_space, byte_mask, address, &mae1, &data64);
 		}
 
@@ -251,18 +253,6 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	uint8_t is_alternate = ((op >= _STBA_) && (op <= _STDA_));
 	uint8_t is_privileged = ((is_alternate || op == _STDFQ_ || op == _STDCQ_) && (!s));
 
-	//
-	//
-	// flush the ICACHE if it is an mmu-ctrl-register write.
-	//
-	//
-	if((asi == ASI_MMU_REGISTER) || (asi == ASI_MMU_FLUSH_PROBE))
-	{
-#ifdef DEBUG
-		fprintf(stderr,"\tInfo:executeStore: Flushing ICACHE due to MMU-CTRl-REGISTER-WRITE/FLUSH-PROBE (asi=0x%x) \n", asi);
-#endif
-		flushCache(state->icache);
-	}
 
 	if(is_privileged)
 	{
@@ -276,9 +266,26 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 		setPageBit((CoreState*) state->parent_core_state, address); // flag all pages that were accessed.
 		if( !s) addr_space = 10;
 		else    addr_space = 11;
-	}else
+	}
+	else
 	{
-		if(s) addr_space = asi;
+		if(s) 
+		{
+			addr_space = asi;
+			//
+			//
+			// flush the ICACHE if it is an mmu-ctrl-register write.
+			//
+			//
+			if((addr_space == ASI_MMU_REGISTER) || (addr_space == ASI_MMU_FLUSH_PROBE))
+			{
+#ifdef DEBUG
+				fprintf(stderr,"\tInfo:executeStore: Flushing ICACHE due to MMU-CTRl-REGISTER-WRITE/FLUSH-PROBE (asi=0x%x) \n", asi);
+#endif
+				flushCache(state->icache);
+			}
+		}
+
 	}
 
 	uint8_t is_fp_trap = (((op == _STF_) || (op == _STDF_) || (op == _STFSR_) || (op == _STDFQ_)) && ((!ef) || !getBpFPUPresent(state)));
@@ -316,9 +323,9 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	if(invalid_fp_reg)
 	{
 
-	tv =  setBit32(tv, _TRAP_, 1) ;
-	tv =  setBit32(tv, _INVALID_FP_REGISTER_, 1) ;
-	status_reg->fsr = setSlice32(fsr, 16, 14, 6) ;
+		tv =  setBit32(tv, _TRAP_, 1) ;
+		tv =  setBit32(tv, _INVALID_FP_REGISTER_, 1) ;
+		status_reg->fsr = setSlice32(fsr, 16, 14, 6) ;
 	}
 
 	// Note - Not implemented invalid_fp_register, no fp queue and no cp queue
@@ -344,7 +351,7 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 		}
 		else if (getSlice32(address, 1, 0) == 2) byte_mask = 0x3 ;
 	}
-	
+
 	if ((op == _STB_) || (op == _STBA_))
 
 	{
@@ -357,13 +364,14 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 	uint8_t is_dw = (op == _STD_) || (op == _STDA_) || (op == _STDF_) || (op == _STDC_) || (op == _STDFQ_) || (op == _STDCQ_);
 	uint8_t is_trap1 = getBit32(tv, _TRAP_);
 	uint8_t mae1 = 0;
-	
+
 	if(!is_trap1)	
 	{
-			if(!is_dw)
-			{
+		if(!is_dw)
+		{
 				//perform a memory access if this is not a double-word store
-				writeData(state->mmu_state, state->dcache,
+				writeData(state->thread_id, 
+						state->mmu_state, state->dcache,
 						addr_space, address, byte_mask, data0, &mae1);
 			}
 			else
@@ -372,7 +380,8 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 				data64 = data64<<32 | data1;
 				
 				//This is a double word store
-				writeData64(state->mmu_state, state->dcache,
+				writeData64(state->thread_id, 
+						state->mmu_state, state->dcache,
 						addr_space, address , 0xFF, data64, &mae1);
 
 			}
@@ -484,7 +493,8 @@ uint32_t executeLdstub(Opcode op,
 	if(address_10 == 3) byte_mask = 0x1 ;
 
 	if(!is_privileged)
-		lockAndReadData(state->mmu_state, state->dcache, addr_space, byte_mask, address, &mae1,&data);
+		lockAndReadData(state->thread_id,
+				state->mmu_state, state->dcache, addr_space, byte_mask, address, &mae1,&data);
 
 	if(mae1)
 	{
@@ -503,14 +513,16 @@ uint32_t executeLdstub(Opcode op,
 		uint8_t  ign_mae = 0;
 		
 		// do a dummy read from initial pc. to clear the lock.
-		readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+		readData(state->thread_id,
+			state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
 
 		// should never return an mae on bypass access from init pc.
 		assert(!ign_mae);
 	}
 	else
 	{
-		writeData(state->mmu_state, state->dcache,  addr_space, address, byte_mask, 0xFFFFFFFF, &mae2);
+		writeData(state->thread_id, 
+				state->mmu_state, state->dcache,  addr_space, address, byte_mask, 0xFFFFFFFF, &mae2);
 		
 		//Log information about the store
 		reg_update_flags->store_active=1;
@@ -620,7 +632,8 @@ uint32_t executeSwap( Opcode op,
 		// wait until BlockLdstByte and BlockLdstWord are both 0
 		testAndSetBlockLdstFlags(state, 0, 1);
 		uint8_t load_byte_mask = 0xf;
-		lockAndReadData(state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
+		lockAndReadData(state->thread_id,
+				state->mmu_state,  state->dcache, addr_space, load_byte_mask, address, &mae1, &word);
 		if(mae1)
 		{
 			tv = setBit32(tv, _TRAP_, 1) ;
@@ -637,14 +650,16 @@ uint32_t executeSwap( Opcode op,
 		uint8_t  ign_mae = 0;
 		
 		// do a dummy read from initial pc.
-		readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+		readData(state->thread_id,
+			state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
 
 		// should never return an mae on bypass access from init pc.
 		assert(!ign_mae);
 	}
 	else
 	{
-		writeData(state->mmu_state, state->dcache,  addr_space, address, 0xF, temp,&mae2);
+		writeData(state->thread_id,
+				state->mmu_state, state->dcache,  addr_space, address, 0xF, temp,&mae2);
 		
 		//Log information about the store
 		reg_update_flags->store_active=1;
@@ -746,7 +761,7 @@ uint32_t executeCswap( Opcode op,
 	if(!is_privileged_trap && !is_illegal_instr_trap && !is_alignment_trap) 
 	{
 		uint32_t read_data;
-		lockAndReadData(state->mmu_state,  
+		lockAndReadData(state->thread_id, state->mmu_state,  
 					state->dcache, 
 					addr_space, 
 					byte_mask,
@@ -765,7 +780,8 @@ uint32_t executeCswap( Opcode op,
 			uint8_t  ign_mae = 0;
 		
 			// do a dummy read from initial pc.
-			readData(state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
+			readData(state->thread_id,
+				state->mmu_state, state->dcache, 0x20, state->init_pc, 0xF, &ign_mae, &ign_rdata);
 
 			// should never return an mae on bypass access from init pc.
 			assert(!ign_mae);
@@ -775,7 +791,8 @@ uint32_t executeCswap( Opcode op,
 			if(read_data == operand2)
 			{
 				// swap register with memory.
-				writeData(state->mmu_state, 
+				writeData(state->thread_id,
+						state->mmu_state, 
 						state->dcache,  
 						addr_space, address, 
 						byte_mask, 
@@ -790,7 +807,8 @@ uint32_t executeCswap( Opcode op,
 				// to unlock the system bus.  This may
 				// be wasteful but so what?
 				//
-				writeData(state->mmu_state, 
+				writeData(state->thread_id,
+						state->mmu_state, 
 						state->dcache,  
 						addr_space, 
 						address, 
@@ -1960,7 +1978,7 @@ uint32_t executeWriteStateReg( Opcode op, uint32_t operand1, uint32_t operand2, 
 
 void executeStbar( uint8_t *store_barrier_pending, StateUpdateFlags* reg_update_flags, ThreadState* s)
 {
-	sendSTBAR(s->mmu_state, s->dcache);
+	sendSTBAR(s->thread_id, s->mmu_state, s->dcache);
 #ifdef DEBUG
 	fprintf(stderr,"\tInfo : STBAR \n");
 #endif 
@@ -1997,7 +2015,8 @@ uint32_t executeFlush(uint32_t flush_addr, uint32_t trap_vector, StateUpdateFlag
 	//D-cache can be flushed by performing a
 	//store-alternate with asi=ASI_FLUSH_I_D_CONTEXT
 	uint8_t mae=0;
-	writeData(state->mmu_state, state->dcache, ASI_FLUSH_I_D_CONTEXT, flush_addr, 0x00, 0x00, &mae);
+	writeData(state->thread_id,
+			state->mmu_state, state->dcache, ASI_FLUSH_I_D_CONTEXT, flush_addr, 0x00, 0x00, &mae);
 
 
 	if(mae)
@@ -2015,7 +2034,7 @@ uint32_t executeFlush(uint32_t flush_addr, uint32_t trap_vector, StateUpdateFlag
 	uint8_t flush_mae=0;
 	//address is ignored, the entire cache is flushed
 	//as per current implementation if Icache
-	flushIcacheLine(state->mmu_state,  state->icache, flush_asi, flush_addr, &flush_mae);
+	flushIcacheLine(state->thread_id, state->mmu_state,  state->icache, flush_asi, flush_addr, &flush_mae);
 
 	if(flush_mae)
 	{

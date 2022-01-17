@@ -1,0 +1,2 @@
+# A system linker that can link the whole project.
+# We might not need this, but it needs some thought.

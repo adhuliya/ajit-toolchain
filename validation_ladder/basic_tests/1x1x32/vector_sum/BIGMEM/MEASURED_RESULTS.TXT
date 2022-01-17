@@ -1,0 +1,16 @@
+This example illustrates the importance of having
+a set-associative cache.
+
+For a direct mapped cache: 
+ main: start_time=11950447, end_time=22473308, elapsed=10522861
+
+For a 4-way set associative cache:
+ main: start_time=15851381, end_time=16839591, elapsed=988210
+
+Direct mapped cache is 10.6X slower than the set associative cache!!
+
+Set associative With 64KB L2 cache... performance is poorer
+because the L2 cache is too small..
+ main: start_time=21506075, end_time=22871181, elapsed=1365106
+
+

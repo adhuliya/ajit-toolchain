@@ -333,10 +333,16 @@
 	q 
 
 
-	You can start a GDB server through the debug monitor. 
-	The debug monitor and GDB server use the same connection 
-	to the processor.  Thus, once you start a GDB server, you 
-	cannot resume normal debug monitor activity.  
+6.0 Using GDB
+----------------------
+
+	You will first need to start a GDB client in
+	a shell.  
+		sparc-linux-gdb executeable.elf
+	At the command prompt you will have to connect
+	to the remote server which can be started through the
+	ajit_debug_monitor as described below.
+
 	The following sequence must be followed.
 
 	! put the processor in reset+debug-mode 
@@ -358,6 +364,19 @@
 	g stop
 	! MUST quit.
 	q
+
+	The debug monitor and GDB server use the same connection 
+	to the processor.  Thus, once you start a GDB server, you 
+	cannot resume normal debug monitor activity.  
+
+	After the GDB server has been started up as shown above,
+	go back to the shell in which you have opened up the GDB
+	client, and type
+		target remote:8888
+
+	If all goes well, the GDB client will connect to the
+	remote hardware managed by the ajit_debug_monitor, and
+	you can start debugging.
 
 	Note that at the end of the GDB session, you need to quit the
 	debug monitor.

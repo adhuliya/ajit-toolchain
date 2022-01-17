@@ -1,0 +1,16 @@
+w rst 1
+t 0 1
+w rst 1
+m matrix_mul.mmap.remapped
+w ipc 0x40000000
+w inpc 0x40000004
+t 0 0
+w ipc 0x40000000
+w inpc 0x40000004
+g start 8888
+t 0 1
+g start 8889
+w rst 2
+t 0 0
+w rst 2
+

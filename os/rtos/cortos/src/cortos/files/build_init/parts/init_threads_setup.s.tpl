@@ -19,8 +19,8 @@ CORTOS_SETUP_THREADS:
 % if prog.isThread00():
 
   !!!!!!!!!!!!!!!!!!!   START: thread (0,0) setup section !!!!!!!!!!!!!!!!!!
-  set {{hex(prog.stackStartAddr)}}, %sp  ! set stack address
-  clr %fp
+  set {{hex(prog.stackStartAddr-96)}}, %sp  ! set stack pointer address
+  set {{hex(prog.stackStartAddr)}}, %fp     ! set frame pointer address
 
   !
   ! set up virtual -> physical map.
@@ -52,8 +52,8 @@ CORTOS_SETUP_THREADS:
 % if prog.thread.tid == 0 and not prog.isThread00():
 
   !!!!!!!!!!!!   START: thread ({{prog.thread.cid}},0) setup section !!!!!!!
-  set {{hex(prog.stackStartAddr)}}, %sp  ! set stack address
-  clr %fp
+  set {{hex(prog.stackStartAddr-96)}}, %sp  ! set stack pointer address
+  set {{hex(prog.stackStartAddr)}}, %fp     ! set frame pointer address
 
   !  Thread ({{prog.thread.cid}},0) jumps to AFTER_PTABLE_SETUP.
   ba AFTER_PTABLE_SETUP
@@ -65,8 +65,8 @@ CORTOS_SETUP_THREADS:
 % if prog.thread.tid == 1:
 
   !!!!!!!!!!!!   START: thread ({{prog.thread.cid}},1) setup section !!!!!!!
-  set {{hex(prog.stackStartAddr)}}, %sp  ! set stack address
-  clr %fp
+  set {{hex(prog.stackStartAddr-96)}}, %sp  ! set stack pointer address
+  set {{hex(prog.stackStartAddr)}}, %fp     ! set frame pointer address
 
   !  Thread ({{prog.thread.cid}},1) jumps to wait for mmu..
   ba WAIT_UNTIL_MMU_IS_ENABLED

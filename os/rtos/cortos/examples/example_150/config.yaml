@@ -13,6 +13,6 @@ ProgramThreads:
       - cortos_entry_func_110
     StackSizeInBytes: 8192
 
-TotalMemoryInKB: 102400
+TotalMemoryInKB: 65536
 
 LogLevel: TRACE

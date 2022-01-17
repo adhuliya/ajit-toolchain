@@ -17,8 +17,16 @@
 #endif
 
 
+
 #define LOG_PAGE_SIZE 14
 #define PAGE_SIZE   (1 << LOG_PAGE_SIZE)  // 14-bits within page 16kB
+
+FILE* memory_trace_file = NULL;
+void setMemoryTraceFile(FILE* fp)
+{
+	memory_trace_file = fp;
+}
+
 
 // memory is modeled simply as an array of pages
 // each of which is (2**LOG_PAGE_SIZE) in size.  We will allocate
@@ -293,6 +301,13 @@ uint64_t getDoubleWordInMemory(uint32_t address)
 	result=(result<<8) | read_from_mem(address+5);
 	result=(result<<8) | read_from_mem(address+6);
 	result=(result<<8) | read_from_mem(address+7);
+
+	if(memory_trace_file != NULL)
+	{
+		fprintf(memory_trace_file, ">>>>M  1 0x%llx 0x0 0xff : 0x%llx\n",
+				address, result);
+	}
+
 	pthread_mutex_unlock(&mutex_memory_lock);
 	return result;
 }
@@ -325,6 +340,12 @@ void    setDoubleWordInMemory(uint32_t address, uint64_t double_word, uint8_t by
 		write_to_mem(address + 6, (double_word >> 8));
 	if(byte_mask &(1<<0)) 
 		write_to_mem(address + 7, double_word);
+
+	if(memory_trace_file != NULL)
+	{
+		fprintf(memory_trace_file, ">>>>M  0 0x%llx 0x%llx 0x%x : 0x0\n", 
+							address, double_word, byte_mask);
+	}
 
 	pthread_mutex_unlock(&mutex_memory_lock);
 }

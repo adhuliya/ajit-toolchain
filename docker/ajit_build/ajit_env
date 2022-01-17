@@ -35,6 +35,7 @@ export AJIT_UCLIBC_DIR="$AJIT_BUILDROOT_HOST_DIR/usr/sparc-buildroot-linux-uclib
 
 export AJIT_CORTOS_DIR="$AJIT_HOME/os/rtos/cortos";
 export AJIT_LINUX_DIR="$AJIT_HOME/os/Ajit_linux";
+export AJIT_CORTOS2_DIR="$AJIT_HOME/os/rtos/cortos2";
 
 ################################################################
 ## END  : SETUP_BASE_PATHS
@@ -81,6 +82,7 @@ export PATH=$AJIT_DEBUG_MONITOR_MT_DIR/bin:$PATH
 
 # ajit cortos path
 export PATH=$AJIT_CORTOS_DIR:$PATH
+export PATH=$AJIT_CORTOS2_DIR:$PATH
 
 # points to the C system model executable
 export AJIT_CMODEL="$AJIT_CMODEL_BIN_DIR/ajit_C_system_model";

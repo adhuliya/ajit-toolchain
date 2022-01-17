@@ -22,7 +22,7 @@ int icache_forward_to_mmu(int asi)
 }
 
 
-void cpuIcacheAccess (MmuState* ms,
+void cpuIcacheAccess (int cpu_id, MmuState* ms,
 				WriteThroughAllocateCache* icache,
 				uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t* mae, uint64_t* instr_pair, uint32_t* mmu_fsr)
@@ -62,6 +62,8 @@ void cpuIcacheAccess (MmuState* ms,
 
 	uint8_t is_flush, is_nop, is_ifetch;
 	uint8_t acc=0;
+	uint8_t is_hit  = 0;
+
 	decodeIcacheRequest (asi, request_type, &is_nop, &is_flush, &is_ifetch);
 	icache->number_of_accesses++;
 	if(is_flush)
@@ -71,7 +73,6 @@ void cpuIcacheAccess (MmuState* ms,
 	}
 	else if (is_ifetch)
 	{
-		uint8_t is_hit  = 0;
 		uint8_t is_raw_hit = 0;
 		lookupCache(icache,
 				addr, asi, &is_raw_hit,  &acc);
@@ -118,7 +119,7 @@ void cpuIcacheAccess (MmuState* ms,
 	if(getCacheTraceFile() != NULL)
 	{
 		dumpCpuIcacheAccessTrace(icache, asi, addr, request_type, byte_mask, 
-							*mae, *instr_pair, *mmu_fsr);
+							*mae, *instr_pair, *mmu_fsr, is_hit);
 	}
 
 	unlock_cache(icache);

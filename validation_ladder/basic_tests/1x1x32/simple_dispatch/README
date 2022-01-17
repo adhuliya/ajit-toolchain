@@ -1,0 +1,7 @@
+Two threads, One core
+
+	Implement a job queue into which
+	a single job is queued, and the two
+	threads keep reading the job queue
+	and executing a job as they find it.
+

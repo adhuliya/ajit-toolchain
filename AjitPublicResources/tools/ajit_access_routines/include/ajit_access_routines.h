@@ -5,6 +5,11 @@
 // This file contains some useful routines to simplify use
 // of the AJIT processor by the programmer.
 //
+//////////////////////////////////////////////////////////////////////////////////////////////
+// scratch pad: 32x32 registers..
+//////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t ajit_read_from_scratch_pad (uint32_t scratch_pad_index);
+void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // thread id.
@@ -76,7 +81,6 @@ void __ajit_sleep__(uint32_t clock_cycles);
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  MMU related stuff
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
 //
 // SPARC-V8 defines a number of address spaces for accessing special
 // registers etc.  The address space identifier (ASI) is an 8-bit
@@ -96,7 +100,9 @@ void __ajit_sleep__(uint32_t clock_cycles);
 #define ASI_MMU_REGISTER 		0x04	// MMU register
 #define ASI_MMU_FLUSH_PROBE	 	0x03    // used in doing an MMU FLUSH/PROBE
 #define ASI_FLUSH_I_D_CONTEXT		0x13	// A write with this ASI causes the data cache to be flushed.
-#define ASI_MMU_BYPASS			0x20    // 0x20 to 0x2f is the range of bypass asi's.
+#define ASI_MMU_BYPASS			0x20
+#define ASI_MMU_BYPASS_N(n)		(0x20 + n)
+					 	// 0x20 to 0x2f is the range of bypass asi's.
 						// with the bottom 4 bits becoming the top-4 bits
 						// of the physical address (ingenious?)  We will
 						// treat these top 4 bits as 0 when mapping device
@@ -147,6 +153,16 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr);
 #define __AJIT_STORE_UBYTE_MMU_BYPASS__(addr,value) {\
 	__asm__ __volatile__("stuba %0, [%1] %2\n\t" : : "r"(value), "r"(addr), "i"(ASI_MMU_BYPASS) : "memory");}
 
+#define __AJIT_STORE_WORD_MMU_BYPASS_N__(N,addr,value) {\
+	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr), "i"(ASI_MMU_BYPASS_N(N)) : "memory");}
+
+
+//
+// Use bypass ASI to read directly from physical address!
+//
+inline void	 __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address);
+inline uint32_t  __ajit_load_word_from_physical_address__(uint64_t physical_address);
+
 //
 // load word from mmu register
 //
@@ -159,6 +175,9 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
         __asm__ __volatile__("lda [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
 #define __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr,value) {\
         __asm__ __volatile__("lduba [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
+
+#define __AJIT_LOAD_WORD_MMU_BYPASS_N__(N, addr,value) {\
+        __asm__ __volatile__("lda [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS_N(N)));}
 
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -408,5 +427,126 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 //---------------------------------------------------------------------------------------------
 #define __AJIT_NOP()  {__asm__ __volatile__("nop;");}
 
+//---------------------------------------------------------------------------------------------
+// HALT
+//---------------------------------------------------------------------------------------------
+#define __AJIT_HALT()  {__asm__ __volatile__("ta 0;");}
+#define __AJIT_SW_TRAP(ID)  {__asm__ __volatile__("ta " #ID ";");}
+
+//---------------------------------------------------------------------------------------------
+// IU registers
+//---------------------------------------------------------------------------------------------
+// NOTE: reg_id must be a constant literal (e.g. 0,1,2 ) and NOT a variable.
+#define __AJIT_SET_IU_REGISTER(reg_id, reg_val) \
+	{__asm__ __volatile__("mov %0, %%r" #reg_id "\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_IU_REGISTER(reg_id, reg_val) \
+	{__asm__ __volatile__("mov %%r" #reg_id  ", %0 \n\t" :  "=r"(reg_val) );}
+
+//---------------------------------------------------------------------------------------------
+// Status registers
+//---------------------------------------------------------------------------------------------
+#define __AJIT_SET_PSR(reg_val) \
+	{__asm__ __volatile__("mov %0, %%psr\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_PSR(reg_val) \
+	{__asm__ __volatile__("rd %%psr, %0 \n\t" :  "=r"(reg_val) );}
+
+#define __AJIT_SET_WIM(reg_val) \
+	{__asm__ __volatile__("mov %0, %%wim\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_WIM(reg_val) \
+	{__asm__ __volatile__("rd %%wim, %0 \n\t" :  "=r"(reg_val) );}
+
+#define __AJIT_SET_TBR(reg_val) \
+	{__asm__ __volatile__("mov %0, %%tbr\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_TBR(reg_val) \
+	{__asm__ __volatile__("rd %%tbr, %0 \n\t" :  "=r"(reg_val) );}
+
+#define __AJIT_SET_Y(reg_val) \
+	{__asm__ __volatile__("mov %0, %%y\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_Y(reg_val) \
+	{__asm__ __volatile__("rd %%y, %0 \n\t" :  "=r"(reg_val) );}
+
+//---------------------------------------------------------------------------------------------
+// backup and restore IU registers. 
+//---------------------------------------------------------------------------------------------
+#define __AJIT_SAVE_IU_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%r0, [%0] \n\t"\
+		"std %%r2, [%0 + 8] \n\t"\
+		"std %%r4, [%0 + 16] \n\t"\
+		"std %%r6, [%0 + 24] \n\t"\
+		"std %%r8, [%0 + 32] \n\t"\
+		"std %%r10, [%0 + 40] \n\t"\
+		"std %%r12, [%0 + 48] \n\t"\
+		"std %%r14, [%0 + 56] \n\t"\
+		"std %%r16, [%0 + 64] \n\t"\
+		"std %%r18, [%0 + 72] \n\t"\
+		"std %%r20, [%0 + 80] \n\t"\
+		"std %%r22, [%0 + 88] \n\t"\
+		"std %%r24, [%0 + 96] \n\t"\
+		"std %%r26, [%0 + 104] \n\t"\
+		"std %%r28, [%0 + 112] \n\t"\
+		"std %%r30, [%0 + 120] \n\t" : : "r"(addr) : "memory");}
+
+#define __AJIT_RESTORE_IU_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%r0 \n\t"\
+		"ldd  [%0 + 8],  %%r2   \n\t" \
+		"ldd  [%0 + 16], %%r4   \n\t" \
+		"ldd  [%0 + 24], %%r6   \n\t" \
+		"ldd  [%0 + 32], %%r8   \n\t" \
+		"ldd  [%0 + 40], %%r10  \n\t" \
+		"ldd  [%0 + 48], %%r12  \n\t" \
+		"ldd  [%0 + 56], %%r14  \n\t" \
+		"ldd  [%0 + 64], %%r16  \n\t" \
+		"ldd  [%0 + 72], %%r18  \n\t" \
+		"ldd  [%0 + 80], %%r20  \n\t" \
+		"ldd  [%0 + 88], %%r22  \n\t" \
+		"ldd  [%0 + 96], %%r24  \n\t" \
+		"ldd  [%0 + 104], %%r26 \n\t" \
+		"ldd  [%0 + 112], %%r28 \n\t" \
+		"ldd  [%0 + 120], %%r30 \n\t"  : : "r"(addr));}
+
+//---------------------------------------------------------------------------------------------
+// backup and restore floating point registers. 
+//---------------------------------------------------------------------------------------------
+#define __AJIT_SAVE_FP_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%f0, [%0] \n\t"\
+		"std %%f2, [%0 + 8] \n\t"\
+		"std %%f4, [%0 + 16] \n\t"\
+		"std %%f6, [%0 + 24] \n\t"\
+		"std %%f8, [%0 + 32] \n\t"\
+		"std %%f10, [%0 + 40] \n\t"\
+		"std %%f12, [%0 + 48] \n\t"\
+		"std %%f14, [%0 + 56] \n\t"\
+		"std %%f16, [%0 + 64] \n\t"\
+		"std %%f18, [%0 + 72] \n\t"\
+		"std %%f20, [%0 + 80] \n\t"\
+		"std %%f22, [%0 + 88] \n\t"\
+		"std %%f24, [%0 + 96] \n\t"\
+		"std %%f26, [%0 + 104] \n\t"\
+		"std %%f28, [%0 + 112] \n\t"\
+		"std %%f30, [%0 + 120] \n\t"\
+		"st  %%fsr, [%0 + 124] \n\t" : : "r"(addr) : "memory");}
+
+#define __AJIT_RESTORE_FP_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%f0 \n\t"\
+		"ldd  [%0 + 8],  %%f2   \n\t" \
+		"ldd  [%0 + 16], %%f4   \n\t" \
+		"ldd  [%0 + 24], %%f6   \n\t" \
+		"ldd  [%0 + 32], %%f8   \n\t" \
+		"ldd  [%0 + 40], %%f10  \n\t" \
+		"ldd  [%0 + 48], %%f12  \n\t" \
+		"ldd  [%0 + 56], %%f14  \n\t" \
+		"ldd  [%0 + 64], %%f16  \n\t" \
+		"ldd  [%0 + 72], %%f18  \n\t" \
+		"ldd  [%0 + 80], %%f20  \n\t" \
+		"ldd  [%0 + 88], %%f22  \n\t" \
+		"ldd  [%0 + 96], %%f24  \n\t" \
+		"ldd  [%0 + 104], %%f26 \n\t" \
+		"ldd  [%0 + 112], %%f28 \n\t" \
+		"ldd  [%0 + 120], %%f30 \n\t" \
+		"ld   [%0 + 124], %%fsr \n\t" : : "r"(addr));}
 
 #endif

@@ -26,6 +26,7 @@ void cortos_entry_func_001() {
     *i0 += 1;
     cortos_lock_release(lockVar);
   }
+  CORTOS_DEBUG("VALUE_IS: %d", *i0);
   cortos_exit(0); // safely exit
 }
 
@@ -41,6 +42,7 @@ void cortos_entry_func_101() {
     *i0 += 1;
     cortos_lock_release(lockVar);
   }
+  CORTOS_DEBUG("VALUE_IS: %d", *i0);
   cortos_exit(0); // safely exit
 }
 

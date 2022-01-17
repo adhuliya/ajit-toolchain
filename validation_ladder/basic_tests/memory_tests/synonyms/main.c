@@ -4,11 +4,11 @@
 #include "math.h" 
 
 #define ORDER 256
-#define REPETITIONS 4
+#define REPETITIONS 16
 
 // 
-unsigned int *A = (unsigned int *) 0x40002000; 
-unsigned int *B = (unsigned int *) 0x40003000; 
+unsigned int *A = (unsigned int *) 0x40012000; 
+unsigned int *B = (unsigned int *) 0x40013000; 
 
 void clearA()
 {

@@ -1,0 +1,5 @@
+A test which does lots of random writes
+in a large block and does a read-back to
+confirm writes.
+
+Will really thrash the cache.

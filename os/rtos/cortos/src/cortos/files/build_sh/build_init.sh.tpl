@@ -38,6 +38,7 @@ compileToSparcUclibc.py \
 % if confObj.debugBuild:
   -g \
 % end
+  -o {{ 0 if confObj.debugBuild else confObj.optLevel }} \
   -V ${_CORTOS_VMAP} \
   -I ${AJIT_UCLIBC_HEADERS_DIR} \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \

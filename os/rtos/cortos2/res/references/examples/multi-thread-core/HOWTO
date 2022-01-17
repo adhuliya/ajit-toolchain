@@ -1,0 +1,324 @@
+	Writing multi-core applications for the AJIT multi-core multi-thread platform
+			Madhav P. Desai.
+
+
+1. Overview
+--------------------
+
+
+	The AJIT multi-core platform can have up to four cores
+	and each core can have two threads.
+
+	The cores are identified by core-identifiers 0,1,2,3
+	and the threads within each core are identified by
+	pairs (core-id, thread-id)  where thread-id can be 
+	0 or 1.
+
+	The id's are stored in register asr29 of each thread.
+	A read from the register will return the following
+	32-bit word;
+	
+		[31:24]
+			0x50
+		[23:16]
+			0x52
+		[15:8]
+			core-id
+		[7:0]
+			thread-id
+
+	Thus, software can figure out the identity of the
+	thread on which it is running by reading asr29.
+	(Writes to asr29 are ignored).
+
+
+2. Memory organization of the AJIT multi-core multi-thread system
+----------------------------------------------------------------------
+
+	The memory organization of the system is as follows.
+
+	a. Within each core, the memory subsystem consists of 
+		instruction-cache, data-cache and memory management unit.
+		The data-cache is uses a write-through allocate policy.
+
+	   The threads within a core share the cache and mmu.
+
+
+	b. Across the cores, the memory access is provided by a unified
+	   memory controller, which maintains cache coherency across the
+	   write-through caches by generating invalidate messages.
+		(A snoop filter is also implemented in the memory controller).
+
+
+2. Initialization setup to run an application on the multi-core, multi-thread setup.
+--------------------------------------------------------------------------------------
+
+	Before starting an application, we need to set up the following information.
+
+	For each thread in the system:
+		
+		stack-pointer, frame-pointer.
+
+	For each core in the system:
+	
+		Initial virtual to physical page mapping  for each core.
+		MMU context, context table pointer in each core.
+
+	
+
+
+3. Example
+-------------------------------------------------------------------------------------
+
+	Lets take an example of a system with 2 cores, each with two threads.  We use
+	asr29 to control execution in each thread.   The effective behaviour of the
+	four threads is
+	
+	thread (0,0)
+		set up stack for (0,0)
+		update global page table in memory
+		enable mmu in core 0
+		jump to main_0
+
+	thread (0,1)
+		set up stack for (0,1)
+		wait until mmu in core 0 is enabled
+		jump to main_1
+
+	thread (1,0)
+		set up stack for (1,0)
+		wait until page table is updated.
+		enable mmu in core 1
+		jump to main_2
+
+	thread (1,1)
+		set up stack for (1,1)
+		wait until mmu in core 1 is enabled
+		jump to main_3
+
+	This flow of concurrent events is implemented in the
+	assembly code shown below:
+
+	!
+	! The test uses ASR's to distinguish between the
+	! cores.
+	!
+	.global main;
+	main:
+	_start:
+		!!!!!!!!!!!!!!! code executed across all threads !!!!!!!!!!!!!!!!111
+
+		! enable traps, set current window=0
+		set 0x10E0, %l0	
+		wr %l0, %psr
+	
+		! Read CORE,THREAD IDs into %l1.
+		! format of asr29
+		!    0x50 0x52 core-id thread-id
+		rd %asr29, %l1
+	
+		! initialize some ASR's
+		wr 0x1, %asr16
+		wr 0x2, %asr17
+		wr 0x3, %asr18
+		wr 0x4, %asr19
+	
+	WIMSET:
+		set 0x2, %l0		! window 1 is marked invalid...  we start at window 0
+		wr %l0, 0x0, %wim	!
+	
+		! trap table.
+		set	trap_table_base, %l0
+		wr	%l0, 0x0, %tbr
+	
+	
+	STACKSETUP:
+		!!!!!  setting up stacks in each thread....
+	
+		set 0x50520000, %l2
+		subcc %l1, %l2, %g0
+	
+		bnz SP1
+		nop
+	
+		!!!!!!!!!!!!!!!!!!!   Start: thread (0,0) section !!!!!!!!!!!!!!!!!!!!!!!!
+		set 0x0, %sp
+		clr %fp
+	
+		!
+		! set up virtual -> physical map.
+		!  In this example, the same VA -> PA translation is used by all 
+		!  threads.  The page table is set up by thread (0,0).
+		!
+		call page_table_setup 	
+		nop
+	
+		!
+		!  set PT_FLAG = 1.   This indicates that the page table has been written.
+		!
+		set PT_FLAG, %l6
+		mov 1, %l7
+		st %l7, [%l6]
+	
+		!  Thread (0,0) jumps to AFTER_PTABLE_SETUP.
+		ba AFTER_PTABLE_SETUP
+		nop
+	SP1:
+		! hand off to thread (0,1) 
+		set 0x50520001, %l2
+		subcc %l1, %l2, %g0
+		
+		bnz SP2
+		nop
+	
+		!!!!!!!!!!!!!!!!!!!   Start: thread (0,1) section !!!!!!!!!!!!!!!!!!!!!!!!
+		set -4096, %sp
+		clr %fp
+	
+		!  Thread (0,1) jumps to wait for mmu..
+		ba WAIT_UNTIL_MMU_IS_ENABLED
+		nop
+
+	SP2:
+		! hand off to thread (0,1) 
+		set 0x50520100, %l2
+		subcc %l1, %l2, %g0
+	
+		bnz SP3
+		nop
+	
+		!!!!!!!!!!!!!!!!!!!   Start: thread (1,0) section !!!!!!!!!!!!!!!!!!!!!!!!
+		set -8192, %sp
+		clr %fp
+	
+		!  Thread (1,0) jumps to AFTER_PTABLE_SETUP.
+		ba AFTER_PTABLE_SETUP
+		nop
+	
+	SP3:
+		! hand off to thread (1,1) 
+		set 0x50520101, %l2
+		subcc %l1, %l2, %g0
+	
+	
+		!
+		! if this is not thread 1,1 we have a problem.
+		!
+		bnz HALT
+		nop
+	
+		!!!!!!!!!!!!!!!!!!!   Start: thread (1,1) section !!!!!!!!!!!!!!!!!!!!!!!!
+		set -12288, %sp
+		clr %fp
+	
+		ba WAIT_UNTIL_MMU_IS_ENABLED
+		nop
+
+	
+	AFTER_PTABLE_SETUP:
+	
+		!  threads (0,0) and (0,1) come here, and check if PT_FLAG is set.
+		set PT_FLAG, %l6
+		ld [%l6], %l7 
+	
+		mov 0x1, %i0
+		subcc %i0, %l7,  %g0
+	
+		! l7 = 1 after page tables have been setup.
+		bnz AFTER_PTABLE_SETUP
+		nop
+	
+		call set_context_table_pointer
+		nop
+		
+  		! enable mmu.. write 0x1 into mmu control register.
+		set 0x1, %o0
+		sta %o0, [%g0] 0x4    
+
+		! jump to run threads.
+		ba RUN_THREADS
+		nop
+	
+	WAIT_UNTIL_MMU_IS_ENABLED:
+		! threads (0,1) and (1,1) will spin here until their mmu
+		! is enabled.
+	
+		! read mmu control register.
+		set 0x1, %o0
+		lda [%g0] 0x4, %o0 
+		andcc %o0, 0x1, %o0
+	
+		bz WAIT_UNTIL_MMU_IS_ENABLED
+		nop
+	
+	RUN_THREADS:
+	
+		set 0x50520000, %l2
+		rd %asr29, %l1
+		subcc %l1, %l2, %g0
+	
+		bnz CORE0_THREAD1
+		nop
+
+		! Thread 0,0 runs main_0
+		call main_0
+		nop
+	
+		wr 0xa, %asr16
+	
+		ba HALT
+		nop
+	
+	CORE0_THREAD1: 
+	
+		set 0x50520001, %l2
+		subcc %l1, %l2, %g0
+	
+		! Thread 0,1 runs main_1
+		bnz  CORE1_THREAD0
+		nop
+	
+		call main_1
+		nop
+	
+		wr 0xb, %asr17
+	
+		ba HALT
+		nop
+	
+	CORE1_THREAD0:
+		set 0x50520100, %l2
+		subcc %l1, %l2, %g0
+	
+		! Thread 1,0 runs main_2
+		bnz  CORE1_THREAD1
+		nop
+	
+		call main_2
+		nop
+	
+		wr 0xc, %asr18
+	
+		ba HALT
+		nop
+	
+	CORE1_THREAD1:
+		set 0x50520101, %l2
+		subcc %l1, %l2, %g0
+	
+		bnz  HALT
+		nop
+
+		! Thread 1,1 runs main_3
+		call main_3
+		nop
+	
+		wr 0xd, %asr19
+	
+	HALT:
+		! write some value into asr19 to close.
+		wr 0xd, %asr15
+		ta 0
+
+	.align 8
+      		PT_FLAG: .word 0x0

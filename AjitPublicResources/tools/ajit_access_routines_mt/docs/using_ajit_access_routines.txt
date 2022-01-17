@@ -1,0 +1,129 @@
+
+	Using the AJIT access routines
+	------------------------------
+
+		Madhav Desai
+
+
+1. Overview
+	The AJIT access routines consist of a set of functions,
+	constant declarations and utilities which help you 
+	to access base functionality of the AJIT processor.
+
+2. Organization
+
+	The routines are organized into three directories
+	
+	asm/
+		Assembly code for trap handlers, mutexes,
+		generic interrupt service routines etc.
+		trap_handlers.s
+			base trap handlers for window overflow
+			and underflow.
+
+		trap_handlers_for_debug.s
+			same as above, but with some debug book
+			keeping.
+
+		trap_handlers_for_rtos.s
+			same as trap_handlers.s but with link
+			to generic interrupt handler (as part
+			of RTOS).
+
+		generic_isr.s
+			generic interrupt service routine which is a bit
+			primitive, but tested in NAVIC.
+
+		generic_isr_mt.s
+			improved generic interrupt service routine, which
+			uses the stack itself to save and restore state.
+			Also calls a generic C handler which can then 
+			use function pointers etc...
+
+
+		mutexes.s
+			void acquire_mutex_using_swap(uint32_t flag_address);
+				spins until mutex is acquired at flag_address.
+
+			void release_mutex_using_swap(uint32_t flag_address);
+				sets *flag_address = 1;
+
+			void acquire_mutex_using_ldstub(uint32_t flag_byte_address);
+				spins until mutex is acquired at flag_byte_address.
+
+			void release_mutex_using_ldstub(uint32_t flag_byte_address);
+				sets *flag_byte_address = 1;
+		
+
+		clear_stack_pointers.s
+			void clear_stack_pointers();
+				sets stack pointer in each window to 0.
+
+
+	include/ 
+		ajit_access_routines.h
+			base access routines of all kinds.
+
+			- routines to read/write from MMU registers
+			- routines to flush icache/dcache.
+			- routines to access default peripherals.
+			- routines to access AJIT instructions
+				fsqrtd,fsqrts,fitod,fitos,fdtoi,fstoi
+
+		device_addresses.h
+			device addresses for the vanilla and 
+			strawberry evaluation platforms.
+
+		ajit_mmap.h
+			utilities for managing page tables.
+			more info in the header file itself.
+
+		ajit_mt_irc.h
+			interrupt management. 
+			more info in the header file itself.
+	src/
+		ajit_access_routines.c
+		ajit_mt_irc.c
+		ajit_mmap.c
+
+
+3.  Notes on accessing peripherals
+
+	There are two ways to access a peripheral.
+
+	3.a Using a bypass access (skips the MMU).
+
+		When we write to a peripheral attached to the memory bus,
+		we can use MMU bypass to directly access the peripheral
+		register so that the DCACHE and MMU are not involved
+		in the transfer.  This uses an ASI between 0x20 and 0x2f.
+	  	Eg.	
+			inline void __ajit_write_serial_control_register__(uint32_t val);
+
+	3.b Using a non-bypass access (goes through the MMU).
+		We access the peripheral just by a load/store.  But the
+		peripheral address must be marked as non-cacheable in the
+		virtual to physical address map.  The MMU is involved in
+		the translation process to determine non-cacheability. 
+
+	  	Eg.	
+			inline void __ajit_write_serial_control_register_via_vmap__(uint32_t val);
+
+		Access functions of the type *_via_vmap__(..) use memory mapped 
+		peripheral accesses via/load stores and assume that virtual-physical
+		map has been set up appropriately.
+
+
+4. Using the ajit_access_routines in your application
+
+
+	You will need to include the assembly files, the
+	include/ directory and the src/ directory to the
+	compileToSparc script. 
+
+	The following headers should be included in 
+	your source files.
+	
+	#include "ajit_access_routines.h"
+	#include "ajit_mt_irc.h"
+	#include "ajit_mmap.h"

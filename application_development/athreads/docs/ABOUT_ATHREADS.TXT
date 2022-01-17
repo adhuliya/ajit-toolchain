@@ -1,0 +1,191 @@
+
+	ATHREADS: a simple bare-metal application development 
+	platform on multi-core multi-threaded AJIT
+	processors
+
+		Madhav Desai
+
+
+1. Overview
+-----------
+
+	The AJIT multi-core, multi-thread systems provide
+	a powerful and flexible resource for embedded computing.
+	In order to develop applications for these systems,
+	we propose a simple control flow queueing paradigm.
+
+
+2. The model
+--------------------
+
+	A collection of servers, one per hardware thread
+	which exchange control flow (jobs) using job queues.
+	Data is exchanged through shared memory.
+
+
+2. Hardware threads
+--------------------
+
+	The AJIT multi-core multi-thread processor system
+	can be considered to be a collection of hardware 
+	threads.
+
+	For example if we are using a 4-core 2-threads/per-core
+	system, then the 8 threads are indexed
+
+		(0,0) (0,1)  core 0, threads 0,1
+		(1,0) (1,1)  core 1, threads 0,1
+		(2,0) (2,1)  core 2, threads 0,1
+		(3,0) (3,1)  core 3, threads 0,1
+
+	These eight threads at startup, will run a 
+	non-terminating startup routine.  Let us
+	call this the server.
+
+2.  ATHREADS
+--------------
+
+	An ATHREAD is an invocation of a function of
+	the form
+
+	void foo (void* arg)
+
+	on a hardware thread.
+
+	We introduce a notion of an ATHREAD manager (ATM)
+	which can be thought of as managing a queue of jobs
+	each of which specifies a (foo,arg) pair.
+
+	The server threads can enqueue jobs into the
+	ATM and dequeue jobs from the ATM.
+
+	Note: There can be multiple ATM instances
+	in the system.
+
+3. ILLUSTRATION
+-----------------
+
+	Consider a 1-core, 2-thread system with
+	two threads (0,0) (0,1).
+
+	athreadManager global_atm;
+	uint32_t start_thread_01 = 0;
+	uint32_t COUNTER = 0; // data being manipulated by the threads.
+
+	void foo (void* arg)
+	{
+		// some computation ....
+	}
+
+	void bar (void* arg)
+	{
+		// some computation ....
+	}
+
+	// The server on thread (0,0) is
+	void main_00 () 
+	{
+		void (*__dispatch_fn)(int, int,void*) = &foo;
+
+		// initialize the ATHREAD manager.
+		athreadInit(&global_atm);
+
+		// start thread (0,1)
+		start_thread_01 = 1;
+
+		// allocate and dispatch first thread using ATM.
+		int thread_id = 
+			athreadCreateThread(&global_atm, (void*) __dispatch_fn, (void*) &COUNTER);
+	
+		// Run loop...
+		runServerLoop(0);
+	}
+
+	// The server on thread (0,1)
+	void main_01 () 
+	{
+		while(!start_thread_01)
+		{
+		}
+	
+		runServerLoop(1);
+	}
+
+	Note that main_00 and main_01 use a
+	common runServerLoop function.  One such
+	version of this function could be
+	void runServerLoop(int tid)
+	{
+		// This will be the incoming job, which 
+		// will be completed here.
+		void (*__dispatch_fn)(int, int,void*) = &foo;
+
+		// The outgoing job.
+		void (*__next_dispatch_fn)(int, int,void*) = &bar;
+
+		while(1)
+		{
+			void* arg;
+			// Get a job to run from the ATM
+			int thread_id = 
+				athreadGetThreadToRun (&global_atm,
+							(void**) &__dispatch_fn, (void**) &arg);
+
+			if(thread_id > 0)
+			{
+				// The actual computation... which modifies
+				// arg.
+				(*__dispatch_fn)(thread_id, tid,arg);
+
+				// Closure of the thread just completed.
+				athreadReturn(&global_atm, thread_id);
+				athreadDeallocateThread (&global_atm, thread_id);
+			
+
+				// next job in the sequence will be foo..
+				thread_id = athreadCreateThread(&global_atm, 
+							(void*) __next_dispatch_fn, 
+							(void*) arg);
+
+			}
+		}
+	}
+
+
+4. Recap: Control flow model
+---------------------------------
+
+	The system consists of several servers which exchange work (jobs)
+	using one or more thread managers.
+
+	Each server is expected to pull jobs from one or more thread managers
+	and potentially insert jobs into another thread manager.
+
+	The AJIT processor is a coherent shared memory system, and data between
+	servers can be exchanged via pointers.
+
+
+5. Additional Resources
+---------------------------
+
+	ACortos:
+		A system configuration and application development
+		environment which uses cooperative multi-tasking.
+
+	protothreads:
+		Co-routine lightweight thread library which can be
+		used to implement the servers as well as the
+		jobs executed by the servers.
+
+
+6. Further enhancements
+----------------------------
+
+	1. priority queues in the thread manager.
+	2. coupling of interrupt service routines
+		with the thread managers (using priorities!).
+	3. user space and supervisor space separation.
+	4. migratable virtual machines as servers.
+		*** This looks very very interesting ****
+	5. more arguments for the thread functions..
+

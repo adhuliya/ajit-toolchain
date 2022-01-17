@@ -26,6 +26,8 @@
 #include "rlut.h"
 #include "ImplementationDependent.h"
 
+extern int global_verbose_flag;
+
 
 void increment_instruction_count(ThreadState* s) 
 { 
@@ -338,7 +340,8 @@ void ajit_thread(void* id_ptr)
 			// This is done separately to match the behaviour of
 			// the instruction pipeline.
 			if(thread_state->mmu_fsr != 0)
-				updateMmuFsrFar(thread_state->mmu_state, 
+				updateMmuFsrFar(thread_state->thread_id,
+							thread_state->mmu_state, 
 							thread_state->dcache,
 							thread_state->mmu_fsr, thread_state->status_reg.pc);
 		}
@@ -712,6 +715,12 @@ void generateLogMessage( ThreadState *s)
 
 	pc_log = f->pc;
 
+	
+	if(global_verbose_flag)
+	{
+		fprintf(stderr,"Info:psr_update: pc=0x%lx psr=0x%lx\n", f->pc, r->psr);
+	}
+
 	//if(f->pc) pc_log = f->pc; //pc was updated inside an instruction
 	//else      pc_log = r->pc; //pc to be logged is same as the current pc
 
@@ -741,7 +750,7 @@ uint8_t fetchInstruction(ThreadState* s,
 				uint8_t addr_space, uint32_t addr, uint32_t *inst, uint32_t* mmu_fsr)
 {
 	uint8_t mae_value;
-	readInstruction(s->mmu_state, s->icache,  addr_space, addr, &mae_value, inst, mmu_fsr);
+	readInstruction(s->thread_id, s->mmu_state, s->icache,  addr_space, addr, &mae_value, inst, mmu_fsr);
 	setPageBit((CoreState*) s->parent_core_state,addr);
 	return mae_value;
 }

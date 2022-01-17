@@ -65,6 +65,7 @@
 #define USE_INTERRUPT_CONTROLLER_MODEL 1
 #define USE_TIMER_MODEL 1
 #define USE_SERIAL_MODEL 1
+#define USE_SCRATCH_PAD_MODEL 1
 
 
 //----------------------------------

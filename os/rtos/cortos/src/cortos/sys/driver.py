@@ -38,8 +38,9 @@ def printDetail(args: argparse.Namespace) -> None:
   if objName == "config":
     printConfigFile(configFileName)
   elif objName == "init":
-    #print(build.genInitFile(2, 2))
-    print(build.genInitFileBottle(2, 2))
+    # print(build.genInitFile(2, 2))
+    # print(build.genInitFileBottle(2, 2))
+    pass
   else:
     raise ValueError(f"Unknown object to print: {objName}")
 
@@ -62,8 +63,9 @@ def buildProject(args: argparse.Namespace) -> None:
   which uses the object.
   """
   configFileName = args.configFileName
-  confObj = config.readYamlConfig(configFileName)
+  confObj = config.readYamlConfig(configFileName, args.ramstart)
   confObj.addDebugSupport(args.debug, args.port)
+  confObj.addOptLevel(args.O0, args.O1, args.O2)
   build.buildProject(confObj)
 
 
@@ -78,10 +80,18 @@ def getParser() -> argparse.ArgumentParser:
   subpar = subParser.add_parser("build", help="Build a project.")
   subpar.set_defaults(func=buildProject)
   # subpar.add_argument('-l', '--logging', action='count', default=0)
-  subpar.add_argument('-g', '--debug', action='store_true',
-                      help="Enable debug build.")
+  subpar.add_argument('-g', '--debug', action='store_true', default=False,
+                      help="Enable debug build. If enabled, optimization level is set to 0.")
   subpar.add_argument('-p', '--port', type=int, default=8888,
                       help="Starting debug server port sequence.")
+  subpar.add_argument('-O0', '--O0', action='store_true', default=False,
+                      help="Optimization level 0 (O0).")
+  subpar.add_argument('-O1', '--O1', action='store_true', default=False,
+                      help="Optimization level 1 (O1).")
+  subpar.add_argument('-O2', '--O2', action='store_true', default=False,
+                      help="Optimization level 2 (O2).")
+  subpar.add_argument('-s', '--ramstart', type=lambda x: int(x, 0), default=0x0,
+                      help="Starting RAM address (must be 16MB aligned).")
   subpar.add_argument("configFileName",
                       nargs="?",
                       default=consts.CONFIG_FILE_DEFAULT_NAME,
