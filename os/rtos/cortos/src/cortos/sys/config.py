@@ -433,7 +433,7 @@ def readYamlConfig(
 ) -> UserConfig:
   """Reads the given yaml configuration file."""
   with open(yamlFileName) as f:
-    conf = yaml.load(f)
+    conf = yaml.safe_load(f)
     return UserConfig(conf, ramStartAddr)
 
 
