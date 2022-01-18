@@ -16,6 +16,11 @@
 
 .global _start;
 _start:
+  ! current value of window is 7
+
+  ! clear all stack pointers in all windows
+  ! call __clear_stack_pointers
+  ! nop
 
   ! enable traps, set current window=0
   set 0x10E0, %l0
@@ -33,7 +38,7 @@ _start:
   wr 0x4, %asr19
 
 WIMSET:
-  set 0x2, %l0		! window 1 is marked invalid...  we start at window 0
+  set 0x2, %l0 ! window 1 is marked invalid... we start at window 0
   wr %l0, 0x0, %wim	!
 
   ! trap table.
