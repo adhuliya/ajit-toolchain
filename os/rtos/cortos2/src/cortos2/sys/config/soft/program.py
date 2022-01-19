@@ -114,7 +114,8 @@ class Program:
     textSize, dataSize, bssSize = elf.getTextDataBssSize(elfFileName)
     self.textSectionSizeInBytes = textSize
     self.dataSectionSizeInBytes = dataSize
-    self.bssSectionSizeInBytes = bssSize
+    # don't let the bss section size be zero
+    self.bssSectionSizeInBytes = bssSize if bssSize else 4096
 
 
   def getSizeOfProgram(self):

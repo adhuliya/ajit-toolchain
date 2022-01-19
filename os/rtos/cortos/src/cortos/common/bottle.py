@@ -596,7 +596,7 @@ class Bottle(object):
         self.config['catchall'] = catchall
         self.config['autojson'] = autojson
 
-        #: A :class:`ResourceManager` for application files
+        #: A :class:`ResourceManager` for application xfiles
         self.resources = ResourceManager()
 
         self.routes = [] # List of installed :class:`Route` instances.
@@ -1085,7 +1085,7 @@ class BaseRequest(object):
         """ Form values parsed from an `url-encoded` or `multipart/form-data`
             encoded POST or PUT request body. The result is returned as a
             :class:`FormsDict`. All keys and values are strings. File uploads
-            are stored separately in :attr:`files`. """
+            are stored separately in :attr:`xfiles`. """
         forms = FormsDict()
         for name, item in self.POST.allitems():
             if not isinstance(item, FileUpload):
@@ -1095,7 +1095,7 @@ class BaseRequest(object):
     @DictProperty('environ', 'bottle.request.params', read_only=True)
     def params(self):
         """ A :class:`FormsDict` with the combined values of :attr:`query` and
-            :attr:`forms`. File uploads are stored in :attr:`files`. """
+            :attr:`forms`. File uploads are stored in :attr:`xfiles`. """
         params = FormsDict()
         for key, value in self.query.allitems():
             params[key] = value
@@ -1103,7 +1103,7 @@ class BaseRequest(object):
             params[key] = value
         return params
 
-    @DictProperty('environ', 'bottle.request.files', read_only=True)
+    @DictProperty('environ', 'bottle.request.xfiles', read_only=True)
     def files(self):
         """ File uploads parsed from `multipart/form-data` encoded POST or PUT
             request body. The values are instances of :class:`FileUpload`.
@@ -1213,7 +1213,7 @@ class BaseRequest(object):
 
     @DictProperty('environ', 'bottle.request.post', read_only=True)
     def POST(self):
-        """ The values of :attr:`forms` and :attr:`files` combined into a single
+        """ The values of :attr:`forms` and :attr:`xfiles` combined into a single
             :class:`FormsDict`. Values are either strings (form values) or
             instances of :class:`cgi.FieldStorage` (file uploads).
         """
@@ -1379,7 +1379,7 @@ class BaseRequest(object):
         todelete = ()
 
         if key == 'wsgi.input':
-            todelete = ('body', 'forms', 'files', 'params', 'post', 'json')
+            todelete = ('body', 'forms', 'xfiles', 'params', 'post', 'json')
         elif key == 'QUERY_STRING':
             todelete = ('query', 'params')
         elif key.startswith('HTTP_'):
@@ -2263,7 +2263,7 @@ class _closeiter(object):
 
 class ResourceManager(object):
     ''' This class manages a list of search paths and helps to find and open
-        application-bound resources (files).
+        application-bound resources (xfiles).
 
         :param base: default value for :meth:`add_path` calls.
         :param opener: callable used to open resources.
@@ -2293,7 +2293,7 @@ class ResourceManager(object):
             :param index: Position within the list of search paths. Defaults
                 to last index (appends to the list).
 
-            The `base` parameter makes it easy to reference files installed
+            The `base` parameter makes it easy to reference xfiles installed
             along with a python module or package::
 
                 res.add_path('./resources/', __file__)
@@ -2313,7 +2313,7 @@ class ResourceManager(object):
         return os.path.exists(path)
 
     def __iter__(self):
-        ''' Iterate over all existing files in all registered paths. '''
+        ''' Iterate over all existing xfiles in all registered paths. '''
         search = self.path[:]
         while search:
             path = search.pop()
@@ -2397,10 +2397,10 @@ class FileUpload(object):
     def save(self, destination, overwrite=False, chunk_size=2**16):
         ''' Save file to disk or copy its content to an open file(-like) object.
             If *destination* is a directory, :attr:`filename` is added to the
-            path. Existing files are not overwritten by default (IOError).
+            path. Existing xfiles are not overwritten by default (IOError).
 
             :param destination: File path, directory or file(-like) object.
-            :param overwrite: If True, replace existing files. (default: False)
+            :param overwrite: If True, replace existing xfiles. (default: False)
             :param chunk_size: Bytes to read at a time. (default: 64kb)
         '''
         if isinstance(destination, basestring): # Except file-likes here
@@ -2466,7 +2466,7 @@ def static_file(filename, root, mimetype='auto', download=False, charset='UTF-8'
             instead of opening the file with the associated program. You can
             specify a custom filename as a string. If not specified, the
             original filename is used (default: False).
-        :param charset: The charset to use for files with a ``text/*``
+        :param charset: The charset to use for xfiles with a ``text/*``
             mime-type. (default: UTF-8)
     """
 
@@ -3216,7 +3216,7 @@ class BaseTemplate(object):
         The lookup, encoding and settings parameters are stored as instance
         variables.
         The lookup parameter stores a list containing directory paths.
-        The encoding parameter should be used to decode byte strings or files.
+        The encoding parameter should be used to decode byte strings or xfiles.
         The settings parameter contains a dict for engine-specific settings.
         """
         self.name = name

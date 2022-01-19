@@ -40,20 +40,20 @@ def prepareBuildDir(
   util.createDir(confObj.buildDir)
   util.createDir(confObj.cortosSrcDir)
 
-  # STEP 2: copy necessary files
+  # STEP 2: copy necessary xfiles
   copyBuildFiles(confObj)
 
 
 def copyBuildFiles(
     confObj: config.UserConfig,
 ) -> None:
-  """After directory creations, it copies all the user files."""
+  """After directory creations, it copies all the user xfiles."""
 
   # STEP 1: cd into the build directory
   cwd = os.getcwd()
   os.chdir(confObj.buildDir)
 
-  # STEP 2: Copy files that the user may need to change or look at.
+  # STEP 2: Copy xfiles that the user may need to change or look at.
   cpy.copyProjectFiles(confObj)
   cpy.copyInitFile(confObj)
   cpy.copyTrapFile(confObj)
@@ -63,7 +63,7 @@ def copyBuildFiles(
   cpy.copyRunCModelFile(confObj)
   cpy.copyCleanshFile(confObj)
 
-  # STEP 3: Copy files that the user might not need to look into.
+  # STEP 3: Copy xfiles that the user might not need to look into.
   os.chdir(confObj.cortosSrcDir)
 
   cpy.copyPageTableFile(confObj)
@@ -120,14 +120,18 @@ def runBuildScript(confObj: config.UserConfig) -> None:
 
 def computeStackAddr(confObj: config.UserConfig) -> None:
   """Compute the stack starting address of each program."""
-  lastFreeAddr = confObj.leastValidStackAddr
+  # lastFreeAddr = confObj.leastValidStackAddr
+  highAddr = (confObj.ramStartAddr
+              + confObj.memSizeInKB * 1024 # + memory size
+              - 8
+             )
 
   for prog in confObj.programs:
     stackSize = prog.stackSizeInBytes if prog.stackSizeInBytes\
       else consts.DEFAULT_STACK_SIZE
-    lastFreeAddr += stackSize
-    lastFreeAddr = util.alignAddress(lastFreeAddr, align=4096)
-    prog.stackStartAddr = lastFreeAddr
+    highAddr = util.alignAddress(highAddr, align=8)
+    prog.stackStartAddr = highAddr
+    highAddr -= stackSize
 
 
 # def patchCortosCalls(confObj: config.UserConfig):
@@ -245,7 +249,7 @@ def computeStackAddr(confObj: config.UserConfig) -> None:
 
 
 # def concatenateMmapFiles(confObj: config.UserConfig):
-#   """concatenate the final mmap files for each program."""
+#   """concatenate the final mmap xfiles for each program."""
 #   # STEP 1: cd into the cortos build directory
 #   cwd = os.getcwd()
 #   os.chdir(consts.CORTOS_BUILD_DIR_NAME)

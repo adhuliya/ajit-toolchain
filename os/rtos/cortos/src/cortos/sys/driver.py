@@ -38,8 +38,9 @@ def printDetail(args: argparse.Namespace) -> None:
   if objName == "config":
     printConfigFile(configFileName)
   elif objName == "init":
-    #print(build.genInitFile(2, 2))
-    print(build.genInitFileBottle(2, 2))
+    # print(build.genInitFile(2, 2))
+    # print(build.genInitFileBottle(2, 2))
+    pass
   else:
     raise ValueError(f"Unknown object to print: {objName}")
 
@@ -62,7 +63,7 @@ def buildProject(args: argparse.Namespace) -> None:
   which uses the object.
   """
   configFileName = args.configFileName
-  confObj = config.readYamlConfig(configFileName)
+  confObj = config.readYamlConfig(configFileName, args.ramstart)
   confObj.addDebugSupport(args.debug, args.port)
   confObj.addOptLevel(args.O0, args.O1, args.O2)
   build.buildProject(confObj)
@@ -89,6 +90,8 @@ def getParser() -> argparse.ArgumentParser:
                       help="Optimization level 1 (O1).")
   subpar.add_argument('-O2', '--O2', action='store_true', default=False,
                       help="Optimization level 2 (O2).")
+  subpar.add_argument('-s', '--ramstart', type=lambda x: int(x, 0), default=0x0,
+                      help="Starting RAM address (must be 16MB aligned).")
   subpar.add_argument("configFileName",
                       nargs="?",
                       default=consts.CONFIG_FILE_DEFAULT_NAME,

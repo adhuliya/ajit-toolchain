@@ -22,7 +22,7 @@ _CORTOS_PG_TABLES="$_CORTOS_SRC_DIR/setup_page_tables.s";
 _LINKER_SCRIPT="$_CORTOS_SRC_DIR/LinkerScript.txt";
 
 _PT="$AJIT_MINIMAL_PRINTF_TIMER";
-_AAR_MT="$AJIT_PROJECT_HOME/tools/ajit_access_routines_mt";
+_AAR_MT="$AJIT_ACCESS_ROUTINES_MT";
 _AAR="$AJIT_ACCESS_ROUTINES";
 
 % if confObj.software.bget.enable:
@@ -40,6 +40,7 @@ compileToSparcUclibc.py \
   -g \
 % end
   -o {{ 0 if confObj.software.build.debug else confObj.software.build.optLevel }} \
+  -C ${_AAR_MT}/src \
   -V ${_CORTOS_VMAP} \
   -I ${AJIT_UCLIBC_HEADERS_DIR} \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \
@@ -47,9 +48,9 @@ compileToSparcUclibc.py \
   -I ${_CORTOS_SRC_DIR} \
   -I ${_AAR_MT}/include \
   -I ${_PT}/include \
+  -s ${_CORTOS_TRAP_HANDLER} \
   -s ${_CORTOS_INIT_00} \
   -s ${_CORTOS_ASM} \
-  -s ${_CORTOS_TRAP_HANDLER} \
   -s ${_CORTOS_LOCK_UNLOCK} \
   -s ${_CORTOS_LOCK_UNLOCK_CACHEABLE} \
   -s ${_CORTOS_RES_LOCK_UNLOCK} \
@@ -74,3 +75,7 @@ compileToSparcUclibc.py \
   -D AJIT \
   -U;
 
+#  -s ${_AAR_MT}/asm/clear_stack_pointers.s \
+#  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
+#  -s ${_AAR_MT}/asm/generic_isr_mt.s \
+#  -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \

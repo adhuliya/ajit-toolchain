@@ -53,7 +53,7 @@ def readYamlConfig(
 ) -> SystemConfig:
   """Reads the given yaml configuration file."""
   with open(yamlFileName) as f:
-    conf = yaml.load(f)
+    conf = yaml.safe_load(f)
     return SystemConfig(conf)
 
 

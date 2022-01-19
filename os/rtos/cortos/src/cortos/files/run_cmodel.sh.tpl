@@ -5,6 +5,7 @@ _MAIN="main";
 ajit_C_system_model \
   -n {{confObj.coreCount}} \
   -t {{confObj.threadsPerCoreCount}} \
+  -i {{hex(confObj.ramStartAddr)}} \
 % if confObj.debugBuild:
   -g \
 % for i in range(len(confObj.programs)):
