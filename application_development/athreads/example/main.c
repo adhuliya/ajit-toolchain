@@ -34,12 +34,12 @@ void __enable_serial__()
 
 void runLoop(int tid)
 {
-	void (*__dispatch_fn)(int, int,void*) = &printCounter;
+	void (*__dispatch_fn)(int, int,void*) = NULL;
 
 	ee_printf("entered runLoop(%d).\n", tid); 
 	while(1)
 	{
-		void* arg;
+		void* arg = NULL;
 		int thread_id = athreadGetThreadToRun (&global_atm,
 								(void**) &__dispatch_fn, (void**) &arg);
 
