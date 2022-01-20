@@ -129,4 +129,25 @@ int athreadGetThreadToRun(athreadManager* atm, void** fn, void** arg)
 	return(ret_val);
 }
 
+// Find an athread to run, run it, and mark it as returned,
+// and finally deallocate it... return the thread-id of
+// the thread that was just run.
+int athreadRunDispatchedThread (athreadManager* atm)
+{
+	int ret_val = 1;
+
+	void (*__fn)(void*) = NULL;
+	void *arg = NULL;
+
+	int thread_id = athreadGetThreadToRun(atm, &__fn, &arg);
+	if(thread_id > 0)
+	{
+		(*__fn)(arg);
+		athreadReturn(atm, thread_id);
+		athreadDeallocateThread(atm, thread_id);
+		ret_val = 0;
+	}
+
+	return(thread_id);
+}
 

@@ -6,20 +6,27 @@
 #include "athread.h"
 
 extern int mutex_var;
-static int COUNTER = 0;
-
 volatile athreadManager volatile global_atm;
 
-// set to 1 when thread 01 can be started.
-volatile int start_thread_01 = 0;
+typedef struct __Arg {
+	int thread_id;
+	int server_id;
+	int COUNTER;
+} Arg;
+Arg G_ARG;
 
-void printCounter(int atid, int tid, void* arg)
+
+void printCounter(void* arg)
 {
 			
 	int mutex_ptr = (int) &mutex_var;
 	acquire_mutex_using_swap(mutex_ptr);
-	ee_printf("CPU %d, athread %d: __dispatch_fn (%d).\n", tid, atid, *((int*) arg));
-	COUNTER = *((int*) arg) + 1;
+
+	Arg* farg = (Arg*) arg;
+
+	ee_printf("CPU %d, athread %d: __dispatch_fn (%d).\n", farg->server_id, farg->thread_id, farg->COUNTER);
+	farg->COUNTER += 1;
+
 	release_mutex_using_swap(mutex_ptr);
 }
 
@@ -34,7 +41,7 @@ void __enable_serial__()
 
 void runLoop(int tid)
 {
-	void (*__dispatch_fn)(int, int,void*) = NULL;
+	void (*__dispatch_fn)(void*) = NULL;
 
 	ee_printf("entered runLoop(%d).\n", tid); 
 	while(1)
@@ -45,8 +52,10 @@ void runLoop(int tid)
 
 		if(thread_id > 0)
 		{
+			((Arg*) arg)->server_id = tid;
+
 			// The actual computation..
-			(*__dispatch_fn)(thread_id, tid,arg);
+			(*__dispatch_fn)(arg);
 
 			// Closure of the thread.
 			athreadReturn(&global_atm, thread_id);
@@ -62,6 +71,7 @@ void runLoop(int tid)
 				}
 			}
 
+			((Arg*) arg)->thread_id = thread_id;
 			athreadDispatchThread(&global_atm, thread_id,(void*) __dispatch_fn, 
 										(void*) arg);
 
@@ -75,26 +85,25 @@ void main_00 ()
 {
 
 
-	void (*__dispatch_fn)(int, int,void*) = &printCounter;
+	void (*__dispatch_fn)(void*) = NULL;
+	G_ARG.COUNTER = 0;
+
 	mutex_var = 0;
 	ee_printf("entered main_00, set mutex=%d\n", mutex_var);
 
 	// initialize the ATHREAD manager.
 	athreadInit(&global_atm);
 
-	COUNTER = 0;
-
-	// start 01
-	start_thread_01 = 1;
 
 	// allocate and dispatch first thread using ATM.
 	int thread_id = athreadAllocateThread(&global_atm);
 	if(thread_id > 0)
 	{
+		G_ARG.thread_id = thread_id;
 		while(1)
 		{
 			int status = athreadDispatchThread(&global_atm, thread_id, 
-						(void*) __dispatch_fn, (void*) &COUNTER);
+						(void*) &printCounter, (void*) &G_ARG);
 			if(status)
 				ee_printf("Error: main_00 could not dispatch thread.\n");
 			else
@@ -111,11 +120,6 @@ void main_00 ()
 
 void main_01 () 
 {
-	while(!start_thread_01)
-	{
-		//__ajit_sleep__ (64); // 64 clock cycles.
-	}
-
 	runLoop(1);
 }
 

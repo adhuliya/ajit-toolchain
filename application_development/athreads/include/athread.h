@@ -55,5 +55,10 @@ int athreadJoinThread (athreadManager* atm, int thread_id);
 // get thread from atm in order to run it.
 int athreadGetThreadToRun(athreadManager* atm, void** fn, void** arg);
 
+// Find an athread to run, run it, and mark it as returned,
+// and finally deallocate it... return the thread-id of
+// the thread that was just run.
+int athreadRunDispatchedThread (athreadManager* atm);
+
 #endif
 

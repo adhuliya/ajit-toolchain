@@ -1,0 +1,40 @@
+	Permissions are symmetric for USER/SUPERVISOR
+		Stay with this for the moment.
+
+
+	Suggestion
+	------------
+		For the application (ProgramThreads section),
+		specify if the application will run in user mode
+		or supervisor mode...
+		
+		Thread specific..
+
+	Suggestion
+	----------------
+		Interrupt handlers for interrupt levels 1 to 15
+		OK.  Thread (0,0) sets up the table..
+
+		Generate a setup_interrupts.s file which calls 
+		the C routines 
+
+			ajit_initialize_interrupt_handlers_to_null();
+        		ajit_set_interrupt_handler(id1, &(__handler_1));
+        		ajit_set_interrupt_handler(id2, &(__handler_2));
+        		ajit_set_interrupt_handler(id3, &(__handler_3));
+				etc.
+
+
+	Suggestion
+	-----------
+		Software trap handlers for software traps ta 1 to ta 15.
+		Thread (0,0) sets up the table..
+
+		Generate a setup_trap_handlers.s file which calls 
+
+        		ajit_initialize_sw_trap_handlers_to_null();
+        		ajit_set_sw_trap_handler(1, &(__t1_handler));
+        		ajit_set_sw_trap_handler(2, &(__t2_handler));
+        		ajit_set_sw_trap_handler(3, &(__t3_handler));
+        		ajit_set_sw_trap_handler(4, &(__t4_handler));
+
