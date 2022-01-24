@@ -13,7 +13,7 @@ ATHREADS=$AJIT_HOME/application_development/athreads/
 SRCS=" -c ../main.c -c ../globals.c  -C $ATHREADS/src  -s ../init.s -s $AAR/asm/trap_handlers.s -s $AAR/asm/mutexes.s -C $AAR/src -C $PT/src"
 # compile includes.
 INCLUDES="-I ../ -I $ATHREADS/include -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
-DEFS=" -D NDEBUG_MODE "
+DEFS=" -D NDEBUG_MODE -D USE_VMAP "
 # compile the application.
 compileToSparcUclibc.py -g -V VMAP.TXT -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk  $DEFS
 
