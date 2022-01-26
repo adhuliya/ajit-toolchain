@@ -5,7 +5,8 @@
 % memSizeInBytes = confObj.software.bget.getSizeInBytes()
 
 #include "__bget.h"
-#include "__cortos.h"
+#include "cortos_locks.h"
+#include "cortos_bget.h"
 
 int __mem_allocated = 0;
 

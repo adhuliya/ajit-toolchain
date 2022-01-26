@@ -2,12 +2,11 @@
 # yaml 10 minutes tutorial:
 #   https://www.youtube.com/watch?v=cdLNKUoMc6c
 
-
 Hardware:
   Processor:
     # Required: Number of cores and threads per core.
     Cores: 1
-    ThreadsPerCore: 2
+    ThreadsPerCore: 1
     ISA: 32 # 32/64 bit (Default: 32)
 
   Memory:
@@ -65,7 +64,6 @@ Hardware:
         SizeInBytes: 1024
         Permissions: RW
 
-
 Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
@@ -76,20 +74,38 @@ Software:
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
 
+  # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
-        - cortos_entry_func_001
-        - cortos_entry_func_010
+        - main
+  # One can also specify an infinite loop on the function:
+  #   CortosLoopCalls:
+  #     - main1
       StackSize:
-        SizeInBytes: 8192
-    - CortosInitCalls:
-        - cortos_entry_func_101
-        - cortos_entry_func_110
-      StackSize:
-        SizeInBytes: 8192
+        SizeInKiloBytes: 8
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
     SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
+#   Locks: # Locks for synchronization between threads.
+#     Cacheable: 32
+#     NonCacheable: 32
+#
+#   MessageQueues: # List of queues in the system.
+#     - QueueIdStart: 0    # goes to QueueIdStart+NumOfQueues-1
+#       NumOfQueues: 32
+#       MessageSizeInBytes: 32
+#       TotalMessageCapacity: 32 # num. of messages
+#
+#     - QueueIdStart: 32    # goes to QueueIdStart+NumOfQueues-1
+#       NumOfQueues: 16
+#       MessageSizeInBytes: 8
+#       TotalMessageCapacity: 256 # num. of messages
+#
+#   InterruptHandler:
+#     - TypeCode: 0x4
+#       Function: functionName4
+#     - TypeCode: 0x5
+#       Function: functionName5

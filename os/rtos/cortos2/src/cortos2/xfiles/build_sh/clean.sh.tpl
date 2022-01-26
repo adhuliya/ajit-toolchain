@@ -11,4 +11,6 @@ rm -rf \
   *.vars \
   *.wtrace* \
   sparc-assembly \
-  sparc-obj
+  sparc-obj \
+  __genvmap_setup_page_tables.s \
+;
