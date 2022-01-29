@@ -1,3 +1,2 @@
-asr29=0x50520000 core 0 thread 0
-m[0x138]=0x0000000a asi=0x20 core 0 thread 0
-m[0x13c]=0x0000000b asi=0x20 core 0 thread 0
+asr16=0xFF       core 0 thread 0
+asr16=0xFF       core 0 thread 1

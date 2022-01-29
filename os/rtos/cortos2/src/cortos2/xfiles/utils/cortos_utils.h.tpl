@@ -11,14 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Exit after putting error_code into asr16.
-// A non-zero error code is generally considered a error.
-// Error codes <= 255 are reserved for CoRTOS.
-// A user code may use 0 to denote a successful exit,
-// or a value >=256 as an error exit code.
-// Cortos exit codes and their meaning:
-//      0       Successful Exit
-//      1       Error in init.s
-void cortos_exit(unsigned int error_code);
+void cortos_exit(uint32_t error_code);
 
 // printf routine offered by Cortos
 // This needs the serial device to be enabled.

@@ -5,7 +5,10 @@
 #ifndef CORTOS_H
 #define CORTOS_H
 
-#include <stdint.h>
+#include <stdint.h>    // to use uint32_t, etc.
+
+// TODO: can ee_printf support this?
+// #include <inttypes.h>  // to pirint uint32_t, etc. printf("%" PRIu32 "\n", i);
 
 // A flag for the programmer to know if the environment
 // is provided by CORTOS or not.
