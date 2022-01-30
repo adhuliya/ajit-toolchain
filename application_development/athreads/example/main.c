@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "ajit_access_routines.h"
+#include "ajit_generic_sys_calls.h"
 #include "core_portme.h"
 #include "athread.h"
 
@@ -18,16 +19,23 @@ Arg G_ARG;
 void printCounter(void* arg)
 {
 			
-	int mutex_ptr = (int) &mutex_var;
-	acquire_mutex_using_swap(mutex_ptr);
+	uint8_t core_id, thread_id;
+
+	//
+	// This is called from user mode, and invokes
+	// a trap (ta 16) whose trap handler then reads the asr
+	// in supervisor mode.
+	//
+	uint32_t cid = ajit_sys_read_asr (29);
 
 	Arg* farg = (Arg*) arg;
-
-	ee_printf("Initiated from CPU %d, athread %d: __dispatch_fn (%d).\n", 
-					farg->server_id, farg->thread_id, farg->COUNTER);
+	int mutex_ptr = (int) &mutex_var;
+	acquire_mutex_using_swap(mutex_ptr);
+	ee_printf("Run on CPU 0x%x, athread %d: __dispatch_fn (%d).\n", 
+				cid, farg->thread_id, farg->COUNTER);
 	farg->COUNTER += 1;
-
 	release_mutex_using_swap(mutex_ptr);
+
 }
 
 void __enable_serial__()
