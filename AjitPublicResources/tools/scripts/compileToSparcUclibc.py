@@ -189,7 +189,8 @@ def  compileFiles(work_area, src_files,src_dirs,include_dirs,define_strings,asse
             aspath,asfilename = os.path.split(asfile)
             name,extn = os.path.splitext(asfilename)
             if(extn == ".s"):
-               as_command = SPARC_AS + " " + SPARC_AS_FLAGS + work_area + "/sparc-assembly/" + name + ".s "  + " -o " + work_area + "/sparc-obj/" + name + ".o"
+               #AD as_command = SPARC_AS + " " + SPARC_AS_FLAGS + work_area + "/sparc-assembly/" + name + ".s "  + " -o " + work_area + "/sparc-obj/" + name + ".o"
+               as_command = SPARC_AS + " " + SPARC_AS_FLAGS + adir + "/" + asfile  + " -o " + work_area + "/sparc-obj/" + name + ".o"
                ret_val = execSysCmd(as_command)
                if(ret_val != 0):
                   logError("in assembling file " + sfile)

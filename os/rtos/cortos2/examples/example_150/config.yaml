@@ -1,18 +1,93 @@
 # yaml configuration file for linker/loader of Co-RTOS
+# yaml 10 minutes tutorial:
+#   https://www.youtube.com/watch?v=cdLNKUoMc6c
 
-Cores: 1
-ThreadsPerCore: 2
 
-ProgramThreads:
-  - CortosInitCalls:
-      - cortos_entry_func_001
-      - cortos_entry_func_010
-    StackSizeInBytes: 8192
-  - CortosInitCalls:
-      - cortos_entry_func_101
-      - cortos_entry_func_110
-    StackSizeInBytes: 8192
+Hardware:
+  Processor:
+    # Required: Number of cores and threads per core.
+    Cores: 1
+    ThreadsPerCore: 2
+    ISA: 32 # 32/64 bit (Default: 32)
 
-TotalMemoryInKB: 102400
+  Memory:
+    MaxPhysicalAddrBitWidth: 36
+    Flash:
+      StartAddr: 0x0  # physical address
+      # EndAddr: ...
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
+      SizeInMegaBytes: 16
+      Permissions: RXC  # (Read,Write,eXecute,Cacheable)
+    RAM:
+      StartAddr: 0x40000000
+      # EndAddr: ...
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
+      SizeInMegaBytes: 128
+      Permissions: RWXC
+    MMIO: # Memory Mapped IO
+      StartAddr: 0xFFFF0000  # physical address
+      EndAddr:   0xFFFFFFFF
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
+      # SizeInKiloBytes: 4
+      Permissions: RW
 
-LogLevel: TRACE
+  # see ./AjitPublicResources/tools/ajit_access_routines_mt/include/device_addresses.h
+  Devices:
+    - Name: Timer
+      MemoryRegion:
+        StartAddr: 0xFFFF3100 # physical address (in MMIO)
+        SizeInBytes: 256 # 16x16
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3100
+    - Name: InterruptController
+      MemoryRegion:
+        StartAddr: 0xFFFF3000
+        SizeInBytes: 32
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3000
+    - Name: Serial
+      MemoryRegion:
+        StartAddr: 0xFFFF3200
+        SizeInBytes: 64
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3200
+        TX: 0xFFFF3204
+        RX: 0xFFFF3208
+    - Name: ScratchArea
+      MemoryRegion:
+        StartAddr: 0xFFFF2C00
+        SizeInBytes: 1024
+        Permissions: RW
+
+
+Software:
+  BuildAndExecute:
+    # Optional: Specify the log level. Default is NONE.
+    # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
+    LogLevel: DEBUG
+    OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
+    EnableSerial: Yes # Yes/No (Default: Yes)
+    Debug: No # Yes/No (Default: No)
+    FirstDebugPort: 8888
+
+  ProgramThreads:
+    - CortosInitCalls:
+        - cortos_entry_func_001
+        - cortos_entry_func_010
+      StackSizeInBytes: 8192
+    - CortosInitCalls:
+        - cortos_entry_func_101
+        - cortos_entry_func_110
+      StackSizeInBytes: 8192
+
+  DynamicMemory: # Dynamic Memory Configuration.
+    # SizeInBytes: ...
+    SizeInKiloBytes: 1000
+    # SizeInMegaBytes: ...
+

@@ -19,6 +19,7 @@ class ProjectFiles:
 
     self.cFileNames: List[str] = []
     self.hFileNames: List[str] = []
+    self.sFileNames: List[str] = []
     self.resultsFile: str = consts.DEFAULT_RESULTS_FILE_NAME
 
 
@@ -29,6 +30,8 @@ class ProjectFiles:
         self.cFileNames.append(fName)
       elif fName.endswith(".h") and osp.isfile(fName):
         self.hFileNames.append(fName)
+      elif fName.endswith(".s") and osp.isfile(fName):
+        self.sFileNames.append(fName)
       elif fName.endswith(".results"):
         self.resultsFile = fName
 
