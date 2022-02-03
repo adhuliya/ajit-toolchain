@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 
 # Author: Anshuman Dhuliya (AD) (anshumandhuliya@gmail.com)
 
