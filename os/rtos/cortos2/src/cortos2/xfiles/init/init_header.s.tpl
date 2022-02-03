@@ -19,32 +19,28 @@ _start:
   ! current value of window is 7
 
   ! clear all stack pointers in all windows
-  ! call __cortos_clear_stack_pointers
-  ! nop
+  call clear_stack_pointers
+  nop
 
-  ! enable traps, set current window=0
-  set 0x10E0, %l0
+CORTOS_SET_PSR:
+  ! enable traps, set current window=7
+  set 0x10E0, %l0  ! 0x1067 for user mode (see p28 in sparcv8.pdf)
   wr %l0, %psr
 
-  ! Read CORE,THREAD IDs into %l1.
-  ! format of asr29
-  !    0x50 0x52 core-id thread-id
-  rd %asr29, %l1
-
-  ! initialize some ASR's (AD: Is this optional?)
-  wr 0x1, %asr16
-  wr 0x2, %asr17
-  wr 0x3, %asr18
-  wr 0x4, %asr19
-
-WIMSET:
-  set 0x2, %l0 ! window 1 is marked invalid... we start at window 0
-  wr %l0, 0x0, %wim	!
+COROTS_WIMSET:
+  set 0x2, %l0   ! window 1 is marked invalid. We start at window 0.
+  ! sll %l0, 7, %l0
+  wr %l0, 0x0, %wim
 
   ! trap table.
   set	trap_table_base, %l0
   wr	%l0, 0x0, %tbr
 
+CORTOS_READ_CORE_THREAD_ID:
+  ! Read CORE,THREAD IDs into %l1.
+  ! format of asr29
+  !    0x50 0x52 core-id thread-id
+  rd %asr29, %l1
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

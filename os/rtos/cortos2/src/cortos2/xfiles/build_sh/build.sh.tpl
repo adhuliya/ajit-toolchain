@@ -32,6 +32,11 @@ compileToSparcUclibc.py \
   -C .. \
   -S .. \
   -C ${_AAR}/src \
+  -C ${_AAR_MT}/src \
+  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
+  -s ${_AAR_MT}/asm/clear_stack_pointers.s \
+  -s ${_AAR_MT}/asm/generic_isr_mt.s \
+  -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -N ${_MAIN} \
   -L ${_LINKER_SCRIPT} \
   -D AJIT \
