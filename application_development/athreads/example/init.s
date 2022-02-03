@@ -6,7 +6,7 @@
 _start:
 
 	!!!!!!!!!!!!!!! code executed across all threads !!!!!!!!!!!!!!!!111
-	! enable traps, set current window=0
+	! enable traps, set current window=7
 	set 0x10E0, %l0	
 	wr %l0, %psr
 
@@ -16,7 +16,7 @@ _start:
 	rd %asr29, %l1
 
 WIMSET:
-	set 0x2, %l0		! window 1 is marked invalid...  we start at window 0
+	set 0x1, %l0		! window 0 is marked invalid...  we start at window 0
 	wr %l0, 0x0, %wim	!
 
 	! trap table.
@@ -136,6 +136,9 @@ RUN_THREADS:
 	nop
 
 	! Thread 0,0 runs main_0
+	! Go to user mode.
+	set 0x1060, %l0	
+	wr %l0, %psr
 	call main_00
 	nop
 
@@ -152,6 +155,9 @@ CORE0_THREAD1:
 	bnz  HALT
 	nop
 
+	! Go to user mode.
+	set 0x1060, %l0	
+	wr %l0, %psr
 	call main_01
 	nop
 

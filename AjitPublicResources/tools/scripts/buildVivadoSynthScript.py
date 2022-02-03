@@ -10,6 +10,7 @@ import sys
 import getopt
 import os.path
 
+    
 
 current_dir = os.getcwd()
 fpga_board = os.environ.get('fpga_board')
@@ -18,6 +19,8 @@ def logError(mesg):
     print ("Error: " + mesg)
 
 def SetGlobals():
+    print ("Setting globals")
+
     global AHIR_RELEASE
     global AHIR_IEEE_LIBRARY
     global AHIR_LIBRARY
@@ -37,14 +40,17 @@ def SetGlobals():
     ########## for ml605 ##########
     if (fpga_board == "ml605"):
     	FPGA_PART =  "xc6vlx240t-ff1156-1"
+        print ("FPGA part set to " + FPGA_PART)
     #
     ########## for vc709 ##########
     if (fpga_board == "vc709"):
     	FPGA_PART = "xc7vx690t-ffg1761-2"
+        print ("FPGA part set to " + FPGA_PART)
     #
     ########## for KC705 ##########
     if (fpga_board == "kc705"):
-    	FPGA_BOARD = "xc7k325t-ffg900-2"
+    	FPGA_PART = "xc7k325t-ffg900-2"
+        print ("FPGA part set to " + FPGA_PART)
    
     
 
@@ -53,6 +59,7 @@ def display_usage():
     print ("$  buildVivadoSynthScript.py -r <root-directory>  -t <top-entity-name> \n")
     print ("     -r <root-directory>  look for vhdl files under this directory for synthesis \n")
     print ("     -t <top-entity-name> top entity name \n")
+    print ("     -f <fpga-part> top entity name \n")
 
 
 def main ():
@@ -84,8 +91,8 @@ def main ():
                 top_entity_name = parameter
                 print "Info: set top entity name to "  + top_entity_name
             if option ==  '-f':
-                FPGA_PART = parameter
-                print "Info: set FPGA part id to "  + FPGA_PART
+                O_FPGA_PART = parameter
+                print "Info: set FPGA part id to "  + O_FPGA_PART
 
     if(FPGA_PART == None):
         logError (" environment variable fpga_board is not defined." )

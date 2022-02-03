@@ -90,12 +90,11 @@
 		// initialize the ATHREAD manager.
 		athreadInit(&global_atm);
 
-		// start thread (0,1)
-		start_thread_01 = 1;
-
 		// allocate and dispatch first thread using ATM.
 		int thread_id = 
-			athreadCreateThread(&global_atm, (void*) __dispatch_fn, (void*) &COUNTER);
+			athreadCreateThread(&global_atm, 
+						0, // priority
+						(void*) __dispatch_fn, (void*) &COUNTER);
 	
 		// Run loop...
 		runServerLoop(0);
@@ -104,10 +103,6 @@
 	// The server on thread (0,1)
 	void main_01 () 
 	{
-		while(!start_thread_01)
-		{
-		}
-	
 		runServerLoop(1);
 	}
 
@@ -128,25 +123,27 @@
 			void* arg;
 			// Get a job to run from the ATM
 			int thread_id = 
-				athreadGetThreadToRun (&global_atm,
-							(void**) &__dispatch_fn, (void**) &arg);
+				athreadSelectAndRunThread 
+					(&global_atm, 
+						0,  // min-priority
+						0,  // max-priority
+						(void**) &__dispatch_fn, (void**) &arg);
 
 			if(thread_id > 0)
 			{
-				// The actual computation... which modifies
-				// arg.
-				(*__dispatch_fn)(thread_id, tid,arg);
-
-				// Closure of the thread just completed.
-				athreadReturn(&global_atm, thread_id);
-				athreadDeallocateThread (&global_atm, thread_id);
+				athreadDestroyThread (&global_atm, thread_id);
 			
 
-				// next job in the sequence will be foo..
-				thread_id = athreadCreateThread(&global_atm, 
-							(void*) __next_dispatch_fn, 
-							(void*) arg);
-
+				while(1)
+				{
+					// next job in the sequence will be foo..
+					thread_id = athreadCreateThread(&global_atm, 
+								0, // priority
+								(void*) __next_dispatch_fn, 
+								(void*) arg);
+					if(thread_id > 0)
+						break;
+				}
 			}
 		}
 	}

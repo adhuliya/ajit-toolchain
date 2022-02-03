@@ -434,6 +434,12 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 #define __AJIT_SW_TRAP(ID)  {__asm__ __volatile__("ta " #ID ";");}
 
 //---------------------------------------------------------------------------------------------
+// SAVE/RESTORE
+//---------------------------------------------------------------------------------------------
+#define __AJIT_SAVE(FSIZE)  {__asm__ __volatile__("save %%sp, -" #FSIZE ", %%sp;\n");}
+#define __AJIT_RESTORE()    {__asm__ __volatile__("restore;\n\t");}
+
+//---------------------------------------------------------------------------------------------
 // IU registers
 //---------------------------------------------------------------------------------------------
 // NOTE: reg_id must be a constant literal (e.g. 0,1,2 ) and NOT a variable.
@@ -465,6 +471,12 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 #define __AJIT_GET_Y(reg_val) \
 	{__asm__ __volatile__("rd %%y, %0 \n\t" :  "=r"(reg_val) );}
 
+// NOTE: reg_id must be a constant literal (e.g. 0,1,2 ) and NOT a variable.
+#define __AJIT_SET_ASR_REGISTER(reg_id, reg_val) \
+	{__asm__ __volatile__("wr %0, %%asr" #reg_id "\n\t" : : "r"(reg_val) );}
+#define __AJIT_GET_ASR_REGISTER(reg_id, reg_val) \
+	{__asm__ __volatile__("rd %%asr" #reg_id  ", %0 \n\t" :  "=r"(reg_val) );}
+
 //---------------------------------------------------------------------------------------------
 // backup and restore IU registers. 
 //---------------------------------------------------------------------------------------------
@@ -487,6 +499,34 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 		"std %%r28, [%0 + 112] \n\t"\
 		"std %%r30, [%0 + 120] \n\t" : : "r"(addr) : "memory");}
 
+#define __AJIT_SAVE_IU_GLOBAL_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%r0, [%0] \n\t"\
+		"std %%r2, [%0 + 8] \n\t"\
+		"std %%r4, [%0 + 16] \n\t"\
+		"std %%r6, [%0 + 24] \n\t" : : "r"(addr) : "memory");}
+
+#define __AJIT_SAVE_IU_IN_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%i0, [%0] \n\t"\
+		"std %%i2, [%0 + 8] \n\t"\
+		"std %%i4, [%0 + 16] \n\t"\
+		"std %%i6, [%0 + 24] \n\t" : : "r"(addr) : "memory");}
+
+#define __AJIT_SAVE_IU_LOCAL_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%l0, [%0] \n\t"\
+		"std %%l2, [%0 + 8] \n\t"\
+		"std %%l4, [%0 + 16] \n\t"\
+		"std %%l6, [%0 + 24] \n\t" : : "r"(addr) : "memory");}
+
+#define __AJIT_SAVE_IU_OUT_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"std %%o0, [%0] \n\t"\
+		"std %%o2, [%0 + 8] \n\t"\
+		"std %%o4, [%0 + 16] \n\t"\
+		"std %%o6, [%0 + 24] \n\t" : : "r"(addr) : "memory");}
+
 #define __AJIT_RESTORE_IU_REGS__(addr) {\
 	__asm__ __volatile__(\
 		"ldd  [%0],  %%r0 \n\t"\
@@ -505,6 +545,34 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 		"ldd  [%0 + 104], %%r26 \n\t" \
 		"ldd  [%0 + 112], %%r28 \n\t" \
 		"ldd  [%0 + 120], %%r30 \n\t"  : : "r"(addr));}
+
+#define __AJIT_RESTORE_IU_GLOBAL_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%r0 \n\t"\
+		"ldd  [%0 + 8],  %%r2   \n\t" \
+		"ldd  [%0 + 16], %%r4   \n\t" \
+		"ldd  [%0 + 24], %%r6   \n\t"  : : "r"(addr));}
+
+#define __AJIT_RESTORE_IU_IN_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%i0 \n\t"\
+		"ldd  [%0 + 8],  %%i2   \n\t" \
+		"ldd  [%0 + 16], %%i4   \n\t" \
+		"ldd  [%0 + 24], %%i6   \n\t"  : : "r"(addr));}
+
+#define __AJIT_RESTORE_IU_LOCAL_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%l0 \n\t"\
+		"ldd  [%0 + 8],  %%l2   \n\t" \
+		"ldd  [%0 + 16], %%l4   \n\t" \
+		"ldd  [%0 + 24], %%l6   \n\t"  : : "r"(addr));}
+
+#define __AJIT_RESTORE_IU_OUT_REGS__(addr) {\
+	__asm__ __volatile__(\
+		"ldd  [%0],  %%o0 \n\t"\
+		"ldd  [%0 + 8],  %%o2   \n\t" \
+		"ldd  [%0 + 16], %%o4   \n\t" \
+		"ldd  [%0 + 24], %%o6   \n\t"  : : "r"(addr));}
 
 //---------------------------------------------------------------------------------------------
 // backup and restore floating point registers. 
@@ -529,6 +597,10 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 		"std %%f30, [%0 + 120] \n\t"\
 		"st  %%fsr, [%0 + 124] \n\t" : : "r"(addr) : "memory");}
 
+#define __AJIT_SAVE_FSR__(addr) {\
+	__asm__ __volatile__(\
+		"st  %%fsr, [%0 + 124] \n\t" : : "r"(addr) : "memory");}
+
 #define __AJIT_RESTORE_FP_REGS__(addr) {\
 	__asm__ __volatile__(\
 		"ldd  [%0],  %%f0 \n\t"\
@@ -549,4 +621,7 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 		"ldd  [%0 + 120], %%f30 \n\t" \
 		"ld   [%0 + 124], %%fsr \n\t" : : "r"(addr));}
 
+#define __AJIT_RESTORE_FSR__(addr) {\
+	__asm__ __volatile__(\
+		"ld   [%0 + 124], %%fsr \n\t" : : "r"(addr));}
 #endif
