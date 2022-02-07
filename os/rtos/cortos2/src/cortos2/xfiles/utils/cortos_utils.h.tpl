@@ -11,6 +11,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Exit after putting error_code into asr16.
+// Exit codes:
+//   0        - denotes success
+//   0 to 255 - Reserved for Cortos
+//   >=256    - Can be used by the application.
 void cortos_exit(uint32_t error_code);
 
 // printf routine offered by Cortos
@@ -50,3 +54,4 @@ char cortos_get_thread_id();
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif // CORTOS_UTILS_H
+

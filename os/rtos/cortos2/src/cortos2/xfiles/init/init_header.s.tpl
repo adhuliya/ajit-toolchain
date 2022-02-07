@@ -16,20 +16,19 @@
 
 .global _start;
 _start:
-  ! current value of window is 7
+  ! current value of window is 0
 
   ! clear all stack pointers in all windows
   call clear_stack_pointers
   nop
 
 CORTOS_SET_PSR:
-  ! enable traps, set current window=7
-  set 0x10E0, %l0  ! 0x1067 for user mode (see p28 in sparcv8.pdf)
+  ! enable traps, set current window=0
+  set 0x10E0, %l0  ! 0x1060 for user mode (see p28 in sparcv8.pdf)
   wr %l0, %psr
 
 COROTS_WIMSET:
-  set 0x2, %l0   ! window 1 is marked invalid. We start at window 0.
-  ! sll %l0, 7, %l0
+  set 0x1, %l0   ! window 0 is marked invalid. We start at window 0.
   wr %l0, 0x0, %wim
 
   ! trap table.

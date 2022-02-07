@@ -73,6 +73,7 @@ Software:
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
+    BuildArgs: "-D CORTOS_DEF"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

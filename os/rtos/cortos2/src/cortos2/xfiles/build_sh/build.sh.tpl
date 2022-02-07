@@ -40,7 +40,7 @@ compileToSparcUclibc.py \
   -L ${_LINKER_SCRIPT} \
   -D AJIT \
   -U \
-;
+  {{ confObj.software.build.buildArgs }};
 
 #  -s ${_AAR_MT}/asm/clear_stack_pointers.s \
 #  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \

@@ -33,10 +33,12 @@ uint32_t cortos_readMessages(uint32_t queueId, uint8_t *msgs, uint32_t count);
 // BLOCK START: cortos_message_queues_declarations_internal
 ////////////////////////////////////////////////////////////////////////////////
 
+// locks to synchronize the access of queues (for internal use)
 int __cortos_q_lock_acquire_buzy(int index);
 int __cortos_q_lock_acquire(int index);
 void __cortos_q_lock_release(int index);
 
+// queue header (for internal use)
 typedef struct _CortosQueueHeader {
   uint32_t totalMsgs; // current total messages
   uint32_t readIndex;

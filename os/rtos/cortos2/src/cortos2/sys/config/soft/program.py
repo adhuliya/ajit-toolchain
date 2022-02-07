@@ -47,7 +47,7 @@ class ProgramThread:
 
   def getStackStartAddr(self):
     """Stack starts from high to low."""
-    return self.stackRegion.getNextToLastByteAddr(virtualAddr=True)
+    return self.stackRegion.getNextToLastByteAddr(virtualAddr=True) - 96
 
 
   def getStackSizeInBytes(self):

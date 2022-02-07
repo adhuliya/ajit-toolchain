@@ -10,7 +10,7 @@
 typedef long cortos_bufsize;
 
 // get/allocate a memory of `size` bytes
-// Note: Some internal space is wasted to make size align to 2^3 boundary.
+// Note: Some internal space may be wasted to make size align to 2^3 boundary.
 void *cortos_bget(cortos_bufsize size);
 
 // release/free an allocated memory chunk
@@ -29,7 +29,7 @@ void cortos_brel(void *buf);
 // BLOCK START: cortos_bget_declarations_internal
 ////////////////////////////////////////////////////////////////////////////////
 
-// This function is called only once by AjitCoRTOS.
+// This function is called only once by CoRTOS.
 void __cortos_bpool(void);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,5 +37,4 @@ void __cortos_bpool(void);
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif // CORTOS_BGET_H
-
 
