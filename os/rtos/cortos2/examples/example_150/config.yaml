@@ -70,7 +70,7 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: DEBUG
+    LogLevel: ALL
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
@@ -80,14 +80,24 @@ Software:
     - CortosInitCalls:
         - cortos_entry_func_001
         - cortos_entry_func_010
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInBytes: 8192
     - CortosInitCalls:
         - cortos_entry_func_101
         - cortos_entry_func_110
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInBytes: 8192
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
     SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
+
+  Queues:
+    - Name: BOB
+      MsgSizeInBytes: 4
+      Length: 1024
+    - Name: NIRAL
+      MsgSizeInBytes: 4
+      Length: 4096
 

@@ -45,7 +45,7 @@ class MemoryLayout:
 
   def initLayout(self,
       prog: Program,
-      queueSeq: QueueSeq,
+      # queueSeq: QueueSeq,
       locks: Locks,
       bgetObj: Bget,
       dummyLayout: bool = False, # first layout may be dummy
@@ -92,32 +92,6 @@ class MemoryLayout:
     prog.bssRegion = region
 
     region = common.MemoryRegion(
-      name="ReservedSpace",
-      oneLineDescription="Some reserved space.",
-      sizeInBytes=consts.RESERVED_REGION_SIZE_IN_BYTES,
-      virtualStartAddr=region.getNextToLastByteAddr(virtualAddr=True),
-      physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
-      permissions=MemoryPermissions.S_RWX_U_RWX,
-      initToZero=True,
-    )
-    self.regionSeq.append(region)
-    self.zeroRegionSeq.append(region)
-    self.reserved = region
-
-    region = common.MemoryRegion(
-      name="ScratchPadRegion",
-      oneLineDescription="A small shared data area that any thread can access.",
-      sizeInBytes=consts.SCRATCHPAD_MEMORY_REGION_SIZE_IN_BYTES,
-      virtualStartAddr=region.getNextToLastByteAddr(virtualAddr=True),
-      physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
-      permissions=consts.MemoryPermissions.S_RWX_U_RWX,
-      initToZero=True,
-    )
-    self.regionSeq.append(region)
-    self.zeroRegionSeq.append(region)
-    self.scratchPad = region
-
-    region = common.MemoryRegion(
       name="CacheableLocks",
       oneLineDescription="An exclusive area to store cacheable locks.",
       sizeInBytes=consts.CACHED_LOCKS_REGION_SIZE_IN_BYTES,
@@ -144,19 +118,6 @@ class MemoryLayout:
     self.regionSeq.append(region)
     self.zeroRegionSeq.append(region)
     locks.setMemoryRegion(region)
-
-    region = common.MemoryRegion(
-      name="MessageQueues",
-      oneLineDescription="All queues reside here.",
-      sizeInBytes=consts.DEFAULT_QUEUE_REGION_SIZE_IN_BYTES,
-      virtualStartAddr=region.getNextToLastByteAddr(virtualAddr=True),
-      physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
-      permissions=consts.MemoryPermissions.S_RWX_U_RWX,
-      initToZero=True,
-    )
-    self.regionSeq.append(region)
-    self.zeroRegionSeq.append(region)
-    queueSeq.setMemoryRegion(region)
 
     region = common.MemoryRegion(
       name="MemoryAllocArea",
@@ -212,6 +173,4 @@ class MemoryLayout:
       permissions=consts.MemoryPermissions.S_RWX_U_RWX,
     )
     self.regionSeq.append(region)
-
-
 

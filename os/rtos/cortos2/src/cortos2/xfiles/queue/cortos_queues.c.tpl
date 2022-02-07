@@ -1,96 +1,89 @@
 
-// needs linking with cortos_q_lock_unlock.s
+#include <cortos_locks.h>
+#include <cortos_queues.h>
 
-#include "cortos_locks.h"
-#include "cortos_queues.h"
 
-char queueIdArray[__MAX_QUEUES];
+CortosQueueHeader cortosQueueHeaders[{{len(confObj.software.queueSeq)}}];
 
-int cortos_reserveQueue() {
-  int i, qid = -1;
-  __cortos_lock_acquire_buzy(__RES_LOCK_GET_Q_ID);
-  for (i=0; i < __MAX_QUEUES; ++i) {
-    if(queueIdArray[i] == 0) {
-      queueIdArray[i] = 1;
-      qid = i;
-      break;
+% for queue in confObj.software.queueSeq.queueSeq:
+uint8_t cortosQueue{{queue.qid}}[{{queue.length}}][{{queue.msgSizeInBytes}}];
+% end
+
+
+// initialize the queue headers
+void cortos_init_queue_headers() {
+  % for i, queue in enumerate(confObj.software.queueSeq.queueSeq):
+  // CORTOS_QUEUE_{{queue.name}}, seq = {{i}}, queue.qid = {{queue.qid}}
+  cortosQueueHeaders[{{i}}].totalMsgs   = 0;
+  cortosQueueHeaders[{{i}}].readIndex   = 0;
+  cortosQueueHeaders[{{i}}].writeIndex  = 0;
+  cortosQueueHeaders[{{i}}].msgSizeInBytes = {{queue.msgSizeInBytes}};
+  cortosQueueHeaders[{{i}}].queuePtr       = (uint8_t*) cortosQueue{{queue.qid}};
+  cortosQueueHeaders[{{i}}].length         = {{queue.length}};
+
+  % end
+}
+
+uint32_t cortos_writeMessages(uint32_t queueId, uint8_t *msgs, uint32_t count) {
+  CortosQueueHeader *hdr = cortosQueueHeaders + queueId;
+  uint8_t *dest = 0, *src = 0; // nullptr
+  uint32_t process = count;
+  uint32_t i;
+
+  __cortos_q_lock_acquire_buzy(queueId);
+
+  uint32_t totalMsgs      = hdr->totalMsgs;
+  uint32_t writeIndex     = hdr->writeIndex;
+  uint32_t length         = hdr->length;
+  uint32_t msgSizeInBytes = hdr->msgSizeInBytes;
+  uint8_t* queuePtr       = hdr->queuePtr;
+
+  while ((process > 0) && (totalMsgs < hdr->length)) {
+    src  = msgs + (msgSizeInBytes * (count - process));
+    dest = queuePtr + (msgSizeInBytes * writeIndex);
+    for (i = 0; i < msgSizeInBytes; ++i) {
+      *(dest+i) = *(src+i);                     // WRITE THE MESSAGE HERE
     }
+    writeIndex = (writeIndex+1) % length;
+    ++totalMsgs; --process;
   }
-  __cortos_lock_release(__RES_LOCK_GET_Q_ID);
-  return qid;
+
+  hdr->totalMsgs  = totalMsgs;
+  hdr->writeIndex = writeIndex;
+
+  __cortos_q_lock_release(queueId);
+  return (count - process);
 }
 
-void cortos_freeQueue(int queueId) {
-  if (queueId >= 0 && queueId < __MAX_QUEUES) {
-    __cortos_lock_acquire_buzy(__RES_LOCK_GET_Q_ID);
-    queueIdArray[queueId] = 0;
-    __cortos_lock_release(__RES_LOCK_GET_Q_ID);
-  }
-}
 
-int cortos_writeMessage(int queueId, CortosMessage *msg) {
-  int status = 0; // 1 = msg written
-  __CortosQueueHeader *header = 0;
-  CortosMessage *dest = 0;
-
-  header = __GET_Q_HEADER_ADDR(queueId);
-  dest = __GET_Q_ADDR(queueId);
+uint32_t cortos_readMessages(uint32_t queueId, uint8_t *msgs, uint32_t count) {
+  CortosQueueHeader *hdr = cortosQueueHeaders + queueId;
+  uint8_t *dest = 0, *src = 0; // nullptr
+  uint32_t process = count;
+  uint32_t i;
 
   __cortos_q_lock_acquire_buzy(queueId);
 
-  // critical section
-  int totalMsgs = header->totalMsgs;
-  int writeIndex = header->writeIndex;
+  uint32_t totalMsgs      = hdr->totalMsgs;
+  uint32_t readIndex      = hdr->readIndex;
+  uint32_t length         = hdr->length;
+  uint32_t msgSizeInBytes = hdr->msgSizeInBytes;
+  uint8_t* queuePtr       = hdr->queuePtr;
 
-  if (totalMsgs == __AJIT_Q_LEN) {
-    status = 0; // queue is full
-  } else {
-    dest = __GET_MSG_ADDR(dest, writeIndex);
-    *dest = *msg; // WRITE WRITE WRITE, THE MESSAGE HERE
-
-    totalMsgs += 1;
-    writeIndex = __INCREMENT_INDEX(writeIndex);
-
-    header->totalMsgs = totalMsgs;
-    header->writeIndex = writeIndex;
-    status = 1;
+  while ((process > 0) && (totalMsgs > 0)) {
+    dest = msgs + (msgSizeInBytes * (count - process));
+    src  = queuePtr + (msgSizeInBytes * readIndex);
+    for (i = 0; i < msgSizeInBytes; ++i) {
+      *(dest+i) = *(src+i);                     // READ THE MESSAGE HERE
+    }
+    readIndex = (readIndex+1) % length;
+    --totalMsgs; --process;
   }
 
-  __cortos_q_lock_release(queueId);
-  return status;
-}
-
-
-int cortos_readMessage(int queueId, CortosMessage *msg) {
-  int status = 0; // 1 = msg written
-  __CortosQueueHeader *header = 0;
-  CortosMessage *dest = 0;
-
-  header = __GET_Q_HEADER_ADDR(queueId);
-  dest = __GET_Q_ADDR(queueId);
-
-  __cortos_q_lock_acquire_buzy(queueId);
-
-  // critical section
-  int totalMsgs = header->totalMsgs;
-  int readIndex = header->readIndex;
-
-  if (totalMsgs == 0) {
-    status = 0; // queue is empty
-  } else {
-    dest = __GET_MSG_ADDR(dest, readIndex);
-    *msg = *dest; // READ READ READ, THE MESSAGE HERE
-
-    totalMsgs -= 1;
-    readIndex = __INCREMENT_INDEX(readIndex);
-
-    header->totalMsgs = totalMsgs;
-    header->readIndex = readIndex;
-    status = 1;
-  }
+  hdr->totalMsgs  = totalMsgs;
+  hdr->readIndex  = readIndex;
 
   __cortos_q_lock_release(queueId);
-  return status;
+  return (count - process);
 }
-
 

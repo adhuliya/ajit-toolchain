@@ -26,17 +26,16 @@ compileToSparcUclibc.py \
   -I ${_CORTOS_SRC_DIR} \
   -I ${_AAR_MT}/include \
   -I ${_PT}/include \
-  -C ${_AAR_MT}/src \
-  -C ${_CORTOS_SRC_DIR} \
-  -S ${_CORTOS_SRC_DIR} \
-  -C .. \
   -S .. \
-  -C ${_AAR}/src \
-  -C ${_AAR_MT}/src \
-  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
+  -S ${_CORTOS_SRC_DIR} \
   -s ${_AAR_MT}/asm/clear_stack_pointers.s \
+  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
+  -s ${_AAR_MT}/asm/generic_sys_calls.s \
+  -C .. \
+  -C ${_CORTOS_SRC_DIR} \
+  -C ${_AAR_MT}/src \
   -N ${_MAIN} \
   -L ${_LINKER_SCRIPT} \
   -D AJIT \
@@ -47,3 +46,5 @@ compileToSparcUclibc.py \
 #  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
 #  -s ${_AAR_MT}/asm/generic_isr_mt.s \
 #  -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
+#  -C ${_AAR}/src \
+#  -S ${_AAR_MT}/asm \

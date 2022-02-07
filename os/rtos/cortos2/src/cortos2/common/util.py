@@ -352,3 +352,17 @@ def getSizeInBytes(
 
   return sizeInBytes
 
+
+def configInfo(
+    keySeq: List[str],
+    message: str,
+) -> None:
+  keySeqStr = ".".join(keySeq)
+  print(f"Config key: {keySeqStr}\n  {message}")
+
+def configError(
+    keySeq: List[str],
+    message: str,
+) -> None:
+  configInfo(keySeq, f"error: {message}")
+

@@ -7,7 +7,7 @@
 .align 8
   MEM_START_ADDR: .word {{ hex(confObj.hardware.memory.ram.physicalStartAddr) }}
   PT_FLAG: .word {{ hex(confObj.hardware.devices["ScratchArea"].memoryRegion.physicalStartAddr) }}
-  INIT_TO_ZERO_DONE: .word {{ hex(confObj.hardware.devices["ScratchArea"].memoryRegion.physicalStartAddr + 4) }}
+  INIT_BY_00_DONE: .word {{ hex(confObj.hardware.devices["ScratchArea"].memoryRegion.physicalStartAddr + 4) }}
 
 !
 ! Ajit startup initialization code.

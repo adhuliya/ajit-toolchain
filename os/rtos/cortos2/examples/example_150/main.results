@@ -1,2 +1,2 @@
 asr16=0x4        core 0 thread 0
-asr16=0xF        core 0 thread 1
+asr16=0x6        core 0 thread 1

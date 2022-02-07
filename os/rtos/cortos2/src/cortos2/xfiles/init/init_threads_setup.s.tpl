@@ -46,6 +46,16 @@ CORTOS_SETUP_THREADS:
   nop
 % end
 
+  ! initialize the queue headers
+  call cortos_init_queue_headers
+  nop
+
+  ! indicate that the system initialization is done!!!
+  set INIT_BY_00_DONE, %g2
+  ld [%g2], %g2
+  mov 0x1, %g3
+  st %g3, [%g2]  ! set to one
+
   !  Thread (0,0) jumps to AFTER_PTABLE_SETUP.
   ba AFTER_PTABLE_SETUP
   nop
@@ -59,7 +69,7 @@ CORTOS_SETUP_THREADS:
   set {{ hex(progThread.getStackStartAddr()) }}, %sp  ! set stack address
   clr %fp
 
-  call __cortos_wait_for_init_1
+  call __cortos_wait_for_init_by_00
   nop
 
   !  Thread ({{ progThread.coreThread.cid }},0) jumps to AFTER_PTABLE_SETUP.
@@ -75,7 +85,7 @@ CORTOS_SETUP_THREADS:
   set {{ hex(progThread.getStackStartAddr()) }}, %sp  ! set stack address
   clr %fp
 
-  call __cortos_wait_for_init_1
+  call __cortos_wait_for_init_by_00
   nop
 
   !  Thread ({{ progThread.coreThread.cid }},1) jumps to wait for mmu..

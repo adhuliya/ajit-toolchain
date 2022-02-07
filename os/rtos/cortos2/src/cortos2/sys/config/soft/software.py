@@ -62,13 +62,14 @@ class Software:
       prevKeySeq=prevKeySeq,
     )
 
-    locks = Locks.generateObject(
+    queueSeq = QueueSeq.generateObject(
       userProvidedConfig=config,
       prevKeySeq=prevKeySeq,
     )
 
-    queueSeq = QueueSeq.generateObject(
+    locks = Locks.generateObject(
       userProvidedConfig=config,
+      queueSeq=queueSeq,
       prevKeySeq=prevKeySeq,
     )
 

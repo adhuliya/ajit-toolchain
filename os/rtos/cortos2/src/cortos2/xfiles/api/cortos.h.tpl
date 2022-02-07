@@ -32,10 +32,6 @@
 
 // Initial part is occupied by the program text.
 
-// Memory region reserved for cortos' misc internal use.
-#define RESERVED_MEM_START_ADDR {{ confObj.memoryLayout.reserved.getFirstByteAddr() }}
-#define RESERVED_MEM_END_ADDR {{ confObj.memoryLayout.reserved.getLastByteAddr() }}
-
 // Details of the cortos reserved lock vars (not available to the user)
 #define RES_LOCK_VARS_START_ADDR {{ confObj.software.locks.resLocksStartAddr }}
 #define RES_LOCK_VARS_END_ADDR {{ confObj.software.locks.resLocksStartAddr + confObj.software.locks.resLocks - 1 }}
@@ -46,23 +42,13 @@
 #define LOCK_VARS_END_ADDR {{ confObj.software.locks.userLocksStartAddr + confObj.software.locks.userLocks - 1 }}
 #define MAX_LOCK_VARS {{ confObj.software.locks.userLocks }}
 
-// Details of the lock vars available to the user.
+// Details the lock vars for user queues
 #define Q_LOCK_VARS_START_ADDR {{ confObj.software.locks.queueLocksStartAddr }}
 #define Q_LOCK_VARS_END_ADDR {{ confObj.software.locks.queueLocksStartAddr + confObj.software.locks.queueLocks - 1 }}
 #define MAX_Q_LOCK_VARS {{ confObj.software.locks.queueLocks }}
 
-// Details of the queue header array (one queue header per queue).
-#define Q_HEADERS_START_ADDR {{ confObj.software.queueSeq.headersStartAddr }}
-#define Q_HEADERS_END_ADDR {{ confObj.software.queueSeq.getHeadersEndAddr() }}
-#define MAX_Q_HEADERS {{ confObj.software.queueSeq.getTotalQueues() }}
-
-// Queues available to the user (all the queues sit here).
-#define QUEUE_START_ADDR {{ confObj.software.queueSeq.msgStartAddr }}
-#define QUEUE_END_ADDR {{ confObj.software.queueSeq.getMsgEndAddr() }}
-#define MAX_QUEUES {{ confObj.software.queueSeq.getTotalQueues() }}
-#define QUEUE_MSG_SIZE_IN_BYTES {{ confObj.software.queueSeq.queueMsgSizeInBytes }}
-#define MAX_ELEMENTS_PER_QUEUE {{ confObj.software.queueSeq.elementsPerQueue }}
-#define MAX_QUEUE_SIZE_IN_BYTES {{ confObj.software.queueSeq.getTotalQueueSizeInBytes() }}
+// Details CoRTOS Queues
+#define TOTAL_CORTOS_QUEUES {{ len(confObj.software.queueSeq) }}
 
 % if confObj.software.bget.enable:
 #define CORTOS_HEAP_START_ADDR {{ confObj.software.bget.getStartAddr() }}

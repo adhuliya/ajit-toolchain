@@ -3,6 +3,7 @@ from typing import Dict, Optional as Opt, List
 
 from cortos2.common import consts
 from cortos2.sys.config import common
+from cortos2.sys.config.soft.queue import QueueSeq
 
 
 class Locks:
@@ -67,9 +68,14 @@ class Locks:
   @staticmethod
   def generateObject(
       userProvidedConfig: Dict,
+      queueSeq: QueueSeq,
       prevKeySeq: Opt[List] = None,
   ) -> 'Locks':
     """Takes a user given configuration and extracts the Lock related configuration."""
-    locks = Locks()
+    locks = Locks(
+      userLocks=consts.DEFAULT_LOCK_VARS,
+      resLocks=consts.DEFAULT_CACHED_RES_LOCK_VARS,
+      queueLocks=len(queueSeq),
+    )
     return locks
 

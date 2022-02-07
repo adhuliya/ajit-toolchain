@@ -44,9 +44,6 @@ def copyCortosHeaderFile(
                          confObj=confObj,
                          consts=consts,
                          LogLevel=consts.LogLevel,
-                         cortosQueueLength=consts.DEFAULT_QUEUE_LEN,
-                         cortosQueueMsgSize=consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES,
-                         cortosQueueHeaderSize=consts.QUEUE_HEADER_SIZE_IN_BYTES,
                          ))
 
 

@@ -1,10 +1,3 @@
-% memoryStartAddr = confObj.memoryLayout.memory.ram.physicalStartAddr
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! BLOCK START: init_allocated_memory_to_zero
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! This routine initializes a pre-determined region(s) of memory to zero.
-! This routine works before the MMU is set.
 
 !
 ! A utility which initializes all stack pointers to 0.
@@ -34,9 +27,15 @@ __cortos_clear_stack_pointers:
 	nop
 
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! BLOCK START: init_allocated_memory_to_zero
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! This routine initializes a pre-determined region(s) of memory to zero.
+! This routine works before the MMU is set.
+
 .global __cortos_init_region_to_zero
 
-! initialize the region above to zeros
+! initialize a set of regions to zeros
 ! Only for thread 0,0
 __cortos_init_region_to_zero:
 
@@ -61,11 +60,6 @@ _cortos_zero_init_area_{{zeroRegion.name}}:
 
 % end
 
-  set INIT_TO_ZERO_DONE, %g2
-  ld [%g2], %g2
-  mov 0x1, %g3
-  st %g3, [%g2]  ! set to one
-
   ! restore                   ! func suffix
   jmp %o7+8                 ! func suffix
   nop                       ! func suffix
@@ -78,18 +72,17 @@ _cortos_zero_init_area_{{zeroRegion.name}}:
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! BLOCK START: wait_for_init
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-__cortos_wait_for_init_1:
-  ! This routine works before the MMU is set.
-  ! all threads except (0,0) which is doing the initialization come here.
+.global __cortos_wait_for_init_by_00
+__cortos_wait_for_init_by_00:
 
-  set INIT_TO_ZERO_DONE, %l6
+  set INIT_BY_00_DONE, %l6
   ld [%l6], %l6
-_CORTOS_WAIT_FOR_INIT_TO_ZERO:
+_CORTOS_WAIT_FOR_INIT_BY_00:
   ld [%l6], %l7
   mov 0x1, %i0
   subcc %i0, %l7, %g0
   ! l7 = 1 after page tables have been setup.
-  bnz _CORTOS_WAIT_FOR_INIT_TO_ZERO
+  bnz _CORTOS_WAIT_FOR_INIT_BY_00
   nop
 
   ! restore                   ! func suffix
