@@ -5,9 +5,6 @@
 
 #define SIZE 20
 
-CortosMessage msg1;
-CortosMessage msg2;
-
 void main() {} // important, but keep empty.
 
 void cortos_entry_func_001() {
@@ -19,12 +16,8 @@ void cortos_entry_func_001() {
 
   CORTOS_TRACE("This will not get logged.");
 
-  // send message
-  msg1.a_code = 1;
-  msg1.a_ptr = arr;
-
   CORTOS_DEBUG("Sending Message!");
-  cortos_writeMessage(0, &msg1);
+  cortos_writeMessages(CORTOS_QUEUE_BOB, (uint8_t*)&arr, 1);
 
   cortos_exit(0); //safely exit
 }
@@ -36,19 +29,19 @@ void cortos_entry_func_010() {
 
 void cortos_entry_func_101() {
   // wait for a message
-  while(!cortos_readMessage(0, &msg2));
+  uint32_t *arr;
+  while(!cortos_readMessages(CORTOS_QUEUE_BOB, (uint8_t*)&arr, 1));
 
   CORTOS_DEBUG("Received Message!");
 
   // process the message
-  uint32_t *arr = (uint32_t*)msg2.a_ptr;
   uint32_t i0, i1;
   i0 = arr[0];
   i1 = arr[SIZE-1];
 
   CORTOS_DEBUG("Releasing Memory!");
   // release the memory
-  cortos_brel(msg2.a_ptr);
+  cortos_brel(arr);
 
   cortos_exit(i0+i1); //safely exit
 }

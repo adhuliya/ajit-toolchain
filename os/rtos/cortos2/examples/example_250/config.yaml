@@ -79,14 +79,20 @@ Software:
     - CortosInitCalls:
         - cortos_entry_func_001
         - cortos_entry_func_010
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInBytes: 8192
     - CortosInitCalls:
         - cortos_entry_func_101
         - cortos_entry_func_110
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInBytes: 8192
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
     SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
+  Queues:
+    - Name: BOB
+      MsgSizeInBytes: 4
+      Length: 1024

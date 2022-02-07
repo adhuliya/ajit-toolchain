@@ -9,9 +9,6 @@ uint32_t totalMsgs = 4;
 uint32_t * volatile arr = 0;
 volatile int flag = 0;
 
-CortosMessage msg1;
-CortosMessage msg2;
-
 void main() {} // important, but keep empty.
 
 void cortos_entry_func_001() {
