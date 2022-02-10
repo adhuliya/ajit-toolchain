@@ -11,9 +11,6 @@ void sortParallel();
 uint32_t array_to_be_sorted[ORDER];
 athreadManager global_atm;
 
-
-
-
 void runLoop(int tid)
 {
 
