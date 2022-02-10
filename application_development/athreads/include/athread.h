@@ -9,8 +9,13 @@
 #define THREAD_RUNNING	     2
 #define THREAD_COMPLETED     3
 
+#ifdef CORTOS
+#define AMUTEX_ACQUIRE(x) cortos_lock_acquire_buzy(x);
+#define AMUTEX_RELEASE(x) cortos_lock_release(x);
+#else
 #define AMUTEX_ACQUIRE(x) acquire_mutex_using_swap((int) &(x));
 #define AMUTEX_RELEASE(x) release_mutex_using_swap((int) &(x));
+#endif
 
 typedef struct athreadRec__ {
 
