@@ -207,7 +207,7 @@ int sysMemBusRequest (int core_id,
 				if(COREID!= core_id)
 				{
 					int lookup_hit = 
-						updateAndLookupSnoopFilterCache(core_id, 0, 1, 1, line_addr);
+						updateAndLookupSnoopFilterCache(COREID, 0, 1, 1, line_addr);
 
 					if(!lookup_hit)
 					{

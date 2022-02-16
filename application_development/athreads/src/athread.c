@@ -1,14 +1,22 @@
+#define CORTOS  1
 #include <stdlib.h>
 #include <stdint.h>
+#ifdef CORTOS
+#include <cortos.h>
+#else
 #include "ajit_access_routines.h"
 #include "core_portme.h"
-#include "defs.h"
+#endif
 #include "athread.h"
 
 // This one does not have acquire a mutex...
 uint32_t athreadManagerInit(athreadManager* atm)
 {
+#ifdef CORTOS
+	atm->atm_mutex_var = cortos_reserveLockVar();
+#else
 	atm->atm_mutex_var = 0;
+#endif
 	atm->thread_counter = 0;
 
 	int I;
