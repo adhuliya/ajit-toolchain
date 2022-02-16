@@ -38,22 +38,24 @@ class Queue:
       data=userProvidedConfig,
       keySeq=["Name"],
       default=None,
+      prevKeySeq=prevKeySeq,
     )
-    if not name: util.configError(prevKeySeq, f"Name not given")
 
     msgSizeInBytes: int = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["MsgSizeInBytes"],
       default=None,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
-    if not msgSizeInBytes: util.configError(prevKeySeq, f"Message size not given.")
 
     length: int = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["Length"],
       default=None,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
-    if not length: util.configError(prevKeySeq, f"Length not given.")
 
     queue = Queue(
       qid=0, # is set separately
@@ -133,16 +135,16 @@ class QueueSeq:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
     )
 
     if queueConfigList is None:
-      util.configInfo(prevKeySeq, f"No queue information provided.")
       prevKeySeq.pop()
       return QueueSeq([])
 
     queueList = []
     for i, queueConfig in enumerate(queueConfigList):
-      prevKeySeq.append(f"[{i}]")
+      prevKeySeq.append(i)
       queue = Queue.generateObject(queueConfig, prevKeySeq)
       queue.qid = i
       queueList.append(queue)

@@ -182,24 +182,31 @@ class Processor:
       data = userProvidedConfig,
       keySeq = [keyName],
       default = None,
+      prevKeySeq=prevKeySeq,
     )
 
     coreCount: int = util.getConfigurationParameter(
       data = config,
       keySeq = ["Cores"],
-      default = 1
+      default = 1,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
 
     threadsPerCoreCount: int = util.getConfigurationParameter(
       data = config,
       keySeq = ["ThreadsPerCore"],
       default = 1,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
 
     isa: int = util.getConfigurationParameter(
       data = config,
       keySeq = ["ISA"],
       default = 32,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
 
     cpu = Processor(coreCount, threadsPerCoreCount, isa)

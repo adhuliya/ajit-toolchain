@@ -22,7 +22,7 @@ void cortos_entry_func_001() {
 
   while (totalSent < TOTAL_MESSAGES) {
     sentCount = cortos_writeMessages(CORTOS_QUEUE_BOB,
-      (uint8_t*)(msgs+totalSent), TOTAL_MESSAGES);
+      (uint8_t*)(msgs+totalSent), TOTAL_MESSAGES-totalSent);
     CORTOS_DEBUG("Sending %d messages: sent %d.",
       TOTAL_MESSAGES-totalSent, sentCount);
     totalSent += sentCount;
@@ -54,7 +54,7 @@ void cortos_entry_func_101() {
     sum += msgs[i];
   }
 
-  cortos_exit(sum);
+  cortos_exit(sum); // asr16
 }
 
 void cortos_entry_func_110() {
