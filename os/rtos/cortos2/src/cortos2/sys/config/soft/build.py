@@ -60,6 +60,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
     )
 
     debug = Build.generateDebugParam(config, prevKeySeq)
@@ -91,6 +92,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=consts.DEFAULT_DEBUG_BUILD,
+      prevKeySeq=prevKeySeq,
     )
     debug = debugFlag
 
@@ -107,6 +109,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=consts.DEFAULT_OPT_LEVEL,
+      prevKeySeq=prevKeySeq,
     )
     if not 0 <= optLevel <= 2:
       optLevel = consts.DEFAULT_OPT_LEVEL
@@ -125,6 +128,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=consts.DEFAULT_LOG_LEVEL.name,
+      prevKeySeq=prevKeySeq,
     )
 
     return Build.getLogLevel(logLevelStr)
@@ -146,7 +150,8 @@ class Build:
     enableSerial: bool = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=[keyName],
-      default= consts.DEFAULT_ENABLE_SERIAL_DEVICE
+      default= consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      prevKeySeq=prevKeySeq,
     )
     enableSerialBool = enableSerial
 
@@ -164,6 +169,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=consts.DEFAULT_FIRST_DEBUG_PORT,
+      prevKeySeq=prevKeySeq,
     )
 
     return int(firstDebugPort)
@@ -180,6 +186,7 @@ class Build:
       data=userProvidedConfig,
       keySeq=[keyName],
       default="",
+      prevKeySeq=prevKeySeq,
     )
 
     return buildArgs

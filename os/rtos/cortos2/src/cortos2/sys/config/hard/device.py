@@ -27,6 +27,7 @@ class Device:
       data=userProvidedConfig,
       keySeq=[keyName],
       default="Unknown",
+      prevKeySeq=prevKeySeq,
     )
 
     memoryRegion = Device.generateMemoryRegionObject(
@@ -53,11 +54,13 @@ class Device:
 
     config: Opt[Dict] = util.getConfigurationParameter(
       data=userProvidedConfig,
-      keySeq=[keyName]
+      keySeq=[keyName],
+      prevKeySeq=prevKeySeq[:-1],
+      fail=True,
     )
     memoryRegion = MemoryRegion.generateObject(
       userProvidedConfig=config,
-      prevKeySeq=prevKeySeq,
+      prevKeySeq=prevKeySeq[:-1],
     )
     prevKeySeq.pop()
 
@@ -76,6 +79,7 @@ class Device:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=dict(),
+      prevKeySeq=prevKeySeq[:-1],
     ).copy()  # shallow copy the content of the dictionary
 
     prevKeySeq.pop()

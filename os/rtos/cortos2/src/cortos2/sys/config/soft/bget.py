@@ -41,22 +41,28 @@ class Bget:
     keyName = "DynamicMemory"
     prevKeySeq.append(keyName)
 
-    config: Opt[List] = util.getConfigurationParameter(
+    config: Opt[Dict] = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
     )
     enable = config is not None
 
-    sizeInBytes = util.getSizeInBytes(
-      config,
-      default=consts.DEFAULT_BGET_MEM_SIZE_IN_KB * 1024
-    )
+    if config:
+      sizeInBytes = util.getSizeInBytes(
+        config,
+        default=consts.DEFAULT_BGET_MEM_SIZE_IN_KB * 1024,
+        prevKeySeq=prevKeySeq,
+      )
+    else:
+      sizeInBytes = 0
 
     bget = Bget(
       sizeInBytes=sizeInBytes,
       enable=enable,
     )
+    prevKeySeq.pop()
     return bget
 
 

@@ -61,6 +61,8 @@ class Hardware:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
+      fail=True,
     )
 
     if config: # must be a list

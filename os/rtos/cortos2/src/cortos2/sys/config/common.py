@@ -46,19 +46,22 @@ class MemoryRegion(util.PrettyStr):
     startAddr: int = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["StartAddr"],
-      default=0x0,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
 
     sizeInBytes = util.getSizeInBytes(
       data=userProvidedConfig,
       startAddr=startAddr,
-      default=0x0,
+      prevKeySeq=prevKeySeq,
+      fail=True,
     )
 
     permissions: str = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["Permissions"],
-      default=0x0,
+      default="RWXC",
+      prevKeySeq=prevKeySeq,
     )
 
     memoryRegion = MemoryRegion(

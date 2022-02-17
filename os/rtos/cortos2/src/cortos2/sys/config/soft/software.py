@@ -41,6 +41,8 @@ class Software:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
+      fail=True,
     )
 
     build = Build.generateObject(

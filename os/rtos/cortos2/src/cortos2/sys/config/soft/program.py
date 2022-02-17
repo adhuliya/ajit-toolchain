@@ -65,22 +65,26 @@ class ProgramThread:
       data=userProvidedConfig,
       keySeq=["StackSize"],
       default=None,
+      prevKeySeq=prevKeySeq,
     )
     stackSizeInBytes = util.getSizeInBytes(
       stackSizeConf,
       default=consts.DEFAULT_STACK_SIZE,
+      prevKeySeq=prevKeySeq,
     )
 
     initCallSeq = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["CortosInitCalls"],
-      default=["main"]
+      default=["main"],
+      prevKeySeq=prevKeySeq,
     )
 
     loopCallSeq = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=["CortosLoopCalls"],
       default=[],
+      prevKeySeq=prevKeySeq,
     )
 
     progThread = ProgramThread(
@@ -149,19 +153,28 @@ class Program:
       data=userProvidedConfig,
       keySeq=[keyName],
       default=None,
+      prevKeySeq=prevKeySeq[:-1],
+      fail=True,
     )
-    assert config, f"At least one Program Thread must be specified."
 
     progThreads = []
     coreThread = ajitCpu.getThreadZero()
-    for programThread in config:
+    for i, programThread in enumerate(config):
+      prevKeySeq.append(i)
+
+      if coreThread is None:
+        util.printKeySeqMessage(prevKeySeq,
+          message="No H/W thread to schedule program.")
+        util.exitProgram("User programs exceed available h/w threads.")
+
       programThread = ProgramThread.generateObject(
         userProvidedConfig=programThread,
         coreThread=coreThread,
-        prevKeySeq=prevKeySeq
+        prevKeySeq=prevKeySeq,
       )
       progThreads.append(programThread)
       coreThread = ajitCpu.getNextThread(coreThread)
+      prevKeySeq.pop()
 
     program = Program(progThreads)
     prevKeySeq.pop()

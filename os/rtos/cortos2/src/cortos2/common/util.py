@@ -7,6 +7,7 @@ Utility module with project wide components.
 """
 import io
 import logging
+
 _log = logging.getLogger(__name__)
 
 import os
@@ -296,27 +297,40 @@ def runCommandGetOutput(cmd: str) -> str:
 def getConfigurationParameter(
     data: Dict,
     keySeq: Opt[List],
-    default = None
+    default = None,
+    prevKeySeq: Opt[List] = None,
+    printInfo: bool = True,
+    fail: bool = False,
 ):
   """Reads a sequence of keys from the dictionary if present, else returns default.
 
-  e.g. if keySeq = ['A','B','C'], then the return is data['A']['B']['C'],
+  e.g. if keySeq = ['A','B',3,'C'], then the return is data['A']['B'][3]['C'],
   if present else default is returned.
   """
+  keySeqFound = True
+
   if (
     not data
     or not isinstance(data, dict)
     or not keySeq
   ):
-    return default
+    keySeqFound = False
+  else:
+    for key in keySeq:
+      if isinstance(key, int): # assumes list access
+        data = data[key]
+      elif key in data:
+        data = data[key]
+      else:
+        keySeqFound = False
+        break
 
-  keySeqFound = True
-  for key in keySeq:
-    if key in data:
-      data = data[key]
-    else:
-      keySeqFound = False
-      break
+  if not keySeqFound and printInfo:
+    fullKeySeq = list(prevKeySeq) if prevKeySeq else []
+    fullKeySeq.extend(keySeq)
+    printKeySeqMessage(fullKeySeq, default)
+    if fail:
+      exitProgram(f"required: {createKeySeqStr(fullKeySeq)}")
 
   return data if keySeqFound else default
 
@@ -325,6 +339,8 @@ def getSizeInBytes(
     data: Opt[Dict],
     startAddr: Opt[int] = None,
     default: int = 8192, # 8 KB
+    prevKeySeq: Opt[List] = None,
+    fail: bool = False,
 ) -> Opt[int]:
   if not data:
     return default
@@ -333,22 +349,30 @@ def getSizeInBytes(
 
   # read the size in order of preference.
   if startAddr:
-    endAddr = getConfigurationParameter(data, ["EndAddr"])
+    endAddr = getConfigurationParameter(data, ["EndAddr"],
+      default=None, prevKeySeq=prevKeySeq, printInfo=False)
     if isinstance(endAddr, int):
       sizeInBytes = endAddr - startAddr + 1
 
   if sizeInBytes is None:
-    sizeInBytes = getConfigurationParameter(data, ["SizeInBytes"], default=None)
+    sizeInBytes = getConfigurationParameter(data, ["SizeInBytes"],
+      default=None, prevKeySeq=prevKeySeq, printInfo=False)
 
   if sizeInBytes is None:
-    sizeInKiloBytes = getConfigurationParameter(data, ["SizeInKiloBytes"], default=None)
+    sizeInKiloBytes = getConfigurationParameter(data, ["SizeInKiloBytes"],
+      default=None, prevKeySeq=prevKeySeq, printInfo=False)
     sizeInBytes = None if sizeInKiloBytes is None else sizeInKiloBytes * 1024
 
   if sizeInBytes is None:
-    sizeInMegaBytes = getConfigurationParameter(data, ["SizeInMegaBytes"], default=None)
+    sizeInMegaBytes = getConfigurationParameter(data, ["SizeInMegaBytes"],
+      default=None, prevKeySeq=prevKeySeq, printInfo=False)
     sizeInBytes = None if sizeInMegaBytes is None else sizeInMegaBytes * 1024 * 1024
 
-  assert sizeInBytes is not None
+  if sizeInBytes is None:
+    printKeySeqMessage(prevKeySeq, default=default,
+      message="Size not specified.")
+    if fail:
+      exitProgram(f"required: size of {createKeySeqStr(prevKeySeq)}")
 
   return sizeInBytes
 
@@ -366,3 +390,24 @@ def configError(
 ) -> None:
   configInfo(keySeq, f"error: {message}")
 
+def createKeySeqStr(keySeq: List):
+  """Puts integers in the sequence into square brackets '[]'
+  and returns a single dot separated string which can be used for printing."""
+  newKeySeq = []
+  for key in keySeq:
+    newKeySeq.append(f"[{key}]" if isinstance(key, int) else key)
+  return '.'.join(newKeySeq)
+
+
+def printKeySeqMessage(
+    keySeq: List,
+    default: Any = None,
+    message: str = "",
+):
+  print(f"CoRTOS: Config not found: '{createKeySeqStr(keySeq)}'"
+        f" Default value {default}. {message}")
+
+
+def exitProgram(message: str, status: int = 1):
+  print(f"CoRTOS: error: {message}")
+  exit(status)

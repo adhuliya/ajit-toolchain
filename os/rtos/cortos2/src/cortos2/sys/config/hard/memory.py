@@ -13,10 +13,12 @@ class Memory:
       flash: MemoryRegion,
       ram: MemoryRegion,
       mmio: MemoryRegion, # memory mapped io
+      maxPhysicalAddrBitWidth: int = 36,
    ) -> None:
     self.flash = flash
     self.ram = ram
     self.mmio = mmio
+    self.maxPhysicalAddrBitWidth = maxPhysicalAddrBitWidth
 
   @staticmethod
   def generateObject(
@@ -33,12 +35,19 @@ class Memory:
       keySeq = [keyName],
     )
 
+    physicalAddrWidth = util.getConfigurationParameter(
+      data = config,
+      keySeq=["MaxPhysicalAddrBitWidth"],
+      prevKeySeq=prevKeySeq,
+      default=36,
+    )
+
     flash = Memory.generateFlashRegion(config, prevKeySeq)
     ram = Memory.generateRamRegion(config, prevKeySeq)
     mmio = Memory.generateMmioRegion(config, prevKeySeq)
 
     prevKeySeq.pop()
-    memory = Memory(flash, ram, mmio)
+    memory = Memory(flash, ram, mmio, physicalAddrWidth)
     return memory
 
   @staticmethod
@@ -51,7 +60,8 @@ class Memory:
 
     flashConfig: Opt[Dict] = util.getConfigurationParameter(
       data=userProvidedConfig,
-      keySeq=[keyName]
+      keySeq=[keyName],
+      prevKeySeq=prevKeySeq[:-1],
     )
 
     if flashConfig:
@@ -77,7 +87,9 @@ class Memory:
 
     ramConfig: Opt[Dict] = util.getConfigurationParameter(
       data=userProvidedConfig,
-      keySeq=[keyName]
+      keySeq=[keyName],
+      prevKeySeq=prevKeySeq[:-1],
+      fail=True,
     )
 
     if ramConfig:
