@@ -18,6 +18,10 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 2 ]; then
   exit 1
 fi
 
+if ! [ -d "logs" ]; then
+  mkdir -p logs
+fi
+
 mkdir logs/$1 && cd logs/$1
 mkdir br2-output
 
