@@ -63,7 +63,7 @@ Build Instructions:
 Adding files to Linux image
 ===========================
 
-Buildroot, the build system we use, has a feature to add files to target filesystem.
+Buildroot, the build system we use, have a feature to add files to target filesystem.
 
 	Following are the steps to be followed for creating an Ajit Linux image 
 	that contain a custom program binary.
@@ -77,3 +77,4 @@ Buildroot, the build system we use, has a feature to add files to target filesys
 	to "/home/Ajit_overlay" and run the binary as usual.
 
 	An example program setup is provided at "example_program/hello_world".
+

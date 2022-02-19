@@ -18,3 +18,4 @@ fi
 echo "" && \
 ./vmLinuzToMemmapAtf0004000.sh
 } |& tee $CWD/build/build.log
+
