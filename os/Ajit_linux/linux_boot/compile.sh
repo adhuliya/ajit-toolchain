@@ -1,3 +1,13 @@
+export PATH=$AJIT_TOOLS_DIR/flash_image/bin/:$PATH
+
+if ! [ -d "boot_loader_plus_kernel_mmap" ]; then
+  echo "================================================="
+  echo " STEP 0.1: "
+  echo " Creating folder build"
+  echo "================================================="
+  mkdir -p boot_loader_plus_kernel_mmap
+fi
+
 #copy the mmap
 cp ../build/Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./boot_loader_plus_kernel_mmap/ 
 
