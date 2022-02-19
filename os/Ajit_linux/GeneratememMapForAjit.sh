@@ -147,8 +147,8 @@ echo "================================================="
 echo " STEP 4: "
 echo "  Compiling bootloader code."
 echo "================================================="
-cd $CWD/Ajit_bootloader/
-./compileBootloader.py AjitBootloader.c $CWD/Ajit_device_tree/Ajit_device_tree.s
+cd $BOOTLOADER_BUILD_DIR
+./compileBootloader.py AjitBootloader.c $DEVICE_TREE_BUILD_DIR/Ajit_device_tree.s
 
 echo "================================================="
 echo " STEP 5: "
