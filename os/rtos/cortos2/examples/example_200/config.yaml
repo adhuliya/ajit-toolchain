@@ -80,11 +80,13 @@ Software:
     - CortosInitCalls:
         - cortos_entry_func_001
         - cortos_entry_func_010
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInKiloBytes: 16
     - CortosInitCalls:
         - cortos_entry_func_101
         - cortos_entry_func_110
-      StackSizeInBytes: 8192
+      StackSize:
+        SizeInKiloBytes: 8
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...

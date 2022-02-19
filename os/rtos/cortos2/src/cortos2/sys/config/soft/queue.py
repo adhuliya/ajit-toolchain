@@ -1,7 +1,7 @@
 """Message passing queues in the system."""
 from typing import List, Dict, Optional as Opt
 
-from cortos2.common import consts
+from cortos2.common import consts, util
 from cortos2.sys.config import common
 
 
@@ -12,14 +12,56 @@ class Queue:
       qid: int, # A unique id of the queue
       length: int = consts.DEFAULT_QUEUE_LEN,
       msgSizeInBytes: int = consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES,
+      name: Opt[str] = None,
   ) -> None:
     self.qid = qid
     self.length = length
     self.msgSizeInBytes = msgSizeInBytes
+    self.name = name
 
 
   def getSizeInBytes(self) -> int:
     return self.msgSizeInBytes * self.length
+
+
+  def getName(self) -> str:
+    return self.name if self.name else f"{self.qid}"
+
+
+  @staticmethod
+  def generateObject(
+      userProvidedConfig: Opt[Dict],
+      prevKeySeq: Opt[List] = None,
+  ) -> 'Queue':
+
+    name: str = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=["Name"],
+      default=None,
+    )
+    if not name: util.configError(prevKeySeq, f"Name not given")
+
+    msgSizeInBytes: int = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=["MsgSizeInBytes"],
+      default=None,
+    )
+    if not msgSizeInBytes: util.configError(prevKeySeq, f"Message size not given.")
+
+    length: int = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=["Length"],
+      default=None,
+    )
+    if not length: util.configError(prevKeySeq, f"Length not given.")
+
+    queue = Queue(
+      qid=0, # is set separately
+      msgSizeInBytes=msgSizeInBytes,
+      length=length,
+      name=name,
+    )
+    return queue
 
 
 class QueueSeq:
@@ -84,8 +126,34 @@ class QueueSeq:
       prevKeySeq: Opt[List] = None,
   ) -> 'QueueSeq':
     """Takes a user given configuration and extracts the Queue related configuration."""
-    # TODO
-    return initConfig(userProvidedConfig)
+    keyName = "Queues"
+    prevKeySeq.append(keyName)
+
+    queueConfigList: Opt[List] = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=[keyName],
+      default=None,
+    )
+
+    if queueConfigList is None:
+      util.configInfo(prevKeySeq, f"No queue information provided.")
+      prevKeySeq.pop()
+      return QueueSeq([])
+
+    queueList = []
+    for i, queueConfig in enumerate(queueConfigList):
+      prevKeySeq.append(f"[{i}]")
+      queue = Queue.generateObject(queueConfig, prevKeySeq)
+      queue.qid = i
+      queueList.append(queue)
+      prevKeySeq.pop()
+
+    prevKeySeq.pop()
+    return QueueSeq(queueList)
+
+
+  def __len__(self):
+    return len(self.queueSeq)
 
 
 def initConfig(userProvidedConfig: Dict) -> QueueSeq:

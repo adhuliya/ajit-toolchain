@@ -6,15 +6,15 @@
  *
  */
 
-#include<math.h>
-#include "cortos.h"
+#include <math.h>
+#include <cortos.h>
 
-#define MAX_LIMIT 1000
+#define MAX_LIMIT    0x1000
+#define MAX_LIMIT_X2 (MAX_LIMIT << 1)
 
 int b;
-int *i0 = SHARED_INT_ADDR_0;
-int *i1 = SHARED_INT_ADDR_1;
-int lockVar = -1;
+volatile int global_var;
+volatile int lockVar = -1;
 
 void main() {} // important, but keep empty.
 
@@ -23,10 +23,11 @@ void cortos_entry_func_001() {
   lockVar = cortos_reserveLockVar();
   for (i = 0; i < MAX_LIMIT; ++i) {
     cortos_lock_acquire_buzy(lockVar);
-    *i0 += 1;
+    global_var += 1;
     cortos_lock_release(lockVar);
   }
-  cortos_exit(0); // safely exit
+  while(global_var != MAX_LIMIT_X2);
+  cortos_exit(global_var); // safely exit
 }
 
 void cortos_entry_func_010() {
@@ -38,14 +39,14 @@ void cortos_entry_func_101() {
   while(lockVar == -1);
   for (i = 0; i < MAX_LIMIT; ++i) {
     cortos_lock_acquire_buzy(lockVar);
-    *i0 += 1;
+    global_var += 1;
     cortos_lock_release(lockVar);
   }
-  cortos_exit(0); // safely exit
+  while(global_var != MAX_LIMIT_X2);
+  cortos_exit(global_var); // safely exit
 }
 
 void cortos_entry_func_110() {
   // b = (int)cos(0);
 }
-
 

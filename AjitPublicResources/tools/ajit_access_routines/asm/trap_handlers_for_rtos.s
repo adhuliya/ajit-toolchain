@@ -268,8 +268,9 @@ HW_trap_0x7e: ta 0; nop; nop; nop;
 HW_trap_0x7f: ta 0; nop; nop; nop;
 
 software_trap_table_base:
-# ta 0,1,2, ....
+# ta 0 is reserved for halt.
 SW_trap_0x80: ta 0; nop; nop; nop;
+# ta 1 to 15 for user traps.
 # For the moment, we will allow users to use software traps 1-15. 
 SW_trap_0x81: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x82: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
@@ -286,7 +287,8 @@ SW_trap_0x8c: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop;
 SW_trap_0x8d: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8e: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8f: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
-SW_trap_0x90: ta 0; nop; nop; nop;
+# ta 16 for privilege iu register reads.
+SW_trap_0x90: rd %psr, %l0; rd %tbr, %l3; ba generic_read_asr; nop;
 SW_trap_0x91: ta 0; nop; nop; nop;
 SW_trap_0x92: ta 0; nop; nop; nop;
 SW_trap_0x93: ta 0; nop; nop; nop;

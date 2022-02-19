@@ -1,5 +1,6 @@
 Test Examples
 =================
+# TODO: not updated for cortos2
 
 * 001 to 049: Single Core, Single Thread
 * 050 to 099: Multithreads, no collaboration

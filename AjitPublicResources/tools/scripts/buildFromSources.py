@@ -349,7 +349,7 @@ def makeAa2C(system_name, aa_source_prefix, top_daemon_modules, use_gnu_pth):
 
 
 # Aa -> vC
-def makeAa2Vc(system_name):
+def makeAa2Vc(system_name, opaque_flag):
 
     logInfo("in makeAa2Vc ()")
     ret_val = 0
@@ -359,7 +359,9 @@ def makeAa2Vc(system_name):
     makeOrCleanDir(vc_dir)
 
     # treat all modules as opaque (-P)
-    aa2vc_cmd = "Aa2VC -I mempool -O -C -P " 
+    aa2vc_cmd = "Aa2VC -I mempool -O -C "
+    if opaque_flag:
+       aa2vc_cmd += " -P " 
     aa2vc_cmd += aa_dir + "/linked.opt.aa  > " + vc_dir + "/." + system_name + ".uvc"
     logInfo("executing command\n\t " + aa2vc_cmd)
     cmd_status = execSysCmd(aa2vc_cmd)
@@ -495,6 +497,7 @@ def makeVhdlSim(app_name, sim_type, vhdl_library_name):
 #     -s  <simulator-type>
 #     -h  (print help message)
 #     (-B)  to balance paths in Aa pipeline.
+#     (-N)? do not treat all modules as opaque.
 #     (-C  (c-source-dir))*
 #     (-I  (c-include-dir))*
 #     (-A  (aa-source-file))*
@@ -512,6 +515,7 @@ def parseOptions(opts):
     use_gnu_pth = False
     suppress_io_pipes = False
     balance_flag = False
+    opaque_flag = True
 
     c_src_dirs = []
     c_include_dirs = []
@@ -538,6 +542,9 @@ def parseOptions(opts):
         elif option ==  '-B':
            balance_flag = True
            logInfo("set balance-flag = True ")
+        elif option ==  '-N':
+           opaque_flag = False
+           logInfo("set opaque flag = False ")
         elif option ==  '-t':
            top_modules.append(parameter)
            logInfo("added top-module = " + parameter + ".")
@@ -588,7 +595,7 @@ def parseOptions(opts):
     if (aa_source_prefix == None):
        aa_source_prefix = vhdl_library_name + "_" + app_name 
     
-    return app_name, work_area, top_modules, top_daemon_modules, c_src_dirs, c_include_dirs, aa_src_files, start_point, end_point, help_flag, clean_flag, err_flag, ahir_fn_libs, sim_type, vhdl_library_name, aa_source_prefix, debug_flag, use_gnu_pth, suppress_io_pipes, balance_flag
+    return app_name, work_area, top_modules, top_daemon_modules, c_src_dirs, c_include_dirs, aa_src_files, start_point, end_point, help_flag, clean_flag, err_flag, ahir_fn_libs, sim_type, vhdl_library_name, aa_source_prefix, debug_flag, use_gnu_pth, suppress_io_pipes, balance_flag, opaque_flag
 
 
 # The top-level script which builds VHDL from source.
@@ -653,8 +660,8 @@ def main():
 
     arg_list = sys.argv[1:]
    
-    opts,args = getopt.getopt(arg_list,'a:w:t:T:S:E:C:A:I:F:hs:RW:DGUB')
-    app_name, work_area, top_modules, top_daemon_modules, c_src_dirs, c_include_dirs, aa_src_files, start_point, stop_point, help_flag, clean_flag, err_flag, ahir_fn_libs, sim_type, vhdl_library_name, aa_source_prefix, debug_flag, use_gnu_pth, suppress_io_pipes, balance_flag  = parseOptions(opts)
+    opts,args = getopt.getopt(arg_list,'a:w:t:T:S:E:C:A:I:F:hs:RW:DGUBN')
+    app_name, work_area, top_modules, top_daemon_modules, c_src_dirs, c_include_dirs, aa_src_files, start_point, stop_point, help_flag, clean_flag, err_flag, ahir_fn_libs, sim_type, vhdl_library_name, aa_source_prefix, debug_flag, use_gnu_pth, suppress_io_pipes, balance_flag, opaque_flag  = parseOptions(opts)
 
 
 
@@ -750,7 +757,7 @@ def main():
 
     make_vc = (make_aa2c or (start_point == "to_vc"))
     if(make_vc):
-       ret_val = makeAa2Vc(app_name)
+       ret_val = makeAa2Vc(app_name, opaque_flag)
        if(ret_val):
            os.chdir(saved_cwd)
            command_log_file.close()

@@ -613,7 +613,7 @@ void uart_send_char(char c) {
 #ifdef USE_VMAP
 		int success = 	__ajit_serial_putchar_via_vmap__ (c);
 #else
-		int success = 	__ajit_serial_putchar_via_vmap__ (c);
+		int success = 	__ajit_serial_putchar__ (c);
 #endif
 		if(success)
 			break;

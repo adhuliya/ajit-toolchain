@@ -41,7 +41,7 @@ class SystemConfig:
     """Call this method to compute (or recompute) the memory layout."""
     self.memoryLayout.initLayout(
       prog=self.software.program,
-      queueSeq=self.software.queueSeq,
+      # queueSeq=self.software.queueSeq,
       locks=self.software.locks,
       bgetObj=self.software.bget,
       dummyLayout=dummyLayout,
@@ -53,7 +53,7 @@ def readYamlConfig(
 ) -> SystemConfig:
   """Reads the given yaml configuration file."""
   with open(yamlFileName) as f:
-    conf = yaml.load(f)
+    conf = yaml.safe_load(f)
     return SystemConfig(conf)
 
 

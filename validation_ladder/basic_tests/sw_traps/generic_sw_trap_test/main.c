@@ -24,6 +24,7 @@ int __enable_serial_sw_trap()
 }
 
 
+// This is the handler that sits in the sw trap handler array..
 void __t5_handler(uint32_t arg1, uint32_t arg2, uint32_t arg3)
 {
 	*((uint32_t*) arg2) = __ajit_load_word_from_physical_address__((uint64_t) arg1);
@@ -31,8 +32,13 @@ void __t5_handler(uint32_t arg1, uint32_t arg2, uint32_t arg3)
 }
 
 
+//
+// This is the function you use to read a physical memory location using
+// an address space identifier (between 0x20 and 0x2f).
+//
 void read_physical_memory (uint32_t address, uint32_t value_pointer)
 {
+	// create a trap.
 	__AJIT_SW_TRAP(5);
 }
 

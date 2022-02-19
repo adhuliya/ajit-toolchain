@@ -13,12 +13,14 @@ class Build:
       optLevel: int = consts.DEFAULT_OPT_LEVEL,
       logLevel: consts.LogLevel = consts.DEFAULT_LOG_LEVEL,
       enableSerial: bool = consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      buildArgs: str = "",
   ) -> None:
     self.debug = debug
     self.firstDebugPort = firstDebugPort
     self.optLevel = optLevel
     self.logLevel = logLevel
     self.enableSerial = enableSerial
+    self.buildArgs = buildArgs
 
 
   def setDebugParameter(self,
@@ -65,6 +67,7 @@ class Build:
     optLevel = Build.generateOptLevelParam(config, prevKeySeq)
     logLevel = Build.generateLogLevelParam(config, prevKeySeq)
     enableSerial = Build.generateEnableSerialParam(config, prevKeySeq)
+    buildArgs = Build.generateBuildArgsParam(config, prevKeySeq)
 
     prevKeySeq.pop()
     build = Build(
@@ -73,6 +76,7 @@ class Build:
       optLevel=optLevel,
       logLevel=logLevel,
       enableSerial=enableSerial,
+      buildArgs=buildArgs,
     )
     return build
 
@@ -163,6 +167,22 @@ class Build:
     )
 
     return int(firstDebugPort)
+
+
+  @staticmethod
+  def generateBuildArgsParam(
+      userProvidedConfig: Dict,
+      prevKeySeq: Opt[List] = None,
+  ) -> str:
+    keyName = "BuildArgs"
+
+    buildArgs: str = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=[keyName],
+      default="",
+    )
+
+    return buildArgs
 
 
 def initConfig(

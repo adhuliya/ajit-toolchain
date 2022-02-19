@@ -11,7 +11,7 @@ import argparse
 
 from cortos2.common import consts, util
 from cortos2.sys.config import config
-from cortos2.sys.build import build
+from cortos2.sys.gen import build
 from cortos2.common.util import FileNameT
 from cortos2.common import bottle as btl
 

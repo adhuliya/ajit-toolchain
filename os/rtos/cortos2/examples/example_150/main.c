@@ -4,66 +4,60 @@ A writer sends four values to the reader.
 The reader collects the values and sums them up.
 */
 
-#include<math.h>
-#include "cortos.h"
+#include <math.h>
+#include <cortos.h>
 
-int b;
-int *i0 = SHARED_INT_ADDR_0;
-int *i1 = SHARED_INT_ADDR_1;
-int totalMsgs = 4;
-int queueId = -1;
-
-CortosMessage msg1;
-CortosMessage msg2;
-
+#define TOTAL_MESSAGES 4
 
 void main() {} // important, but kept empty.
 
 void cortos_entry_func_001() {
-  msg1.intArr[0] = 1;
-  queueId = cortos_reserveQueue();
+  uint32_t sentCount, i, totalSent = 0;
+  uint32_t msgs[TOTAL_MESSAGES];
 
-  CORTOS_TRACE("Sending Message 1");
-  cortos_writeMessage(queueId, &msg1);
+  CORTOS_TRACE("Hello from Sender!");
+  for (i = 0; i < TOTAL_MESSAGES; ++i) {
+    msgs[i] = i;
+  }
 
-  msg1.intArr[0] = 2;
-  CORTOS_TRACE("Sending Message 2");
-  cortos_writeMessage(queueId, &msg1);
+  while (totalSent < TOTAL_MESSAGES) {
+    sentCount = cortos_writeMessages(CORTOS_QUEUE_BOB,
+      (uint8_t*)(msgs+totalSent), TOTAL_MESSAGES);
+    CORTOS_DEBUG("Sending %d messages: sent %d.",
+      TOTAL_MESSAGES-totalSent, sentCount);
+    totalSent += sentCount;
+  }
 
-  msg1.intArr[0] = 6;
-  CORTOS_TRACE("Sending Message 3");
-  cortos_writeMessage(queueId, &msg1);
-
-  msg1.intArr[0] = 1;
-  CORTOS_TRACE("Sending Message 4");
-  cortos_writeMessage(queueId, &msg1);
-
-  cortos_exit(0);
+  cortos_exit(totalSent);
 }
 
 void cortos_entry_func_010() {
+  /* do something */
   return;
 }
 
 void cortos_entry_func_101() {
-  int i, status;
-  i = 0;
+  uint32_t sum = 0;
+  uint32_t i = 0, count;
+  uint32_t msgs[TOTAL_MESSAGES];
 
-  while(queueId == -1);
-
-  while(i < totalMsgs) {
-    status = cortos_readMessage(queueId, &msg2);
-    if (status) {
-      CORTOS_TRACE("Received Message %d", i+1);
-      *i0 += msg2.intArr[0];
-      ++i;
+  CORTOS_TRACE("Hello from Receiver!");
+  while(i < TOTAL_MESSAGES) {
+    count = cortos_readMessages(CORTOS_QUEUE_BOB, (uint8_t*)(msgs+i), TOTAL_MESSAGES-i);
+    i += count;
+    if (count) {
+      CORTOS_DEBUG("Received %d messages. Need %d more.", count, TOTAL_MESSAGES-i);
     }
   }
-  cortos_exit(0);
+
+  for (i = 0; i < TOTAL_MESSAGES; ++i) {
+    sum += msgs[i];
+  }
+
+  cortos_exit(sum);
 }
 
 void cortos_entry_func_110() {
+  /* do something */
   return;
 }
-
-

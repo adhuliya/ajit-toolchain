@@ -1,36 +1,59 @@
+#define CORTOS  1
 #include <stdlib.h>
 #include <stdint.h>
+#ifdef CORTOS
+#include <cortos.h>
+#else
 #include "ajit_access_routines.h"
 #include "core_portme.h"
-#include "defs.h"
-#include "dispatch.h"
+#endif
 #include "athread.h"
 
 // This one does not have acquire a mutex...
-int athreadInit(athreadManager* atm)
+uint32_t athreadManagerInit(athreadManager* atm)
 {
+#ifdef CORTOS
+	atm->atm_mutex_var = cortos_reserveLockVar();
+#else
 	atm->atm_mutex_var = 0;
+#endif
+	atm->thread_counter = 0;
 
-	int I;
-	for(I = 0; I < MAX_ACTIVE_THREADS; I++)
-		atm->thread_status[I] = THREAD_UNALLOCATED;
-
-	initDispatchQueue(&(atm->dq));
-}
-
-// returns a non-zero thread id between 1 and MAX_ACTIVE_THREADS
-int athreadAllocateThread(athreadManager* atm)
-{
-	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-
-	int ret_val = 0;
 	int I;
 	for(I = 0; I < MAX_ACTIVE_THREADS; I++)
 	{
-		if(atm->thread_status[I] == THREAD_UNALLOCATED)
+		atm->threads[I].thread_status = THREAD_UNALLOCATED;
+		atm->threads[I].thread_id     = (I + 1);
+		atm->threads[I].priority      = 0;
+		atm->threads[I].sequence_id = 0;
+		atm->threads[I].fn = NULL;
+		atm->threads[I].arg = NULL;
+	}
+	return(0);
+}
+
+// returns a non-zero thread id between 1 and MAX_ACTIVE_THREADS
+uint32_t athreadCreateThread(athreadManager* atm, uint32_t priority, void* fn, void* arg)
+{
+	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
+
+	uint32_t ret_val = 0;
+	int I;
+	for(I = 0; I < MAX_ACTIVE_THREADS; I++)
+	{
+		if(atm->threads[I].thread_status == THREAD_UNALLOCATED)
 		{
-			ret_val = (I+1);
-			atm->thread_status[I] = THREAD_ALLOCATED;
+			ret_val = atm->threads[I].thread_id;
+			atm->threads[I].priority = priority;
+			atm->threads[I].sequence_id = atm->thread_counter;
+			atm->thread_counter++;
+			
+	
+			atm->threads[I].fn  = fn;
+			atm->threads[I].arg = arg;
+		
+			atm->threads[I].thread_status = THREAD_ALLOCATED;
+
 			break;
 		}
 	}
@@ -38,53 +61,62 @@ int athreadAllocateThread(athreadManager* atm)
 	return(ret_val);
 }
 
-int athreadDeallocateThread(athreadManager* atm, int thread_id)
-{
-	int ret_val = 0;
-	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
-	{
-		AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-		atm->thread_status[thread_id-1] = THREAD_UNALLOCATED;
-		AMUTEX_RELEASE (atm->atm_mutex_var);
-	}
-	else
-		ret_val = 1;
-
-	return(ret_val);
-}
-
-
-int athreadDispatchThread (athreadManager* atm, int thread_id, void* fn, void* arg)
+// returns 0 on success.
+uint32_t athreadRestartThread(athreadManager* atm, uint32_t thread_id)
 {
 	int ret_val = 1;
-
-	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
+	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
+	if ((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
 	{
-		AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-		ret_val = pushIntoDispatchQueue(&(atm->dq), thread_id, fn, arg);
-		atm->thread_status[thread_id-1] = THREAD_ON_DISPATCH_Q;
-		AMUTEX_RELEASE (atm->atm_mutex_var);
+		if(atm->threads[thread_id-1].thread_status == THREAD_COMPLETED)
+		{
+			atm->threads[thread_id-1].thread_status = THREAD_ALLOCATED;
+			atm->threads[thread_id-1].sequence_id = __ajit_get_clock_time();
+			ret_val = 0;
+		}
 	}
+	AMUTEX_RELEASE (atm->atm_mutex_var);
+	return(ret_val);
+}
+
+// returns 0 on success.
+uint32_t athreadDestroyThread(athreadManager* atm, uint32_t thread_id)
+{
+	int ret_val = 0;
+	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
+	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS) && 
+			(atm->threads[thread_id-1].thread_status == THREAD_COMPLETED))
+	{
+		atm->threads[thread_id-1].thread_status = THREAD_UNALLOCATED;
+	}
+	else
+	{
+		ret_val = 1;
+	}
+	AMUTEX_RELEASE (atm->atm_mutex_var);
 
 	return(ret_val);
 }
 
-int athreadThreadStatus (athreadManager* atm, int thread_id)
+
+
+uint32_t athreadThreadStatus (athreadManager* atm, uint32_t thread_id)
 {
 	int ret_val = -1;
 	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
 	{
-		AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-		ret_val = atm->thread_status[thread_id-1];
-		AMUTEX_RELEASE (atm->atm_mutex_var);
+		ret_val = atm->threads[thread_id-1].thread_status;
 	}
 	return(ret_val);
 }
 
+//
 // spin until thread has returned..
-int athreadJoinThread (athreadManager* atm, int thread_id)
+// returns 0 on success..
+//
+uint32_t athreadJoinThread (athreadManager* atm, uint32_t thread_id)
 {
-	int ret_val = 0;
+	int ret_val = 1;
 	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
 	{
 		while(1)
@@ -94,12 +126,13 @@ int athreadJoinThread (athreadManager* atm, int thread_id)
 				break;
 
 		}
+		ret_val = 0;
 	}
 	return(ret_val);
 }
 
 // returns 0 on success..
-int athreadReturn (athreadManager* atm, int thread_id)
+uint32_t athreadReturn (athreadManager* atm, uint32_t thread_id)
 {
 	int ret_val = 1;
 	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
@@ -109,7 +142,7 @@ int athreadReturn (athreadManager* atm, int thread_id)
 		if(ts == THREAD_RUNNING)
 		{
 			AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-			atm->thread_status[thread_id-1] = THREAD_COMPLETED;
+			atm->threads[thread_id-1].thread_status = THREAD_COMPLETED;
 			AMUTEX_RELEASE (atm->atm_mutex_var);
 			ret_val = 0;
 		}
@@ -118,15 +151,58 @@ int athreadReturn (athreadManager* atm, int thread_id)
 }
 
 
-// return thread id > 0 on success.  *fn, *arg updated.
-int athreadGetThreadToRun(athreadManager* atm, void** fn, void** arg)
+//
+// return thread id > 0 on success.
+// 
+// Will look for the highest-priority thread in the specified priority range.
+// If there is more than one such thread, it will use the earliest creation time as a tie-breaker.
+//
+uint32_t athreadSelectAndRunThread(athreadManager* atm, 
+				uint32_t min_priority,
+				uint32_t max_priority)
 {
 	int ret_val = 0;
+	
+	int I;
+	uint32_t P = 0;
+	uint64_t ET = 0xffffffffffffffff;
+
 	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
-	ret_val = popFromDispatchQueue(&(atm->dq), fn, arg);
+	for(I = 0; I < MAX_ACTIVE_THREADS; I++)
+	{
+		if(atm->threads[I].thread_status == THREAD_ALLOCATED)
+		{
+			if((atm->threads[I].priority >= min_priority) &&
+				(atm->threads[I].priority <= max_priority))
+			{
+				if(atm->threads[I].priority >= P) 
+				{
+					P = atm->threads[I].priority;
+					if(atm->threads[I].sequence_id < ET)
+					{
+						ret_val = I + 1;
+						ET = atm->threads[I].sequence_id;
+					}
+				}
+			}
+		}
+	}
+
+	if(ret_val > 0)
+	{
+		// which core/thread is it running on?
+		atm->threads[ret_val-1].thread_status = THREAD_RUNNING;
+	}
 	AMUTEX_RELEASE (atm->atm_mutex_var);
+
+	if(ret_val > 0)
+	{
+		void (*__fn)(void*) = atm->threads[ret_val-1].fn;
+		void *arg = atm->threads[ret_val-1].arg;
+		(*__fn)(arg);
+		athreadReturn(atm, ret_val);
+	}
 
 	return(ret_val);
 }
-
 
