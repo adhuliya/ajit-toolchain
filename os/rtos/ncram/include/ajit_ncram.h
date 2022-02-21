@@ -28,16 +28,22 @@ typedef struct __ncramAllocator {
 // address of the region (used by the high speed I/O devices
 // such as a NIC).
 //
-// The base page address (ie bits 31:12) of the VA 
-// and the base page address (ie bits 36:12) of the PA
-// are supplied to the allocator.
+// Arguments:
+//   v_page_pbase : The base page address (ie bits 31:12) of the VA 
+//   p_page_base  : The base page address (ie bits 36:12) of the PA
+//   number_of_buffers: size of region in multiples of 2KB.
 void ajit_ncram_allocator_init (uint32_t v_page_base, uint32_t p_page_base, uint32_t number_of_buffers);
 
 // return 0 on success, 1 on failure. 
 //    returns the va and pa of the allocated buffer.
+// Arguments:
+//    *va : return pointer to keep base virtual address of allocated buffer.
+//    *pa : return pointer to keep base physical address of allocated buffer.
 int ajit_ncram_allocate_buffer(uint32_t* va, uint64_t* pa);
 
-// deallocate
+// deallocate buffer.
+// Arguments:
+//    va: base virtual address of the buffer to be de-allocated.
 void ajit_ncram_deallocate_buffer(uint32_t va);
 
 #endif

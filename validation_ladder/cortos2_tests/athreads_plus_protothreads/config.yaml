@@ -6,7 +6,7 @@ Hardware:
   Processor:
     # Required: Number of cores and threads per core.
     Cores: 1
-    ThreadsPerCore: 1
+    ThreadsPerCore: 2
     ISA: 32 # 32/64 bit (Default: 32)
 
   Memory:
@@ -70,6 +70,7 @@ Software:
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
+    # specify argument string for C compiler......
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
@@ -77,10 +78,14 @@ Software:
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
-        - main
+        - main_00
   # One can also specify an infinite loop on the function:
   #   CortosLoopCalls:
   #     - main1
+      StackSize:
+        SizeInKiloBytes: 8
+    - CortosInitCalls:
+        - main_01
       StackSize:
         SizeInKiloBytes: 8
 
@@ -89,16 +94,8 @@ Software:
     SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
-  HardwareTraps:
-    - TrapIndex: 12
-      TrapHandler: my_serial_interrupt_handler
-
-#   SoftwareTraps:
-#     - TrapIndex: 1
-#       TrapHandler: my_software_trap
-
-#   Locks: # Locks for synchronization between threads.
-#     Cacheable: 32
+  Locks: # Locks for synchronization between threads.
+      Cacheable: 32
 #     NonCacheable: 32
 #
 #   MessageQueues: # List of queues in the system.
@@ -112,10 +109,8 @@ Software:
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
 #
-
-# InterruptHandler:
-  # - TypeCode: 12
-    # Function: my_serial_interrupt_handler
-
+#   InterruptHandler:
+#     - TypeCode: 0x4
+#       Function: functionName4
 #     - TypeCode: 0x5
 #       Function: functionName5

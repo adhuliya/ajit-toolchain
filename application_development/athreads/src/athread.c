@@ -33,7 +33,7 @@ uint32_t athreadManagerInit(athreadManager* atm)
 }
 
 // returns a non-zero thread id between 1 and MAX_ACTIVE_THREADS
-uint32_t athreadCreateThread(athreadManager* atm, uint32_t priority, void* fn, void* arg)
+uint32_t athreadCreateThread(athreadManager* atm, uint32_t priority, int* fn, void* arg)
 {
 	AMUTEX_ACQUIRE (atm->atm_mutex_var);	
 
@@ -108,6 +108,30 @@ uint32_t athreadThreadStatus (athreadManager* atm, uint32_t thread_id)
 		ret_val = atm->threads[thread_id-1].thread_status;
 	}
 	return(ret_val);
+}
+
+uint32_t athreadThreadGetArgs (athreadManager* atm, uint32_t thread_id, int** fn, void** arg)
+{
+	int ret_val = -1;
+	*fn = NULL;
+	*arg = NULL;
+	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
+	{
+		ret_val = 0;
+		*fn =  atm->threads[thread_id-1].fn;
+		*arg =  atm->threads[thread_id-1].arg;
+	}
+	return(ret_val);
+}
+
+uint32_t athreadThreadGetReturnValue (athreadManager* atm, uint32_t thread_id, int* ret_value)
+{
+	int ret_val = 1;
+	if((thread_id > 0) && (thread_id <= MAX_ACTIVE_THREADS))
+	{
+		ret_val = 0;
+		*ret_value = atm->threads[thread_id-1].return_value;
+	}
 }
 
 //
@@ -197,9 +221,10 @@ uint32_t athreadSelectAndRunThread(athreadManager* atm,
 
 	if(ret_val > 0)
 	{
-		void (*__fn)(void*) = atm->threads[ret_val-1].fn;
+		int (*__fn)(void*) = atm->threads[ret_val-1].fn;
 		void *arg = atm->threads[ret_val-1].arg;
-		(*__fn)(arg);
+
+		atm->threads[ret_val-1].return_value = (*__fn)(arg);
 		athreadReturn(atm, ret_val);
 	}
 
