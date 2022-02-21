@@ -1,0 +1,17 @@
+Illustrate the use of the new generic
+interrupt handling scheme.
+
+Things to note:
+	In init.s, we first clear all stack 
+	pointers, mark window 7 as invalid,
+	give a valid stack pointer to window 7,
+	set up the vmap, and switch to user
+	mode before calling the main routine.
+
+
+	In the user code,
+		-initialize interrupt handler table.
+		-write specific interrupt handlers.
+		-insert specific interrupt handlers into
+		  interrupt handler table.
+	

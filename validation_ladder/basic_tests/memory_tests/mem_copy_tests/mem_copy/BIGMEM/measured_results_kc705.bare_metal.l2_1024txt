@@ -1,0 +1,18 @@
+Starting
+Done initialising array
+1K: err=0 t=0.005367 seconds
+4K: err=0 t=0.029596 seconds
+16K: err=0 t=1.244997 seconds
+64K: err=1 t=4.974716 seconds
+Done
+
+--- With Set Associative Caches, and
+--  with L2 cache of 64KB Dec 11, 2021.
+Starting
+Done initialising array
+1K: err=0 t=0.005206 seconds
+4K: err=0 t=0.022062 seconds
+16K: err=0 t=1.051900 seconds
+64K: err=0 t=4.204314 seconds
+Done
+
