@@ -14,7 +14,7 @@ echo " STEP 0: "
 echo "  Compiling bootloader code. starts at 0xf0000000"
 echo "================================================="
 cd $BOOTLOADER_BUILD_DIR
-./compileBootloader.f0000000.py AjitBootloader.c $CWD/Ajit_device_tree/Ajit_device_tree.s
+./compileBootloader.f0000000.py AjitBootloader.c $BUILD_DIR/Ajit_device_tree/Ajit_device_tree.s
 cd -
 
 

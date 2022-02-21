@@ -2,7 +2,7 @@
 
 CWD=$PWD
 
-# Check for presence of Argumentsand throw an error when there is none or invalid one.
+# Check for presence of Arguments and throw an error when there is none or invalid one.
 if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
   echo "ERROR: Invalid or missing argument...."
   echo "Usage: $0 <DEFCONFIG>"
