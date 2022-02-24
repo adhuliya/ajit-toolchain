@@ -14,7 +14,6 @@ volatile int exit_flag = 0;
 // Note: user defined, but will run in supervisor mode.
 //
 void my_serial_interrupt_handler() {
-	CORTOS_TRACE("in __serial_interrupt_handler.\n");
 
 	uint32_t fp_regs[34];
 	uint32_t fp_addr = (uint32_t) &(fp_regs[0]);
@@ -26,6 +25,8 @@ void my_serial_interrupt_handler() {
 	// We could use the supervisor-level routine also here....
 	//
 	uint32_t B = __ajit_read_serial_rx_register_via_vmap__();
+
+	CORTOS_TRACE("in __serial_interrupt_handler.\n");
 
 	if(B == 'q') {
 		exit_flag = 1;
@@ -51,6 +52,9 @@ int main ()
 
 	// __cortos_enable_serial_interrupt();
 	CORTOS_DEBUG("Enabled serial.\n");
+
+	enableInterruptControllerAndAllInterrupts(0,0);
+
 
 	while(1) {
 		add_delay();

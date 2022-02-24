@@ -123,8 +123,10 @@ Software:
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
 #
-#   InterruptHandler:
-#     - TypeCode: 0x4
-#       Function: functionName4
+
+# InterruptHandler:
+  # - TypeCode: 12
+    # Function: my_serial_interrupt_handler
+
 #     - TypeCode: 0x5
 #       Function: functionName5

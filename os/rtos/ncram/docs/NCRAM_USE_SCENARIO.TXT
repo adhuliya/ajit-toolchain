@@ -1,0 +1,73 @@
+
+	NCRAM use scenario in an AJIT processor system
+	
+		Madhav P. Desai
+
+1. Overview
+
+	The non-cacheable RAM (NCRAM) is a memory resource
+	which is used for interactions between I/O devices
+	and software running on processor threads.  The I/O
+	devices involved here are capable of directly writing
+	into shared memory accessible to the processor threads.
+	In order to avoid the overhead of maintaining coherency
+	across the processor cache subsystem, this shared memory
+	is to be marked non-cacheable in the virtual to physical
+	address mapping used by software.
+
+
+2. Processor software behaviour
+
+	Processor software will be responsible for
+		- allocating data structures in the non-cacheable
+		  NCRAM.
+		- setting pointers in I/O device control memory.
+		
+
+	The typical scenario is that software allocates a queue 
+	in the NCRAM area, and this queue is used for exchange of
+	information between software and the I/O devices.
+
+	Note: The I/O device will not be responsible for allocation
+	and free-ing of memory from the NCRAM.
+
+
+3. I/O device behaviour
+
+	The I/O device will be controlled by processor software via
+	internal registers.  These registers will contain pointers
+	to mutually agreed data structures with a standard format.
+
+
+4. Standard data structures
+
+	a. Queues (with lock variable)
+		I/O can read/write, and software can read/write to 
+		these queues.  Lock variable pointer must be part of
+		the queue header information.
+	b. Lock-less Queues
+		One I/O device can read, a particular processor thread can write
+		OR
+		a particular processor thread can read, one I/O device
+		can write.
+	c. Flags, locks, semaphores
+		Pointers to these will be written to I/O device
+		registers (these maybe as part of the queue header).
+	d. Any other data structure which may be used to 
+		exchange information
+			(Note: system designer is responsible for
+				correspondence between I/O device
+				and software).
+
+
+	Priority of implementation:
+
+		Cortos2 provides dynamically allocated queues 
+		(with and without lock).
+
+		Rest can be left to programmer...
+
+5. What is needed?
+
+	Just bget*() on NCRAM is all that is needed for now.
+

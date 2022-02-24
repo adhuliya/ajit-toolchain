@@ -1,0 +1,11 @@
+An example illustrating a mixture of the athreads run-time
+with protothreads.
+
+The routine started by an athread can behave like a protothread 
+and yield several times to implement true cooperative muti-threading
+using a very light-weight mechanism.
+
+The catch: strictly speaking the routine called by the athread should be
+a static routine so that past memory is preserved. However this
+requirement can be relaxed if the routine preserves the relevant state
+in a data structure..

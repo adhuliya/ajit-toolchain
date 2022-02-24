@@ -1,0 +1,52 @@
+
+	The NCRAM mmio device
+
+1. Overview
+----------------
+
+NCRAM is non-cacheable RAM which provides non-cacheable
+shared memory buffers for I/O devices and the processor
+threads to exchange information.    I/O devices can 
+write into this memory by DMA, and the processor can
+then read/write from the memory in the usual way.  
+The non-cacheable nature of the NCRAM ensures that cache 
+coherency in the processor will not need to be enforced at 
+the IO->NCRAM level.
+
+2. NCRAM is treated as an mmio device.
+----------------------------
+
+The NCRAM is treated as a memory mapped IO device
+in the CORTOS2 system configuration.
+
+3. NCRAM memory realization
+----------------------------
+
+The NCRAM is physically distributed across main memory
+and possibly in I/O devices.  This is transparent to
+the user.
+
+4. NCRAM driver
+---------------------------
+
+The NCRAM driver provides three routines
+	- initialization
+		the allocation region is defined by
+		a virtual page, physical page identifier
+		and the number of buffers to be managed.
+	- allocation
+		allocation will be 1 buffer at a time, with a fixed
+		buffer-size (for now) of 2048 bytes.  The virtual
+		and physical addresses of the allocated buffer are
+		returned (along with status).
+	- deallocation
+		1 buffer at a time.  The virtual address is used
+		to identify the buffer to be freed.
+
+5. Notes
+-----------------------------
+
+Note that the allocator needs to know the virtual address
+of the region (used by software) as well as the physical
+address of the region (used by the high speed I/O devices
+ such as a NIC).

@@ -1,0 +1,5 @@
+Number of instructions per iteration of dhrystone is 445.
+
+IPC for Direct-mapped cache is 0.84  (5.29 us/iteration)
+IPC for Set-associative (4-way) cache is 0.82  (5.41 us/iteration).
+
