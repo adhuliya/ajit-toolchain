@@ -163,6 +163,10 @@ class MemoryLayout:
       )
       self.regionSeq.append(region)
 
+    if self.memory.ncram.getSizeInBytes():
+      region = self.memory.ncram
+      self.regionSeq.append(region)
+
     region = common.MemoryRegion(
       name="MemoryMappedIO",
       oneLineDescription="Reserved space for memory mapped IO.",

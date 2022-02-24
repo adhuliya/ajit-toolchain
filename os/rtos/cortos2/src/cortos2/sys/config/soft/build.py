@@ -13,6 +13,7 @@ class Build:
       optLevel: int = consts.DEFAULT_OPT_LEVEL,
       logLevel: consts.LogLevel = consts.DEFAULT_LOG_LEVEL,
       enableSerial: bool = consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      enableSerialInt: bool = consts.DEFAULT_ENABLE_SERIAL_INTERRUPT,
       buildArgs: str = "",
   ) -> None:
     self.debug = debug
@@ -20,6 +21,7 @@ class Build:
     self.optLevel = optLevel
     self.logLevel = logLevel
     self.enableSerial = enableSerial
+    self.enableSerialInt = enableSerialInt
     self.buildArgs = buildArgs
 
 
@@ -68,6 +70,7 @@ class Build:
     optLevel = Build.generateOptLevelParam(config, prevKeySeq)
     logLevel = Build.generateLogLevelParam(config, prevKeySeq)
     enableSerial = Build.generateEnableSerialParam(config, prevKeySeq)
+    enableSerialInt = Build.generateEnableSerialIntParam(config, prevKeySeq)
     buildArgs = Build.generateBuildArgsParam(config, prevKeySeq)
 
     prevKeySeq.pop()
@@ -77,6 +80,7 @@ class Build:
       optLevel=optLevel,
       logLevel=logLevel,
       enableSerial=enableSerial,
+      enableSerialInt=enableSerialInt,
       buildArgs=buildArgs,
     )
     return build
@@ -138,6 +142,23 @@ class Build:
   def getLogLevel(logLevelStr: str) -> consts.LogLevel:
     return consts.LogLevel[logLevelStr.upper()] \
       if logLevelStr else consts.DEFAULT_LOG_LEVEL
+
+
+  @staticmethod
+  def generateEnableSerialIntParam(
+      userProvidedConfig: Dict,
+      prevKeySeq: Opt[List] = None,
+  ) -> bool:
+    keyName = "EnableSerialInterrupt"
+
+    enableSerialInt: bool = util.getConfigurationParameter(
+      data=userProvidedConfig,
+      keySeq=[keyName],
+      default= consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      prevKeySeq=prevKeySeq,
+    )
+
+    return enableSerialInt
 
 
   @staticmethod

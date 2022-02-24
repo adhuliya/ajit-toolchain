@@ -18,9 +18,14 @@ from cortos2.common import consts, util
 def copyTrapFiles(
     confObj: config.SystemConfig,
 ) -> None:
-  # with open(consts.TRAP_FILE_NAME, "w") as f:
-  #   f.write(btl.template(f"traps/{consts.TRAP_FILE_NAME}"))
-
+  with open(consts.TRAP_H_FILE_NAME, "w") as f:
+    f.write(btl.template(f"traps/{consts.TRAP_H_FILE_NAME}"))
+  with open(consts.TRAP_C_FILE_NAME, "w") as f:
+    f.write(btl.template(f"traps/{consts.TRAP_C_FILE_NAME}",
+      confObj=confObj,
+    ))
+  with open(consts.TRAP_ASM_FILE_NAME, "w") as f:
+    f.write(btl.template(f"traps/{consts.TRAP_ASM_FILE_NAME}"))
   with open(consts.TRAP_H_FILE_NAME, "w") as f:
     f.write(btl.template(f"traps/{consts.TRAP_H_FILE_NAME}"))
 
@@ -186,6 +191,12 @@ def copyCortosBgetFiles(confObj: config.SystemConfig) -> None:
   with open(consts.BGET_H_FILE, "w") as f:
     f.write(btl.template(f"bget/{consts.BGET_H_FILE}", confObj=confObj))
 
+  with open(consts.BGET_C_FILE_NCRAM, "w") as f:
+    f.write(btl.template(f"bget/{consts.BGET_C_FILE_NCRAM}", confObj=confObj))
+
+  with open(consts.BGET_H_FILE_NCRAM, "w") as f:
+    f.write(btl.template(f"bget/{consts.BGET_H_FILE_NCRAM}", confObj=confObj))
+
 
 def copyCortosDeviceFiles(confObj: config.SystemConfig) -> None:
   with open(consts.CORTOS_DEVICE_C_FILE, "w") as f:
@@ -205,3 +216,4 @@ def copyCortosLoggingFiles(confObj: config.SystemConfig) -> None:
   with open(consts.CORTOS_LOGGING_H_FILE, "w") as f:
     f.write(btl.template(f"logging/{consts.CORTOS_LOGGING_H_FILE}",
       confObj=confObj, consts=consts))
+

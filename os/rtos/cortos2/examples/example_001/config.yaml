@@ -10,7 +10,7 @@ Hardware:
     ISA: 32 # 32/64 bit (Default: 32)
 
   Memory:
-    # MaxPhysicalAddrBitWidth: 36
+    MaxPhysicalAddrBitWidth: 36
     Flash:
       StartAddr: 0x0  # physical address
       # EndAddr: ...

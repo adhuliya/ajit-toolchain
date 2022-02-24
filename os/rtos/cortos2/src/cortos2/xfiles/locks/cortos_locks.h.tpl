@@ -70,6 +70,7 @@ void __cortos_lock_release(int index);
 #define __RES_LOCK_INDEX_PRINTF 1
 #define __RES_LOCK_GET_Q_ID 2
 #define __RES_LOCK_GET_LOCK_ID 3
+#define __RES_LOCK_INDEX_BGET_NCRAM 4
 
 // For Cacheable Locks: TODO (later if needed)
 

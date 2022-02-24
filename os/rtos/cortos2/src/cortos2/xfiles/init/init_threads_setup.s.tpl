@@ -41,8 +41,16 @@ CORTOS_SETUP_THREADS:
   mov 1, %l7
   st %l7, [%l6]
 
-% if confObj.software.build.enableSerial:
+% if confObj.software.build.enableSerial and (not confObj.software.build.enableSerialInt):
   call __cortos_enable_serial
+  nop
+% end
+% if confObj.software.build.enableSerialInt:
+  call cortos_init_hw_traps
+  nop
+  call cortos_init_sw_traps
+  nop
+  call __cortos_enable_serial_interrupt
   nop
 % end
 
@@ -55,6 +63,9 @@ CORTOS_SETUP_THREADS:
   ld [%g2], %g2
   mov 0x1, %g3
   st %g3, [%g2]  ! set to one
+
+  ! Read CORE,THREAD IDs into %l1 (required for 0,0 here, as l1 gets corrupted)
+  rd %asr29, %l1
 
   !  Thread (0,0) jumps to AFTER_PTABLE_SETUP.
   ba AFTER_PTABLE_SETUP

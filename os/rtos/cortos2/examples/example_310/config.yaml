@@ -25,6 +25,10 @@ Hardware:
       # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
+    NCRAM:
+      StartAddr: 0x80000000
+      SizeInMegaBytes: 16
+      Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
@@ -71,6 +75,7 @@ Software:
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     EnableSerial: Yes # Yes/No (Default: Yes)
+    EnableSerialInterrupt: Yes # (Default: No)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
 
@@ -89,11 +94,17 @@ Software:
     SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
-  HardwareTraps:
-    - TrapIndex: 12
-      TrapHandler: my_serial_interrupt_handler
+  ################################################################
+  # Hardware interrupts.
+  # Specify a list of hardware interrupt handlers
+  #   Index: An index from 1 to 15.
+  #   Function: <func_name>  (of type void (*func_name)())
+  ################################################################
+  Interrupts: # hardware interrupts
+    - Index: 12  # serial interrupt index
+      Function: my_serial_interrupt_handler
 
-#   SoftwareTraps:
+#   Traps: # by software
 #     - TrapIndex: 1
 #       TrapHandler: my_software_trap
 

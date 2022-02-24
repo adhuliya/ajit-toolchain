@@ -8,7 +8,7 @@
 #include <core_portme.h>
 #include <ajit_mt_irc.h>
 
-int exit_flag = 0;
+volatile int exit_flag = 0;
 
 //
 // Note: user defined, but will run in supervisor mode.
@@ -42,14 +42,14 @@ int main ()
 {
 	exit_flag = 0;
 
-	// Note: do not forget to initialize the specific
-	//       interrupt handlers.
-	ajit_initialize_interrupt_handlers_to_null();
-	ajit_set_interrupt_handler(12, &(my_serial_interrupt_handler));
+	// // Note: do not forget to initialize the specific
+	// //       interrupt handlers.
+	// ajit_initialize_interrupt_handlers_to_null();
+	// ajit_set_interrupt_handler(12, &(my_serial_interrupt_handler));
 
-	enableInterruptControllerAndAllInterrupts(0,0);
+	// enableInterruptControllerAndAllInterrupts(0,0);
 
-	__cortos_enable_serial_interrupt();
+	// __cortos_enable_serial_interrupt();
 	CORTOS_DEBUG("Enabled serial.\n");
 
 	while(1) {

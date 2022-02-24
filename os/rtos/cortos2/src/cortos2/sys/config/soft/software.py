@@ -8,6 +8,7 @@ from cortos2.sys.config.soft.lock import Locks
 from cortos2.sys.config.soft.program import Program
 from cortos2.sys.config.soft.projectfiles import ProjectFiles
 from cortos2.sys.config.soft.queue import QueueSeq
+from cortos2.sys.config.soft.traps import Traps
 
 
 class Software:
@@ -18,6 +19,7 @@ class Software:
       bget: Bget,
       locks: Locks,
       queueSeq: QueueSeq,
+      traps: Traps,
   ):
     self.projectFiles = projectFiles
     self.program = program
@@ -25,6 +27,7 @@ class Software:
     self.bget = bget
     self.locks = locks
     self.queueSeq = queueSeq
+    self.traps = traps
 
   @staticmethod
   def generateObject(
@@ -75,6 +78,11 @@ class Software:
       prevKeySeq=prevKeySeq,
     )
 
+    traps = Traps.generateObject(
+      userProvidedConfig=config,
+      prevKeySeq=prevKeySeq,
+    )
+
     prevKeySeq.pop()
     software = Software(
       projectFiles=projectFiles,
@@ -83,5 +91,6 @@ class Software:
       bget=bget,
       locks=locks,
       queueSeq=queueSeq,
+      traps=traps,
     )
     return software
