@@ -25,7 +25,7 @@ fi
 mkdir logs/$1 && cd logs/$1
 mkdir br2-output
 
-cp $CWD/build/Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./
-cp -r $CWD/build/buildroot-2014.08/output/images/* ./br2-output
+cp $CWD/build/c_model/Generated_memory_map.f0004000/Output.f0004000/boot_loader_plus_kernel.mmap ./
+cp -r $CWD/build/common/buildroot-2014.08/output/images/* ./br2-output
 
 stdbuf -o 0 ajit_C_system_model -m ./boot_loader_plus_kernel.mmap -i 0xf0000000 2>&1 |tee $1-ajit.txt
