@@ -224,7 +224,10 @@ cd $CWD
 
 echo "================================================="
 echo " "
-echo "  If there were no errors, the memory map will be created in "
-echo "  build/Generated_memory_map/Output/mem_map.txt"
+echo "  If there were no errors, "
+echo "    1. The memory maps will be created in "
+echo "        build/**/Generated_memory_map/Output/mem_map.txt"
+echo "    2. The FPGA bin will be created in "
+echo "        build/fpga/linux_boot/flash_contents/boottrap_u64.bin"
 echo " "
 echo "================================================="
