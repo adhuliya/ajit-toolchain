@@ -1,7 +1,10 @@
 #!/bin/bash
 
 CWD=$PWD
+BUILD_DIR=$CWD/build
+BUILD_C_DIR=$CWD/build/c_model
 BUILD_FPGA_DIR=$CWD/build/fpga
+BUILD_COMMON_DIR=$CWD/build/common
 
 # Check for presence of Arguments and throw an error when there is none or invalid one.
 if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
@@ -15,6 +18,14 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
 fi
 
 {
+  if ! [ -d "$BUILD_DIR" ]; then
+    echo "================================================="
+    echo " STEP 0.1: "
+    echo " Creating folder build"
+    echo "================================================="
+    mkdir -p $BUILD_C_DIR $BUILD_FPGA_DIR $BUILD_COMMON_DIR
+  fi
+
   ./GeneratememMapForAjit.sh $1
   echo ""
   ./vmLinuzToMemmapAtf0004000.sh
