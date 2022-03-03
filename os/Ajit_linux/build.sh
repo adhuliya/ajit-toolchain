@@ -17,15 +17,15 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
   exit 1
 fi
 
-{
-  if ! [ -d "$BUILD_DIR" ]; then
-    echo "================================================="
-    echo " STEP 0.1: "
-    echo " Creating folder build"
-    echo "================================================="
-    mkdir -p $BUILD_C_DIR $BUILD_FPGA_DIR $BUILD_COMMON_DIR
-  fi
+if ! [ -d "$BUILD_DIR" ]; then
+  echo "================================================="
+  echo " STEP 0.1: "
+  echo " Creating folder build"
+  echo "================================================="
+  mkdir -p $BUILD_C_DIR $BUILD_FPGA_DIR $BUILD_COMMON_DIR
+fi
 
+{
   ./GeneratememMapForAjit.sh $1
   echo ""
   ./vmLinuzToMemmapAtf0004000.sh
