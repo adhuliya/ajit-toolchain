@@ -67,7 +67,7 @@ function copy_things() {
   fi
 
   # copy FPGA bin generation files to build area
-  cp $CWD/linux_boot $BUILD_FPGA_DIR
+  cp -r $CWD/linux_boot $BUILD_FPGA_DIR
 
   echo "================================================="
   echo " STEP 1.1: "
@@ -228,10 +228,6 @@ BOOTLOADER_BUILD_DIR=$BOOTLOADER_FPGA_BUILD_DIR
 
 echo "================================================="
 echo " "
-echo "  If there were no errors, "
-echo "    1. The memory maps will be created in "
-echo "        build/**/Generated_memory_map/Output/mem_map.txt"
-echo "    2. The FPGA bin will be created in "
-echo "        build/fpga/linux_boot/flash_contents/boottrap_u64.bin"
-echo " "
+echo "  If there were no errors, he memory maps will be created in "
+echo "  build/**/Generated_memory_map/Output/mem_map.txt"
 echo "================================================="

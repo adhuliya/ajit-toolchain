@@ -15,10 +15,11 @@ if [ "$#" -ne 1 ] || [ "$1" -lt 0 ] || [ "$1" -gt 3 ]; then
 fi
 
 {
-  ./GeneratememMapForAjit.sh $1 && \
-  echo "" && \
-  ./vmLinuzToMemmapAtf0004000.sh && \
-  cd $BUILD_FPGA_DIR/linux_boot && ./compile.sh
+  ./GeneratememMapForAjit.sh $1
+  echo ""
+  ./vmLinuzToMemmapAtf0004000.sh
+  cd $BUILD_FPGA_DIR/linux_boot
+  ./compile.sh
 } |& tee $CWD/build/build.log
 
 # # Smarter script. WORK IN PROGRESS
