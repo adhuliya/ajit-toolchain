@@ -44,10 +44,11 @@ BUILD_DIR=$CWD/build/fpga
 build
 }
 
+
 echo "================================================="
 echo " "
 echo "  If there were no errors, the memory map will be created in "
-echo "  build/Generated_memory_map.f0004000/Output/mem_map.txt"
+echo "  build/**/Generated_memory_map.f0004000/Output/mem_map.txt"
 echo " "
 echo "================================================="
 

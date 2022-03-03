@@ -66,6 +66,7 @@ function copy_things() {
     mkdir -p $BUSYBOX_BUILD_DIR
   fi
 
+  # copy FPGA bin generation files to build area
   cp $CWD/linux_boot $BUILD_FPGA_DIR
 
   echo "================================================="
@@ -187,6 +188,11 @@ function ajit_bl() {
   cd $CWD
 }
 
+echo "================================================="
+echo " "
+echo " C-model build start here "
+echo " "
+echo "================================================="
 copy_things
 linux_build $1
 DEVICE_TREE_BUILD_DIR=$BUILD_C_DIR/Ajit_device_tree
@@ -219,8 +225,6 @@ BOOTLOADER_BUILD_DIR=$BOOTLOADER_FPGA_BUILD_DIR
   ajit_dt
   ajit_bl
 }
-cd $BUILD_FPGA_DIR/linux_boot && ./compile.sh
-cd $CWD
 
 echo "================================================="
 echo " "
