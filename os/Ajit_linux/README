@@ -56,9 +56,12 @@ Build Instructions:
 		    <2> rootfs-tmpfs with satic-lib & static device list [HAS THE LATENCY FIX]
 	
 	Once successfully built, you should find the build output in the "./build" directory
+		- ./build/common: source files that are common to both FPGA and C-model
+		- ./build/c_model: source and output files corresponding to C-model
+		- ./build/FPGA: source and output files corresponding to FPGA
 
-	Note: by default clock frequency is set for the c-model in the device-tree. 
-		Refer "Ajit_device_tree/README" for knowing how to change it for FPGA.
+	Generated mmap for c-model will be in ./build/c_model/Generated_memory_map.f0004000/Output.f0004000/
+	Generated bin file, bootstrap_u64.bin, for FPGA will be in ./build/fpga/linux_boot/flash_contents/
 
 Adding files to Linux image
 ===========================
@@ -78,3 +81,7 @@ Buildroot, the build system we use, have a feature to add files to target filesy
 
 	An example program setup is provided at "example_program/hello_world".
 
+Running a generated mmap on C-model
+===================================
+
+Execute run.sh script provided. Go through it's content for more insight.
