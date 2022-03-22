@@ -25,6 +25,10 @@ Hardware:
       # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
+    NCRAM:
+      StartAddr: 0x8000000
+      SizeInMegaBytes: 16
+      Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF

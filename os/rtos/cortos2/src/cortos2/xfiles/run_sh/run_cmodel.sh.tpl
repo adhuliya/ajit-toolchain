@@ -7,7 +7,7 @@ ajit_C_system_model \
   -t {{confObj.hardware.cpu.threadsPerCoreCount}} \
 % if confObj.software.build.debug:
   -g \
-% for i in range(len(confObj.software.programs)):
+% for i in range(len(confObj.software.program.programThreads)):
   -p {{confObj.software.build.firstDebugPort+i}} \
 % end
 % end
