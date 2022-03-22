@@ -66,7 +66,7 @@ void bridgeSetNcores(uint32_t ncores)
 // to be unchanged by the current write, there is no need to generate an invalidate
 // message... This needs to be thought about further..
 //
-// For the moment we remember the a set of invalidated address for each cpu. If that cpu
+// For the moment we remember a sub-set of invalidated address for each cpu. If that cpu
 // has done no cache line fetches between the last invalidation and the current write
 // is to an invalidated line, in this set then there is no need to generate an invalidate..
 //
