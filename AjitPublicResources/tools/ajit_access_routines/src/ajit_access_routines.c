@@ -78,6 +78,61 @@ void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// i2c master.
+//////////////////////////////////////////////////////////////////////////////////////////////
+uint32_t ajit_configure_i2c_master (uint32_t clock_frequency, uint32_t i2c_clock_frequency)
+{
+	uint32_t div_value = (clock_frequency / i2c_clock_frequency);
+	*((uint32_t*) ADDR_I2C_MASTER_CONFIG_REGISTER) = div_value;
+}
+
+uint32_t ajit_i2c_master_is_ready()
+{
+	uint32_t status = *((uint32_t*) ADDR_I2C_MASTER_STATUS_REGISTER);
+	uint32_t ret_val = ((status & 0x400) != 0);
+	return(ret_val);
+}
+
+void     ajit_i2c_master_write_command (uint32_t command)
+{
+	*((uint32_t*) ADDR_I2C_MASTER_COMMAND_REGISTER) = command;
+}
+
+uint32_t  ajit_i2c_master_read_status  ()
+{
+	uint32_t status = *((uint32_t*) ADDR_I2C_MASTER_STATUS_REGISTER);
+	return(status);
+}
+
+uint8_t  ajit_i2c_master_access_slave_memory_device 
+		(uint8_t device_id, uint8_t rwbar, uint8_t addr, uint8_t wdata)
+{
+	uint8_t ret_val = 0;
+	uint32_t status;
+	while(1)
+	{
+		status = *((uint32_t*) ADDR_I2C_MASTER_STATUS_REGISTER);
+		if((status & 0x400) != 0)
+			break;
+	}
+
+	uint32_t cmd = (rwbar << 31) | (3 << 29) | (device_id << 16) | (addr << 8) | wdata;
+	*((uint32_t*) ADDR_I2C_MASTER_COMMAND_REGISTER) = cmd;
+
+	if(rwbar)
+	{
+		while(1)
+		{
+			status = *((uint32_t*) ADDR_I2C_MASTER_STATUS_REGISTER);
+			if((status & 0x400) != 0)
+				break;
+		}
+		ret_val = status & 0xff;
+	}
+
+	return(ret_val);
+}
 
 //
 // This reads the contents of ASR-29.  The four bytes in the

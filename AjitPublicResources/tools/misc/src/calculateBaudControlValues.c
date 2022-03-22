@@ -47,12 +47,19 @@ int main(int argc, char* argv[])
 		fprintf(stderr,"Error: reduce the baud rate\n");	
 	else
 	{
-		uint32_t baud_control_word =  ((baud_limit & 0xffff) << 16) | (baud_freq & 0xfff);
-		fprintf(stdout,"Info: Baudrate %d ClkFreq %d:  Baud-freq = %d, Baud-limit= %d Baud-control=0x%08x\n" , 
-						baud_rate, clk_freq, 
-						baud_freq, baud_limit, baud_control_word);
+		if((baud_limit & (~ 0xffff)) != 0)
+			fprintf(stderr,"Error: baud-limit exceeds precision\n");	
+		else if((baud_freq & (~ 0xfff)) != 0)
+			fprintf(stderr,"Error: baud_freq exceeds precision\n");	
+		else
+		{
 
-
+			uint32_t baud_control_word =  
+					((baud_limit & 0xffff) << 16) | (baud_freq & 0xfff);
+			fprintf(stdout,"Info: Baudrate %d ClkFreq %d:  Baud-freq = %d, Baud-limit= %d Baud-control=0x%08x\n" , 
+					baud_rate, clk_freq, 
+					baud_freq, baud_limit, baud_control_word);
+		}
 	}
 }
 

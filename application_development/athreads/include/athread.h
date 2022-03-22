@@ -72,6 +72,7 @@ uint32_t athreadThreadGetArgs (athreadManager* atm, uint32_t thread_id, int** fn
 
 // returns  0 on success, thread function and return value are returned.
 uint32_t athreadThreadGetReturnValue (athreadManager* atm, uint32_t thread_id, int* ret_value);
+
 //
 // inform the atm that thread thread_id has finished
 //

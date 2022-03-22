@@ -12,6 +12,59 @@ uint32_t ajit_read_from_scratch_pad (uint32_t scratch_pad_index);
 void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
+// i2c master.
+//-- There are three registers in the i2c.
+//---------------------------------------------------------------------------------
+//    register        addr-offset 		Contents
+//---------------------------------------------------------------------------------
+//    config 		 0x0  	[31:0] = clock divider count.
+//                                  This should be set to (process_clk_freq/i2c_freq)/4
+//    command            0x4
+//            			command format:  
+//                             		[31]    rwbar
+//                             		[30:29] write-mask 
+//                                      	[30] if set send register address
+//                                      	[29] if set send write data.
+//                             		[28:22] unused
+//                             		[22:16] device address
+//                             		[15:8]  register address in device.
+//                             		[7:0]   write data byte.
+//                              Thus, the command can be configured to
+//                                    write register-addr and write-data-byte to slave device
+//                                    write only register-addr to slave device
+//                                    write only write-data-byte to slave device
+//                                    read  from slave-device
+//
+//     status  		 0x8  response register.
+//           				 response format: 
+//						[10]  ready
+//                             			[9]   ack-error
+//                             			[8]   busy
+//                             			[7:0] read data
+//---------------------------------------------------------------------------------
+// Notes:  To use the i2c master on a slave device, the typical
+//         use scenario is
+//                read status until slave is ready.
+//                write command to master.
+//                read status until slave is ready.
+//                [7:0] of status is the response.
+//////////////////////////////////////////////////////////////////////////////////////////////
+// clock divider..
+uint32_t ajit_configure_i2c_master     (uint32_t clock_frequency, uint32_t i2c_clock_frequency);
+// command register
+void     ajit_i2c_master_write_command (uint32_t command);
+// status register.
+uint32_t ajit_i2c_master_read_status   ();
+
+// returns 1 if master is ready.
+uint32_t ajit_i2c_master_is_ready();
+
+// returns the slave register value on a read.
+uint8_t  ajit_i2c_master_access_slave_memory_device 
+		(uint8_t device_id, uint8_t rwbar, uint8_t addr, uint8_t wdata);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // thread id.
 //////////////////////////////////////////////////////////////////////////////////////////////
 //

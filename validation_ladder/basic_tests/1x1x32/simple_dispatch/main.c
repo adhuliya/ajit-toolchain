@@ -25,6 +25,9 @@ void printCounter(int atid, int tid, void* arg)
 
 void enable_serial()
 {
+	// clear mutex.
+	mutex_var = 0;
+
 	// enable the serial device.
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE | RX_INTR_ENABLE );
 	ee_printf("enabled serial.\n"); 
