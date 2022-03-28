@@ -1,7 +1,3 @@
-# yaml configuration file for linker/loader of Co-RTOS
-# yaml 10 minutes tutorial:
-#   https://www.youtube.com/watch?v=cdLNKUoMc6c
-
 
 Hardware:
   Processor:
@@ -14,27 +10,21 @@ Hardware:
     MaxPhysicalAddrBitWidth: 36
     Flash:
       StartAddr: 0x0  # physical address
-      # EndAddr: ...
-      # SizeInBytes: ...
-      # SizeInKiloBytes: ...
       SizeInMegaBytes: 16
       Permissions: RXC  # (Read,Write,eXecute,Cacheable)
     RAM:
       StartAddr: 0x40000000
-      # EndAddr: ...
-      # SizeInBytes: ...
-      # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
+    # NCRAM:
+    #   StartAddr: 0x8000000
+    #   SizeInMegaBytes: 16
+    #   Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
-      # SizeInBytes: ...
-      # SizeInKiloBytes: ...
-      # SizeInKiloBytes: 4
       Permissions: RW
 
-  # see ./AjitPublicResources/tools/ajit_access_routines_mt/include/device_addresses.h
   Devices:
     - Name: Timer
       MemoryRegion:
@@ -65,16 +55,14 @@ Hardware:
         SizeInBytes: 1024
         Permissions: RW
 
-
 Software:
   BuildAndExecute:
-    # Optional: Specify the log level. Default is NONE.
-    # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: DEBUG
-    OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
-    EnableSerial: Yes # Yes/No (Default: Yes)
-    Debug: No # Yes/No (Default: No)
+    LogLevel: INFO
+    OptimizationLevel: 2
+    EnableSerial: Yes
+    Debug: No
     FirstDebugPort: 8888
+    BuildArgs: "-D CORTOS_ENV"
 
   ProgramThreads:
     - CortosInitCalls:
@@ -85,9 +73,4 @@ Software:
         - cortos_entry_func_101
         - cortos_entry_func_110
       StackSizeInBytes: 8192
-
-  DynamicMemory: # Dynamic Memory Configuration.
-    # SizeInBytes: ...
-    SizeInKiloBytes: 1000
-    # SizeInMegaBytes: ...
 

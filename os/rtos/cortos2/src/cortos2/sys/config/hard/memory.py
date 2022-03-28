@@ -93,7 +93,7 @@ class Memory:
       data=userProvidedConfig,
       keySeq=[keyName],
       prevKeySeq=prevKeySeq[:-1],
-      fail=True,
+      fail=False,
     )
 
     if ncramConfig:

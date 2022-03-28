@@ -10,8 +10,8 @@ class Queue:
 
   def __init__(self,
       qid: int, # A unique id of the queue
-      length: int = consts.DEFAULT_QUEUE_LEN,
-      msgSizeInBytes: int = consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES,
+      length: int,
+      msgSizeInBytes: int,
       name: Opt[str] = None,
   ) -> None:
     self.qid = qid
@@ -73,10 +73,6 @@ class QueueSeq:
       queueSeq: List[Queue],
   ):
     self.queueSeq: List[Queue] = queueSeq
-
-    self.queueHeaderSizeInBytes: int = consts.QUEUE_HEADER_SIZE_IN_BYTES
-    self.queueMsgSizeInBytes = consts.DEFAULT_QUEUE_MSG_SIZE_IN_BYTES
-    self.elementsPerQueue = consts.DEFAULT_QUEUE_LEN
 
     # Populated with the memory layout.
     self.region: Opt[common.MemoryRegion] = None

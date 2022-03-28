@@ -2,82 +2,55 @@
 #ifndef CORTOS_LOCKS_H
 #define CORTOS_LOCKS_H
 
+#include <stdint.h>
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_locking_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
+#define CORTOS_MAX_LOCKS {{ confObj.software.locks.totalLocks }}
+
+extern volatile uint8_t allocatedLocks[CORTOS_MAX_LOCKS];
+extern volatile uint8_t allocatedLocksNc[CORTOS_MAX_LOCKS]; // non-cacheable
+
+////////////////////////////////////////////////////////////////////////////////
 // Usage Note:
-// lockIndex = cortos_reserveLockVar(); // assuming (lockIndex != -1)
-// cortos_lock_acquire_buzy(lockIndex);
+// lock = cortos_reserveLock(1); // non-cacheable lock
+// cortos_lock_acquire_buzy(lock);
 //   CRITICAL_SECTION_CODE...
-// cortos_lock_release(lockIndex);
-// cortos_freeLockVar(lockIndex);
+// cortos_lock_release(lock);
+// cortos_freeLock(lock);
 // ----or-------or--------
-// status = cortos_lock_acquire(<index: an-integer-index>);
+// lock = cortos_reserveLock(1); // non-cacheable lock
+// status = cortos_lock_acquire(<lock pointer>);
 // if (status == 1) {
 //   CRITICAL_SECTION_CODE...
-//   cortos_lock_release(<index: an-integer-index>);
+//   cortos_lock_release(<lock pointer>);
 // }
+// cortos_freeLock(lock);
+////////////////////////////////////////////////////////////////////////////////
 
-// NOTE: Use the same index to synchronize two or more threads.
+#define CORTOS_MAX_LOCK_VARS {{ confObj.software.locks.totalLocks }}
 
-#define __MAX_LOCK_VARS {{ confObj.software.locks.userLocks }}
-
-// For Non-Cacheable Locks
+// For Cacheable/Non-Cacheable Locks
 // Reserve an unused lock variable id from cortos.
 //   It returns the lock variable id of the lock reserved.
 //   If no lock is available it returns -1.
 // Once a lock is reserved it is assumed to be held by the caller,
 // until it is freed.
-int cortos_reserveLockVar();
+uint8_t* cortos_reserveLock(uint32_t nc);
 
-// For Non-Cacheable Locks
+// For Cacheable/Non-Cacheable Locks
 // Free a lock variable for reuse by cortos.
-void cortos_freeLockVar(int lockId);
+void cortos_freeLock(uint8_t* lock);
 
-// For Non-Cacheable Locks
-int cortos_lock_acquire_buzy(int index);
-int cortos_lock_acquire(int index);
-void cortos_lock_release(int index);
-
-// For Cacheable Locks
-// Similar to the reserve/free API for non-cacheable locks above.
-int cortos_reserveLockVar_cacheable();
-void cortos_freeLockVar_cacheable(int lockId);
-
-// For Cacheable Locks
-int cortos_lock_acquire_buzy_cacheable(int index);
-int cortos_lock_acquire_cacheable(int index);
-void cortos_lock_release_cacheable(int index);
-
+// For Cacheable or Non-Cacheable Locks
+int cortos_lock_acquire_buzy(uint8_t *lock);
+int cortos_lock_acquire(uint8_t *lock);
+void cortos_lock_release(uint8_t *lock);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_locking_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_locking_declarations_internal
-////////////////////////////////////////////////////////////////////////////////
-
-// For Non-Cacheable Locks
-// lock functions for the internal use in CoRTOS
-int __cortos_lock_acquire_buzy(int index);
-int __cortos_lock_acquire(int index);
-void __cortos_lock_release(int index);
-
-// reserved lock indexes for internal use
-#define __RES_LOCK_INDEX_BGET 0
-#define __RES_LOCK_INDEX_PRINTF 1
-#define __RES_LOCK_GET_Q_ID 2
-#define __RES_LOCK_GET_LOCK_ID 3
-#define __RES_LOCK_INDEX_BGET_NCRAM 4
-
-// For Cacheable Locks: TODO (later if needed)
-
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_locking_declarations_internal
-////////////////////////////////////////////////////////////////////////////////
-
-
-
-#endif CORTOS_LOCKS_H
+#endif // CORTOS_LOCKS_H

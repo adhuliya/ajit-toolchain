@@ -3,6 +3,16 @@
 #include <cortos_locks.h>
 #include <cortos_utils.h>
 
+#define LOGGING_LOCK_INDEX 4
+uint8_t* loggingLockAddr = 0;
+
+void cortos_init_logging() {
+  // allocate lock
+  uint8_t* lockStartAddrNc = (uint8_t*){{ confObj.software.locks.locksStartAddr }}; // non-cacheable
+  allocatedLocksNc[LOGGING_LOCK_INDEX] = 1;
+  loggingLockAddr = lockStartAddrNc + LOGGING_LOCK_INDEX;
+}
+
 // Thread Safe.
 // Prints and returns the number of characters printed.
 // Logic taken from ee_printf() in `minimal_printf_timer/src/ee_printf.c`
@@ -29,7 +39,7 @@ int __cortos_log_printf(
   :"%l1"
   );
 
-  __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_PRINTF);
+  cortos_lock_acquire_buzy(loggingLockAddr);
 
 
   clock_time = cortos_get_clock_time();
@@ -52,7 +62,7 @@ int __cortos_log_printf(
 
   n += ee_printf("\n");
 
-  __cortos_lock_release(__RES_LOCK_INDEX_PRINTF);
+  cortos_lock_release(loggingLockAddr);
 
   return n;
 }

@@ -9,31 +9,21 @@ from cortos2.sys.config.soft.queue import QueueSeq
 class Locks:
   """Contains cacheable and non-cacheable locks."""
   def __init__(self,
-      userLocks: int = consts.DEFAULT_LOCK_VARS,
-      resLocks: int = consts.DEFAULT_CACHED_RES_LOCK_VARS,
-      queueLocks: int = consts.DEFAULT_TOTAL_QUEUES,
+      totalLocks: int = consts.DEFAULT_LOCK_VARS,
   ) -> None:
-    self.userLocks = userLocks
-    self.resLocks = resLocks
-    self.queueLocks = queueLocks
+    self.totalLocks = totalLocks
 
     # Populated during memory layout.
     self.cacheableRegion: Opt[common.MemoryRegion] = None
     self.nonCacheableRegion: Opt[common.MemoryRegion] = None
 
     # Populated during memory layout.
-    self.userLocksStartAddr = 0
-    self.resLocksStartAddr = 0
-    self.queueLocksStartAddr = 0
-
-    # Populated during memory layout.
-    self.userLocksStartAddrCacheable = 0
-    self.resLocksStartAddrCacheable = 0
-    self.queueLocksStartAddrCacheable = 0
+    self.locksStartAddr = 0
+    self.locksStartAddrCacheable = 0
 
 
   def getSizeInBytes(self) -> int:
-    return self.userLocks + self.resLocks + self.queueLocks
+    return self.totalLocks * 2
 
 
   def setMemoryRegion(self,
@@ -41,41 +31,35 @@ class Locks:
   ) -> None:
     if region.cacheable:
       self.cacheableRegion = region
-      self.resLocksStartAddrCacheable = region.getFirstByteAddr()
-      self.userLocksStartAddrCacheable = self.resLocksStartAddrCacheable + self.resLocks
-      self.queueLocksStartAddrCacheable = self.userLocksStartAddrCacheable + self.userLocks
+      self.locksStartAddrCacheable = region.getFirstByteAddr()
     else:
       self.nonCacheableRegion = region
-      self.resLocksStartAddr = region.getFirstByteAddr()
-      self.userLocksStartAddr = self.resLocksStartAddr + self.resLocks
-      self.queueLocksStartAddr = self.userLocksStartAddr + self.userLocks
+      self.locksStartAddr = region.getFirstByteAddr()
 
     self.checkInvariants(cacheable=region.cacheable) # IMPORTANT
 
 
   def checkInvariants(self, cacheable=False) -> None:
     if cacheable:
-      lastLockAddr = self.queueLocksStartAddrCacheable + self.queueLocks - 1
+      lastLockAddr = self.locksStartAddrCacheable + self.totalLocks - 1
       region = self.cacheableRegion
     else:
-      lastLockAddr = self.queueLocksStartAddr + self.queueLocks - 1
+      lastLockAddr = self.locksStartAddr + self.totalLocks - 1
       region = self.nonCacheableRegion
 
     if lastLockAddr > region.getLastByteAddr(virtualAddr=True):
-      print(f"ERROR: Total locks {self.getSizeInBytes()} exceeds region size {region.sizeInBytes}.")
+      print(f"ERROR: Total locks {self.getSizeInBytes()} exceeds"
+            f" region size {region.sizeInBytes}.")
       exit(1)
 
   @staticmethod
   def generateObject(
       userProvidedConfig: Dict,
-      queueSeq: QueueSeq,
       prevKeySeq: Opt[List] = None,
   ) -> 'Locks':
     """Takes a user given configuration and extracts the Lock related configuration."""
     locks = Locks(
-      userLocks=consts.DEFAULT_LOCK_VARS,
-      resLocks=consts.DEFAULT_CACHED_RES_LOCK_VARS,
-      queueLocks=len(queueSeq),
+      totalLocks=consts.DEFAULT_LOCK_VARS,
     )
     return locks
 

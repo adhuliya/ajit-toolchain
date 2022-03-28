@@ -15,12 +15,6 @@ CORTOS_START_THREADS:
   bnz {{confObj.hardware.cpu.genNextThreadLabel(progThread.coreThread, forSetup=False)}}
   nop
 
-% if progThread.isThread00() and confObj.software.bget.enable:
-  ! acquire memory for bget just once
-  call __cortos_bpool
-  nop
-% end
-
 !!!!!!! BLOCK START: Call_functions_sequentially.
 % for calleeName in progThread.initCallSeq:
   call {{calleeName}}

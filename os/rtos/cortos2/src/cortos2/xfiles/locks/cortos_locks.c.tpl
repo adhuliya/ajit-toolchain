@@ -1,52 +1,49 @@
 
 #include <cortos_locks.h>
 
-char syncLockVars[__MAX_LOCK_VARS];
-char syncLockVarsCacheable[__MAX_LOCK_VARS];
+uint8_t* lockStartAddr   = {{ hex(confObj.software.locks.locksStartAddrCacheable) }};
+uint8_t* lockStartAddrNc = {{ hex(confObj.software.locks.locksStartAddr) }}; // non-cacheable
+volatile uint8_t allocatedLocks[CORTOS_MAX_LOCKS];
+volatile uint8_t allocatedLocksNc[CORTOS_MAX_LOCKS]; // non-cacheable
+uint8_t* cortos_reservedLockAddr;
 
-int cortos_reserveLockVar() {
-  int i, lid = -1;
-  __cortos_lock_acquire_buzy(__RES_LOCK_GET_LOCK_ID);
-  for (i=0; i < __MAX_LOCK_VARS; ++i) {
-    if(syncLockVars[i] == 0) {
-      syncLockVars[i] = 1;
-      lid = i;
+#define LOGGING_LOCK_INDEX 0
+
+void cortos_init_locks() {
+  // lock for reserving locks
+  uint8_t* lockStartAddr   = (uint8_t*){{ hex(confObj.software.locks.locksStartAddrCacheable) }};
+  uint8_t* lockStartAddrNc = (uint8_t*){{ hex(confObj.software.locks.locksStartAddr) }}; // non-cacheable
+  allocatedLocksNc[LOGGING_LOCK_INDEX] = 1;
+  cortos_reservedLockAddr = lockStartAddrNc + LOGGING_LOCK_INDEX;
+}
+
+uint8_t* cortos_reserveLock(uint32_t nc) {
+  int i = 0;
+  char* resArr = nc ? allocatedLocksNc : allocatedLocks;
+  uint8_t* lockAddr = nc ? lockStartAddrNc : lockStartAddr;
+
+  cortos_lock_acquire_buzy(cortos_reservedLockAddr);
+
+  for (; i < CORTOS_MAX_LOCKS; ++i) {
+    if(resArr[i] == 0) {
+      resArr[i] = 1;
       break;
     }
   }
-  __cortos_lock_release(__RES_LOCK_GET_LOCK_ID);
-  return lid;
+
+  cortos_lock_release(cortos_reservedLockAddr);
+  return (lockAddr + i);
 }
 
-
-void cortos_freeLockVar(int lockId) {
-  if (lockId >= 0 && lockId < __MAX_LOCK_VARS) {
-    __cortos_lock_acquire_buzy(__RES_LOCK_GET_LOCK_ID);
-    syncLockVars[lockId] = 0;
-    __cortos_lock_release(__RES_LOCK_GET_LOCK_ID);
-  }
-}
-
-int cortos_reserveLockVar_cacheable() {
-  int i, lid = -1;
-  __cortos_lock_acquire_buzy(__RES_LOCK_GET_LOCK_ID);
-  for (i=0; i < __MAX_LOCK_VARS; ++i) {
-    if(syncLockVarsCacheable[i] == 0) {
-      syncLockVarsCacheable[i] = 1;
-      lid = i;
-      break;
-    }
-  }
-  __cortos_lock_release(__RES_LOCK_GET_LOCK_ID);
-  return lid;
-}
-
-
-void cortos_freeLockVar_cacheable(int lockId) {
-  if (lockId >= 0 && lockId < __MAX_LOCK_VARS) {
-    __cortos_lock_acquire_buzy(__RES_LOCK_GET_LOCK_ID);
-    syncLockVarsCacheable[lockId] = 0;
-    __cortos_lock_release(__RES_LOCK_GET_LOCK_ID);
+void cortos_freeLock(uint8_t *lock) {
+  if (lock >= lockStartAddr && lock < (lockStartAddr + CORTOS_MAX_LOCKS)) {
+    cortos_lock_acquire_buzy(cortos_reservedLockAddr);
+    allocatedLocks[lock - lockStartAddr] = 0;
+    cortos_lock_release(cortos_reservedLockAddr);
+  } else {
+    cortos_lock_acquire_buzy(cortos_reservedLockAddr);
+    allocatedLocksNc[lock - lockStartAddrNc] = 0;
+    cortos_lock_release(cortos_reservedLockAddr);
   }
 }
 

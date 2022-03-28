@@ -49,6 +49,9 @@ inline void cortos_sleep(uint32_t clock_cycles);
 // ...
 char cortos_get_thread_id();
 
+// Returns 1 only if the address lies in the Non-Cacheable Ram (NCRAM) region.
+uint8_t cortos_IsNcRamAddr(void* addr);
+
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_utility_routines
 ////////////////////////////////////////////////////////////////////////////////

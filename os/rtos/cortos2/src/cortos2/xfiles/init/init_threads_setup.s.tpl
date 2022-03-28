@@ -22,6 +22,17 @@ CORTOS_SETUP_THREADS:
   set {{ hex(progThread.getStackStartAddr()) }}, %sp  ! set stack address
   clr %fp
 
+  ! zero initialization of memory regions and flags
+  set INIT_BY_00_DONE, %g2
+  ld [%g2], %g2
+  mov 0x0, %g3
+  st %g3, [%g2]  ! set to zero
+
+  set PT_FLAG, %g2
+  ld [%g2], %g2
+  mov 0x0, %g3
+  st %g3, [%g2]  ! set to zero
+
   call __cortos_init_region_to_zero
   nop
 
@@ -41,22 +52,54 @@ CORTOS_SETUP_THREADS:
   mov 1, %l7
   st %l7, [%l6]
 
+  call cortos_init_locks
+  nop
+
+% if confObj.software.bget.enable:
+  ! acquire memory for bget just once
+  call __cortos_bpool
+  nop
+% end
+% if confObj.hardware.memory.ncram.sizeInBytes:
+  ! acquire memory for bget ncram just once
+  call __cortos_bpool_ncram
+  nop
+% end
+
+  ! initialize traps and interrupts
+  call cortos_init_hw_traps
+  nop
+  call cortos_init_sw_traps
+  nop
+
 % if confObj.software.build.enableSerial and (not confObj.software.build.enableSerialInt):
   call __cortos_enable_serial
   nop
 % end
 % if confObj.software.build.enableSerialInt:
-  call cortos_init_hw_traps
-  nop
-  call cortos_init_sw_traps
-  nop
   call __cortos_enable_serial_interrupt
   nop
 % end
 
-  ! initialize the queue headers
-  call cortos_init_queue_headers
+  ! ! initialize the queue headers
+  ! call cortos_init_queue_headers
+  ! nop
+
+  ! enable printing (cortos_printf)
+  call cortos_init_printing
   nop
+
+  ! enable cortos logging
+  call cortos_init_logging
+  nop
+
+  ! initialization provided by user (executes on thread 0,0)
+% if confObj.software.startup.startupFuncName:
+  call {{ confObj.software.startup.startupFuncName }}
+  nop
+% else:
+  ! no startup/init function provided by user.
+% end
 
   ! indicate that the system initialization is done!!!
   set INIT_BY_00_DONE, %g2

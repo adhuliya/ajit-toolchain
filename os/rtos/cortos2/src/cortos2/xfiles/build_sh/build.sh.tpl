@@ -12,12 +12,12 @@ _LINKER_SCRIPT="$_CORTOS_SRC_DIR/LinkerScript.txt";
 _PT="$AJIT_MINIMAL_PRINTF_TIMER";
 _AAR_MT="$AJIT_ACCESS_ROUTINES_MT";
 _AAR="$AJIT_ACCESS_ROUTINES";
-
+# {{ confObj.software.build.debug }}
 compileToSparcUclibc.py \
 % if confObj.software.build.debug:
   -g \
 % end
-  -o {{ 0 if confObj.software.build.debug else confObj.software.build.optLevel }} \
+  -o {{ confObj.software.build.optLevel }} \
   -V ${_CORTOS_VMAP} \
   -I ${AJIT_UCLIBC_HEADERS_DIR} \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \
@@ -29,7 +29,6 @@ compileToSparcUclibc.py \
   -S .. \
   -S ${_CORTOS_SRC_DIR} \
   -s ${_AAR_MT}/asm/clear_stack_pointers.s \
-  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -s ${_AAR_MT}/asm/generic_sys_calls.s \

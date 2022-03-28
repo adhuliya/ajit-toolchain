@@ -26,8 +26,8 @@ def copyTrapFiles(
     ))
   with open(consts.TRAP_ASM_FILE_NAME, "w") as f:
     f.write(btl.template(f"traps/{consts.TRAP_ASM_FILE_NAME}"))
-  with open(consts.TRAP_H_FILE_NAME, "w") as f:
-    f.write(btl.template(f"traps/{consts.TRAP_H_FILE_NAME}"))
+  with open(consts.TRAP_RTOS_FILE_NAME, "w") as f:
+    f.write(btl.template(f"traps/{consts.TRAP_RTOS_FILE_NAME}"))
 
 
 def copyVmapFile(
@@ -81,12 +81,6 @@ def copyLockFiles(
 ) -> None:
   with open(consts.LOCK_FILE_NAME, "w") as f:
     f.write(btl.template(f"locks/{consts.LOCK_FILE_NAME}", confObj=confObj))
-
-  with open(consts.CACHEABLE_LOCK_FILE_NAME, "w") as f:
-    f.write(btl.template(f"locks/{consts.CACHEABLE_LOCK_FILE_NAME}", confObj=confObj))
-
-  with open(consts.RES_LOCK_FILE_NAME, "w") as f:
-    f.write(btl.template(f"locks/{consts.RES_LOCK_FILE_NAME}", confObj=confObj))
 
   with open(consts.LOCKS_C_FILE, "w") as f:
     f.write(btl.template(f"locks/{consts.LOCKS_C_FILE}", confObj=confObj))
@@ -170,9 +164,6 @@ def copyCortosQueueFiles(confObj: config.SystemConfig) -> None:
 
   with open(consts.QUEUE_C_FILE, "w") as f:
     f.write(btl.template(f"queue/{consts.QUEUE_C_FILE}", confObj=confObj))
-
-  with open(consts.QUEUE_LOCK_FILE, "w") as f:
-    f.write(btl.template(f"queue/{consts.QUEUE_LOCK_FILE}", confObj=confObj))
 
 
 def copyCortosBgetFiles(confObj: config.SystemConfig) -> None:

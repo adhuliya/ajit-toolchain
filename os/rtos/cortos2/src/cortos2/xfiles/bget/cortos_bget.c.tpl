@@ -12,19 +12,20 @@
 #include "cortos_locks.h"
 #include "cortos_bget.h"
 
-int __mem_allocated = 0;
-int __mem_allocated_ncram = 0;
+#define BGET_LOCK_INDEX 2
+#define BGET_NC_LOCK_INDEX 3
+uint8_t* bgetLockAddr = 0;
+uint8_t* bgetNcramLockAddr = 0;
 
 void __cortos_bpool() {
-  if (__mem_allocated == 0) {
-    // this if condition enters only once.
-    __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET);
+  if (bgetLockAddr == 0) {
 
     bpool({{ startAddr }}, {{ memSizeInBytes }});
 
-    __cortos_lock_release(__RES_LOCK_INDEX_BGET);
-
-    __mem_allocated = 1;
+    // allocate lock
+    uint8_t* lockStartAddrNc = (uint8_t*){{ confObj.software.locks.locksStartAddr }}; // non-cacheable
+    allocatedLocksNc[BGET_LOCK_INDEX] = 1;
+    bgetLockAddr = lockStartAddrNc + BGET_LOCK_INDEX;
   }
 }
 
@@ -32,11 +33,11 @@ void __cortos_bpool() {
 // get/allocate a memory of `size` bytes
 void *cortos_bget(cortos_bufsize size) {
   void *base = 0;
-  __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET);
+  cortos_lock_acquire_buzy(bgetLockAddr);
 
   base = bget(size);
 
-  __cortos_lock_release(__RES_LOCK_INDEX_BGET);
+  cortos_lock_release(bgetLockAddr);
 
   return base;
 }
@@ -44,11 +45,11 @@ void *cortos_bget(cortos_bufsize size) {
 
 // release/free an allocated memory chunk
 void cortos_brel(void *buf) {
-  __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET);
+  cortos_lock_acquire_buzy(bgetLockAddr);
 
   brel(buf);
 
-  __cortos_lock_release(__RES_LOCK_INDEX_BGET);
+  cortos_lock_release(bgetLockAddr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -57,15 +58,13 @@ void cortos_brel(void *buf) {
 
 
 void __cortos_bpool_ncram() {
-  if (__mem_allocated_ncram == 0) {
-    // this if condition enters only once.
-    __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET_NCRAM);
-
+  if (bgetNcramLockAddr == 0) {
     bpool_ncram({{ startAddrNcram }}, {{ memSizeInBytesNcram }});
 
-    __cortos_lock_release(__RES_LOCK_INDEX_BGET_NCRAM);
-
-    __mem_allocated_ncram = 1;
+    // allocate lock
+    uint8_t* lockStartAddrNc = (uint8_t*){{ confObj.software.locks.locksStartAddr }}; // non-cacheable
+    allocatedLocksNc[BGET_NC_LOCK_INDEX] = 1;
+    bgetNcramLockAddr = lockStartAddrNc + BGET_NC_LOCK_INDEX;
   }
 }
 
@@ -73,11 +72,11 @@ void __cortos_bpool_ncram() {
 // get/allocate a memory of `size` bytes
 void *cortos_bget_ncram(cortos_bufsize size) {
   void *base = 0;
-  __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET_NCRAM);
+  cortos_lock_acquire_buzy(bgetNcramLockAddr);
 
   base = bget_ncram(size);
 
-  __cortos_lock_release(__RES_LOCK_INDEX_BGET_NCRAM);
+  cortos_lock_release(bgetNcramLockAddr);
 
   return base;
 }
@@ -85,11 +84,11 @@ void *cortos_bget_ncram(cortos_bufsize size) {
 
 // release/free an allocated memory chunk
 void cortos_brel_ncram(void *buf) {
-  __cortos_lock_acquire_buzy(__RES_LOCK_INDEX_BGET_NCRAM);
+  cortos_lock_acquire_buzy(bgetNcramLockAddr);
 
   brel_ncram(buf);
 
-  __cortos_lock_release(__RES_LOCK_INDEX_BGET_NCRAM);
+  cortos_lock_release(bgetNcramLockAddr);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

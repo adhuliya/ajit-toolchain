@@ -1,15 +1,26 @@
-/** Allocate memory and communicate via queue.
+/** Allocate memory and send its pointer via queue.
 */
 #include <math.h>
 #include <cortos.h>
 
 #define SIZE 20
 
+CortosQueueHeader * volatile hdr;
+
 void main() {} // important, but keep empty.
+
+void startup_initialization() {
+  hdr = cortos_reserveQueue(
+      sizeof(uint32_t*) /*single msg size in bytes*/,
+      2 /*length i.e. max messages in the queue*/,
+      1 /*1 means non-cacheable*/);
+  CORTOS_DEBUG("startup: hdr = %lu", hdr);
+}
 
 void cortos_entry_func_001() {
   // allocate memory and write data
-  CORTOS_DEBUG("Acquiring Memory!");
+  int sentCount = 0;
+  CORTOS_DEBUG("Acquiring Memory! %lu", hdr);
   uint32_t *arr = (uint32_t*)cortos_bget(sizeof(uint32_t) * SIZE);
   arr[0]      = 0xF0;
   arr[SIZE-1] = 0x0F;
@@ -17,7 +28,10 @@ void cortos_entry_func_001() {
   CORTOS_TRACE("This will not get logged.");
 
   CORTOS_DEBUG("Sending Message!");
-  cortos_writeMessages(CORTOS_QUEUE_BOB, (uint8_t*)&arr, 1);
+  while (sentCount == 0) {
+    sentCount = cortos_writeMessages(hdr, (uint8_t*)(&arr), 1);
+  }
+  CORTOS_DEBUG("Message Sent!");
 
   cortos_exit(0); //safely exit
 }
@@ -30,7 +44,8 @@ void cortos_entry_func_010() {
 void cortos_entry_func_101() {
   // wait for a message
   uint32_t *arr;
-  while(!cortos_readMessages(CORTOS_QUEUE_BOB, (uint8_t*)&arr, 1));
+  CORTOS_DEBUG("Waiting for Message!");
+  while(!cortos_readMessages(hdr, (uint8_t*)&arr, 1));
 
   CORTOS_DEBUG("Received Message!");
 

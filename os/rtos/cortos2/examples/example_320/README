@@ -1,0 +1,5 @@
+Run the program in user mode, via VMAP, and
+use bypass accesses to examine physical memory
+locations.
+
+This involves the use of software traps.

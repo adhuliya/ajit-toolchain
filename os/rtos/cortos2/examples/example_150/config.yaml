@@ -26,6 +26,10 @@ Hardware:
       # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
+    NCRAM:
+      StartAddr: 0x80000000
+      SizeInMegaBytes: 16
+      Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
@@ -89,15 +93,5 @@ Software:
         SizeInBytes: 8192
 
   DynamicMemory: # Dynamic Memory Configuration.
-    # SizeInBytes: ...
     SizeInKiloBytes: 1000
-    # SizeInMegaBytes: ...
-
-  Queues:
-    - Name: BOB
-      MsgSizeInBytes: 4
-      Length: 1024
-    - Name: NIRAL
-      MsgSizeInBytes: 4
-      Length: 4096
 

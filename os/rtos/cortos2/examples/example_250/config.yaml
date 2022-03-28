@@ -25,6 +25,10 @@ Hardware:
       # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
+    NCRAM:
+      StartAddr: 0x80000000
+      SizeInMegaBytes: 16
+      Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
@@ -66,6 +70,8 @@ Hardware:
 
 
 Software:
+  StartupFuncName: startup_initialization
+
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
@@ -89,10 +95,6 @@ Software:
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    SizeInKiloBytes: 1000
+    SizeInKiloBytes: 100
     # SizeInMegaBytes: ...
 
-  Queues:
-    - Name: BOB
-      MsgSizeInBytes: 4
-      Length: 1024

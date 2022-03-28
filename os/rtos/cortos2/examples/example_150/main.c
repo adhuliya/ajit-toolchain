@@ -9,6 +9,8 @@ The reader collects the values and sums them up.
 
 #define TOTAL_MESSAGES 4
 
+struct CortosQueueHeader * volatile hdr;
+
 void main() {} // important, but kept empty.
 
 void cortos_entry_func_001() {
@@ -20,9 +22,13 @@ void cortos_entry_func_001() {
     msgs[i] = i;
   }
 
+  hdr = cortos_reserveQueue(
+      sizeof(uint32_t) /*single msg size in bytes*/,
+      2 /*length i.e. max messages in the queue*/,
+      1 /*1 means non-cacheable*/);
   while (totalSent < TOTAL_MESSAGES) {
-    sentCount = cortos_writeMessages(CORTOS_QUEUE_BOB,
-      (uint8_t*)(msgs+totalSent), TOTAL_MESSAGES);
+    sentCount = cortos_writeMessages(hdr,
+      (uint8_t*)(msgs+totalSent), (TOTAL_MESSAGES-totalSent));
     CORTOS_DEBUG("Sending %d messages: sent %d.",
       TOTAL_MESSAGES-totalSent, sentCount);
     totalSent += sentCount;
@@ -42,8 +48,12 @@ void cortos_entry_func_101() {
   uint32_t msgs[TOTAL_MESSAGES];
 
   CORTOS_TRACE("Hello from Receiver!");
+
+  while(hdr == 0);
+
+  CORTOS_TRACE("Hello from Receiver: now hdr is %lu.", hdr);
   while(i < TOTAL_MESSAGES) {
-    count = cortos_readMessages(CORTOS_QUEUE_BOB, (uint8_t*)(msgs+i), TOTAL_MESSAGES-i);
+    count = cortos_readMessages(hdr, (uint8_t*)(msgs+i), TOTAL_MESSAGES-i);
     i += count;
     if (count) {
       CORTOS_DEBUG("Received %d messages. Need %d more.", count, TOTAL_MESSAGES-i);
@@ -61,3 +71,4 @@ void cortos_entry_func_110() {
   /* do something */
   return;
 }
+

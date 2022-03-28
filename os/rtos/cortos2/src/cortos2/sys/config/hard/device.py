@@ -58,9 +58,11 @@ class Device:
       prevKeySeq=prevKeySeq[:-1],
       fail=True,
     )
+
     memoryRegion = MemoryRegion.generateObject(
       userProvidedConfig=config,
       prevKeySeq=prevKeySeq[:-1],
+      initPageTableLevels=False,
     )
     prevKeySeq.pop()
 

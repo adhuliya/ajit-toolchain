@@ -20,6 +20,7 @@ class MemoryRegion(util.PrettyStr):
       permissions: MemoryPermissions = 0x1,  # read,write for data
       regionType: str = consts.SOFT,
       initToZero: bool = False,
+      initPageTableLevels: bool = True,
   ):
     self.name = name
     self.oneLineDescription = oneLineDescription
@@ -33,13 +34,15 @@ class MemoryRegion(util.PrettyStr):
     self.regionType = regionType
     self.initToZero = initToZero
 
-    self.initPageTableLevels()
+    if initPageTableLevels and self.sizeInBytes > 0:
+      self.initPageTableLevels()
 
 
   @staticmethod
   def generateObject(
       userProvidedConfig: Dict,
       prevKeySeq: Opt[List] = None,
+      initPageTableLevels: bool = True,
   ) -> 'MemoryRegion':
     """Takes a user given configuration and extracts the data into an object."""
 
@@ -70,6 +73,7 @@ class MemoryRegion(util.PrettyStr):
       sizeInBytes=sizeInBytes,
       cacheable="C" in permissions.upper(),
       permissions=consts.getPagePermission(permissions),
+      initPageTableLevels=initPageTableLevels,
     )
     return memoryRegion
 

@@ -29,7 +29,7 @@ class Build:
       debug: bool = consts.DEFAULT_DEBUG_BUILD,
       port: int = consts.DEFAULT_FIRST_DEBUG_PORT,
   ):
-    self.debug = debug
+    self.debug = (debug or self.debug)
     self.firstDebugPort = port
 
 

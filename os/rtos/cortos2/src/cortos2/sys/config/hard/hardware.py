@@ -72,6 +72,7 @@ class Hardware:
           userProvidedConfig=deviceConfig,
           prevKeySeq=prevKeySeq,
         )
+
         data[device.name] = device
         prevKeySeq.pop()
 

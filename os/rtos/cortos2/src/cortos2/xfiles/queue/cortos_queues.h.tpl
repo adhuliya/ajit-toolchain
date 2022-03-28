@@ -7,50 +7,43 @@
 // BLOCK START: cortos_message_queues_declarations
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Write one or more messages.
-  - Returns the number of messages written from *msgs.
-*/
-uint32_t cortos_writeMessages(uint32_t queueId, uint8_t *msgs, uint32_t count);
-
-/* Read one or more messages.
-  - Returns the number of messages read into *msgs.
-*/
-uint32_t cortos_readMessages(uint32_t queueId, uint8_t *msgs, uint32_t count);
-
-
-% for queue in confObj.software.queueSeq.queueSeq:
-#define CORTOS_QUEUE_{{queue.getName()}} {{queue.qid}}
-#define CORTOS_QUEUE_{{queue.getName()}}_LEN {{queue.length}}
-#define CORTOS_QUEUE_{{queue.getName()}}_MSG_SIZE_IN_BYTES {{queue.msgSizeInBytes}}
-
-% end
-
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK END  : cortos_message_queues_declarations
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-// BLOCK START: cortos_message_queues_declarations_internal
-////////////////////////////////////////////////////////////////////////////////
-
-// locks to synchronize the access of queues (for internal use)
-int __cortos_q_lock_acquire_buzy(int index);
-int __cortos_q_lock_acquire(int index);
-void __cortos_q_lock_release(int index);
-
-// queue header (for internal use)
+// 24 byte queue header (for internal use)
 typedef struct _CortosQueueHeader {
   uint32_t totalMsgs; // current total messages
   uint32_t readIndex;
   uint32_t writeIndex;
   uint32_t length;
   uint32_t msgSizeInBytes;
-  uint8_t *queuePtr;
+  uint8_t *lock;
 } CortosQueueHeader;
 
+% if confObj.software.bget.enable:
+/* Reserve a cortos queue.
+  msgSizeInBytes - size of each message in bytes
+  length - the number of messages the queue can hold
+  nc - if 1, allocates the queue in the non-cacheable memory region
+       else uses the cacheable region
+  It returns the pointer to the header of the queue.
+  The queue starts immediately after the header.
+*/
+CortosQueueHeader*
+cortos_reserveQueue(uint32_t msgSizeInBytes, uint32_t length, uint8_t nc);
 
-// initialize the queue headers
-void cortos_init_queue_headers();
+/* Free a reserved queue. */
+void cortos_freeQueue(CortosQueueHeader *hdr);
+
+% end
+
+/* Write one or more messages.
+  - Returns the number of messages written from *msgs.
+*/
+uint32_t cortos_writeMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t count);
+
+/* Read one or more messages.
+  - Returns the number of messages read into *msgs.
+*/
+uint32_t cortos_readMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t count);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_message_queues_declarations

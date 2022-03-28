@@ -108,21 +108,6 @@ Software:
 #     - TrapIndex: 1
 #       TrapHandler: my_software_trap
 
-#   Locks: # Locks for synchronization between threads.
-#     Cacheable: 32
-#     NonCacheable: 32
-#
-#   MessageQueues: # List of queues in the system.
-#     - QueueIdStart: 0    # goes to QueueIdStart+NumOfQueues-1
-#       NumOfQueues: 32
-#       MessageSizeInBytes: 32
-#       TotalMessageCapacity: 32 # num. of messages
-#
-#     - QueueIdStart: 32    # goes to QueueIdStart+NumOfQueues-1
-#       NumOfQueues: 16
-#       MessageSizeInBytes: 8
-#       TotalMessageCapacity: 256 # num. of messages
-#
 
 # InterruptHandler:
   # - TypeCode: 12

@@ -9,7 +9,7 @@ __DYNAMIC = 0;
 SECTIONS
 {
   . = {{ hex(confObj.software.program.getTextRegionStartAddr()) }};
-  .text ALIGN(4) : {
+  .text ALIGN(8) : {
     KEEP(*(.text.ajitstart))  /* NOTE: in file `init_00.s` */
     *(.text)
     *(.text.*)
@@ -19,9 +19,9 @@ SECTIONS
   }
 
   . = {{ hex(confObj.software.program.getDataRegionStartAddr()) }};
-  .rodata ALIGN(4) : { * (.rodata) * (.rodata.*) }
-  .data   ALIGN(4) : { * (.data) * (.data.*)}
+  .rodata ALIGN(8) : { * (.rodata) * (.rodata.*) }
+  .data   ALIGN(8) : { * (.data) * (.data.*)}
 
   . = {{ hex(confObj.software.program.getBssRegionStartAddr()) }};
-  .bss   ALIGN(4) : { * (.bss) }
+  .bss   ALIGN(8) : { * (.bss) }
 }
