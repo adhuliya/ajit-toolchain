@@ -144,6 +144,8 @@ def copyRunCModelFile(confObj: config.SystemConfig) -> None:
 
 def copyResultsFile(confObj: config.SystemConfig) -> None:
   # Get user defined results
+  if not confObj.software.projectFiles.resultsFile: return
+
   userResults = ""
   resFilePath = osp.join(confObj.software.projectFiles.rootDir, confObj.software.projectFiles.resultsFile)
   if osp.exists(resFilePath):

@@ -20,7 +20,7 @@ class ProjectFiles:
     self.cFileNames: List[str] = []
     self.hFileNames: List[str] = []
     self.sFileNames: List[str] = []
-    self.resultsFile: str = consts.DEFAULT_RESULTS_FILE_NAME
+    self.resultsFile: str = ""
 
 
   def readProjectFiles(self):

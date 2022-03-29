@@ -21,8 +21,11 @@ ajit_C_system_model \
 % end
   -i {{hex(confObj.hardware.memory.ram.physicalStartAddr)}} \
   -m ${_MAIN}.mmap.remapped \
+% if not confObj.software.build.debug:
   -w ${_MAIN}.wtrace \
-  -d \
+% if confObj.software.projectFiles.resultsFile:
   -r {{confObj.software.projectFiles.resultsFile}} \
   -l ${_MAIN}.log \
+% end
+% end
 ;
