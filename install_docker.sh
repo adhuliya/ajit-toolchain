@@ -43,21 +43,26 @@ if isdocker; then
   exit 1;
 fi
 
-# installs docker and takes necessary steps for you.
-AND "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -" \
-  "Please review the error";
-
-_ARG="deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-AND "sudo add-apt-repository '$_ARG'" \
-  "Problem in adding to apt repository.";
-
-AND "sudo apt-get update" \
-  "Please correct the apt-get errors.";
-
-AND "sudo apt-get install -y docker-ce";
-
-AND "sudo usermod -aG docker $USER" \
-  "Probably 'docker' group is not created.";
+if which docker; then
+  echo "Docker already installed!!!!!";
+else
+  # installs docker and takes necessary steps for you.
+  AND "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -" \
+    "Please review the error";
+  
+  _ARG="deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  AND "sudo add-apt-repository '$_ARG'" \
+    "Problem in adding to apt repository.";
+  
+  AND "sudo apt-get update" \
+    "Please correct the apt-get errors.";
+  
+  AND "sudo apt-get install -y docker-ce";
+  
+  # add user to the docker group (to run docker without sudo).
+  AND "sudo usermod -aG docker $USER" \
+    "Probably 'docker' group is not created.";
+fi
 
 # change the group owner of this repo
 AND "chown -R $USER:docker $AJIT_HOME" \
