@@ -52,6 +52,15 @@ CORTOS_SETUP_THREADS:
   mov 1, %l7
   st %l7, [%l6]
 
+  ! block start: setup the mmu
+  call set_context_table_pointer
+  nop
+
+  ! enable mmu.. write 0x1 into mmu control register.
+  set 0x1, %o0
+  sta %o0, [%g0] 0x4
+  ! block end  : setup the mmu
+
   call cortos_init_locks
   nop
 
@@ -110,9 +119,11 @@ CORTOS_SETUP_THREADS:
   ! Read CORE,THREAD IDs into %l1 (required for 0,0 here, as l1 gets corrupted)
   rd %asr29, %l1
 
-  !  Thread (0,0) jumps to AFTER_PTABLE_SETUP.
-  ba AFTER_PTABLE_SETUP
+  !  Thread (0,0) jumps to start running user code.
+  ba CORTOS_START_THREADS
   nop
+  ! ba AFTER_PTABLE_SETUP
+  ! nop
   !!!!!!!!!!!!!!!!!!!   END  : thread (0,0) setup section !!!!!!!!!!!!!!!!!!
 
 % end

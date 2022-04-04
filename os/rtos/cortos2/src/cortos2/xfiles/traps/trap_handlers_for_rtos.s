@@ -116,24 +116,24 @@ window_underflow_trap_handler:
 .global trap_table_base;
 trap_table_base:
 hardware_trap_table_base:
-HW_trap_0x00: ta 0; nop; nop; nop;
-HW_trap_0x01: ta 0x01; nop; nop; nop;
-HW_trap_0x02: ta 0x02; nop; nop; nop;
-HW_trap_0x03: ta 0x03; nop; nop; nop;
-HW_trap_0x04: ta 0x04; nop; nop; nop;
+HW_trap_0x00: ta 0x10; nop; nop; nop;
+HW_trap_0x01: ta 0x11; nop; nop; nop;
+HW_trap_0x02: ta 0x12; nop; nop; nop;
+HW_trap_0x03: ta 0x13; nop; nop; nop;
+HW_trap_0x04: ta 0x14; nop; nop; nop;
 HW_trap_0x05: ! window overflow trap
 	ba window_overflow_trap_handler; nop; nop; nop;
 HW_trap_0x06: ! window underflow trap
 	ba window_underflow_trap_handler; nop; nop; nop;
-HW_trap_0x07: ta 0x07; nop; nop; nop;
-HW_trap_0x08: ta 0x08; nop; nop; nop;
-HW_trap_0x09: ta 0x09; nop; nop; nop;
-HW_trap_0x0a: ta 0x0a; nop; nop; nop;
-HW_trap_0x0b: ta 0x0b; nop; nop; nop;
-HW_trap_0x0c: ta 0x0c; nop; nop; nop;
-HW_trap_0x0d: ta 0x0d; nop; nop; nop;
-HW_trap_0x0e: ta 0x0e; nop; nop; nop;
-HW_trap_0x0f: ta 0x0f; nop; nop; nop;
+HW_trap_0x07: ta 0x17; nop; nop; nop;
+HW_trap_0x08: ta 0x18; nop; nop; nop;
+HW_trap_0x09: ta 0x19; nop; nop; nop;
+HW_trap_0x0a: ta 0x1a; nop; nop; nop;
+HW_trap_0x0b: ta 0x1b; nop; nop; nop;
+HW_trap_0x0c: ta 0x1c; nop; nop; nop;
+HW_trap_0x0d: ta 0x1d; nop; nop; nop;
+HW_trap_0x0e: ta 0x1e; nop; nop; nop;
+HW_trap_0x0f: ta 0x1f; nop; nop; nop;
 HW_trap_0x10: ta 0x10; nop; nop; nop;
 # interrupt handlers start here.
 HW_trap_0x11: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_isr; nop;
