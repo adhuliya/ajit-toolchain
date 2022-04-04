@@ -1,4 +1,4 @@
-#define CORTOS  1
+//#define CORTOS  0
 #include <stdlib.h>
 #include <stdint.h>
 #ifdef CORTOS
@@ -13,7 +13,7 @@
 uint32_t athreadManagerInit(athreadManager* atm)
 {
 #ifdef CORTOS
-	atm->atm_mutex_var = cortos_reserveLockVar();
+	atm->atm_mutex_var = cortos_reserveLock(0);
 #else
 	atm->atm_mutex_var = 0;
 #endif
