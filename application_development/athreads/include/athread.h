@@ -42,7 +42,11 @@ typedef struct _athreadManager {
 	// initialized to 0.  For inter-core
 	// synchronization, this variable should
 	// be mapped to an uncacheable location.
+#ifdef CORTOS
+	uint8_t*        atm_mutex_var; 
+#else
 	uint32_t        atm_mutex_var; 
+#endif
 	uint64_t        thread_counter;
 	athread_t 	threads[MAX_ACTIVE_THREADS];
 
