@@ -8,12 +8,16 @@ void setUartBlockingFlag(int x);
 
 // setup debug uart link.
 int setupDebugUartLink(char* device);
+int setupDebugUartLinkWithBaudRate(char* device, int b);
 
 
 //
 // return baudrate.
 //
 int getBaudRate();
+
+//return 1 on error.
+int setBaudRate(int b);
 
 
 

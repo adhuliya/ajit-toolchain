@@ -1,16 +1,12 @@
 ! A generic software trap model, similar to the generic isr model.
 !
-! When you get here, you are in the trap window T (Note **)
+! When you get here, you are in the trap window T
 ! which may or may not be an available window.  Our first
 ! job is to make T an available window, by executing a
 ! restore/save combination.  Save the globals. 
 ! And then work from T. Need to be careful while 
 ! RETT-ing by making window T+1 valid before RETT.
 !
-!
-! Note (**) At this point, regiser l1 contains the
-!    PC of the trapping instruction, and register l2
-!    contains the NPC at that point.
 !
 !  psr, tbr are as received in the trap table.
 !  traps are disabled.

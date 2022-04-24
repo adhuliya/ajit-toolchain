@@ -19,8 +19,31 @@ int serial_device_fd = -1;
 int uart_verbose_flag = 0;
 int uart_blocking_flag = 1;
 
+/* Baud rate constants from termios.h
+#define B0	0x00000000
+#define B50	0x00000001
+#define B75	0x00000002
+#define B110	0x00000003
+#define B134	0x00000004
+#define B150	0x00000005
+#define B200	0x00000006
+#define B300	0x00000007
+#define B600	0x00000008
+#define B1200	0x00000009
+#define B1800	0x0000000a
+#define B2400	0x0000000b
+#define B4800	0x0000000c
+#define B9600	0x0000000d
+#define B19200	0x0000000e
+#define B38400	0x0000000f
+#define  B57600   0010001
+#define  B115200  0010002
+
+*/
+
 //#define BAUDRATE B9600
 #define BAUDRATE B115200
+int uart_baud_rate=B115200;
 
 /*
 https://en.wikibooks.org/wiki/Serial_Programming/termios
@@ -31,9 +54,28 @@ void setUartBlockingFlag(int x)
 	uart_blocking_flag = x;
 }
 
-int getBuadRate() 
+int getBaudRate() 
 {
-	return(BAUDRATE);
+	return(uart_baud_rate);
+}
+
+//return 1 on error.
+int setBaudRate(int b)
+{
+	int ret_val = 0;
+	switch(b) {
+		case 9600: uart_baud_rate = B9600; break;
+		case 19200: uart_baud_rate = B19200; break;
+		case 38400: uart_baud_rate = B38400; break;
+		case 57600: uart_baud_rate = B57600; break;
+		case 115200: uart_baud_rate = B115200; break;
+		default: 
+			ret_val = 1;
+			fprintf(stderr,"Error: setBaudRate %d: supported values 9600/19200/38400/57600/115200.\n",
+						b);
+			break;
+	}
+	return(ret_val);
 }
 
 //
@@ -50,6 +92,26 @@ int setupDebugUartLink(char* device)
 
 	pthread_mutex_unlock(&serial_device_mutex);
 
+
+	return(serial_device_fd);
+}
+
+// returns < 0 if link failed.
+int setupDebugUartLinkWithBaudRate(char* device, int b)
+{
+	pthread_mutex_lock(&serial_device_mutex);
+	int s = setBaudRate (b);
+	if( s == 0)
+	{
+		int sfd;
+		initComPort(&sfd, device);
+		serial_device_fd = sfd;
+	}
+	else
+	{
+		serial_device_fd = -1;
+	}
+	pthread_mutex_unlock(&serial_device_mutex);
 
 	return(serial_device_fd);
 }
@@ -73,8 +135,12 @@ void initComPort(int* sfd, char* device)
 	else
 		*sfd=open(device, O_RDWR | O_NONBLOCK);        // O_NONBLOCK might override VMIN and VTIME, so read() may return immediately.
 
-	cfsetospeed(&options,BAUDRATE);           
-	cfsetispeed(&options,BAUDRATE);          
+	int ss = cfsetospeed(&options, uart_baud_rate);           
+	if(ss != 0)
+		fprintf(stderr,"Error: invalid UART ospeed %d.\n", uart_baud_rate);
+	ss = cfsetispeed(&options, uart_baud_rate);
+	if(ss != 0)
+		fprintf(stderr,"Error: invalid UART ispeed %d.\n", uart_baud_rate);
 
 	if (*sfd < 0)
 	{
