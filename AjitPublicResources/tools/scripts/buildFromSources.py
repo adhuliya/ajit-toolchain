@@ -642,6 +642,7 @@ def printUsage():
      (-I  (c-include-dir))*
      (-A  (aa-source-dir))*
      (-B)?  to balance paths inside pipelined loops.
+     (-N)?  if specified, respect pipe and load-store dependencies through calls.
      (-D)?  to add debug info to generated VHDL
      (-U)?  I/O pipes in top-module will have depth=0
      (-G)?  to link generated code to Gnu-pth instead of pthreads (deprecated)..

@@ -104,6 +104,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -H                 : optional, use if you are monitoring a VHDL PCIE sim via socket.\n");
 	fprintf(stderr, "   -E                 : optional, use if you are using PCIE to connect to hardware...\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
+	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 }
 
@@ -148,6 +149,7 @@ int main(int argc, char **argv)
 	int aa2c_flag = 0;
 	int console_server_port = -1;
 	int use_aggregator = 0;
+	int baud_rate = 115200;
 
 	time_t start_t, end_t, total_t;
 
@@ -166,7 +168,7 @@ int main(int argc, char **argv)
 	uart_verbose_flag = 0;
 
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHEAvu:c:bM:")) != -1) {
+	while ((opt = getopt(argc, argv, "hHEAvu:c:bM:B:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -181,6 +183,10 @@ int main(int argc, char **argv)
 				break;
 			case 'b':
 				uart_blocking_flag = 1;
+				break;
+			case 'B':
+				baud_rate = atoi (optarg);
+				break;
 			case 'u':
 				mode_specified = 1;
 				uart_flag = 1;
@@ -213,6 +219,8 @@ int main(int argc, char **argv)
 		}
 	}
 
+	fprintf(stderr,"Info: UART baud rate specified as %d.\n", baud_rate);
+
 	if(!mode_specified)
 	{
 		fprintf(stderr,"Error: at least one of -H, -E, -A, -u must be specified.\n");
@@ -238,7 +246,7 @@ int main(int argc, char **argv)
 	if(uart_flag)
 	// FPGA hardware connected to debug interface with uart.
 	{
-		int uart_ok = setupDebugUartLink(uart_device_name);	
+		int uart_ok = setupDebugUartLinkWithBaudRate(uart_device_name, baud_rate);	
 		if(uart_ok < 0)
 		{
 			fprintf(stderr,"\n ERROR: uart %s could not be opened.. are you sure you are running this in sudo mode?\n",

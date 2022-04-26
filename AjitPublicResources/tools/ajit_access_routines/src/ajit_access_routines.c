@@ -84,6 +84,7 @@ void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value
 uint32_t ajit_configure_i2c_master (uint32_t clock_frequency, uint32_t i2c_clock_frequency)
 {
 	uint32_t div_value = (clock_frequency / i2c_clock_frequency);
+	// TODO :  fix this.
 	*((uint32_t*) ADDR_I2C_MASTER_CONFIG_REGISTER) = div_value;
 }
 

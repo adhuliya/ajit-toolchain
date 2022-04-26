@@ -96,6 +96,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -H                 : optional, use if you are monitoring a VHDL sim via socket.\n");
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
+	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
 }
@@ -144,6 +145,8 @@ int main(int argc, char **argv)
 	int ncores =   1;
 	int nthreads_per_core = 1;
 
+	int baud_rate = 115200;
+
 	time_t start_t, end_t, total_t;
 
 	signal(SIGINT,  Handle_Ctrl_C);
@@ -161,7 +164,7 @@ int main(int argc, char **argv)
 	uart_verbose_flag = 0;
 
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHvu:n:t:b")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -173,6 +176,7 @@ int main(int argc, char **argv)
 				break;
 			case 'b':
 				uart_blocking_flag = 1;
+				break;
 			case 'u':
 				mode_specified = 1;
 				uart_flag = 1;
@@ -210,11 +214,16 @@ int main(int argc, char **argv)
 					nthreads_per_core = 1;
 				}
 				break;
+			case 'B':
+				baud_rate = atoi (optarg);
+				break;
 			default: 
 				fprintf(stderr,"Error: unknown option %c\n", opt);
 				break;
 		}
 	}
+
+	fprintf(stderr,"Info: UART baud rate specified as %d.\n", baud_rate);
 
 	if(!mode_specified)
 	{
@@ -242,7 +251,8 @@ int main(int argc, char **argv)
 	if(uart_flag)
 	// FPGA hardware connected to debug interface with uart.
 	{
-		int uart_ok = setupDebugUartLink(uart_device_name);	
+		int uart_ok = setupDebugUartLinkWithBaudRate(uart_device_name, baud_rate);	
+		//int uart_ok = setupDebugUartLink(uart_device_name);
 		if(uart_ok < 0)
 		{
 			fprintf(stderr,"\n ERROR: uart %s could not be opened.. are you sure you are running this in sudo mode?\n",

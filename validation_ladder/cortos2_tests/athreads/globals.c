@@ -1,0 +1,1 @@
+int mutex_var;
