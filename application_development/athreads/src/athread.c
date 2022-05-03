@@ -13,7 +13,7 @@
 uint32_t athreadManagerInit(athreadManager* atm)
 {
 #ifdef CORTOS
-	atm->atm_mutex_var = cortos_reserveLock(0);
+	atm->atm_mutex_var = cortos_reserveLock(1);
 #else
 	atm->atm_mutex_var = 0;
 #endif

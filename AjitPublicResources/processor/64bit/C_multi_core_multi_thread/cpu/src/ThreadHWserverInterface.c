@@ -58,15 +58,15 @@ void inform_HW_server(ThreadState* s, uint8_t message_type,  uint32_t address)
 		else if(message_type==GDB_RESET) 	
 			fprintf(stderr,"Info:Thread  : Reset from execution thread=%d, core=%d\n", s->thread_id, s->core_id);
 		else if(message_type==GDB_IFETCH) 	
-			fprintf(stderr,"Info:Thread  : Stopped ( instruction fetch ) at PC = %x %s\n", 
+			fprintf(stderr,"Info:Thread  : Stopped ( instruction fetch ) at PC = %x (thread (%d,%d))\n", 
 					(s->status_reg).pc, s->thread_id, s->core_id);
 		else if(message_type==GDB_MEM_ACCESS) 	
-			fprintf(stderr,"Info:Thread  : Stopped ( memory access ) at address = %x PC = %x thread=%d, core=%d\n", s->thread_id, s->core_id);
+			fprintf(stderr,"Info:Thread  : Stopped ( memory access ) at address = %x PC = %x thread=%d, core=%d\n", s->status_reg.pc, s->thread_id, s->core_id);
 		else if(message_type==GDB_TRAP_OCCURED) 
 			fprintf(stderr,"Info:Thread  : Trap occured thread=%d, core=%d\n", s->thread_id, s->core_id);
 		else if(message_type==DOVAL_PROC_ENTERED_ERROR_MODE) 
 			fprintf(stderr,"Info:Thread  : Thread %d entered ERROR MODE at PC=0x%x) thread=%d, core=%d\n ",
-					s->thread_id, s->core_id, (s->status_reg).pc);
+					s->status_reg.pc, s->thread_id, s->core_id, (s->status_reg).pc);
 		#endif
 
 		write_uint8(s->hw_server->thread_to_hwserver_id_pipe_name, message_type);

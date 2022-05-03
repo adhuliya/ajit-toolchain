@@ -40,7 +40,7 @@ void cpuDcacheAccess (int cpu_id,
 	// service all the coherency related invalidates..
 	while(1)
 	{
-		uint32_t dcache_invalidate_word = probeCoherencyInvalidateRequest(ms->cpu_id,0);
+		uint32_t dcache_invalidate_word = probeCoherencyInvalidateRequest(ms->core_id,0);
 		if(dcache_invalidate_word != 0)
 		{
 			uint32_t invalidate_va = (dcache_invalidate_word & 0x7fffffff);
@@ -188,7 +188,8 @@ void cpuDcacheAccess (int cpu_id,
 					(do_mmu_read_dword ? MMU_READ_DWORD : 
 				 		(is_hit ? MMU_WRITE_DWORD_NO_RESPONSE : MMU_WRITE_DWORD)));
 
-			Mmu(ms, mmu_dword_command, (request_type | lock_mask),
+			Mmu(ms, cpu_id, 
+					mmu_dword_command, (request_type | lock_mask),
 					asi,  addr,  byte_mask, write_data,
 					mae, &cacheable, &acc, read_data, &mmu_fsr, &synonym_invalidation_word);
 		}
@@ -200,7 +201,8 @@ void cpuDcacheAccess (int cpu_id,
 			uint32_t line_addr = (addr & LINE_ADDR_MASK);
 			uint64_t line_data[8];
 
-			Mmu(ms, MMU_READ_LINE, request_type, asi, addr, byte_mask, write_data,
+			Mmu(ms, cpu_id,
+					MMU_READ_LINE, request_type, asi, addr, byte_mask, write_data,
 					mae, &cacheable, &acc, (uint64_t*) line_data, &mmu_fsr, 
 						&synonym_invalidation_word);
 

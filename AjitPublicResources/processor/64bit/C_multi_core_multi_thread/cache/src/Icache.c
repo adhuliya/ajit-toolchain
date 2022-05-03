@@ -32,7 +32,7 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 	// service all the coherency related invalidates..
 	while(1)
 	{
-		uint32_t icache_invalidate_word = probeCoherencyInvalidateRequest(ms->cpu_id, 1);
+		uint32_t icache_invalidate_word = probeCoherencyInvalidateRequest(ms->core_id, 1);
 		if(icache_invalidate_word != 0)
 		{
 			uint32_t invalidate_va = 
@@ -91,7 +91,7 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 			uint64_t line_data[8];
 			uint32_t synonym_invalidation_word = 0;
 
-			Mmu(ms, MMU_READ_LINE, REQUEST_TYPE_IFETCH, 
+			Mmu(ms, cpu_id, MMU_READ_LINE, REQUEST_TYPE_IFETCH, 
 					asi, addr, byte_mask, 0x0,
 					mae, &cacheable, &acc, (uint64_t*) line_data, 
 					mmu_fsr,

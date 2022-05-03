@@ -54,7 +54,8 @@ memDescriptorList* lookupMem(uint64_t addr);
 void addPeripheral(char* periph_name, uint64_t min_addr, uint64_t max_addr);
 peripheralDescriptorList* lookupPeripheral(uint64_t addr);
 
-int sysMemBusRequest (int cpu_id,
+int sysMemBusRequest (int core_id,
+				int thread_id,
 				uint8_t request_type,
 				uint8_t byte_mask,
 				uint32_t addr,
