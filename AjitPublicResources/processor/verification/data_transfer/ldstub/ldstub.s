@@ -41,6 +41,7 @@ _start:
 	!load the first number and the adjacent one
 	set data_A, %o0
 	ldstub [%o0], %l1  		! l1 = 0xA1
+	ldub   [%o0], %l3               ! l3 = 0xff
 
 	!load the second number and the adjacent one
 	set data_B, %o1

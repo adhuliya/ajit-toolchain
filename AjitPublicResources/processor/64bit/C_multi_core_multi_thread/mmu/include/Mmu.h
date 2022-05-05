@@ -4,6 +4,8 @@
 #ifndef _MMU_H_
 #define _MMU_H_
 #include <stdint.h>
+#include <pthread.h>
+#include <pthreadUtils.h>
 #include "Ajit_Hardware_Configuration.h"
 #include "rlut.h"
 #ifdef USE_NEW_TLB
@@ -29,7 +31,8 @@ typedef struct __TlbEntry
 
 typedef struct _MmuState {
 
-	uint32_t cpu_id;
+	uint32_t core_id;
+	pthread_mutex_t mmu_mutex;
 
 	char req_pipe[256];
 	char addr_pipe[256];
@@ -68,17 +71,19 @@ typedef struct _MmuState {
 	TlbEntry TLB_entries[TLB_SIZE];
 #endif
 
+	uint32_t counter;
 
 	uint8_t lock_flag;
+	uint8_t lock_cpu_id;
 
 } MmuState;
 
 
 // Mmu Behavior
-MmuState* makeMmuState (uint32_t cpu_id);
+MmuState* makeMmuState (uint32_t core_id);
 void resetMmuState (MmuState* ms);
 void printMmuStatistics(MmuState* ms);
-void Mmu(MmuState* ms,
+void Mmu(MmuState* ms, int thread_id,
 			uint8_t mmu_command,
 			uint8_t request_type,
 			uint8_t asi, uint32_t addr,	
