@@ -16,6 +16,7 @@ export AJIT_PROJECT_HOME=$AJIT_HOME/AjitPublicResources;
 export AJIT_AHIR_DIR="$AJIT_HOME/ahir_release";
 export AJIT_TOOLS_DIR="$AJIT_PROJECT_HOME/tools";
 export AJIT_SCRIPTS_DIR="$AJIT_TOOLS_DIR/scripts";
+export AJIT_UART_INTERFACE_DIR="$AJIT_PROJECT_HOME/processor/TestEnvironments/core_environment/uart_interface/"
 
 export AJIT_TESTS_DIR="$AJIT_HOME/tests";
 export AJIT_DEV_TREE_COMPILER_DIR="$AJIT_TOOLS_DIR/deviceTreeCompiler";
@@ -75,6 +76,8 @@ export PATH=$AJIT_DEV_TREE_COMPILER_DIR/scripts:$PATH;
 export PATH=$AJIT_DEBUG_MONITOR_DIR/bin:$PATH
 # ajit_debug_monitor_mt path
 export PATH=$AJIT_DEBUG_MONITOR_MT_DIR/bin:$PATH
+# uart calibration..
+export PATH=$AJIT_UART_INTERFACE_DIR/bin:$PATH
 
 # to test ajit cortos: Author Anshuman Dhuliya
 #export PATH=/home/codeman/downloads-thinkpad/sparcv8-ajit-git/src/cortos:$PATH

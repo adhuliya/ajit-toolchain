@@ -150,6 +150,35 @@ inline uint32_t __ajit_read_core_thread_id_word__()
 	return(retval);
 }
 
+
+//
+// Important thread characteristics!
+// 
+void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr)
+{
+        uint32_t retval;
+        __asm__ __volatile__("rd %%asr28, %0 " :  "=r" (retval) : );
+
+	uint8_t tmp = 		(retval >> 30) & 0x3;   		// 31:30
+	descr->l1_dcache_size_in_KB = ((tmp == 0x3) ? 32 : ((tmp == 0x2) ? 16 : ((tmp == 1) ? 8 : 4)));
+
+	tmp = (retval >> 28) & 0x3;					// 29:28
+	descr->l1_icache_size_in_KB = ((tmp == 0x3) ? 32 : ((tmp == 0x2) ? 16 : ((tmp == 1) ? 8 : 4)));
+
+	descr->log_dcache_associativity = (retval >> 26) & 0x3;		// 27:26
+	descr->log_icache_associativity = (retval >> 24) & 0x3;		// 25:24
+	descr->l1_dcache_hit_latency = (retval >> 20) & 0xf;		// 23:20
+	descr->l1_icache_hit_latency = (retval >> 16) & 0xf;		// 19:16
+	descr->log_mmu_l3_tlb_size = (retval >> 12) & 0xf;		// 15:12
+	descr->log_mmu_l2_tlb_size = (retval >> 9) & 0x7;		// 11:9
+	descr->log_mmu_l1_tlb_size = (retval >> 7) & 0x3;		// 8:7
+	descr->log_mmu_l0_tlb_size = (retval >> 5) & 0x3;		// 6:5
+	descr->has_noncacheable_bypass_path = (retval >> 2) & 0x1;	// 2
+	descr->has_two_threads = (retval >> 1) & 0x1;			// 1
+	descr->implements_isa_64 = retval & 0x1;			// 0
+
+}
+
 //
 //  returns core-id and thread-id of the current core.
 //

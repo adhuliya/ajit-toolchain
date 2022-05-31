@@ -16,3 +16,11 @@ Done initialising array
 64K: err=0 t=4.204314 seconds
 Done
 
+-- reconfirming with buffer in l1 cache path.
+Starting                                                                                                          
+Done initialising array                                                                                           
+1K: err=0 t=0.005400 seconds                                                                                      
+4K: err=0 t=0.022600 seconds                                                                                      
+16K: err=0 t=1.051900 seconds                                                                                     
+64K: err=0 t=4.204315 seconds                                                                                     
+Done        

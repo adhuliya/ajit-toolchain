@@ -116,6 +116,11 @@ int setupDebugUartLinkWithBaudRate(char* device, int b)
 	return(serial_device_fd);
 }
 
+int calibrateUart()
+{
+}
+
+
 //
 // on success, *sfd is non-negative.
 //
@@ -234,6 +239,31 @@ uint8_t recvByte()
 }
 
 
+
+int sendByteToSpecifiedUart (int fd, uint8_t b)
+{
+	int ret_val = write(fd, &b, 1);
+	return(ret_val);
+}
+
+
+uint8_t recvByteFromSpecifiedUart(int fd)
+{
+	uint8_t ret_val;
+
+	while(1)
+	{
+		pthread_mutex_lock(&serial_device_mutex);
+		int n = read(fd, &ret_val, 1);
+		pthread_mutex_unlock(&serial_device_mutex);
+		if(n == 1)
+			break;
+
+		usleep(10);
+	}
+
+	return(ret_val);
+}
 
 //
 // return 1 if byte received, else 0.

@@ -12,6 +12,7 @@ LLIBS=" uart_interface pthread "
 LLIBPATHS=" ./lib "
 # create a library for the console :
 env.Library('./lib/libuart_interface', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
-env.Program('./bin/sendBinfileOverUart', Glob('util/*.c'), CCFLAGS=' -g ', LIBS=(Split(LLIBS)), LIBPATH=(Split(LLIBPATHS))); 
+env.Program('./bin/sendBinfileOverUart', [ 'util/sendBinFileOverUart.c' ], CCFLAGS=' -g ', LIBS=(Split(LLIBS)), LIBPATH=(Split(LLIBPATHS))); 
+env.Program('./bin/calibrateUart', [ 'util/calibrateUart.c'], CCFLAGS=' -g ', LIBS=(Split(LLIBS)), LIBPATH=(Split(LLIBPATHS))); 
 
 

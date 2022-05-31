@@ -73,6 +73,28 @@ uint8_t  ajit_i2c_master_access_slave_memory_device
 //
 void ajit_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id);
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// core description structure.
+//////////////////////////////////////////////////////////////////////////////////////////////
+typedef struct __AjitHwThreadDescriptor {
+	uint8_t l1_dcache_size_in_KB;   	// 31:30
+	uint8_t l1_icache_size_in_KB;		// 29:28
+	uint8_t log_dcache_associativity;	// 27:26
+	uint8_t log_icache_associativity;	// 25:24
+	uint8_t l1_dcache_hit_latency;		// 23:20
+	uint8_t l1_icache_hit_latency;		// 19:16
+	uint8_t log_mmu_l3_tlb_size;		// 15:12
+	uint8_t log_mmu_l2_tlb_size;		// 11:9
+	uint8_t log_mmu_l1_tlb_size;		// 8:7
+	uint8_t log_mmu_l0_tlb_size;		// 6:5
+	// unused [4:3]
+	uint8_t has_noncacheable_bypass_path;	// 2
+	uint8_t has_two_threads;		// 1
+	uint8_t implements_isa_64;		// 0
+} AjitHwThreadDescriptor;
+void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr);
+
+
 //
 // This reads the contents of ASR-29.  The four bytes in the
 // return value are
@@ -678,3 +700,4 @@ inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
 	__asm__ __volatile__(\
 		"ld   [%0 + 124], %%fsr \n\t" : : "r"(addr));}
 #endif
+

@@ -10,6 +10,8 @@ void setUartBlockingFlag(int x);
 int setupDebugUartLink(char* device);
 int setupDebugUartLinkWithBaudRate(char* device, int b);
 
+int calibrateUart();
+
 
 //
 // return baudrate.
@@ -32,6 +34,8 @@ void initComPort(int* sfd, char* device);
 int sendBytesOverUart(uint8_t *buf, int count);
 int sendByteArrayBase(uint8_t *buf, int count, int downto_flag);
 int sendByte(uint8_t b);
+int sendByteToSpecifiedUart (int fd, uint8_t b);
+
 
 int perThreadSendBytesOverUart(int CORE_ID, int THREAD_ID, uint8_t *buf, int count);
 
@@ -46,6 +50,7 @@ int perThreadSendBytesOverUart(int CORE_ID, int THREAD_ID, uint8_t *buf, int cou
 int recvBytesOverUart(uint8_t* buf,  int count, int noblock_flag);
 int recvBytesOverUartBase(uint8_t* buf,  int count, int noblock_flag, int downto_flag);
 uint8_t recvByte();
+uint8_t recvByteFromSpecifiedUart(int fd);
 
 
 #endif

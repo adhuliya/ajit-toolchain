@@ -15,3 +15,12 @@ Done
 
 
 
+**  After nc bypass path
+Starting
+1K: err=0 t=0.022414 seconds                                                                                      
+4K: err=0 t=0.088819 seconds                                                                                      
+	6X improvement
+16K: err=0 t=1.017276 seconds                                                                                     
+64K: err=0 t=4.067405 seconds                                                                                     
+	2X improvement
+Done      
