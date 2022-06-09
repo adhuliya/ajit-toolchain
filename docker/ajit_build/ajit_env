@@ -62,6 +62,8 @@ export PATH=$AJIT_BUILDROOT_BIN_DIR:$PATH;
 export PATH=$AJIT_SCRIPTS_DIR:$PATH;
 # for: generateMemoryMap_Byte
 export PATH=$AJIT_TOOLS_DIR/misc/bin:$PATH;
+# for flash-image utils.
+export PATH=$AJIT_TOOLS_DIR/flash_image/bin:$PATH;
 # for: remapMemmap
 export PATH=$AJIT_TOOLS_DIR/genVmapAsm/bin:$PATH;
 # for: ajit_C_system_model
