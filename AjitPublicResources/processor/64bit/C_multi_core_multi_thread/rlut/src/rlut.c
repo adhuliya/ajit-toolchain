@@ -143,7 +143,7 @@ void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines, int c
 	//    This allows us to use fewer bits....
 	//
 	r->data_width = 
-		((myLog2(cache_size_in_lines) + LOG_CACHE_LINE_SIZE - (r->cache_set_size-1)) - LOG_BASE_PAGE_SIZE);
+		((myLog2(cache_size_in_lines) + LOG_CACHE_LINE_SIZE - (myLog2(r->cache_set_size)-1)) - LOG_BASE_PAGE_SIZE);
 
 	// no trivial caches for now..!
 	assert(r->data_width > 0);

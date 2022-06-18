@@ -77,7 +77,8 @@ typedef double   ee_f32;
 typedef uint8_t  ee_u8;
 typedef uint32_t ee_u32;
 typedef ee_u32 ee_ptr_int;
-typedef int32_t size_t;
+//typedef int32_t size_t;
+typedef long unsigned int size_t;
 typedef size_t ee_size_t;
 #define NULL ((void *)0)
 /* align_mem :

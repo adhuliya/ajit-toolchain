@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 	FILE *in_file, *out_file;
 	if(argc < 5) 
 	{
-		fprintf(stderr,"Usage: %s <in-file> <out-file> <base-address-value (0x...) > <block-size-in-bytes\n", argv[0]);
+		fprintf(stderr,"Usage: %s <in-file> <out-file> <base-address-value (0x...) > <block-size-in-bytes>\n", argv[0]);
 		return(1);
 	}
 
