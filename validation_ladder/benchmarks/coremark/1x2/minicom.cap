@@ -1,0 +1,38 @@
+
+HiFromAjit
+
+2K K pfrroamcn r nup ramatetsrf roc reramkr
+.oreMark Size    : 666
+Total ticks      : 5501173
+Total time (secs): 14.083003
+Iterations/Sec   : 142.015167
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 142.015167 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+oyeFaom jite
+   : 666
+Total ticks      : 5501176
+Total time (secs): 14.083011
+Iterations/Sec   : 142.015089
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 142.015089 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+
+ByeFromAjit

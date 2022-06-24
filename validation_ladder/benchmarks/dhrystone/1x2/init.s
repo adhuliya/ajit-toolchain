@@ -89,7 +89,7 @@ WAIT_UNTIL_MMU_IS_ENABLED:
 RUN_THREADS:
 	! clear mutex variable
 	set 0x40070000, %l2
-	mov 0x0, %l2
+	st %g0, [%l2]
 
 	!
 	! Time to run the routines.

@@ -144,7 +144,7 @@ void run_dhrystone (int Number_Of_Runs)
         /* Warning: With 16-Bit processors and Number_Of_Runs > 32000,  */
         /* overflow may occur for this array element.                   */
 
-  acquire_mutex_using_swap(mutex_address);
+  /*
 
   PRINTF ("\n");
   PRINTF ("Dhrystone Benchmark, Version 2.1 (Language: C)\n");
@@ -163,8 +163,7 @@ void run_dhrystone (int Number_Of_Runs)
 
   PRINTF ("Execution starts, %d runs through Dhrystone\n", Number_Of_Runs);
  
-  release_mutex_using_swap(mutex_address);
-
+  */
  
 #ifdef TIMES
 #ifdef AJIT
