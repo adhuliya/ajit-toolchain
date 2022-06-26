@@ -338,7 +338,6 @@ inline uint8_t __ajit_read_serial_tx_register__();
 #define __AJIT_READ_SERIAL_TX_REGISTER__(val) {\
 	__AJIT_LOAD_UBYTE_MMU_BYPASS__(ADDR_SERIAL_TX_REGISTER, val);}
 
-
 inline uint8_t __ajit_read_serial_rx_register__();
 #define __AJIT_READ_SERIAL_RX_REGISTER__(val) {\
 	__AJIT_LOAD_UBYTE_MMU_BYPASS__(ADDR_SERIAL_RX_REGISTER, val);}
@@ -352,7 +351,6 @@ void  __ajit_serial_gets__ (char* s, uint32_t length);
 // configuration..
 void __ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
 void __ajit_serial_uart_reset__ ();
-
 
 
 //---------------------------------------------------------------------------------------------
@@ -373,8 +371,8 @@ int   __ajit_serial_getchar_via_vmap__ ();
 void  __ajit_serial_puts_via_vmap__ (char* s, uint32_t length);
 void  __ajit_serial_gets_via_vmap__ (char* s, uint32_t length);
 void  __ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
-void __ajit_serial_uart_reset_via_vmap__ ();
-void __ajit_serial_uart_reset_inner__ (uint8_t use_vmap);
+void  __ajit_serial_uart_reset_via_vmap__ ();
+void  __ajit_serial_uart_reset_inner__ (uint8_t use_vmap);
 
 // baud rate configuration register is a 32-bit register with the following
 // fields
@@ -387,9 +385,27 @@ void __ajit_serial_uart_reset_inner__ (uint8_t use_vmap);
 //  baud_frequency = A/GCD
 //  baud_limit =  (clock_frequency/GCD)-baud_frequency.
 // common values of baud-rate are 9600, 115200.
+//
+//
+// Note: the same baud rate is applied to all UARTs in the system.
+//
+uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t clock_frequency);
+
+
+//---------------------------------------------------------------------------------------------
+//  Deprecated....  Do not use
 void  __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency);
 void  __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency);
 void  __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency);
+//
+//---------------------------------------------------------------------------------------------
+
+inline void 	__ajit_write_serial_control_register_via_vmap__(uint32_t val);
+inline uint32_t __ajit_read_serial_control_register_via_vmap__();
+inline void 	__ajit_write_serial_tx_register_via_vmap__(uint8_t val);
+inline uint8_t 	__ajit_read_serial_tx_register_via_vmap__();
+inline uint8_t 	__ajit_read_serial_rx_register_via_vmap__();
+
 
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
@@ -466,14 +482,17 @@ inline uint8_t __ajit_read_spi_master_register__(uint8_t reg_id);
 // with normal load/store with non-cacheable page
 //---------------------------------------------------------------------------------------------
 inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val);
-inline uint8_t __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
+inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
 
 //---------------------------------------------------------------------------------------------
-// GPIO!
+// SPI GPIO is assumed to be device 1 on SPI master..
 //---------------------------------------------------------------------------------------------
 // write gpio-out to GPIO_OUT pins and read back GPIO_IN pins.
 inline uint32_t __ajit_gpio_xfer__(uint8_t gpio_out);
 inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out);
+
+uint32_t  __ajit_read_gpio_32__  ();
+void      __ajit_write_gpio_32__ (uint32_t w);
 
 //---------------------------------------------------------------------------------------------
 // Trap

@@ -59,6 +59,17 @@ void printAssembly (FILE* out_file)
 	fprintf (out_file, "    nop\n");
 
 	fprintf(out_file,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+	fprintf(out_file,".global jump_to_code\n");
+	fprintf(out_file,"jump_to_code:\n");
+	fprintf(out_file,"      call 0x%x\n", start_dest_address_aligned_to_u64);
+	fprintf(out_file,"      nop\n");
+	fprintf(out_file,"      retl\n");
+	fprintf(out_file,"      nop\n");
+	fprintf(out_file,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+	
+	
+
+	fprintf(out_file,"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 	fprintf(out_file,"! Data segment, length=%d, starting_dest_addr=0x%x\n",
 				 block_size_aligned_to_u64, start_dest_address_aligned_to_u64);
 	fprintf(out_file,".align 8\n");

@@ -553,6 +553,7 @@ void __ajit_serial_uart_reset__ ()
 	__ajit_serial_uart_reset_inner__(0);
 }
 
+#ifdef NAVIC_PROJECT
 inline void __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency)
 {
 	__ajit_serial_set_baudrate_inner__ (0, baud_rate, clock_frequency);
@@ -562,6 +563,8 @@ inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t 
 {
 	__ajit_serial_set_baudrate_inner__ (1, baud_rate, clock_frequency);
 }
+
+#endif
 
 //
 //  This is no longer used.  But the logic could be useful at some future point.
@@ -599,6 +602,7 @@ uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t cloc
 }
 
 
+#ifdef NAVIC_PROJECT
 inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
 {
 	uint32_t addr_brcw = ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER;
@@ -613,6 +617,7 @@ inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_
 		__ajit_store_word_mmu_bypass__(baud_control_word, addr_brcw);
 	}
 }
+#endif
 
 
 inline uint32_t __ajit_read_serial_control_register__()
@@ -848,6 +853,7 @@ void __ajit_serial_uart_reset_inner__ (uint8_t use_vmap)
 	}
 }
 
+
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
 //---------------------------------------------------------------------------------------------
@@ -1009,6 +1015,17 @@ inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out)
 	// read back data-l
 	ret_val = __ajit_read_spi_master_register_via_vmap__(0);
 	return(ret_val);
+}
+
+uint32_t  __ajit_read_gpio_32__  ()
+{
+	uint32_t ret_val = *((uint32_t*) ADDR_GPIO_DIN_REGISTER); 
+	return(ret_val);
+}
+
+void      __ajit_write_gpio_32__ (uint32_t w)
+{
+	*((uint32_t*) ADDR_GPIO_DOUT_REGISTER) = w;
 }
 
 inline void __ajit_ta_0__ ()
