@@ -47,7 +47,7 @@ int __cortos_log_printf(
 
   n += ee_printf(
    "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%lu,%lu]. ",
-   levelName, asrValue & 0xFF00, asrValue & 0xFF,
+   levelName, (asrValue & 0xFF00) >> 8, asrValue & 0xFF,
    fileName, lineNum, funcName, *time, *(time+1));
 
   va_start(args, fmt);
