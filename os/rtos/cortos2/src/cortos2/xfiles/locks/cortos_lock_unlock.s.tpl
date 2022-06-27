@@ -17,20 +17,20 @@
 
 ! FUNCTION
 cortos_lock_acquire_buzy:
-  ! i0 contains an index to the correct locking variable
+  ! i0 contains the address to the correct locking variable
   save  %sp, -96, %sp       ! func prefix
 
-try_to_lock:
-  ldstub [%i0], %l1
-  tst %l1
-  be out
-  nop
 wait_for_lock:
   ldub [%i0], %l1
   tst %l1
   bne wait_for_lock
   nop
-  ba,a try_to_lock
+try_to_lock:
+  ldstub [%i0], %l1
+  tst %l1
+  be out
+  nop
+  ba,a wait_for_lock
 out:
   or %g0, 0x1, %i0          ! return 1 on success
 
