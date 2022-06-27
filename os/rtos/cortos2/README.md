@@ -1,3 +1,10 @@
+
+NOTE:
+To get an overview of CORTOS2, refer the presentation in `./docs/CoRTOS.pdf`
+and refer the examples as referenced in the pdf presentation.
+
+
+
 Notes
 -------------
 
