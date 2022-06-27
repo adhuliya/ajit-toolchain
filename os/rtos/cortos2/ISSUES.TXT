@@ -1,0 +1,17 @@
+1.	enable_serial / enable_serial_with_interrupt
+		options.
+
+2.      Issue in printing core id in logging.
+
+3.      bget_nc should return null if not enough nc ram.
+
+4.      user-mode versus supervisor mode in application..
+		Note: only the asr reads need to be in supervisor
+			mode, and we have a way to trap to
+			supervisor to read the asr...
+
+		supervisor instructions
+			write/read asr/psr/wim/tbr  etc.
+			lda/sta
+
+		equivalent of ioctl?

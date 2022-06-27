@@ -16,7 +16,7 @@ _start:
 	nop
 
 	! jump to code.
-	call 0x40000000
+	ba jump_to_code
 	nop
 
 	ta 0

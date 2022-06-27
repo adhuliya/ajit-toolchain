@@ -35,6 +35,7 @@ MUTEX_DECL(lock_mutex)
 int NCORES = 0;
 uint8_t global_lock_flag = 0;
 int global_lock_owner_core = 0;
+int global_lock_owner_thread = 0;
 
 extern int global_verbose_flag;
 
@@ -90,36 +91,49 @@ int updateAndLookupSnoopFilterCache (int core_id,
 	return(ret_val);
 }
 
-int testAndSetGlobalLock (uint8_t l, int core_id)
+int testAndSetGlobalLock (uint8_t l, int core_id, int thread_id)
 {
 	int ret_val = 0;
 	MUTEX_LOCK(lock_mutex);
+
+	// if not locked, then go on.
+	// if locked, check if core-id matches owner.
 	if((global_lock_flag == 0) || (core_id == global_lock_owner_core))
+		//((core_id == global_lock_owner_core) && (thread_id ==global_lock_owner_thread)))
 	{
+		// OK.
 		ret_val = 1;
-		if(l==1)		
+
+
+		//
+		// Owner of the lock can be changed only when
+		// the memory is not locked.
+		//
+		if((l == 1) && !global_lock_flag)
 		{
-#ifdef DEBUG
-			fprintf(stderr,"\nGLOCK=1, CPU-ID=%d\n",core_id);
-#endif
+			if(global_verbose_flag)
+				fprintf(stderr,"\nGLOCK=1, CORE-ID=%d, THREAD-ID=%d\n",core_id, thread_id);
+
 			global_lock_flag = 1;
 			global_lock_owner_core = core_id;
+			global_lock_owner_thread = thread_id;
 		}
 	}
+
 	MUTEX_UNLOCK(lock_mutex);
 	return(ret_val);
 }
 
-int clearGlobalLock (uint8_t l, int core_id)
+int clearGlobalLock (uint8_t l, int core_id, int thread_id)
 {
 	MUTEX_LOCK(lock_mutex);
+	//if((core_id == global_lock_owner_core) && (thread_id == global_lock_owner_thread))
 	if(core_id == global_lock_owner_core)
 	{
 		if((l == 0) && global_lock_flag)
 		{
-#ifdef DEBUG
-			fprintf(stderr,"\nGLOCK=0, CPU-ID=%d\n",core_id);
-#endif
+			if(global_verbose_flag)
+				fprintf(stderr,"\nGLOCK=0, CORE-ID=%d, THREAD-ID=%d\n",core_id, thread_id);
 			global_lock_flag = 0;
 		}
 	}
@@ -135,7 +149,8 @@ void register_bridge_pipes (int number_of_cpus)
 }
 
 // return 1 if OK, 0 if not OK.
-int sysMemBusRequest (int core_id,
+int sysMemBusRequest (int core_id, 
+				int thread_id,
 				uint8_t request_type,
 				uint8_t byte_mask,
 				uint32_t addr,
@@ -147,11 +162,11 @@ int sysMemBusRequest (int core_id,
 	uint8_t set_mem_access_lock = ((request_type & SET_LOCK_FLAG) != 0);
 
 	// acquire and set lock for atomic operations.	
-	if (!testAndSetGlobalLock(set_mem_access_lock, core_id))
+	if (!testAndSetGlobalLock(set_mem_access_lock, core_id, thread_id))
 		return(0);
 
 #ifdef DEBUG
-	fprintf(stderr,"\nMEMORY ACCESS from CPU %d :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",core_id, addr,request_type,byte_mask,data64);
+	fprintf(stderr,"\nMEMORY ACCESS from THREAD (%d, %d) :  received request from MMU  addr=0x%x, req_type=%d, byte_mask=0x%d, data=0x%lx",core_id, thread_id,  addr,request_type,byte_mask,data64);
 #endif
 
 
@@ -182,7 +197,7 @@ int sysMemBusRequest (int core_id,
 			*rdata = getDoubleWordInMemory(addr);
 
 			if(global_verbose_flag) {
-				fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=%d lock=%d\n", data64, addr, core_id, global_lock_flag);
+				fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=(%d,%d) lock-flag=%d, lock-state=%d lock-holder=%d\n", *rdata, addr, core_id, thread_id, set_mem_access_lock, global_lock_flag, global_lock_owner_core);
 			}
 
 		}
@@ -196,7 +211,7 @@ int sysMemBusRequest (int core_id,
 			*rdata = getDoubleWordInMemory(addr);
 
 			if(global_verbose_flag) {
-				fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=%d lock=%d\n", addr,data64,byte_mask, core_id, global_lock_flag);
+				fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=(%d,%d) lock-flag=%d lock-state==%d lock-holder=%d\n", addr,data64,byte_mask, core_id, thread_id, set_mem_access_lock, global_lock_flag, global_lock_owner_core);
 			}
 
 			uint32_t line_addr = (addr >> LOG_BYTES_PER_CACHE_LINE);
@@ -234,7 +249,7 @@ int sysMemBusRequest (int core_id,
 		}
 
 		if(global_verbose_flag)
-			fprintf(stderr,"\nInfo: core=%d executed memory access rwbar=%d, addr=0x%lx, byte_mask=0x%x, wdata=0x%llx, rdata=0x%llx\n", core_id, (request_type != REQUEST_TYPE_WRITE), addr, byte_mask, data64, *rdata);
+			fprintf(stderr,"\nInfo: cpu=(%d, %d) executed memory access rwbar=%d, addr=0x%lx, byte_mask=0x%x, wdata=0x%llx, rdata=0x%llx\n", core_id, thread_id, (request_type != REQUEST_TYPE_WRITE), addr, byte_mask, data64, *rdata);
 
 
 		__RELEASE_MEMORY_LOCK__;
@@ -264,7 +279,7 @@ int sysMemBusRequest (int core_id,
 
 	// clear lock for atomic operations
 	if(request_type!=REQUEST_TYPE_IFETCH)
-		clearGlobalLock(set_mem_access_lock, core_id);
+		clearGlobalLock(set_mem_access_lock, core_id, thread_id);
 
 #ifdef DEBUG
 	fprintf(stderr,"\nbridge: Memory access response=0x%" PRIx64 "\n", data64);

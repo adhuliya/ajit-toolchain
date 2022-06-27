@@ -83,8 +83,7 @@ void ajit_write_to_scratch_pad (uint32_t scratch_pad_index, uint32_t write_value
 //////////////////////////////////////////////////////////////////////////////////////////////
 uint32_t ajit_configure_i2c_master (uint32_t clock_frequency, uint32_t i2c_clock_frequency)
 {
-	uint32_t div_value = (clock_frequency / i2c_clock_frequency);
-	// TODO :  fix this.
+	uint32_t div_value = ((clock_frequency / i2c_clock_frequency) >> 2);
 	*((uint32_t*) ADDR_I2C_MASTER_CONFIG_REGISTER) = div_value;
 }
 
@@ -149,6 +148,35 @@ inline uint32_t __ajit_read_core_thread_id_word__()
         uint32_t retval;
         __asm__ __volatile__("rd %%asr29, %0 " :  "=r" (retval) : );
 	return(retval);
+}
+
+
+//
+// Important thread characteristics!
+// 
+void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr)
+{
+        uint32_t retval;
+        __asm__ __volatile__("rd %%asr28, %0 " :  "=r" (retval) : );
+
+	uint8_t tmp = 		(retval >> 30) & 0x3;   		// 31:30
+	descr->l1_dcache_size_in_KB = ((tmp == 0x3) ? 32 : ((tmp == 0x2) ? 16 : ((tmp == 1) ? 8 : 4)));
+
+	tmp = (retval >> 28) & 0x3;					// 29:28
+	descr->l1_icache_size_in_KB = ((tmp == 0x3) ? 32 : ((tmp == 0x2) ? 16 : ((tmp == 1) ? 8 : 4)));
+
+	descr->log_dcache_associativity = (retval >> 26) & 0x3;		// 27:26
+	descr->log_icache_associativity = (retval >> 24) & 0x3;		// 25:24
+	descr->l1_dcache_hit_latency = (retval >> 20) & 0xf;		// 23:20
+	descr->l1_icache_hit_latency = (retval >> 16) & 0xf;		// 19:16
+	descr->log_mmu_l3_tlb_size = (retval >> 12) & 0xf;		// 15:12
+	descr->log_mmu_l2_tlb_size = (retval >> 9) & 0x7;		// 11:9
+	descr->log_mmu_l1_tlb_size = (retval >> 7) & 0x3;		// 8:7
+	descr->log_mmu_l0_tlb_size = (retval >> 5) & 0x3;		// 6:5
+	descr->has_noncacheable_bypass_path = (retval >> 2) & 0x1;	// 2
+	descr->has_two_threads = (retval >> 1) & 0x1;			// 1
+	descr->implements_isa_64 = retval & 0x1;			// 0
+
 }
 
 //
@@ -525,6 +553,7 @@ void __ajit_serial_uart_reset__ ()
 	__ajit_serial_uart_reset_inner__(0);
 }
 
+#ifdef NAVIC_PROJECT
 inline void __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency)
 {
 	__ajit_serial_set_baudrate_inner__ (0, baud_rate, clock_frequency);
@@ -534,6 +563,8 @@ inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t 
 {
 	__ajit_serial_set_baudrate_inner__ (1, baud_rate, clock_frequency);
 }
+
+#endif
 
 //
 //  This is no longer used.  But the logic could be useful at some future point.
@@ -571,6 +602,7 @@ uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t cloc
 }
 
 
+#ifdef NAVIC_PROJECT
 inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
 {
 	uint32_t addr_brcw = ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER;
@@ -585,6 +617,7 @@ inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_
 		__ajit_store_word_mmu_bypass__(baud_control_word, addr_brcw);
 	}
 }
+#endif
 
 
 inline uint32_t __ajit_read_serial_control_register__()
@@ -820,6 +853,7 @@ void __ajit_serial_uart_reset_inner__ (uint8_t use_vmap)
 	}
 }
 
+
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
 //---------------------------------------------------------------------------------------------
@@ -981,6 +1015,17 @@ inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out)
 	// read back data-l
 	ret_val = __ajit_read_spi_master_register_via_vmap__(0);
 	return(ret_val);
+}
+
+uint32_t  __ajit_read_gpio_32__  ()
+{
+	uint32_t ret_val = *((uint32_t*) ADDR_GPIO_DIN_REGISTER); 
+	return(ret_val);
+}
+
+void      __ajit_write_gpio_32__ (uint32_t w)
+{
+	*((uint32_t*) ADDR_GPIO_DOUT_REGISTER) = w;
 }
 
 inline void __ajit_ta_0__ ()

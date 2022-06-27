@@ -53,3 +53,10 @@ with instruction uncached.
 64K: err=0 t=4.977124 seconds
 
 =======================================================
+
+**  After nc bypass path
+Starting
+1K: err=0 t=0.022414 seconds                                                                                      
+4K: err=0 t=0.088819 seconds                                                                                      
+16K: err=0 t=1.017276 seconds                                                                                     
+64K: err=0 t=4.067405 seconds                                                                                     

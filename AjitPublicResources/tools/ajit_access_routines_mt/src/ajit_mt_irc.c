@@ -3,7 +3,6 @@
 #include "ajit_access_routines.h"
 #include "device_addresses.h"
 #include "ajit_mt_irc.h"
-#include "core_portme.h"
 
 void (*ajit_global_interrupt_handlers[16]) ();
 

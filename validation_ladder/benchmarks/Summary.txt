@@ -1,0 +1,27 @@
+June 5 2022
+
+   1x1x32 dm nc
+
+	Coremark 	1.82+ CM/MHz
+	Dhrystone
+		unified 
+			 401407.218750   2.28 DMIPS/MHZ
+
+		legal
+			 189035		 1.08 DMIPS/MHZ
+
+	flops20		 24.8804    21.8391    29.3763     35.8268
+
+   1x2x32 dm nc
+	Coremark	 1.49 CM/MHz
+	Dhrystone
+		unified 
+			351912.500000
+		legal
+
+   1x2x32 sa nc l2(128K)
+	Coremark 	1.82- CM/MHz
+
+	Dhrystone
+		unified
+			390623.031250

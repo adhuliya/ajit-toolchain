@@ -5,11 +5,12 @@
 #include "athread.h"
 
 
+volatile int volatile init_done = 0;
 volatile int volatile all_done = 0;
 
 void sortParallel();
 uint32_t array_to_be_sorted[ORDER];
-athreadManager global_atm;
+volatile athreadManager volatile global_atm;
 
 void runLoop(int tid)
 {
@@ -43,6 +44,7 @@ void runLoop(int tid)
 void main_00 () 
 {
 	athreadManagerInit(&global_atm);
+	init_done = 1;
 
 	int I;
 	for(I = 0; I < ORDER; I++)
@@ -65,15 +67,18 @@ void main_00 ()
 
 void main_01 () 
 {
+	while (!init_done);
 	runLoop(1);
 }
 
 void main_10 () 
 {
+	while (!init_done);
 	runLoop(2);
 }
 
 void main_11 () 
 {
+	while (!init_done);
 	runLoop(3);
 }

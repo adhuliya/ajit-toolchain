@@ -9,12 +9,15 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <assert.h>
+#include <pthread.h>
+#include <unistd.h>
 
 #include "Ajit_Hardware_Configuration.h"
 #include "Ancillary.h"
 #include "MmuInterface.h"
 #include "ASI_values.h"
 #include "RequestTypeValues.h"
+#include "pthreadUtils.h"
 #ifndef USE_NEW_TLB
 #include "TLB.h"
 #else
@@ -53,12 +56,14 @@ uint8_t   getFaultType(uint8_t AT, uint32_t PTE);
 void      updateFsrFar(MmuState* ms, uint32_t Fsr_val, uint32_t Far_val, uint8_t fault_class);
 uint32_t  readMmuRegister(MmuState* ms,  uint32_t addr);
 void 	  writeMmuRegister(MmuState* ms, uint32_t addr, uint8_t byte_mask, uint64_t data64);
-uint8_t   translateToPhysicalAddress(MmuState* ms, uint8_t asi, uint32_t virt_addr, 
+uint8_t   translateToPhysicalAddress(MmuState* ms, 
+					int thread_id,
+					uint8_t asi, uint32_t virt_addr, 
 					uint8_t request_type, uint64_t* physical_addr, 
 					uint8_t*  cacheable, uint8_t* acc, uint32_t* mmu_fsr_to_be_returned);
-uint32_t  readPageTableEntryFromMemory(MmuState* ms, uint64_t physical_addr);
-void      writePageTableEntryToMemory(MmuState* ms, uint32_t pte, uint64_t physical_addr);
-uint8_t   walkPageTables(MmuState* ms,
+uint32_t  readPageTableEntryFromMemory(MmuState* ms, int thread_id, uint64_t physical_addr);
+void      writePageTableEntryToMemory(MmuState* ms, int thread_id, uint32_t pte, uint64_t physical_addr);
+uint8_t   walkPageTables(MmuState* ms, int thread_id,
 				uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, 
 				uint64_t* phy_addr_of_pte);
 uint8_t   checkPageFaults(MmuState* ms,
@@ -72,7 +77,7 @@ uint8_t   flushPTEfromTLB(MmuState* ms, uint32_t TLB_index);
 uint32_t  getEmptyTLBLocation(MmuState* ms);
 uint8_t   flushEntireTLB(MmuState* ms);
 #endif
-uint8_t   performMmuProbe(MmuState* ms, 
+uint8_t   performMmuProbe(MmuState* ms,  int thread_id,
 			uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE);
 
 
@@ -80,8 +85,16 @@ uint8_t   performMmuProbe(MmuState* ms,
 
 
 
-//Mmu Behavior
-void Mmu(MmuState* ms,
+//
+// Mmu Behavior
+//
+//  Mmu can be entered from any of the threads in the core.
+//  We must ensure that only one thread gets access to the core
+//  at any time.  Further, if the access is a locked access,
+//  then we must ensure that only the locking thread gets access
+//  to the MMU, until it releases the lock.
+//
+void Mmu(MmuState* ms,  int thread_id,
 			uint8_t mmu_command,
 			uint8_t request_type,
 			uint8_t asi, uint32_t addr,	
@@ -108,6 +121,43 @@ void Mmu(MmuState* ms,
 	// bit with index 6.
 	uint8_t lock_mask = (request_type & 0x40);
 
+
+	//
+	// Can the thread enter the MMU?
+	//
+	while(1)
+	{
+		MUTEX_LOCK(ms->mmu_mutex);
+		int lock_ok = (!ms->lock_flag || (ms->lock_cpu_id == thread_id));
+		if(lock_ok)
+		{
+			ms->counter++;
+			if((lock_mask != 0) && !ms->lock_flag)
+			{
+				ms->lock_flag = 1;
+				ms->lock_cpu_id = thread_id;
+
+				#ifdef MMU_DEBUG
+				fprintf(stderr,"%d. MMU %d locked by thread %d.\n", ms->counter,
+										 ms->core_id, thread_id);
+				#endif
+
+			}
+			
+		}
+
+		MUTEX_UNLOCK(ms-> mmu_mutex);
+		if(lock_ok)
+		{
+			break;
+		}
+
+		usleep(1000);
+	}
+
+	MUTEX_LOCK(ms->mmu_mutex);
+
+
 	// bits 7,6 are ignored.
 	request_type = request_type & 0x3f;
 
@@ -128,6 +178,7 @@ void Mmu(MmuState* ms,
 		*mae=0;
 		*read_data=0;
 		*cacheable=0;
+		MUTEX_UNLOCK(ms->mmu_mutex);
 		return;
 	}
 	//Check if this is a valid request.
@@ -143,18 +194,19 @@ void Mmu(MmuState* ms,
 	{
 		if(ASI_ICACHE_FLUSH(asi))
 		{
-			flushRlutInManager (ms->cpu_id, 1);
+			flushRlutInManager (ms->core_id, 1);
 		}	
 
 		if(ASI_DCACHE_FLUSH(asi))
 		{
-			flushRlutInManager (ms->cpu_id, 0);
+			flushRlutInManager (ms->core_id, 0);
 		}
 
 		//send a dummy response
 		*mae=0;
 		*read_data=0;
 		*cacheable=0;
+		MUTEX_UNLOCK(ms->mmu_mutex);
 		return;
 	}
 
@@ -183,7 +235,8 @@ void Mmu(MmuState* ms,
 		//forward the request to System bus
 		while(1)
 		{
-			int ok = sysMemBusRequest(ms->cpu_id, (request_type | lock_mask),
+			int ok = sysMemBusRequest(ms->core_id, thread_id,
+							(request_type | lock_mask),
 							byte_mask, addr, write_data, ptr);
 			if(ok)
 				break;
@@ -195,7 +248,15 @@ void Mmu(MmuState* ms,
 		*cacheable  = __CACHEABLE__(ms)  && !ASI_MMU_PASS_THROUGH(asi);
 		ms->Num_Mmu_bypass_accesses+=1;
 
-		ms->lock_flag = (lock_mask != 0);
+		if(lock_mask == 0)
+		{
+			ms->lock_flag = 0;
+			#ifdef MMU_DEBUG
+			fprintf(stderr,"%d. MMU %d unlocked by thread %d.\n", ms->counter, ms->core_id, thread_id);
+			#endif
+		}
+
+		MUTEX_UNLOCK(ms->mmu_mutex);
 		return;
 	}
 
@@ -226,7 +287,7 @@ void Mmu(MmuState* ms,
 			//If no error occurs, a PTE is returned.
 			uint8_t probe_success=0;
 			uint32_t pte=0;
-			probe_success = performMmuProbe(ms, addr, asi, request_type, &pte);
+			probe_success = performMmuProbe(ms, thread_id, addr, asi, request_type, &pte);
 			if(probe_success)
 			{
 				*mae=0;
@@ -237,7 +298,7 @@ void Mmu(MmuState* ms,
 
 				// If an error was caused, the FSR/FAR are modified inside
 				// the performMmuProbe() routine. 
-
+				MUTEX_UNLOCK(ms->mmu_mutex);
 				return;
 			}
 			else
@@ -246,6 +307,7 @@ void Mmu(MmuState* ms,
 				*mae=0;
 				*cacheable=0;
 
+				MUTEX_UNLOCK(ms->mmu_mutex);
 				return;
 			}
 			ms->Num_Mmu_probe_requests+=1;
@@ -270,13 +332,14 @@ void Mmu(MmuState* ms,
 #endif 
 
 #ifdef MMU_DEBUG
-			fprintf(stderr,"----------- MMU-%d flushed TLB due to MMU-FLUSH-PROBE-WRITE ----------------- \n",ms->cpu_id);
+			fprintf(stderr,"----------- MMU-%d flushed TLB due to MMU-FLUSH-PROBE-WRITE ----------------- \n",ms->core_id);
 #endif
 
 			//send response to cpu
 			*read_data=0;	*cacheable=0;
 			ms->Num_Mmu_flush_requests+=1;
 
+			MUTEX_UNLOCK(ms->mmu_mutex);
 			return;
 		}
 		else
@@ -318,6 +381,7 @@ void Mmu(MmuState* ms,
 			ms->Num_Mmu_register_writes+=1;
 		}
 
+		MUTEX_UNLOCK(ms->mmu_mutex);
 		return;
 	}
 
@@ -347,7 +411,8 @@ void Mmu(MmuState* ms,
 		//perform translation of virtual
 		//address to physical address.
 		translation_success = 
-			translateToPhysicalAddress(ms, asi, addr, request_type, 
+			translateToPhysicalAddress(ms, thread_id,
+							asi, addr, request_type, 
 							&physical_addr, 
 							cacheable, 
 							acc,
@@ -377,7 +442,7 @@ void Mmu(MmuState* ms,
 
 					// invalidate the synonym in the VIVT cache.
 					*synonym_invalidate_word = 
-						lookupAndUpdateRlutInManager(ms->cpu_id,		
+						lookupAndUpdateRlutInManager(ms->core_id,		
 										physical_line_addr,
 										virtual_line_addr,
 										ASI_ICACHE_VALID(asi));		
@@ -389,7 +454,8 @@ void Mmu(MmuState* ms,
 						while(1)
 						{
 						 	int ok = 
-						    	   sysMemBusRequest(ms->cpu_id,
+						    	   sysMemBusRequest(ms->core_id,
+									thread_id,
 									(lock_mask | REQUEST_TYPE_READ), 
 									byte_mask, 
 									line_physical_addr+(8*I), 
@@ -407,7 +473,8 @@ void Mmu(MmuState* ms,
 					while(1)
 					{
 						int ok = 
-							sysMemBusRequest(ms->cpu_id, 
+							sysMemBusRequest(ms->core_id, 
+									thread_id,
 									(lock_mask | REQUEST_TYPE_READ), 
 									byte_mask,
 									line_physical_addr+(8*I), 
@@ -423,7 +490,7 @@ void Mmu(MmuState* ms,
 			{
 				while(1)
 				{
-					int ok = sysMemBusRequest(ms->cpu_id, 
+					int ok = sysMemBusRequest(ms->core_id,  thread_id,
 								(lock_mask | request_type), 
 								byte_mask,
 								physical_addr,
@@ -489,7 +556,16 @@ void Mmu(MmuState* ms,
 			}
 
 		}
-		ms->lock_flag = (lock_mask != 0);
+
+		if(lock_mask == 0)
+		{
+			ms->lock_flag = 0;
+			#ifdef MMU_DEBUG
+			fprintf(stderr,"%d. MMU %d unlocked by thread %d.\n", ms->counter, ms->core_id, thread_id);
+			#endif
+		}
+
+		MUTEX_UNLOCK(ms->mmu_mutex);
 		return;
 	}
 }
@@ -507,7 +583,7 @@ void Mmu(MmuState* ms,
 //- a fault is *not* sent to the cpu, and 
 //a 0 is returned instead of PTE.
 //If no error occurs, a PTE is returned.
-uint8_t performMmuProbe(MmuState* ms,
+uint8_t performMmuProbe(MmuState* ms, int thread_id,
 		uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE)
 {
 	uint8_t    TLB_hit=0;		//whether PTE was found in TLB
@@ -551,7 +627,7 @@ uint8_t performMmuProbe(MmuState* ms,
 		//a matching PTE was not found.
 		//Need to walk the page tables in memory
 		//to search for a valid PTE
-		pte_found = walkPageTables(ms, virt_addr, &pte, &pte_level, &phy_addr_of_pte);
+		pte_found = walkPageTables(ms, thread_id, virt_addr, &pte, &pte_level, &phy_addr_of_pte);
 
 		//check if PTE is valid, else update FSR and FAR registers
 		if(!pte_found)
@@ -595,6 +671,7 @@ uint8_t performMmuProbe(MmuState* ms,
 //	update FSR and FAR registers to indicate fault information
 //	return 0
 uint8_t translateToPhysicalAddress(MmuState* ms,
+					int thread_id,
 					uint8_t   asi, 
 					uint32_t  virt_addr, 
 					uint8_t   request_type, 
@@ -655,7 +732,7 @@ uint8_t translateToPhysicalAddress(MmuState* ms,
 	
 		//We need to walk the page tables in memory
 		//to search for a valid PTE
-		pte_found = walkPageTables(ms, virt_addr, &pte, &pte_level, &phy_addr_of_pte);
+		pte_found = walkPageTables(ms, thread_id, virt_addr, &pte, &pte_level, &phy_addr_of_pte);
 	}
 
 	
@@ -702,7 +779,7 @@ uint8_t translateToPhysicalAddress(MmuState* ms,
 			uint32_t pte_in_mem=0;
 			uint8_t pte_level_in_mem=0;
 			uint64_t phy_addr_of_pte_in_mem=0;
-			pte_found_in_mem = walkPageTables(ms, 
+			pte_found_in_mem = walkPageTables(ms,  thread_id,
 						virt_addr, &pte_in_mem, &pte_level_in_mem, 
 						&phy_addr_of_pte_in_mem);
 			if(!pte_found_in_mem)
@@ -717,7 +794,7 @@ uint8_t translateToPhysicalAddress(MmuState* ms,
 			else
 			{
 				phy_addr_of_pte = phy_addr_of_pte_in_mem;
-				writePageTableEntryToMemory(ms, updated_pte, phy_addr_of_pte);
+				writePageTableEntryToMemory(ms, thread_id, updated_pte, phy_addr_of_pte);
 			}
 		}
 
@@ -743,7 +820,7 @@ uint8_t translateToPhysicalAddress(MmuState* ms,
 
 //read a PTE/PTD entry from a given physical address
 //in memory
-uint32_t readPageTableEntryFromMemory(MmuState* ms,uint64_t physical_addr)
+uint32_t readPageTableEntryFromMemory(MmuState* ms, int thread_id, uint64_t physical_addr)
 {
 	
 	uint8_t request_type=REQUEST_TYPE_READ;
@@ -754,7 +831,8 @@ uint32_t readPageTableEntryFromMemory(MmuState* ms,uint64_t physical_addr)
 	uint8_t lock_mask = (ms->lock_flag << 6);
 	while(1)
 	{
-		int ok = sysMemBusRequest (ms->cpu_id, (request_type | lock_mask),  byte_mask,
+		int ok = sysMemBusRequest (ms->core_id, thread_id,
+							(request_type | lock_mask),  byte_mask,
 							physical_addr, data64, &data64);
 		if(ok)
 			break;
@@ -771,7 +849,7 @@ uint32_t readPageTableEntryFromMemory(MmuState* ms,uint64_t physical_addr)
 
 
 //write a PTE/PTD entry to memory 
-void writePageTableEntryToMemory(MmuState* ms, uint32_t pte, uint64_t physical_addr)
+void writePageTableEntryToMemory(MmuState* ms, int thread_id, uint32_t pte, uint64_t physical_addr)
 {
 	
 	uint8_t request_type=REQUEST_TYPE_WRITE;
@@ -794,7 +872,7 @@ void writePageTableEntryToMemory(MmuState* ms, uint32_t pte, uint64_t physical_a
 	while(1)
 	{
 		//send WRITE request to System bus
-		int ok = sysMemBusRequest(ms->cpu_id,
+		int ok = sysMemBusRequest(ms->core_id, thread_id,
 						request_type | lock_mask, 
 						byte_mask,
 						physical_addr, data64, &data64);
@@ -819,7 +897,7 @@ uint64_t getPhyAddrFromPTD(uint32_t PTD, uint32_t index)
 
 
 //walk the page tables in memory to search for a valid PTE
-uint8_t walkPageTables(MmuState* ms,
+uint8_t walkPageTables(MmuState* ms, int thread_id, 
 			uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, uint64_t* phy_addr_of_pte)
 {
 	uint8_t  pte_found=0;
@@ -837,26 +915,26 @@ uint8_t walkPageTables(MmuState* ms,
 	//read Level 0 PTD/PTE entry from context table
 	PTE_LEVEL =0;
 	phy_addr = getPhyAddrFromPTD(ms->MmuContextTablePointerRegister, context_table_index);
-	PTE=readPageTableEntryFromMemory(ms, phy_addr);
+	PTE=readPageTableEntryFromMemory(ms, thread_id,  phy_addr);
 	
 	if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level1 Table
 	{
 		PTE_LEVEL=1;
 		phy_addr = getPhyAddrFromPTD(PTE, L1_page_table_index);
-		PTE=readPageTableEntryFromMemory(ms, phy_addr);
+		PTE=readPageTableEntryFromMemory(ms, thread_id, phy_addr);
 
 		if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level2 Table
 		{
 			PTE_LEVEL=2;
 			phy_addr = getPhyAddrFromPTD(PTE, L2_page_table_index);
-			PTE=readPageTableEntryFromMemory(ms, phy_addr);
+			PTE=readPageTableEntryFromMemory(ms, thread_id, phy_addr);
 
 
 			if(getSlice32(PTE,1,0)==0x1) //This is a PTD. Fetch entry from Level3 Table
 			{
 				PTE_LEVEL=3;
 				phy_addr = getPhyAddrFromPTD(PTE, L3_page_table_index);
-				PTE=readPageTableEntryFromMemory(ms, phy_addr);
+				PTE=readPageTableEntryFromMemory(ms, thread_id, phy_addr);
 			}
 		}
 	}
@@ -990,16 +1068,19 @@ uint64_t constructPhysicalAddr(uint32_t pte, uint8_t pte_level, uint32_t virt_ad
 
 
 
-MmuState* makeMmuState (uint32_t cpu_id)
+MmuState* makeMmuState (uint32_t core_id)
 {
 	MmuState* ms = (MmuState*) malloc (sizeof (MmuState));
-	ms->cpu_id = cpu_id;
+	ms->core_id = core_id;
+	pthread_mutex_init( & (ms->mmu_mutex), NULL);
 
-	sprintf(ms->req_pipe, "AJIT_to_ENV_request_type_%d", cpu_id);
-	sprintf(ms->addr_pipe, "AJIT_to_ENV_addr_%d", cpu_id);
-	sprintf(ms->wdata_pipe, "AJIT_to_ENV_data_%d", cpu_id);
-	sprintf(ms->byte_mask_pipe, "AJIT_to_ENV_byte_mask_%d", cpu_id);
-	sprintf(ms->rdata_pipe, "ENV_to_AJIT_data_%d", cpu_id);
+	ms->counter = 0;
+
+	sprintf(ms->req_pipe, "AJIT_to_ENV_request_type_%d", core_id);
+	sprintf(ms->addr_pipe, "AJIT_to_ENV_addr_%d", core_id);
+	sprintf(ms->wdata_pipe, "AJIT_to_ENV_data_%d", core_id);
+	sprintf(ms->byte_mask_pipe, "AJIT_to_ENV_byte_mask_%d", core_id);
+	sprintf(ms->rdata_pipe, "ENV_to_AJIT_data_%d", core_id);
 
 #ifdef USE_NEW_TLB
 	// fully associative TLB with 2 entries.
@@ -1049,7 +1130,7 @@ void printMmuStatistics(MmuState* ms)
 #ifdef SW
 	assert(ms != NULL);
 
-	printf("\nMmu statistics for cpuid=%d: MMU ENABLED = %d", ms->cpu_id, MmuEnabled(ms) );
+	printf("\nMmu statistics for cpuid=%d: MMU ENABLED = %d", ms->core_id, MmuEnabled(ms) );
 	printf("\n	TLB size (L0 %d L1 %d L2 %d L3 %d)",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
 	printf("\n	Accesses with Mmu bypassed or disabled 	= %d",    ms->Num_Mmu_bypass_accesses);
 	printf("\n	Mmu_probe_requests  	= %d",     ms->Num_Mmu_probe_requests);
@@ -1141,7 +1222,7 @@ void writeMmuRegister(MmuState* ms, uint32_t addr, uint8_t byte_mask, uint64_t d
 	{
 		#ifdef MMU_DEBUG
 		fprintf(stderr,"\nMMU-%d: ERROR. Invalid WRITE_MMU_REGISTER command,\
-		ms->cpu_id, addr = 0x%x, byte_mask=0x%x, data=0x%lx", addr, byte_mask, data64);
+		ms->core_id, addr = 0x%x, byte_mask=0x%x, data=0x%lx", addr, byte_mask, data64);
 		#endif
 	}
 
@@ -1154,12 +1235,12 @@ void writeMmuRegister(MmuState* ms, uint32_t addr, uint8_t byte_mask, uint64_t d
 	else if (register_id==2) {
 		 ms->MmuContextRegister 		=data32;
 #ifdef MMU_DEBUG
-		 fprintf(stderr,"------ Mmu-%d context-register = %x --------------\n", ms->cpu_id, data32);
+		 fprintf(stderr,"------ Mmu-%d context-register = %x --------------\n", ms->core_id, data32);
 #endif
 	}
 	
 	#ifdef MMU_DEBUG
-	printf("\nMMU-%d: Written word=0x%x to register ",ms->cpu_id, data32);
+	printf("\nMMU-%d: Written word=0x%x to register ",ms->core_id, data32);
 	if	(register_id==0) printf(" MmuControlRegister		");
 	else if (register_id==1) printf(" MmuContextTablePointerRegister");
 	else if (register_id==2) printf(" MmuContextRegister 		");
@@ -1179,7 +1260,7 @@ void writeMmuRegister(MmuState* ms, uint32_t addr, uint8_t byte_mask, uint64_t d
 #else
 		initializeTlbNew(ms);
 #endif 
-		fprintf(stderr,"------ MMU-%d TLB flushed due to context-table-pointer-write (=%x) ------\n", ms->cpu_id, data32);
+		fprintf(stderr,"------ MMU-%d TLB flushed due to context-table-pointer-write (=%x) ------\n", ms->core_id, data32);
 		
 	}
 	

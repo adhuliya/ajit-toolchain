@@ -3,7 +3,6 @@
 #include "ajit_access_routines.h"
 #include "device_addresses.h"
 #include "ajit_mt_sw_traps.h"
-#include "core_portme.h"
 
 void (*ajit_global_sw_trap_handlers[NUMBER_OF_SW_TRAPS_SUPPORTED]) (uint32_t, uint32_t, uint32_t);
 
