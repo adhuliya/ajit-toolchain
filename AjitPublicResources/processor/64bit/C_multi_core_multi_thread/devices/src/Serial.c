@@ -99,9 +99,12 @@
 //
 
 
+
 #include "default_peripheral_device_addresses.h"
 #include "Ajit_Hardware_Configuration.h"
 #include "Serial.h"
+#include <assert.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
 #ifdef SW
@@ -130,37 +133,17 @@
 //Thread declarations:
 
 //Thread that monitors data written into and read from the control registers
-void Serial_Control();
-DEFINE_THREAD(Serial_Control);
+void Serial_Control(void* vst);
+DEFINE_THREAD_WITH_ARG(Serial_Control, vst);
 
 //Thread that receives external data through a pipe and stores it in the receive buffer
-void Serial_Rx();
-DEFINE_THREAD(Serial_Rx);
+void Serial_Rx(void* vst);
+DEFINE_THREAD_WITH_ARG(Serial_Rx, vst);
 
 //Thread that transmits data present in the transmit buffer through a pipe
-void Serial_Tx();
-DEFINE_THREAD(Serial_Tx);
+void Serial_Tx(void* vst);
+DEFINE_THREAD_WITH_ARG(Serial_Tx, vst);
 
-//Mutex for locking state variables (only control register in this case)
-pthread_mutex_t Serial_lock = PTHREAD_MUTEX_INITIALIZER;
-
-//Control flags (inside control register)
-uint8_t Tx_enable;	
-uint8_t Tx_full;	  
-uint8_t Rx_enable;
-uint8_t Rx_full;
-uint8_t Rx_interrupt_enable;
-		
-//Serial internal registers
-uint8_t Rx_buffer;
-uint8_t Tx_buffer;
-
-//Value of interrupt signal going from serial device to the interrupt controller
-uint8_t SERIAL_INT_OUT;
-
-//State of Tx and Rx threads.
-uint8_t Rx_STATE;
-uint8_t Tx_STATE;
 
 //Possible states of Tx thread:
 #define TX_DISABLED 0
@@ -172,143 +155,233 @@ uint8_t Tx_STATE;
 #define RX_ENABLED  1
 #define RX_DATA_RECEIVED 2
 
-void initialize_serial()
+// Two devices..
+SerialState serial_devs[2];
+
+void initialize_serial(SerialState* st)
 {
-	Tx_enable=0;	
-	Tx_full=0;	  
-	Rx_enable=0;
-	Rx_full=0;
-	Rx_interrupt_enable=0;
-  
-	Rx_buffer=0x0;
-	Tx_buffer=0;
-  	Rx_STATE=RX_DISABLED;
-	Tx_STATE=TX_DISABLED;
+	st->Tx_enable=0;	
+	st->Tx_full=0;	  
+	st->Rx_enable=0;
+	st->Rx_full=0;
+	st->Rx_interrupt_enable=0;
+
+	st->Rx_buffer=0x0;
+	st->Tx_buffer=0;
+	st->Rx_STATE=RX_DISABLED;
+	st->Tx_STATE=TX_DISABLED;
 
 	//initialize the interrupt output signal to 0
-	SERIAL_INT_OUT = 0;
-	write_uint8("SERIAL_to_IRC_INT",SERIAL_INT_OUT);				
+	if(st->device_id == 0)
+	{
+		st->SERIAL_INT_OUT = 0;
+		write_uint8("SERIAL_to_IRC_INT", st->SERIAL_INT_OUT);				
+	}
+	pthread_mutex_init (&(st->Serial_lock), NULL);
+
+	if(st->device_id == 0)
+	{
+		sprintf(st->peripheral_bridge_request, "peripheral_bridge_to_serial_request");
+		sprintf(st->peripheral_bridge_response, "serial_to_peripheral_bridge_response");
+		sprintf(st->to_console_pipe,"SERIAL_TX_to_CONSOLE");
+		sprintf(st->from_console_pipe,"CONSOLE_to_SERIAL_RX");
+	}
+	else
+	{
+		sprintf(st->peripheral_bridge_request, "peripheral_bridge_to_serial_%d_request",
+				st->device_id);
+		sprintf(st->peripheral_bridge_response, "serial_%d_to_peripheral_bridge_response",
+				st->device_id);
+		sprintf(st->to_console_pipe,"SERIAL_%d_TX_to_CONSOLE", st->device_id);
+		sprintf(st->from_console_pipe,"CONSOLE_to_SERIAL_%d_RX", st->device_id);
+
+	}
 }
 
 
 //register pipes/ports used by the serial device
-void register_serial_pipes()
+void register_serial_pipes(SerialState* st)
 {
 	int depth = 1;
-  	//signal going from Serial to IRC
-	register_port("SERIAL_to_IRC_INT",8,1);
-	set_pipe_is_written_into("SERIAL_to_IRC_INT");
+
+	if(st->device_id == 0)
+	{
+		//signal going from Serial to IRC
+		register_port("SERIAL_to_IRC_INT",8,1);
+		set_pipe_is_written_into("SERIAL_to_IRC_INT");
 
 
-	//pipes between the serial device and the console
-	//(Keep a larger buffering for the console)
-	depth=8;
-	register_pipe("SERIAL_TX_to_CONSOLE", depth, 8, 0);
-	set_pipe_is_written_into("SERIAL_TX_to_CONSOLE");
-	set_pipe_is_read_from("SERIAL_TX_to_CONSOLE");
-	
-	register_pipe("CONSOLE_to_SERIAL_RX", depth, 8, 0);
-	set_pipe_is_written_into("CONSOLE_to_SERIAL_RX");
-	set_pipe_is_read_from("CONSOLE_to_SERIAL_RX");
+		//pipes between the serial device and the console
+		//(Keep a larger buffering for the console)
+		depth=8;
+		register_pipe("SERIAL_TX_to_CONSOLE", depth, 8, 0);
+		set_pipe_is_written_into("SERIAL_TX_to_CONSOLE");
+		set_pipe_is_read_from("SERIAL_TX_to_CONSOLE");
 
-	depth=1;
-	register_pipe("peripheral_bridge_to_serial_request", depth,  64, 0);
-	register_pipe("serial_to_peripheral_bridge_response", depth, 32, 0);
+		register_pipe("SERIAL_1_TX_to_CONSOLE", depth, 8, 0);
+		set_pipe_is_written_into("SERIAL_1_TX_to_CONSOLE");
+		set_pipe_is_read_from("SERIAL_1_TX_to_CONSOLE");
 
-	set_pipe_is_read_from("peripheral_bridge_to_serial_request");
-	set_pipe_is_written_into("serial_to_peripheral_bridge_response");
+		register_pipe("CONSOLE_to_SERIAL_RX", depth, 8, 0);
+		set_pipe_is_written_into("CONSOLE_to_SERIAL_RX");
+		set_pipe_is_read_from("CONSOLE_to_SERIAL_RX");
+
+		register_pipe("CONSOLE_to_SERIAL_1_RX", depth, 8, 0);
+		set_pipe_is_written_into("CONSOLE_to_SERIAL_1_RX");
+		set_pipe_is_read_from("CONSOLE_to_SERIAL_1_RX");
+
+		depth=1;
+		register_pipe("peripheral_bridge_to_serial_request", depth,  64, 0);
+		register_pipe("serial_to_peripheral_bridge_response", depth, 32, 0);
+
+		set_pipe_is_read_from("peripheral_bridge_to_serial_request");
+		set_pipe_is_written_into("serial_to_peripheral_bridge_response");
+	}
+	else if(st->device_id == 1)
+	{
+		//signal going from Serial to IRC
+		register_port("SERIAL_1_to_IRC_INT",8,1);
+		set_pipe_is_written_into("SERIAL_1_to_IRC_INT");
+
+
+		//pipes between the serial device and the console
+		//(Keep a larger buffering for the console)
+		depth=8;
+		register_pipe("SERIAL_1_TX_to_CONSOLE", depth, 8, 0);
+		set_pipe_is_written_into("SERIAL_1_TX_to_CONSOLE");
+		set_pipe_is_read_from("SERIAL_1_TX_to_CONSOLE");
+
+		register_pipe("CONSOLE_to_SERIAL_1_RX", depth, 8, 0);
+		set_pipe_is_written_into("CONSOLE_to_SERIAL_1_RX");
+		set_pipe_is_read_from("CONSOLE_to_SERIAL_1_RX");
+
+		depth=1;
+		register_pipe("peripheral_bridge_to_serial_1_request", depth,  64, 0);
+		register_pipe("serial_1_to_peripheral_bridge_response", depth, 32, 0);
+
+		set_pipe_is_read_from("peripheral_bridge_to_serial_1_request");
+		set_pipe_is_written_into("serial_1_to_peripheral_bridge_response");
+	}
+	else
+	{
+		fprintf(stderr,"Error: only 2 serial devices are supported.\n");
+		assert(0);
+	}
 }
 
 void start_serial_threads()
 {
-	register_serial_pipes();
-	initialize_serial();
 
-	PTHREAD_DECL(Serial_Control);
-	PTHREAD_DECL(Serial_Rx);
-	PTHREAD_DECL(Serial_Tx);
+	int I;
+	for(I = 0; I < 2; I++)
+	{
+		SerialState* st = &(serial_devs[I]);
+		st->device_id = I;
 
-	PTHREAD_CREATE(Serial_Control);
-	PTHREAD_CREATE(Serial_Rx);
-	PTHREAD_CREATE(Serial_Tx);
+		register_serial_pipes(st);
+		initialize_serial(st);
+
+		PTHREAD_DECL(Serial_Control);
+		PTHREAD_DECL(Serial_Rx);
+		PTHREAD_DECL(Serial_Tx);
+
+		PTHREAD_CREATE_WITH_ARG(Serial_Control,st);
+		PTHREAD_CREATE_WITH_ARG(Serial_Rx,st);
+		PTHREAD_CREATE_WITH_ARG(Serial_Tx,st);
+	}
 }
 
+
+
 //Control thread. Handles CPU requests
-void Serial_Control()
+void Serial_Control(void* vst)
 {
+	SerialState* st = (SerialState*) vst;
+	fprintf(stderr,"Info: created Serial_Control thread for Serial %d.\n", st->device_id);
 
 	while(1)
 	{
 		//wait for a request from processor-side
 		uint8_t rwbar, byte_mask;
 		uint32_t addr, data_in;
-		getPeripheralAccessCommand("peripheral_bridge_to_serial_request",
-							&rwbar, &byte_mask, &addr, &data_in);
-		
+		getPeripheralAccessCommand(st->peripheral_bridge_request,
+				&rwbar, &byte_mask, &addr, &data_in);
 		uint32_t data_out=0;
+
+		int reg_id = (addr >> 2) & 0x3;
+
 		if(!rwbar)
 		{
-			
+
 			//***lock the state variables***
-			pthread_mutex_lock(&Serial_lock);
-			
-			if(addr==(0xffffff & ADDR_SERIAL_CONTROL_REGISTER))
+			pthread_mutex_lock(&(st->Serial_lock));
+
+			if(reg_id == 0)
+				// control register
 			{
 				uint32_t data_in_masked = insertUsingByteMask(0, data_in, byte_mask);
 
 				//Cpu has written a new control word
-				Tx_enable = getBit32(data_in_masked, 0);	
-        			Rx_enable = getBit32(data_in_masked, 1);
-        			Rx_interrupt_enable = getBit32(data_in_masked, 2);
+				st->Tx_enable = getBit32(data_in_masked, 0);	
+				st->Rx_enable = getBit32(data_in_masked, 1);
+				st->Rx_interrupt_enable = getBit32(data_in_masked, 2);
 
-              			//Tx_ full and Rx_full are read only bits, 
+				//Tx_ full and Rx_full are read only bits, 
 				//and are updated upon reads/writes to Tx and Rx registers
 
-				
+
 				//update Tx state
-				if(Tx_STATE==TX_DISABLED && Tx_enable==1) 
+				if(st->Tx_STATE==TX_DISABLED && st->Tx_enable==1) 
 				{
-					Tx_STATE = TX_ENABLED;
-					#ifdef SERIAL_DEBUG
-					fprintf(stderr, "\nSERIAL TX: Changing state to TX_ENABLED\n");
-					#endif
+					st->Tx_STATE = TX_ENABLED;
+#ifdef SERIAL_DEBUG
+					fprintf(stderr, "\nSERIAL %d TX: Changing state to TX_ENABLED\n",
+							st->device_id);
+#endif
 				}
-				else if(Tx_STATE==TX_ENABLED  && Tx_enable==0) 
+				else if(st->Tx_STATE==TX_ENABLED  && st->Tx_enable==0) 
 				{
-					Tx_STATE = TX_DISABLED;
-					Tx_full=0;
-					#ifdef SERIAL_DEBUG
-					fprintf(stderr, "\nSERIAL TX: Changing state to TX_DISABLED\n");
-					#endif
+					st->Tx_STATE = TX_DISABLED;
+					st->Tx_full=0;
+#ifdef SERIAL_DEBUG
+					fprintf(stderr, "\nSERIAL %d TX: Changing state to TX_DISABLED\n",
+							st->device_id);
+#endif
 				}
-				
+
 				//Update Rx state
-				if(Rx_STATE==RX_DISABLED && Rx_enable==1) 
+				if(st->Rx_STATE==RX_DISABLED && st->Rx_enable==1) 
 				{
-					Rx_STATE = RX_ENABLED;
-					Rx_full=0;
-					#ifdef SERIAL_DEBUG
-					fprintf(stderr,"\nSERIAL RX: Changing state to RX_ENABLED\n");
-					#endif
+					st->Rx_STATE = RX_ENABLED;
+					st->Rx_full=0;
+#ifdef SERIAL_DEBUG
+					fprintf(stderr,"\nSERIAL %d RX: Changing state to RX_ENABLED\n",
+							st->device_id);
+#endif
 				}
-				else if(Rx_STATE==RX_DATA_RECEIVED && Rx_enable==0) 
+				else if(st->Rx_STATE==RX_DATA_RECEIVED && st->Rx_enable==0) 
 				{
-					Rx_STATE = RX_DISABLED;
-					Rx_full=0;
-					Rx_buffer=0;
+					st->Rx_STATE = RX_DISABLED;
+					st->Rx_full=0;
+					st->Rx_buffer=0;
+
 					//de-assert the interrupt
-					SERIAL_INT_OUT = 0;
-					write_uint8("SERIAL_to_IRC_INT", SERIAL_INT_OUT);
-					
-					#ifdef SERIAL_DEBUG
-					fprintf(stderr, "\nSERIAL RX: Changing state to RX_DISABLED\n");
-					#endif
+					if(st->device_id == 0)
+					{
+						st->SERIAL_INT_OUT = 0;
+						write_uint8("SERIAL_to_IRC_INT", st->SERIAL_INT_OUT);
+					}
+
+#ifdef SERIAL_DEBUG
+					fprintf(stderr, "\nSERIAL %d RX: Changing state to RX_DISABLED\n",
+							st->device_id);
+#endif
 				}
 			}
-			else if(addr== (0xffffff & ADDR_SERIAL_TX_REGISTER))
+			else if(reg_id == 1)
 			{
 
-				if(Tx_STATE==TX_ENABLED)
+				if(st->Tx_STATE==TX_ENABLED)
 				{				
 					//
 					//  write to Tx register: The address is word aligned, but
@@ -316,131 +389,135 @@ void Serial_Control()
 					//
 					if(byte_mask & 0x8)
 					{
-						Tx_buffer  = getSlice32(data_in, 31, 24);
+						st->Tx_buffer  = getSlice32(data_in, 31, 24);
 					}
 					else if (byte_mask & 0x4)
 					{
-						Tx_buffer  = getSlice32(data_in, 23, 16); 
+						st->Tx_buffer  = getSlice32(data_in, 23, 16); 
 					}
 					else if (byte_mask & 0x2)
 					{
-						Tx_buffer  = getSlice32(data_in, 15,8);
+						st->Tx_buffer  = getSlice32(data_in, 15,8);
 					}
 					else if(byte_mask & 0x1)
 					{
-						Tx_buffer  = getSlice32(data_in, 7,0);
+						st->Tx_buffer  = getSlice32(data_in, 7,0);
 					}
 					else
 					{
-						fprintf(stderr,"Error: write to serial tx with byte-mask=0?\n");
+						fprintf(stderr,"Error: write to serial %d tx with byte-mask=0?\n",
+								st->device_id);
 					}
 
-					Tx_full = 1;
-					Tx_STATE = TX_TRANSMITTING;
+					st->Tx_full = 1;
+					st->Tx_STATE = TX_TRANSMITTING;
 
-					#ifdef SERIAL_DEBUG
-					fprintf(stderr, "\nSERIAL: data 0x%x written to Tx register\n",Tx_buffer);
-					#endif
+#ifdef SERIAL_DEBUG
+					fprintf(stderr, "\nSERIAL: data 0x%x written to Tx register\n", st->Tx_buffer);
+#endif
 
 				}
 			}
 
-			
+
 			//***unlock the state variables***
-			pthread_mutex_unlock(&Serial_lock);
-			
+			pthread_mutex_unlock(&(st->Serial_lock));
+
 			//Send ack to the cpu
-      			data_out = 0;
+			data_out = 0;
 		}
 		else 
 		{
-      			
+
 			//***lock the state variables***
-			pthread_mutex_lock(&Serial_lock);
-			
-			if(addr== (0xffffff & ADDR_SERIAL_CONTROL_REGISTER))
+			pthread_mutex_lock(&(st->Serial_lock));
+
+			if(reg_id == 0)
 			{
 				//Send the contents of control word to cpu
-				data_out = ((uint32_t)Rx_full<<4 ) | ( (uint32_t)Tx_full<<3) | ((uint32_t)Rx_interrupt_enable<<2) | ((uint32_t)Rx_enable<<1) | (uint32_t)Tx_enable;
-			
+				data_out = ((uint32_t) st->Rx_full<<4 ) | 
+					( (uint32_t) st->Tx_full<<3) | 
+					((uint32_t) st->Rx_interrupt_enable<<2) | 
+					((uint32_t) st->Rx_enable<<1) | 
+					(uint32_t) st->Tx_enable;
+
 			}
-			else if(addr==(0xffffff & ADDR_SERIAL_RX_REGISTER))
+			else if(reg_id == 2)
 			{				
 				// The address is always assumed to be word aligned.  So the 
 				// Rx buffer is placed at the most significant byte.
 				if(byte_mask & 0x8)
 				{
-					data_out = setSlice32(0, 31,24,(uint32_t)Rx_buffer); 
+					data_out = setSlice32(0, 31,24,(uint32_t) st->Rx_buffer); 
 				}
 				else if(byte_mask & 0x4)
 				{
-					data_out = setSlice32(0, 23,16,(uint32_t)Rx_buffer); 
+					data_out = setSlice32(0, 23,16,(uint32_t) st->Rx_buffer); 
 				}
 				else if(byte_mask & 0x2)
 				{
-					data_out = setSlice32(0, 15,8,(uint32_t)Rx_buffer); 
+					data_out = setSlice32(0, 15,8,(uint32_t) st->Rx_buffer); 
 				}
 				else if(byte_mask & 0x1)
 				{
-					data_out = setSlice32(0, 7,0,(uint32_t)Rx_buffer); 
+					data_out = setSlice32(0, 7,0,(uint32_t) st->Rx_buffer); 
 				}
 				else
 				{
-					fprintf(stderr,"Error: read with byte-mask 0 for serial rx register?\n");
+					fprintf(stderr,"Error: serial %d read with byte-mask 0 for serial rx register?\n", st->device_id);
 					data_out = 0x0;
 				}
 
-				if(Rx_STATE==RX_DATA_RECEIVED) 
+				if(st->Rx_STATE==RX_DATA_RECEIVED) 
 				{
-					Rx_STATE = RX_ENABLED;
-					Rx_full = 0;
-					//update the int pin
-					SERIAL_INT_OUT=0;
-					write_uint8("SERIAL_to_IRC_INT", SERIAL_INT_OUT);
+					st->Rx_STATE = RX_ENABLED;
+					st->Rx_full = 0;
+					if(st->device_id == 0)
+					{
+						//update the int pin
+						st->SERIAL_INT_OUT=0;
+						write_uint8("SERIAL_to_IRC_INT", st->SERIAL_INT_OUT);
+					}
 				}
-				#ifdef SERIAL_DEBUG
-				fprintf(stderr,"\nSERIAL: data=0x%x received from Rx register\n",data_out);
-				#endif
+#ifdef SERIAL_DEBUG
+				fprintf(stderr,"\nSERIAL %d: data=0x%x received from Rx register\n", 
+						st->device_id, data_out);
+#endif
 
-			
+
 			}
-      			else if(addr==(0xffffff & ADDR_SERIAL_TX_REGISTER))
+			else if(reg_id == 1)
 			{		
-        			//choose a byte in the 32b data line
-				//to place Tx contents, depending on its address
-				switch(ADDR_SERIAL_TX_REGISTER%4)
-				{
-					case 0 : {data_out = setSlice32(0, 31,24,(uint32_t)Tx_buffer); break;}
-					case 1 : {data_out = setSlice32(0, 23,16,(uint32_t)Tx_buffer); break;}
-					case 2 : {data_out = setSlice32(0, 15, 8,(uint32_t)Tx_buffer); break;}
-					case 3 : {data_out = setSlice32(0,  7, 0,(uint32_t)Tx_buffer); break;}
-				}
-
+				// all register addresses are word-aligned!
+				data_out = setSlice32(0, 31,24,(uint32_t) st->Tx_buffer);
 			}
-		
+
 			//***unlock the state variables***
-			pthread_mutex_unlock(&Serial_lock);
-		
+			pthread_mutex_unlock(&(st->Serial_lock));
+
 
 		}
 #ifdef SERIAL_DEBUG	
-		fprintf(stderr, "\nSERIAL_CONTROL: Received request_type= ");
+		fprintf(stderr, "\nSERIAL_CONTROL %d: Received request_type= ", st->device_id);
 
-		if(request_type==0x1) fprintf(stderr, "READ"); else fprintf(stderr, "WRITE");
+		if(rwbar==0x1) fprintf(stderr, "READ"); else fprintf(stderr, "WRITE");
 
 		fprintf(stderr, ", addr=0x%x, data_in=0x%x, data_out=0x%x", addr,data_in,data_out);
 #endif
 
 		//send response to the cpu
-		sendPeripheralResponse("serial_to_peripheral_bridge_response", data_out);
+		sendPeripheralResponse(st->peripheral_bridge_response, data_out);
 	}	
 }
 
 
 //Transmit thread. Performs transmit only when Tx_enable is set.
 //Is transmitting data when Tx_full is set.
-void Serial_Tx()
+void Serial_Tx(void* vst)
 {
+	SerialState* st = (SerialState*) vst;
+	fprintf(stderr,"Info: created Serial_Tx thread for Serial %d.\n", st->device_id);
+
 	//temporary variables
 	uint8_t tx_state;
 
@@ -448,25 +525,25 @@ void Serial_Tx()
 	{
 
 		//***lock the state variables***
-		pthread_mutex_lock(&Serial_lock);
-		tx_state  =Tx_STATE;
+		pthread_mutex_lock(& st->Serial_lock);
+		tx_state  = st->Tx_STATE;
 		//***unlock the state variables***
-		pthread_mutex_unlock(&Serial_lock);
+		pthread_mutex_unlock(& st->Serial_lock);
 
 
 		if(tx_state==TX_TRANSMITTING)
 		{
 			//transmit a byte
-			write_uint8("SERIAL_TX_to_CONSOLE", Tx_buffer);
+			write_uint8(st->to_console_pipe, st->Tx_buffer);
 
 
 			//***lock the state variables***
-			pthread_mutex_lock(&Serial_lock);
+			pthread_mutex_lock(& st->Serial_lock);
 			//clear Tx_buffer, and de-assert Tx_full and Tx_enable
-			Tx_full=0;
-			Tx_STATE = TX_ENABLED;
+			st->Tx_full=0;
+			st->Tx_STATE = TX_ENABLED;
 			//***unlock the state variables***
-			pthread_mutex_unlock(&Serial_lock);
+			pthread_mutex_unlock(& st->Serial_lock);
 		}
 		else
 		{
@@ -479,8 +556,11 @@ void Serial_Tx()
 }
 
 
-void Serial_Rx()
+void Serial_Rx(void* vst)
 {
+	SerialState* st = (SerialState*) vst;
+	fprintf(stderr,"Info: created Serial_Rx thread for Serial %d.\n", st->device_id);
+
 	//temp variables
 	uint8_t rx_state;
 	uint8_t rx_data;
@@ -490,40 +570,42 @@ void Serial_Rx()
 	{	
 
 		//***lock state variables***
-		pthread_mutex_lock(&Serial_lock);
-		rx_state = Rx_STATE;
-		rx_interrupt_enable = Rx_interrupt_enable;
+		pthread_mutex_lock(& st->Serial_lock);
+		rx_state = st->Rx_STATE;
+		rx_interrupt_enable = st->Rx_interrupt_enable;
 		//***unlock state variables***
-		pthread_mutex_unlock(&Serial_lock);
+		pthread_mutex_unlock(& st->Serial_lock);
 
 		if(rx_state==RX_ENABLED)
 		{
 
 			//wait for data on the Rx pipe
-			rx_data = read_uint8("CONSOLE_to_SERIAL_RX");
+			rx_data = read_uint8(st->from_console_pipe);
 #ifdef SERIAL_DEBUG
-			fprintf(stderr,"\nSERIAL RX: character read on serial Rx line =%c\n",rx_data);
+			fprintf(stderr,"\nSERIAL %d RX: character read on serial Rx line =%c\n",
+					st->device_id, rx_data);
 #endif
 
 			//***lock state variables***
-			pthread_mutex_lock(&Serial_lock);
+			pthread_mutex_lock(& st->Serial_lock);
 
 #ifdef SERIAL_DEBUG
-			fprintf(stderr,"\nSERIAL : Changing state to RX_DATA_RECEIVED\n");
+			fprintf(stderr,"\nSERIAL %d: Changing state to RX_DATA_RECEIVED\n",
+					st->device_id);
 #endif
-			Rx_STATE = RX_DATA_RECEIVED;
-			Rx_full=1;
-			Rx_buffer=rx_data;
+			st->Rx_STATE = RX_DATA_RECEIVED;
+			st->Rx_full=1;
+			st->Rx_buffer=rx_data;
 
 
 			//If Rx_interrupt_enable=1, we interrupt the cpu.
-			if(rx_interrupt_enable)
+			if(rx_interrupt_enable && (st->device_id == 0))
 			{
-				SERIAL_INT_OUT = SERIAL_IRL;
-				write_uint8("SERIAL_to_IRC_INT", SERIAL_INT_OUT);
+				st->SERIAL_INT_OUT = SERIAL_IRL;
+				write_uint8("SERIAL_to_IRC_INT", st->SERIAL_INT_OUT);
 			}
 			//***unlock state variables***
-			pthread_mutex_unlock(&Serial_lock);
+			pthread_mutex_unlock(& st->Serial_lock);
 		}	
 		else
 		{
@@ -532,23 +614,5 @@ void Serial_Rx()
 		}
 	}
 }
-
-
-
-//Routines used by other threads to send a request to, and 
-//receive a response from the serial thread
-void sendRequestToSerial(uint8_t request_type, uint32_t addr, uint32_t data32)
-{
-	write_uint8 ("BUS_to_SERIAL_request_type", request_type);
-  	write_uint32("BUS_to_SERIAL_addr",addr);
-	write_uint32("BUS_to_SERIAL_data",data32);
-	
-}
-
-void readResponseFromSerial(uint32_t* data)
-{
-	*data = read_uint32("SERIAL_to_BUS_data");
-}
-
 
 

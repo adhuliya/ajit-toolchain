@@ -18,7 +18,7 @@ void setConsoleMode(uint8_t console_mode);
 void setConsoleInSocketMode();
 void setConsoleServerPort(int sport_number);
 void consoleInput();
-void consoleOutput();
+void consoleOutput(void* dev_id);
 void startConsoleThreads();
 void startConsoleServer();
 

@@ -453,6 +453,7 @@ int main(int argc, char **argv)
 		addPeripheral("irc_mt", ADDR_INTERRUPT_CONTROLLER_MIN, ADDR_INTERRUPT_CONTROLLER_MAX);	 // interrupt controller.
 		addPeripheral("timer", ADDR_TIMER_MIN, ADDR_TIMER_MAX);	 // timer
 		addPeripheral("serial", ADDR_SERIAL_MIN, ADDR_SERIAL_MAX); // serial
+		addPeripheral("serial_1", ADDR_SERIAL_1_MIN, ADDR_SERIAL_1_MAX); // serial-1
 		addPeripheral("scratch_pad", ADDR_SCRATCH_PAD_MEMORY_MIN, ADDR_SCRATCH_PAD_MEMORY_MAX); // scratch-pad
 
 		// Note: this is problematic 
