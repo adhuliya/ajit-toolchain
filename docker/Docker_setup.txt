@@ -1,0 +1,32 @@
+Note: Tested to work on ubuntu machines. 
+
+This raedme explains the steps to setup docker with ajit-toolchain. 
+
+
+1. Importing a docker image.
+	Please download: https://drive.google.com/file/d/18erSMxMXyPrAFdkIr9ntFrDeU4PPn0s1/view?usp=sharing
+
+	This will give you a file 'ajit_base.tar'. After downloading, run the following command to import the docker image -
+       	docker load -i ajit_base.tar;
+       
+       
+2. Now we need the whole ajit-toolchain directory.
+	1. If you are unable to clone from git -	
+	The latest pre-built ajit-toolchain zipfile - https://drive.google.com/file/d/1i1aU6TUkJaxAUp5C2kirYXXxndxvlJ8D/view?usp=sharing
+
+
+	2. From the repository directory, do the following -
+
+	# STEP 1: build a development docker image
+	cd docker/ajit_build_dev;
+	./build.sh; # this builds a new docker image over the ajit_base image downloaded earlier.
+
+	# STEP 2: run the docker container
+	./run.sh;
+
+	# STEP 3: attach a shell to the docker container and setup the toolchain. 
+	./attach_shell.sh;
+	source ./set_sjit_home
+	./setup.sh
+
+	You can now use the complete ajit system from this shell. 
