@@ -1,0 +1,75 @@
+
+	Introduction to CORTOS2
+	
+
+
+1. Motivation
+--------------
+
+	Quickly develop and deploy lightweight embedded
+	applications in the AJIT processor ecosystem.
+
+	Concept:
+		1. provide an abstract of the platform.
+		2. allow the user to specify how her software
+		    fits into the platform.
+
+
+2. Platform 
+-------------
+
+	Processor configuration
+		AJIT multi-core multi-threaded processor:
+		number of cores, number of threads per core,
+			isa of threads in core.
+
+	Memory configuration
+		flash, sram, ncram, mmio regions
+			(RXWC protection)
+
+	Devices
+		scratch, timer, serial, i2c, spi
+			 (these are hardcoded for now))
+		
+
+3. Software 
+--------------
+
+	Startup-routine for thread 0,0
+
+	Static workload per thread
+		sequence of routines to be executed 
+		by thread 
+
+	Stack configuration
+		amount of stack per thread.
+
+	Interrupt service routine assignment
+		allow a user  to specify routine for each interrupt.
+
+	Software trap service routine assignment
+		allow a user to specify routine for each sw trap.
+
+	Locks
+		cacheable, non-cacheable (ncram)
+
+	Queues
+		cacheable, non-cacheable (ncram).
+
+	Dynamic memory allocator
+		cacheable, non-cacheable (ncram).
+		
+	Logging
+
+	
+4. Other "packages"
+--------------------
+
+	protothreads
+
+
+5.  Planned 
+-----------------------
+	pre-emption, posix threads.
+
+
