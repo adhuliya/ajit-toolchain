@@ -308,7 +308,7 @@ void Serial_Control(void* vst)
 				&rwbar, &byte_mask, &addr, &data_in);
 		uint32_t data_out=0;
 
-		int reg_id = (addr >> 2) & 0x3;
+		int reg_id = (addr >> 2) & 0x7;
 
 		if(!rwbar)
 		{
