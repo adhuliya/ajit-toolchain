@@ -22,8 +22,8 @@ Hardware:
       StartAddr: 0x40000000
       # EndAddr: ...
       # SizeInBytes: ...
-      # SizeInKiloBytes: ...
-      SizeInMegaBytes: 128
+      SizeInKiloBytes: 1024
+      #SizeInMegaBytes: 128
       Permissions: RWXC
     NCRAM:
       StartAddr: 0x8000000
@@ -95,6 +95,6 @@ Software:
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    SizeInKiloBytes: 1000
+    SizeInKiloBytes: 100
     # SizeInMegaBytes: ...
 

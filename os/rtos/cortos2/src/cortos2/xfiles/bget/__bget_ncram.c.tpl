@@ -17,7 +17,7 @@ Probable cause: assert statements.
 //AD 					 how many buffer allocation attempts
 //AD 					 the test program should make. */
 
-#define SizeQuant   8		      /* Buffer allocation size quantum:
+#define SizeQuant   16		      /* Buffer allocation size quantum:
 					 all buffers allocated are a
 					 multiple of this size.  This
 					 MUST be a power of two. */
@@ -171,7 +171,7 @@ static bufsize pool_len_ncram = 0;	      /* 0: no bpool calls have been made
 void *bget_ncram(requested_size)
   bufsize requested_size;
 {
-    bufsize size = requested_size;
+    bufsize size = requested_size + (requested_size % SizeQuant);
     struct bfhead *b;
 #ifdef BestFit
     struct bfhead *best;

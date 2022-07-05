@@ -8,6 +8,7 @@ from cortos2.sys.config.soft.bget import Bget
 from cortos2.sys.config.soft.lock import Locks
 from cortos2.sys.config.soft.program import Program
 from cortos2.sys.config.soft.queue import QueueSeq
+from cortos2.common import util
 
 
 class MemoryLayout:
@@ -42,6 +43,15 @@ class MemoryLayout:
     self.zeroRegionSeq: List[common.MemoryRegion] = []
 
 
+  def checkAndAppendMemoryRegion(self, region: common.MemoryRegion, check: bool = True):
+    if check and region.getLastByteAddr(False) > self.memory.ram.getLastByteAddr(False):
+      for reg in self.regionSeq:
+        print(f"Allocated Region: {reg.name}, SizeInBytes: {reg.sizeInBytes}")
+      util.exitProgram(f"Memory overflow at region {region.name} sizeInBytes {region.getSizeInBytes()}.", status=1)
+    else:
+      self.regionSeq.append(region)
+
+
   def initLayout(self,
       prog: Program,
       # queueSeq: QueueSeq,
@@ -64,7 +74,7 @@ class MemoryLayout:
       physicalStartAddr=pAddr,
       permissions=MemoryPermissions.S_RX_U_RX,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
     prog.textRegion = region
 
     region = common.MemoryRegion(
@@ -75,7 +85,7 @@ class MemoryLayout:
       physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
       permissions=MemoryPermissions.S_RWX_U_RWX,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
     prog.dataRegion = region
 
     region = common.MemoryRegion(
@@ -86,7 +96,7 @@ class MemoryLayout:
       physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
       permissions=MemoryPermissions.S_RWX_U_RWX,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
     self.zeroRegionSeq.append(region)
     prog.bssRegion = region
 
@@ -100,7 +110,7 @@ class MemoryLayout:
       cacheable=True,
       initToZero=True,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
     self.zeroRegionSeq.append(region)
     locks.setMemoryRegion(region)
 
@@ -114,7 +124,7 @@ class MemoryLayout:
       permissions=consts.MemoryPermissions.S_RWX_U_RWX,
       initToZero=True,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
     self.zeroRegionSeq.append(region)
     locks.setMemoryRegion(region)
 
@@ -127,7 +137,7 @@ class MemoryLayout:
         physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
         permissions=consts.MemoryPermissions.S_RWX_U_RWX,
       )
-      self.regionSeq.append(region)
+      self.checkAndAppendMemoryRegion(region, not dummyLayout)
       bgetObj.setMemoryRegion(region)
 
     # create space for program stacks
@@ -139,7 +149,7 @@ class MemoryLayout:
       physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
       permissions=consts.MemoryPermissions.S_X_U_X,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, not dummyLayout)
 
     for i, progThread in enumerate(prog.programThreads):
       region = common.MemoryRegion(
@@ -150,7 +160,7 @@ class MemoryLayout:
         physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
         permissions=consts.MemoryPermissions.S_RWX_U_RWX,
       )
-      self.regionSeq.append(region)
+      self.checkAndAppendMemoryRegion(region, not dummyLayout)
       progThread.setStackRegion(region)
 
       region = common.MemoryRegion(
@@ -161,11 +171,11 @@ class MemoryLayout:
         physicalStartAddr=region.getNextToLastByteAddr(virtualAddr=False),
         permissions=consts.MemoryPermissions.S_X_U_X,
       )
-      self.regionSeq.append(region)
+      self.checkAndAppendMemoryRegion(region, not dummyLayout)
 
     if self.memory.ncram.getSizeInBytes():
       region = self.memory.ncram
-      self.regionSeq.append(region)
+      self.checkAndAppendMemoryRegion(region, check=False)
 
     region = common.MemoryRegion(
       name="MemoryMappedIO",
@@ -176,5 +186,5 @@ class MemoryLayout:
       cacheable=False,
       permissions=consts.MemoryPermissions.S_RWX_U_RWX,
     )
-    self.regionSeq.append(region)
+    self.checkAndAppendMemoryRegion(region, check=False)
 
