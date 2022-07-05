@@ -35,7 +35,8 @@ docker run \
   --name $_CONT_NAME \
   --mount type=bind,source=$_HOST_MOUNT_DIR,target=$_CONT_MOUNT_POINT \
   $_IMG_NAME;
-
+##To use USB devices inside docker, add the line given below to the 'docker run' command- 
+##  -v /dev:/dev --device-cgroup-rule='c 188:* rmw' \
 echo -e "\nAjit: Docker container started? Status: $? (Non Zero = ERROR)";
 
 
