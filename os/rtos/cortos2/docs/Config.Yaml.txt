@@ -1,0 +1,14 @@
+	An introduction to the config.yaml file
+
+1. What is it?
+-----------------
+
+	It is a single document which describes
+		- the AJIT platform configuration
+		- the user software configuration.
+
+
+	Cortos2 uses this file to generate an executable
+	image for the AJIT processor system.
+
+

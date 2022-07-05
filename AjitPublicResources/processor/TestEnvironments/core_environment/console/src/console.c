@@ -61,19 +61,26 @@ void startConsoleServer()
 
 }
 
-void consoleOutput()
+void consoleOutput(void* vdev_id)
 {
 	uint8_t  data;
+	int dev_id = *((int*) vdev_id);
 
 	while(1)
 	{
 		if(console_mode & CONSOLE_SOCKET_MODE)
 		{
-			data		= sock_read_uint8("SERIAL_TX_to_CONSOLE");
+			if(dev_id == 0)
+				data		= sock_read_uint8("SERIAL_TX_to_CONSOLE");
+			else
+				data		= sock_read_uint8("SERIAL_1_TX_to_CONSOLE");
 		}
 		else 
 		{
-			data		= read_uint8("SERIAL_TX_to_CONSOLE");
+			if(dev_id == 0)
+				data		= read_uint8("SERIAL_TX_to_CONSOLE");
+			else
+				data		= read_uint8("SERIAL_1_TX_to_CONSOLE");
 		}
 
 		//display the character on the screen
@@ -86,7 +93,7 @@ void consoleOutput()
 			putchar(data);
 		}
 #ifdef CONSOLE_DEBUG
-		fprintf(stdout,"Info:console: output %c (0x%x)\n", data, (uint32_t) data);
+		fprintf(stdout,"Info:console %d: output %c (0x%x)\n", dev_id, data, (uint32_t) data);
 #endif
 		
 	}	
@@ -154,7 +161,7 @@ void consoleInput()
 
 		#ifdef CONSOLE_DEBUG
 		if(data!= '\n')
-		printf("\nCONSOLE: received input character %c",data);
+		printf("\nCONSOLE: received input character %c", data);
 		else
 		printf("\nCONSOLE: received input character : ENTER");
 		#endif
@@ -180,15 +187,23 @@ void consoleInput()
 
 
 DEFINE_THREAD(consoleInput);
-DEFINE_THREAD(consoleOutput);
+DEFINE_THREAD_WITH_ARG(consoleOutput, vdev_id);
+
+int g_dev_id[2];
 
 void startConsoleThreads()
 {
+	g_dev_id[0] = 0; g_dev_id[1] = 1;
+
 	register_pipe("SERIAL_TX_to_CONSOLE",8,8,0);
 	register_pipe("CONSOLE_to_SERIAL_RX",8,8,0);
 
+	register_pipe("SERIAL_1_TX_to_CONSOLE",8,8,0);
+	register_pipe("CONSOLE_to_SERIAL_1_RX",8,8,0);
+
 	PTHREAD_DECL(consoleOutput);
-	PTHREAD_CREATE(consoleOutput);
+	PTHREAD_CREATE_WITH_ARG(consoleOutput, ((void*) (&(g_dev_id[0]))));
+	PTHREAD_CREATE_WITH_ARG(consoleOutput, ((void*) (&(g_dev_id[1]))));
 
 	PTHREAD_DECL(consoleInput);
 	PTHREAD_CREATE(consoleInput);

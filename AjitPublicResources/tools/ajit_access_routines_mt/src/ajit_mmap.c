@@ -188,12 +188,16 @@ int ajit_mmap_operation
 	uint32_t pdte;
 	uint64_t pdte_a;
 	uint64_t ign_pa;
-	uint8_t status = ajit_lookup_mmap(page_table_base_phy_address,
+	int status = ajit_lookup_mmap(page_table_base_phy_address,
 							context, va,
 							&pdte_level,
 							&ign_pa,
 							&pdte_a,
 							&pdte);
+	if(status == 1)
+		return(1);
+
+	
 	if(pdte_level == level)
 	{
 		if(operation == ADD_TO_MMAP_OP)

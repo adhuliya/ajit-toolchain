@@ -321,63 +321,97 @@ inline uint32_t __ajit_read_timer_control_register_via_vmap__();
 #define RX_INTR_ENABLE 	0x4 
 #define TX_FULL   	0x8
 #define RX_FULL   	0x10
+#define SOFT_RESET      0x20
 
-inline void __ajit_write_serial_control_register__(uint32_t val);
 #define __AJIT_WRITE_SERIAL_CONTROL_REGISTER__(val) {\
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SERIAL_CONTROL_REGISTER, val);}
 
-inline uint32_t __ajit_read_serial_control_register__();
 #define __AJIT_READ_SERIAL_CONTROL_REGISTER__(val) {\
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SERIAL_CONTROL_REGISTER, val);}
 
-inline void __ajit_write_serial_tx_register__(uint8_t val);
 #define __AJIT_WRITE_SERIAL_TX_REGISTER__(val) {\
 	__AJIT_STORE_UBYTE_MMU_BYPASS__(ADDR_SERIAL_TX_REGISTER, val);}
 
-inline uint8_t __ajit_read_serial_tx_register__();
 #define __AJIT_READ_SERIAL_TX_REGISTER__(val) {\
 	__AJIT_LOAD_UBYTE_MMU_BYPASS__(ADDR_SERIAL_TX_REGISTER, val);}
 
-inline uint8_t __ajit_read_serial_rx_register__();
 #define __AJIT_READ_SERIAL_RX_REGISTER__(val) {\
 	__AJIT_LOAD_UBYTE_MMU_BYPASS__(ADDR_SERIAL_RX_REGISTER, val);}
 
-int   __ajit_serial_putchar__  (char c);
-int   __ajit_serial_getchar__ ();
+//---------------------------------------------------------------------------------------------
+// Bypass routines (using bypass asi 0x20).   These can be executed only
+// in supervisor mode.
+//---------------------------------------------------------------------------------------------
+void 		__ajit_write_serial_control_register__(uint32_t val);
+uint32_t	__ajit_read_serial_control_register__();
+void 		__ajit_write_serial_tx_register__(uint8_t val);
+uint8_t		__ajit_read_serial_tx_register__();
+uint8_t 	__ajit_read_serial_rx_register__();
+void     	__ajit_write_serial_baud_limit_register__(uint32_t bcv);
+uint32_t 	__ajit_read_serial_baud_limit_register__();
 
-void  __ajit_serial_puts__ (char* s, uint32_t length);
-void  __ajit_serial_gets__ (char* s, uint32_t length);
+void     	__ajit_write_serial_baud_frequency_register__(uint32_t bcv);
+uint32_t 	__ajit_read_serial_baud_frequency_register__();
 
 // configuration..
-void __ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
-void __ajit_serial_uart_reset__ ();
+void	 	__ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
+void  		__ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency);
+void    	__ajit_serial_set_uart_reset__ (uint8_t reset_value);
+
+
+// transmit a character on the serial device.  
+// Can block indefinitely if the serial device
+// is not able to transmit.
+int   		__ajit_serial_putchar__  (char c);
+
+// receive a character on the serial device.
+// Can block indefinitely if there is no input
+// to the serial device.
+int   		__ajit_serial_getchar__ ();
+
+
+// print upto (not including) null character, 
+// but at most length characters.
+void  		__ajit_serial_puts__ (char* s, uint32_t length);
+
+// get string until (including trailing 0), max length chars.
+void  		__ajit_serial_gets__ (char* s, uint32_t length);
 
 
 //---------------------------------------------------------------------------------------------
-//   Note: The second way to access a peripheral.  Directly load/store
-//         from the peripheral address, using a normal user/supervisor data asi.
-//         The MMU should be used to deal with the non-cacheability of these accesses
-//         and to handle the mapping (In this case, typically virtual address == physical address)
+// virtual map based routines... In these, you can directly access peripheral registers using
+// *addr.  Memory protection is provided by virtual -> physical page table.
+//---------------------------------------------------------------------------------------------
+void 		__ajit_write_serial_control_register_via_vmap__(uint32_t val);
+uint32_t 	__ajit_read_serial_control_register_via_vmap__();
+void    	__ajit_write_serial_tx_register_via_vmap__(uint8_t val);
+uint8_t 	__ajit_read_serial_tx_register_via_vmap__();
+uint8_t		__ajit_read_serial_rx_register_via_vmap__();
+
+// transmit a character on the serial device.  
+// Can block indefinitely if the serial device
+// is not able to transmit.
+int   		__ajit_serial_putchar_via_vmap__  (char c);
+// receive a character on the serial device.
+// Can block indefinitely if there is not input
+// to the serial device.
+int   		__ajit_serial_getchar_via_vmap__ ();
+void  		__ajit_serial_puts_via_vmap__ (char* s, uint32_t length);
+void  		__ajit_serial_gets_via_vmap__ (char* s, uint32_t length);
+void  		__ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
+void  		__ajit_serial_set_uart_reset_via_vmap__ (uint8_t reset_val);
+void  		__ajit_serial_set_uart_reset_inner__ (uint8_t use_vmap, uint32_t serial_device_id, uint8_t rst_val);
+void  		__ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency);
+
+uint32_t	__ajit_read_serial_baud_limit_register_via_vmap__();
+void     	__ajit_write_serial_baud_limit_register_via_vmap__(uint32_t bcv);
+
+uint32_t 	__ajit_read_serial_baud_frequency_register_via_vmap__();
+void     	__ajit_write_serial_baud_frequency_register_via_vmap__(uint32_t bcv);
+//---------------------------------------------------------------------------------------------
+// Serial "inner" routines used by the other serial access functions.
 //---------------------------------------------------------------------------------------------
 //
-inline void __ajit_write_serial_control_register_via_vmap__(uint32_t val);
-inline uint32_t __ajit_read_serial_control_register_via_vmap__();
-inline void __ajit_write_serial_tx_register_via_vmap__(uint8_t val);
-inline uint8_t __ajit_read_serial_tx_register_via_vmap__();
-inline uint8_t __ajit_read_serial_rx_register_via_vmap__();
-
-int   __ajit_serial_putchar_via_vmap__  (char c);
-int   __ajit_serial_getchar_via_vmap__ ();
-void  __ajit_serial_puts_via_vmap__ (char* s, uint32_t length);
-void  __ajit_serial_gets_via_vmap__ (char* s, uint32_t length);
-void  __ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
-void  __ajit_serial_uart_reset_via_vmap__ ();
-void  __ajit_serial_uart_reset_inner__ (uint8_t use_vmap);
-
-// baud rate configuration register is a 32-bit register with the following
-// fields
-// [31:16]   baud_limit.
-// [11:0]    baud_frequency.
 // The baud-limit and baud frequency are calculated as follows
 //   A = 16*clock_frequency
 //    (A must be less than clock_frequency).
@@ -387,24 +421,22 @@ void  __ajit_serial_uart_reset_inner__ (uint8_t use_vmap);
 // common values of baud-rate are 9600, 115200.
 //
 //
-// Note: the same baud rate is applied to all UARTs in the system.
 //
-uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t clock_frequency);
-
-
-//---------------------------------------------------------------------------------------------
-//  Deprecated....  Do not use
-void  __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency);
-void  __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency);
-void  __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency);
-//
-//---------------------------------------------------------------------------------------------
-
-inline void 	__ajit_write_serial_control_register_via_vmap__(uint32_t val);
-inline uint32_t __ajit_read_serial_control_register_via_vmap__();
-inline void 	__ajit_write_serial_tx_register_via_vmap__(uint8_t val);
-inline uint8_t 	__ajit_read_serial_tx_register_via_vmap__();
-inline uint8_t 	__ajit_read_serial_rx_register_via_vmap__();
+void calculate_baud_control_values_for_uart (uint32_t baud_rate, 
+							uint32_t clock_frequency,
+							uint32_t* baud_limit,
+							uint32_t* baud_frequency);
+void __ajit_serial_configure_inner__ 
+	(uint8_t use_vmap, uint32_t dev_id, uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
+void  __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, 
+						uint32_t serial_device_index,
+						uint32_t baud_rate, 
+						uint32_t clock_frequency);
+int  __ajit_serial_putchar_inner__(uint8_t use_vmap, uint32_t dev_id, char c);
+int  __ajit_serial_getchar_inner__(uint8_t use_vmap, uint32_t dev_id, char* c);
+void __ajit_serial_puts_inner__ (uint8_t use_vmap, uint32_t dev_id, char* s, uint32_t length);
+void __ajit_serial_gets_inner__ (uint8_t use_vmap, uint32_t dev_id, char* s, uint32_t length);
+void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, uint8_t reset_val);
 
 
 //---------------------------------------------------------------------------------------------
@@ -429,7 +461,7 @@ inline uint32_t __ajit_read_irc_control_register__();
 //
 // using normal load/store with non-cacheable page.
 //
-inline void __ajit_write_irc_control_register_via_vmap__(uint32_t val);
+inline void 	__ajit_write_irc_control_register_via_vmap__(uint32_t val);
 inline uint32_t __ajit_read_irc_control_register_via_vmap__();
 
 
@@ -478,21 +510,44 @@ inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_v
 //
 inline uint8_t __ajit_read_spi_master_register__(uint8_t reg_id);
 
+// In SPI, we send a byte and simultaneously receive a byte,
+// which is returned by this routine.   Deselection of
+// the slave device after the transfer is controlled by
+// deselect_after_transfer.
+uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
+						uint8_t send_byte, 
+						uint8_t deselect_after_transfer);
 //---------------------------------------------------------------------------------------------
 // with normal load/store with non-cacheable page
 //---------------------------------------------------------------------------------------------
-inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val);
-inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
+void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val);
+uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
+
+uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
+							uint8_t send_byte, uint8_t deselect_after_transfer);
+
+// do an SPI transfer..  send send_byte to spi slave device_id, and
+// return byte received from slave.
+inline uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
+						uint8_t device_id,
+						uint8_t send_byte, 
+						uint8_t deselect_after_transfer);
+
 
 //---------------------------------------------------------------------------------------------
-// SPI GPIO is assumed to be device 1 on SPI master..
+// 8-bit GPIO  via SPI
 //---------------------------------------------------------------------------------------------
-// write gpio-out to GPIO_OUT pins and read back GPIO_IN pins.
-inline uint32_t __ajit_gpio_xfer__(uint8_t gpio_out);
-inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out);
+uint8_t __ajit_spi_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out);
+uint8_t __ajit_spi_gpio_xfer_via_vmap__(uint8_t gpio_dev_id, uint8_t gpio_out);
 
+//---------------------------------------------------------------------------------------------
+// 32-bit GPIO 
+//---------------------------------------------------------------------------------------------
 uint32_t  __ajit_read_gpio_32__  ();
 void      __ajit_write_gpio_32__ (uint32_t w);
+
+uint32_t  __ajit_read_gpio_32_via_vmap__  ();
+void      __ajit_write_gpio_32_via_vmap__ (uint32_t w);
 
 //---------------------------------------------------------------------------------------------
 // Trap

@@ -1,5 +1,5 @@
 With two threads active, we get total CM/MHz of 2.81 compared to
-1.81 on a single thread.  A speedup of 1.5X.
+1.81 on a single thread.  A speedup of 1.55X.
 
 The performance of the core-mark pair is dependent on the mutex timing...
 If a thread is spinning while the other is working, we get too much

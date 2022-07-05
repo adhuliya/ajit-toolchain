@@ -22,7 +22,6 @@ void ajit_set_sw_trap_handler (uint32_t sw_trap_index, void (* foo) (uint32_t, u
 
 void ajit_generic_sw_trap_handler(uint32_t tbr_value, uint32_t arg1, uint32_t arg2, uint32_t arg3)
 {
-	uint8_t core_id, thread_id;
 	int err = 0;
 	uint32_t trap_index = ((tbr_value >> 4) & 0xff) - 0x80;
 	if(trap_index < NUMBER_OF_SW_TRAPS_SUPPORTED)

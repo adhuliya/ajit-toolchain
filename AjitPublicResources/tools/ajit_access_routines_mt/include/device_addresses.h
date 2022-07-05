@@ -54,7 +54,9 @@
 #define ADDR_SERIAL_TX_REGISTER      			0xFFFF3204 // AJIT default-serial-device transmit register (byte).
 #define ADDR_SERIAL_RX_REGISTER      			0xFFFF3208 // AJIT default-serial-device receive register (byte).
 #define ADDR_SERIAL_BAUD_CONTROL_REGISTER		0xFFFF320c // AJIT default-serial-device control register
-#define ADDR_SERIAL_MAX 				0xFFFF320f // Max serial address.
+#define ADDR_SERIAL_BAUD_LIMIT_REGISTER			0xFFFF320c //  baud-limit
+#define ADDR_SERIAL_BAUD_FREQUENCY_REGISTER		0xFFFF3210 //  baud-control
+#define ADDR_SERIAL_MAX 				0xFFFF3213 // Max serial address.
 
 // second serial device
 #define ADDR_SERIAL_1_MIN 				0xFFFF3240 // AJIT default-countdown-timer control register (word).
@@ -63,7 +65,9 @@
 #define ADDR_SERIAL_1_TX_REGISTER      			0xFFFF3244 // AJIT default-serial-device transmit register (byte).
 #define ADDR_SERIAL_1_RX_REGISTER      			0xFFFF3248 // AJIT default-serial-device receive register (byte).
 #define ADDR_SERIAL_1_BAUD_CONTROL_REGISTER		0xFFFF324c // AJIT default-serial-device control register
-#define ADDR_SERIAL_1_MAX 				0xFFFF324f // AJIT default-countdown-timer control register (word).
+#define ADDR_SERIAL_1_BAUD_LIMIT_REGISTER		0xFFFF324c // baud-limit
+#define ADDR_SERIAL_1_BAUD_FREQUENCY_REGISTER		0xFFFF3250 // baud-frequency
+#define ADDR_SERIAL_1_MAX 				0xFFFF3253 // AJIT default-countdown-timer control register (word).
 
 //
 //	SPI data registers 16 bytes per SPI master.

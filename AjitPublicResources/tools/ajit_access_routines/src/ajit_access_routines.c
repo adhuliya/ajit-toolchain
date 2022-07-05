@@ -85,6 +85,7 @@ uint32_t ajit_configure_i2c_master (uint32_t clock_frequency, uint32_t i2c_clock
 {
 	uint32_t div_value = ((clock_frequency / i2c_clock_frequency) >> 2);
 	*((uint32_t*) ADDR_I2C_MASTER_CONFIG_REGISTER) = div_value;
+	return(0);
 }
 
 uint32_t ajit_i2c_master_is_ready()
@@ -513,113 +514,6 @@ inline void __ajit_write_serial_control_register__(uint32_t val)
 	__AJIT_STORE_WORD_MMU_BYPASS__(addr,val);
 }
 
-inline void __ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
-{
-	uint32_t cval = 0;
-	__AJIT_READ_SERIAL_CONTROL_REGISTER__(cval);
-
-	if(enable_tx)
-	{
-		cval = cval | 1;
-	}
-	else
-	{
-		cval = cval & (~1);
-	}
-
-	if(enable_rx) 
-	{
-		cval = cval | 2;
-	}
-	else
-	{
-		cval = cval & (~2);
-	}
-
-	if(enable_intr)
-	{
-		cval = cval | 4;
-	}
-	else
-	{
-		cval = cval & (~4);
-	}
-	__AJIT_WRITE_SERIAL_CONTROL_REGISTER__(cval);
-
-}
-
-void __ajit_serial_uart_reset__ ()
-{
-	__ajit_serial_uart_reset_inner__(0);
-}
-
-#ifdef NAVIC_PROJECT
-inline void __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency)
-{
-	__ajit_serial_set_baudrate_inner__ (0, baud_rate, clock_frequency);
-}
-
-inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency)
-{
-	__ajit_serial_set_baudrate_inner__ (1, baud_rate, clock_frequency);
-}
-
-#endif
-
-//
-//  This is no longer used.  But the logic could be useful at some future point.
-//  Given the clock freq and baud-rate, this computes the control word (baud-freq, baud-limit)
-//  to be used for setting up the specific UART used in AJIT systems as of 2020.
-//
-// returns 0 on error.
-uint32_t calculate_baud_control_word_for_uart (uint32_t baud_rate, uint32_t clock_frequency)
-{
-	uint32_t ret_val = 0;
-
-	// GCD (clk_freq, 16*baud_rate);	
-	uint32_t A = 16*baud_rate; 
-	uint32_t B = clock_frequency;
-
-	if((A > 0) && (A < B))
-	{
-		while(1) {
-
-			uint32_t T = B - ((B/A)*A);
-			B = A;
-			A = T;
-
-			if(T == 0)
-				break;
-		}
-
-		// at this point GCD=B.
-		uint32_t baud_freq = (16*baud_rate)/B;
-		uint32_t baud_limit = (clock_frequency/B)-baud_freq;
-		ret_val = ((baud_limit & 0xffff) << 16) | (baud_freq & 0xfff);
-	}
-
-	return(ret_val);
-}
-
-
-#ifdef NAVIC_PROJECT
-inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, uint32_t baud_rate, uint32_t clock_frequency)
-{
-	uint32_t addr_brcw = ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER;
-	uint32_t baud_control_word = calculate_baud_control_word_for_uart (baud_rate, clock_frequency);
-
-	if(use_vmap)
-	{
-		*((uint32_t*) addr_brcw) = baud_control_word;
-	}
-	else
-	{
-		__ajit_store_word_mmu_bypass__(baud_control_word, addr_brcw);
-	}
-}
-#endif
-
-
 inline uint32_t __ajit_read_serial_control_register__()
 {
 	uint32_t addr = ADDR_SERIAL_CONTROL_REGISTER;
@@ -627,7 +521,6 @@ inline uint32_t __ajit_read_serial_control_register__()
 	__AJIT_LOAD_WORD_MMU_BYPASS__(addr, ret_val);
 	return(ret_val);
 }
-
 
 inline void __ajit_write_serial_tx_register__(uint8_t val)
 {
@@ -651,68 +544,84 @@ inline uint8_t __ajit_read_serial_rx_register__()
 	return(ret_val);
 }
 
-
-// returns 0 on failure (either serial is disabled or tx is full).
-int __ajit_serial_putchar__(char c)
+void 	__ajit_write_serial_baud_limit_register__(uint32_t bcv)
 {
-	uint32_t ctrl_reg =0;
-	__AJIT_READ_SERIAL_CONTROL_REGISTER__(ctrl_reg);
-
-	int ret_val = 0;
-	if(ctrl_reg & TX_ENABLE)
-	{	
-		if(!(ctrl_reg & TX_FULL))
-		{
-			__AJIT_WRITE_SERIAL_TX_REGISTER__(c);
-
-			ret_val =  ((int) c);
-		}
-	}
-	return (ret_val);
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_LIMIT_REGISTER, bcv);
 }
 
-// returns non-zero on success, 0 on failure.
-//  (failure : either serial rx is disabled of rx is empty).
-int  __ajit_serial_getchar__()
+uint32_t __ajit_read_serial_baud_limit_register__()
 {
-	int ret_val = 0;
-	uint32_t ctrl_reg = __ajit_read_serial_control_register__();
-	if(ctrl_reg & RX_ENABLE)
-	{
-		if (ctrl_reg & RX_FULL)
-		{
-			uint32_t rx_val = 0;
-			__AJIT_READ_SERIAL_RX_REGISTER__(rx_val); 
-			ret_val = (int) rx_val;
-		}
-	}
+	uint32_t ret_val;
+	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_LIMIT_REGISTER, ret_val);
 	return(ret_val);
 }
 
-void  __ajit_serial_puts__ (char* s, uint32_t length)
+
+void 	__ajit_write_serial_baud_frequency_register__(uint32_t bcv)
 {
-	int i;
-	for (i = 0; i < length; i++)
-	{
-		int rval = 0;
-		while(rval == 0)
-			rval =  __ajit_serial_putchar__ (s[i]);
-	}
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_FREQUENCY_REGISTER, bcv);
 }
 
-void  __ajit_serial_gets__ (char* s, uint32_t length)
+uint32_t __ajit_read_serial_baud_frequency_register__()
 {
-	int i;
-	for (i = 0; i < length; i++)
-	{
-		int rval = 0;
-		while(rval == 0)
-		  rval = __ajit_serial_getchar__();
-
-		s[i] = rval;
-	}
+	uint32_t ret_val;
+	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_FREQUENCY_REGISTER, ret_val);
+	return(ret_val);
 }
 
+
+void	__ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
+{
+	__ajit_serial_configure_inner__ (0,0, enable_tx, enable_rx, enable_intr);
+}
+
+inline void __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency)
+{
+	__ajit_serial_set_baudrate_inner__ (0,0, baud_rate, clock_frequency);
+}
+
+void __ajit_serial_set_uart_reset__ (uint8_t reset_val)
+{
+	__ajit_serial_set_uart_reset_inner__(0,0, reset_val);
+}
+
+// returns 1 on successful transmission, 0 on failure.
+int __ajit_serial_putchar__ (char c)
+{
+	return (__ajit_serial_putchar_inner__ (0,0,c));
+}
+
+//
+// returns character read from serial device.  Can block
+// indefinitely.
+//
+int __ajit_serial_getchar__ ()
+{
+	int ret_val = 0;
+	char c;
+
+	while(ret_val == 0)
+		ret_val = __ajit_serial_getchar_inner__(0,0,&c);
+
+	return(c);
+}
+
+void __ajit_serial_puts__ (char* s, uint32_t length)
+{
+	__ajit_serial_puts_inner__(0,0,s,length);
+}
+
+// reads at most length characters... stops reading when null character is reached.
+//  (null character is stored!)
+void __ajit_serial_gets__ (char* s, uint32_t length)
+{
+	__ajit_serial_gets_inner__(0,0,s,length);
+}
+
+//---------------------------------------------------------------------------------------------
+// virtual map based routines... In these, you can directly access peripheral registers using
+// *addr.  Memory protection is provided by virtual -> physical page table.
+//---------------------------------------------------------------------------------------------
 void __ajit_write_serial_control_register_via_vmap__(uint32_t val)
 {
 	*((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER) = val;
@@ -723,7 +632,6 @@ uint32_t __ajit_read_serial_control_register_via_vmap__()
 	uint32_t ret_val = *((uint8_t*) ADDR_SERIAL_CONTROL_REGISTER);
 	return(ret_val);
 }
-
 void __ajit_write_serial_tx_register_via_vmap__(uint8_t val)
 {
 	*((uint8_t*) ADDR_SERIAL_TX_REGISTER) = val;
@@ -740,64 +648,118 @@ uint8_t __ajit_read_serial_rx_register_via_vmap__()
 }
 
 
+
+
 int   __ajit_serial_putchar_via_vmap__  (char c)
 {
-	uint32_t ctrl_reg =0;
-	ctrl_reg = *((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER);
-	int ret_val = 0;
-	if(ctrl_reg & TX_ENABLE)
-	{	
-		if(!(ctrl_reg & TX_FULL))
-		{
-			*((uint8_t*) ADDR_SERIAL_TX_REGISTER) = c;
-			ret_val =  ((int) c);
-		}
-	}
-	return (ret_val);
+	return(__ajit_serial_putchar_inner__(1,0,c));
 }
 
+// can get blocked!
 int   __ajit_serial_getchar_via_vmap__ ()
 {
 	int ret_val = 0;
-	uint32_t ctrl_reg = *((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER);
-	if(ctrl_reg & RX_ENABLE)
-	{
-		if (ctrl_reg & RX_FULL)
-		{
-			uint32_t rx_val = 0;
-			rx_val = *((uint8_t*) ADDR_SERIAL_RX_REGISTER);
-			ret_val = (int) rx_val;
-		}
-	}
-	return(ret_val);
+	char c;
+
+	while(ret_val == 0)
+		ret_val = __ajit_serial_getchar_inner__(1,0,&c);
+
+	return(c);
 }
 
+// prints at most length characters (and stops at null character if encountered).
 void  __ajit_serial_puts_via_vmap__ (char* s, uint32_t length)
 {
-	int i;
-	for (i = 0; i < length; i++)
-	{
-		int rval = 0;
-		while(rval == 0)
-			rval =  __ajit_serial_putchar_via_vmap__ (s[i]);
-	}
+	__ajit_serial_puts_inner__(1,0,s,length);
 }
+
+// reads at most length characters... stops reading when null character is reached.
+//  (null character is stored!)
 void  __ajit_serial_gets_via_vmap__ (char* s, uint32_t length)
 {
-	int i;
-	for (i = 0; i < length; i++)
-	{
-		int rval = 0;
-		while(rval == 0)
-		  rval = __ajit_serial_getchar_via_vmap__();
-
-		s[i] = rval;
-	}
+	__ajit_serial_gets_inner__(1,0,s,length);
 }
 
 void  __ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
 {
-	uint32_t cval = *((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER);
+	__ajit_serial_configure_inner__ (1,0, enable_tx, enable_rx, enable_intr);
+}
+
+void __ajit_serial_set_uart_reset_via_vmap__ (uint8_t reset_val)
+{
+	__ajit_serial_set_uart_reset_inner__(1,0, reset_val);
+}
+
+inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency)
+{
+	__ajit_serial_set_baudrate_inner__ (1, 0, baud_rate, clock_frequency);
+}
+
+uint32_t	__ajit_read_serial_baud_limit_register_via_vmap__()
+{
+	uint32_t rval = *((uint32_t*) ADDR_SERIAL_BAUD_LIMIT_REGISTER);
+	return(rval);
+}
+void     	__ajit_write_serial_baud_limit_register_via_vmap__(uint32_t bcv)
+{
+	 *((uint32_t*) ADDR_SERIAL_BAUD_LIMIT_REGISTER) = bcv;
+}
+
+uint32_t 	__ajit_read_serial_baud_frequency_register_via_vmap__()
+{
+	uint32_t rval = *((uint32_t*) ADDR_SERIAL_BAUD_FREQUENCY_REGISTER);
+	return(rval);
+}
+void     	__ajit_write_serial_baud_frequency_register_via_vmap__(uint32_t bcv)
+{
+	 *((uint32_t*) ADDR_SERIAL_BAUD_FREQUENCY_REGISTER) = bcv;
+}
+
+//----------------------------------------------------------------------------------------
+// inner routines for serial...  needs a reorg..
+//----------------------------------------------------------------------------------------
+//
+//  Given the clock freq and baud-rate, this computes the control word (baud-freq, baud-limit)
+//  to be used for setting up the specific UART used in AJIT systems as of 2020.
+//
+void  calculate_baud_control_values_for_uart (uint32_t baud_rate, uint32_t clock_frequency,
+							uint32_t* baud_limit,
+							uint32_t* baud_frequency)
+{
+	// GCD (clk_freq, 16*baud_rate);	
+	uint32_t A = 16*baud_rate; 
+	uint32_t B = clock_frequency;
+
+	if((A > 0) && (A < B))
+	{
+		while(1) {
+
+			uint32_t T = B - ((B/A)*A);
+			B = A;
+			A = T;
+
+			if(T == 0)
+				break;
+		}
+
+		// at this point GCD=B.
+		*baud_frequency = (16*baud_rate)/B;
+		*baud_limit = (clock_frequency/B) - (*baud_frequency);
+	}
+
+}
+
+void __ajit_serial_configure_inner__ 
+	(uint8_t use_vmap, uint32_t dev_id, uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
+{
+	uint32_t cval = 0;
+	uint32_t ctrl_reg_addr = ((dev_id == 0) ? ADDR_SERIAL_CONTROL_REGISTER: 
+							ADDR_SERIAL_1_CONTROL_REGISTER);
+
+	if(use_vmap)
+		cval = *((uint32_t*) ctrl_reg_addr);
+	else
+		__AJIT_LOAD_WORD_MMU_BYPASS__(ctrl_reg_addr, cval);
 
 
 	if(enable_tx)
@@ -826,34 +788,169 @@ void  __ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx, 
 	{
 		cval = cval & (~4);
 	}
-	*((uint32_t*) ADDR_SERIAL_CONTROL_REGISTER) = cval;
-}
+	if(use_vmap)
+		*((uint32_t*)ctrl_reg_addr) = cval;
+	else
+		__AJIT_STORE_WORD_MMU_BYPASS__(ctrl_reg_addr, cval);
 
-void __ajit_serial_uart_reset_via_vmap__ ()
-{
-	__ajit_serial_uart_reset_inner__(1);
 }
-
-void __ajit_serial_uart_reset_inner__ (uint8_t use_vmap)
+inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, 
+							uint32_t serial_device_index,
+							uint32_t baud_rate, 
+							uint32_t clock_frequency)
 {
-	// read old value of control register.
-	uint32_t old_ctrl_register;
-	uint32_t reset_val = (1 << 3); 
+	uint32_t baud_limit, baud_freq;
+	calculate_baud_control_values_for_uart (baud_rate, clock_frequency,
+							&baud_limit, &baud_freq);
+
+	uint32_t addr_blimit = 
+		((serial_device_index == 0) ?
+					ADDR_SERIAL_BAUD_LIMIT_REGISTER :
+					ADDR_SERIAL_1_BAUD_LIMIT_REGISTER );
+
+	uint32_t addr_bfreq = 
+		((serial_device_index == 0) ?
+					ADDR_SERIAL_BAUD_FREQUENCY_REGISTER :
+					ADDR_SERIAL_1_BAUD_FREQUENCY_REGISTER );
+					
+
 	if(use_vmap)
 	{
-		old_ctrl_register = __ajit_read_serial_control_register_via_vmap__();
-		__ajit_write_serial_control_register_via_vmap__ (reset_val);
-		__ajit_write_serial_control_register_via_vmap__ (old_ctrl_register);
+		*((uint32_t*) addr_blimit) = baud_limit;
+		*((uint32_t*) addr_bfreq) = baud_freq;
 	}
 	else
 	{
-		old_ctrl_register = __ajit_read_serial_control_register__();
-		__ajit_write_serial_control_register__ (reset_val);
-		__ajit_write_serial_control_register__ (old_ctrl_register);
+		__AJIT_STORE_WORD_MMU_BYPASS__(addr_blimit, baud_limit);
+		__AJIT_STORE_WORD_MMU_BYPASS__(addr_bfreq,  baud_freq);
 	}
 }
 
 
+
+
+
+// returns 0 on failure (either serial is disabled or tx is full).
+int __ajit_serial_putchar_inner__(uint8_t use_vmap, uint32_t dev_id, char c)
+{
+	uint32_t ctrl_reg =0;
+	uint32_t ctrl_reg_addr = (dev_id == 0) ? ADDR_SERIAL_CONTROL_REGISTER : ADDR_SERIAL_1_CONTROL_REGISTER;
+	uint32_t tx_reg_addr = (dev_id == 0) ? ADDR_SERIAL_TX_REGISTER : ADDR_SERIAL_1_TX_REGISTER;
+	
+	if(use_vmap)
+		ctrl_reg = *((uint32_t*) ctrl_reg_addr);
+	else
+		__AJIT_LOAD_WORD_MMU_BYPASS__ (ctrl_reg_addr, ctrl_reg);
+
+	int ret_val = 0;
+	if(ctrl_reg & TX_ENABLE)
+	{	
+		if(!(ctrl_reg & TX_FULL))
+		{
+			if(use_vmap)
+				*((uint8_t*) tx_reg_addr) = c;
+			else
+				__AJIT_STORE_UBYTE_MMU_BYPASS__(tx_reg_addr, c);
+
+			ret_val =  1;
+		}
+	}
+	return (ret_val);
+}
+
+// returns non-zero on success, 0 on failure.
+//  (failure : either serial rx is disabled of rx is empty).
+//
+// On success, *c contains the character read from the serial device.
+//
+int  __ajit_serial_getchar_inner__(uint8_t use_vmap, uint32_t dev_id, char* c)
+{
+	int ret_val = 0;
+	uint32_t ctrl_reg_addr = (dev_id == 0) ? ADDR_SERIAL_CONTROL_REGISTER : ADDR_SERIAL_1_CONTROL_REGISTER;
+	uint32_t rx_reg_addr = (dev_id == 0) ? ADDR_SERIAL_RX_REGISTER : ADDR_SERIAL_1_RX_REGISTER;
+	uint32_t ctrl_reg;
+
+	if(use_vmap)
+		ctrl_reg = *((uint32_t*) ctrl_reg_addr);
+	else
+		__AJIT_LOAD_WORD_MMU_BYPASS__(ctrl_reg_addr, ctrl_reg);
+
+	if(ctrl_reg & RX_ENABLE)
+	{
+		if (ctrl_reg & RX_FULL)
+		{
+			if(use_vmap)
+				*c = *((uint8_t*) rx_reg_addr);
+			else
+			{
+				uint8_t b;
+				__AJIT_LOAD_UBYTE_MMU_BYPASS__(rx_reg_addr, b);
+				*c  = b;
+			}
+			ret_val = 1;
+		}
+	}
+	return(ret_val);
+}
+
+void  __ajit_serial_puts_inner__ (uint8_t use_vmap, uint32_t dev_id, char* s, uint32_t length)
+{
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		int rval = 0;
+
+		char c = s[i];
+		if(c == 0) break;
+
+		while(rval == 0)
+		{
+			rval =  __ajit_serial_putchar_inner__ (use_vmap, dev_id, s[i]);
+		}
+	}
+}
+
+// reads length-1 characters including null terminator and stops reading after null
+// is encountered.
+void  __ajit_serial_gets_inner__ (uint8_t use_vmap, uint32_t dev_id, char* s, uint32_t length)
+{
+	int i;
+	for (i = 0; i < (length-1); i++)
+	{
+		int rval = 0;
+		char c = 0;
+		while (rval == 0)
+		{
+			rval = __ajit_serial_getchar_inner__(use_vmap, dev_id, &c);
+		}
+
+		s[i] = c;
+		if(c == 0)
+			break;
+	}
+	s[length-1] = 0;
+}
+
+void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, uint8_t reset_val)
+{
+	uint32_t cval = 0;
+	uint32_t ctrl_reg_addr = ((device_id == 0) ? ADDR_SERIAL_CONTROL_REGISTER: 
+							ADDR_SERIAL_1_CONTROL_REGISTER);
+	if(use_vmap)
+		cval = *((uint32_t*) ctrl_reg_addr);
+	else
+		__AJIT_LOAD_WORD_MMU_BYPASS__(ctrl_reg_addr, cval);
+	
+	if(reset_val  == 0)
+		cval = cval & (~(1 << 5));
+	else
+		cval = cval | (1 << 5);
+
+	if(use_vmap)
+		*((uint32_t*) ctrl_reg_addr) = cval;
+	else
+		__AJIT_STORE_WORD_MMU_BYPASS__(ctrl_reg_addr, cval);
+}
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
 //---------------------------------------------------------------------------------------------
@@ -951,13 +1048,77 @@ inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
 }
 
 
+uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
+						uint8_t send_byte, 
+						uint8_t deselect_after_transfer)
+{
+	return(__ajit_do_spi_transfer_inner__(0, device_id, send_byte, deselect_after_transfer));
+}
+
+uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
+						uint8_t send_byte, 
+						uint8_t deselect_after_transfer)
+{
+	return(__ajit_do_spi_transfer_inner__(1, device_id, send_byte, deselect_after_transfer));
+}
+
+
+// times out after 8K clock cycles.
+uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
+					uint8_t device_id,
+					uint8_t send_byte, 
+					uint8_t deselect_after_transfer)
+{
+	uint8_t cmd = ((device_id & 0x7) << 3) | ((deselect_after_transfer & 0x1) << 1) | 1;
+	if(use_vmap)
+	{
+		*((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW) = send_byte;
+		*((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER) = cmd;
+	}	
+	else
+	{
+		__AJIT_STORE_WORD_MMU_BYPASS__ (ADDR_SPI_DATA_REGISTER_LOW, send_byte);
+		__AJIT_STORE_WORD_MMU_BYPASS__ (ADDR_SPI_COMMAND_STATUS_REGISTER, cmd);
+	}
+
+	int spin_count = 0;
+	while(1)
+		// spin on spi command completion.
+	{
+		uint32_t status;
+		if(use_vmap)
+			status = *((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER);
+		else
+			__AJIT_LOAD_WORD_MMU_BYPASS__ (ADDR_SPI_COMMAND_STATUS_REGISTER, status);
+
+		if(!(status & 0x1))
+			break;
+
+		spin_count++;
+		if(spin_count == (2*4096))
+		{
+			break;
+		}
+	}
+		
+	uint32_t val = 0;
+	if(use_vmap)
+		val = *((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW);
+	else
+		__AJIT_LOAD_WORD_MMU_BYPASS__ (ADDR_SPI_DATA_REGISTER_LOW, val);
+
+
+	return(val);
+
+}
+
 //---------------------------------------------------------------------------------------------
 // GPIO!
 //---------------------------------------------------------------------------------------------
 // write gpio-out to GPIO_OUT pins and read back GPIO_IN pins.
-inline uint32_t __ajit_gpio_xfer__(uint8_t gpio_out)
+uint32_t __ajit_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out)
 {
-	
+
 	int retry_limit;
 
 	uint32_t ret_val = 0;
@@ -968,7 +1129,7 @@ inline uint32_t __ajit_gpio_xfer__(uint8_t gpio_out)
 
 	// master-command
 	// spi-dev-id = 1, deselect = 1, start-xfer = 1.
-	uint8_t cmd_to_master = ((1 << 4) | 0x3);
+	uint8_t cmd_to_master = (((gpio_dev_id  & 0x7) << 3) | 0x3);
 
 	// write master-command
 	__ajit_write_spi_master_register__(2, cmd_to_master);
@@ -986,9 +1147,9 @@ inline uint32_t __ajit_gpio_xfer__(uint8_t gpio_out)
 	return(ret_val);
 }
 
-inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out)
+uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_dev_id, uint8_t gpio_out)
 {
-	
+
 	int retry_limit;
 
 	uint32_t ret_val = 0;
@@ -998,8 +1159,8 @@ inline uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_out)
 	__ajit_write_spi_master_register_via_vmap__(0, gpio_out);
 
 	// master-command
-	// spi-dev-id = 1, deselect = 1, start-xfer = 1.
-	uint8_t cmd_to_master = ((1 << 4) | 0x3);
+	// spi-dev-id = gpio_dev_id, deselect = 1, start-xfer = 1.
+	uint8_t cmd_to_master = (((gpio_dev_id & 0x7) << 3) | 0x3);
 
 	// write master-command
 	__ajit_write_spi_master_register_via_vmap__(2, cmd_to_master);
@@ -1023,11 +1184,29 @@ uint32_t  __ajit_read_gpio_32__  ()
 	return(ret_val);
 }
 
+//---------------------------------------------------------------------------------------------
+// 32-bit GPIO 
+//---------------------------------------------------------------------------------------------
+
 void      __ajit_write_gpio_32__ (uint32_t w)
 {
 	*((uint32_t*) ADDR_GPIO_DOUT_REGISTER) = w;
 }
 
+uint32_t  __ajit_read_gpio_32_via_vmap__  ()
+{
+	uint32_t rval;
+	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_GPIO_DIN_REGISTER, rval);
+	return(rval);
+}
+void      __ajit_write_gpio_32_via_vmap__ (uint32_t w)
+{
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_GPIO_DOUT_REGISTER, w);
+}
+
+//---------------------------------------------------------------------------------------------
+// 32-bit GPIO 
+//---------------------------------------------------------------------------------------------
 inline void __ajit_ta_0__ ()
 {
 	__asm__ __volatile__("ta 0; nop; nop;");

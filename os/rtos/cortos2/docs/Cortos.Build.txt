@@ -1,0 +1,26 @@
+	How Cortos2 uses the YAML file to produce
+		executable code.
+
+
+1. Overview
+
+	YAML and source code specified in YAML file
+	are used to produce the executable image.
+
+	Cortos2 does the following:
+		- figures out a virtual to physical mapping
+			with appropriate protection.
+
+			- allocates space for dynamic memory allocation pools
+				(cacheable, non-cacheable)
+			- allocates space for stacks needed by hardware
+				threads in the system.
+			- creates linker script files for combining
+				the modules in the program.
+			- adds barrier/guard pages to detect stack overflow.
+
+		- initializes the processor run-time environment before
+			passing control to user code.
+
+2. Example
+---------------

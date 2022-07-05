@@ -6,7 +6,7 @@
 void print_usage(char* app_name)
 {
 	fprintf(stderr,"USAGE: %s  serial-device-name [baudrate]\n", app_name);
-	fprintf(stderr,"     baudrate optional, default 115200.\n", app_name);
+	fprintf(stderr,"     baudrate optional, default 115200.\n");
 	fprintf(stderr,"\nExample: %s /dev/ttyUSB0 115200\n", app_name); 
 }
 
