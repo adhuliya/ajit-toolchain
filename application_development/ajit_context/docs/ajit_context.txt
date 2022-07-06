@@ -1,0 +1,5 @@
+
+A first cut implementation of getcontext and
+setcontext which can lead us to co-routines
+and to yield/resume structures in cooperative
+multi-threading.

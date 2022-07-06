@@ -1,0 +1,7 @@
+An implementation of context...
+	Right now, we have getcontext and
+	setcontext implemented.
+
+
+	Lots of interesting and twisted things
+	possible...
