@@ -1,8 +1,7 @@
 #ifndef ajit_context_h__
 #define ajit_context_h__
 #define NWINDOWS 8
-
-typedef struct ajit_context_t__ {
+typedef struct ajit_mcontext_t__ {
 
 	uint32_t psr;     
 	uint32_t wim;    
@@ -30,7 +29,29 @@ typedef struct ajit_context_t__ {
 	uint32_t f[32]; 
 	
 
-} ajit_context_t;
+} ajit_mcontext_t;
+
+typedef struct ajit_context_t__ ajit_context_t;
+struct ajit_context_t__ {
+
+	uint32_t  func;
+	uint32_t  func_arg;
+	ajit_context_t*  uc_link;
+	uint32_t  stack_base_addr;
+	uint32_t  stack_size_in_bytes;
+	uint32_t  reserved_0;
+	uint32_t  reserved_1;
+	uint32_t  reserved_2;
+
+	ajit_mcontext_t mctxt;
+};
+
+// initialize to all zeros..
+void __ajit_context_init__(ajit_context_t* ctxt);
+
+
+void __ajit_context_set_stack__(ajit_context_t* ctxt, uint32_t stack_base_addr, uint32_t stack_size);
+void __ajit_context_set_link__ (ajit_context_t* ctxt, ajit_context_t* link);
 
 
 
@@ -51,9 +72,9 @@ int __ajit_setcontext__ (const ajit_context_t *__ucp);
 */
 int __ajit_swapcontext__ (ajit_context_t *__oucp, const ajit_context_t *__ucp);
 
-/* make a context, switch to it, and call *__func(void) */
+/* make a context, and set func etc.. */
 void __ajit_makecontext__ (ajit_context_t *__ucp, void (*__func) (void*), void* arg);
 
-void __ajit_print_context__ (ajit_context_t* t);
+void __ajit_print_mcontext__ (ajit_context_t* t);
 
 #endif /* ajit_context.h */

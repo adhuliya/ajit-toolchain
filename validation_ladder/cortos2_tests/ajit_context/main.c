@@ -3,10 +3,10 @@
 #include <cortos.h>
 #include <ajit_context.h>
 
-void func_0(void);
-void func_1(void);
+void func_0(void*);
+void func_1(void*);
 
-void foo(void*);
+void foo();
 
 int  x = 0;
 int  y = 0;
@@ -19,61 +19,99 @@ ajit_context_t *cp_0 = &context_0;
 ajit_context_t *cp_1 = &context_1;
 
 int main(void) {
+   __ajit_context_init__(cp_0);
+   __ajit_context_init__(cp_1);
 
     //__cortos_enable_serial();
 
-    cortos_printf("starting\n");
-    __ajit_getcontext__(cp_0);
+   cortos_printf("starting\n");
+   __ajit_makecontext__ (cp_0, &func_0, &x);
+   cortos_printf("made context cp_0\n");
+   if(x > 0)
+   {
+	   cortos_printf("x=%d!\n", x);
+   }
+   else
+   {
+	   __ajit_makecontext__ (cp_1, &func_1, &y);
+	   if(y > 0) 
+	   {
+		   cortos_printf("y=%d!\n", y);
+	   }
+	   else
+	   {
+		   cortos_printf("made context cp_1\n");
+		   __ajit_context_set_stack__(cp_0, 0x40010000, 16*1024);
+		   __ajit_context_set_stack__(cp_1, 0x40020000, 16*1024);
 
-  if (!x) {
-    cortos_printf("getcontext cp_0 has been called: cp_0 follows\n");
-    cortos_printf("---------------------------------------------------------\n");
-    __ajit_print_context__(cp_0);
-    cortos_printf("---------------------------------------------------------\n");
-    func_0();
-  }
-  else if (!y) {
-    func_1();
-    cortos_printf("setcontext cp_0 has been called: cp_0 follows\n");
-    cortos_printf("---------------------------------------------------------\n");
-    __ajit_print_context__(cp_0);
-    cortos_printf("---------------------------------------------------------\n");
-  }
-  else {
-    func_1();
-    cortos_printf("swapcontext cp_1 -> cp_0 has been called: cp_0 follows\n");
-    cortos_printf("---------------------------------------------------------\n");
-    __ajit_print_context__(cp_0);
-    cortos_printf("---------------------------------------------------------\n");
-    return(0);
-  }
+		  __ajit_context_set_link__(cp_0, cp_1);
+		  if(x == 0)
+		  {
+		   	__ajit_context_set_link__(cp_1, cp_0);
+		  }
 
-  __ajit_makecontext__(cp_1, &foo, (void*) &flag);
-  cortos_printf("back in main after makecontext cp_1: flag (*0x%x)=%d. cp_1 follows\n", ((uint32_t) &flag), flag);
-    cortos_printf("---------------------------------------------------------\n");
-    __ajit_print_context__(cp_1);
-    cortos_printf("---------------------------------------------------------\n");
+		   // continue from cp_0...  will call func_0, then
+		   // switch to cp_1 which will call func_1.. which will
+		   // switch to cp_0 which will call func_...  etc.
+		   cortos_printf("setcontext(cp_0)\n");
+		   __ajit_setcontext__(cp_0);
+	   }
+   }
+		  
+   // clear and start afresh..
+   __ajit_context_init__(cp_0);
+   __ajit_context_init__(cp_1);
 
-  // switch context from cp_1 to cp_0..
-  __ajit_swapcontext__(cp_1, cp_0);
+
+   __ajit_makecontext__ (cp_0, &func_0, &x);
+   cortos_printf("x=%d.\n", x);
+   if(x == 2)
+   {
+	__ajit_setcontext__(cp_0);
+   }
+   
+   __ajit_makecontext__ (cp_1, &func_1, &y);
+   cortos_printf("y=%d.\n", y);
+    if(y == 2)
+    {
+	cortos_printf("swapcontext(cp_0, cp_1)\n");
+	__ajit_swapcontext__(cp_0, cp_1);
+    }
+   
+
+   __ajit_context_init__(cp_0);
+   __ajit_getcontext__ (cp_0);
+   cortos_printf("return-point of getcontext(cp_0): x=%d\n", x);
+   if(x == 3)
+   {
+	foo();
+   }
+
+   return(1);
 
 }
 
-void func_0(void) {
-
-  x++;
-  __ajit_setcontext__(cp_0);
-
-}
-
-void func_1(void) {
-  y++;
-}
-
-void foo(void* flag)
+void foo()
 {
-  	cortos_printf("foo %d.\n", x);
 	x++;
-	*((int*) flag) = 1;
-	__ajit_setcontext__(cp_1);
+	__ajit_setcontext__(cp_0);
+} 
+
+
+void func_0(void* px) {
+	*((int*) px) += 1;
+	cortos_printf("in func_0, set x = %d.\n", *((int*) px) );
+	int v = *((int*) px);
+	if (v > 1)
+	{
+		cortos_printf("in func_0, detach link from cp_1 -> cp_0\n");
+		__ajit_context_set_link__(cp_1, NULL);
+	}
 }
+
+void func_1(void* py) {
+	*((int*)py) += 1;
+	int v = *((int*) py);
+	cortos_printf("in func_1, set y = %d.\n", v);
+}
+
