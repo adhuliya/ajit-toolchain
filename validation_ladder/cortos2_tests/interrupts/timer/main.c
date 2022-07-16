@@ -9,7 +9,7 @@
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
 #define TIME_SCALE_FACTOR (1.0/CLK_FREQUENCY)
-#define NSAMPLES  64
+#define NSAMPLES  1024
 
 volatile int volatile timer_interrupt_counter = 0;
 volatile int volatile exit_flag  = 0;
@@ -61,6 +61,22 @@ void my_timer_interrupt_handler()
 		exit_flag = 1;
 }
 
+int isAPrime(int R)
+{
+	int ret_val = 1;
+	int J;
+	for(J = 2; J < R/2; J++)
+	{
+		if((R/J)*J == R)
+		{
+			ret_val = 0;
+			break;
+		}
+			
+	}	
+	return(ret_val);
+}
+
 int main () 
 {
 	cortos_printf("Starting\n");
@@ -68,16 +84,31 @@ int main ()
 	// enable interrupt controller for the current thread.
 	enableInterruptControllerAndAllInterrupts(0,0);
 
-	// reenable the timer, right away..
-	// __ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
+	// enable the timer, right away..
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
 
+	int I = 1;
+	int P = 0;
 
-	// infinite loop
+	// do something to be doing something.
 	while(!exit_flag)
 	{
+		I = (I + 1);
+		int R = isAPrime(I);
+		if(R)
+		{
+			cortos_printf("%d is a prime.\n", I);
+			P++;
+		}
 	}
 
-	cortos_printf("Inter-interrupt interval: Min=%f Max=%f Avge=%f", min_interval, max_interval, sum_of_intervals/(NSAMPLES-1));
+	cortos_printf("found %d primes.\n", P);
+
+	cortos_printf("Inter-interrupt interval over %d interrupts:\n Min=%f Max=%f Avge=%f\n", 
+				timer_interrupt_counter,			
+				min_interval, 
+				max_interval, 
+				sum_of_intervals/(NSAMPLES-1));
 	return(0);
 }
 

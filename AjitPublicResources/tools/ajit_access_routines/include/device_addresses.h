@@ -18,6 +18,20 @@
 // Note: the next two are byte accesses..
 #define ADDR_SERIAL_TX_REGISTER      			0xFFFF3210 // AJIT default-serial-device transmit register (byte).
 #define ADDR_SERIAL_RX_REGISTER      			0xFFFF3220 // AJIT default-serial-device receive register (byte).
+#define ADDR_SERIAL_BAUD_CONTROL_REGISTER		0xFFFF320c // AJIT default-serial-device control register
+#define ADDR_SERIAL_BAUD_LIMIT_REGISTER			0xFFFF320c //  baud-limit
+#define ADDR_SERIAL_BAUD_FREQUENCY_REGISTER		0xFFFF3210 //  baud-control
+
+// second serial device not used in old setup but included for compile clean...
+#define ADDR_SERIAL_1_MIN 				0xFFFF3240 // AJIT default-countdown-timer control register (word).
+#define ADDR_SERIAL_1_CONTROL_REGISTER 			0xFFFF3240 // AJIT default-serial-device control register (word).
+// Note: the next two are byte accesses..
+#define ADDR_SERIAL_1_TX_REGISTER      			0xFFFF3244 // AJIT default-serial-device transmit register (byte).
+#define ADDR_SERIAL_1_RX_REGISTER      			0xFFFF3248 // AJIT default-serial-device receive register (byte).
+#define ADDR_SERIAL_1_BAUD_CONTROL_REGISTER		0xFFFF324c // AJIT default-serial-device control register
+#define ADDR_SERIAL_1_BAUD_LIMIT_REGISTER		0xFFFF324c // baud-limit
+#define ADDR_SERIAL_1_BAUD_FREQUENCY_REGISTER		0xFFFF3250 // baud-frequency
+
 #define ADDR_SPI_DATA_REGISTER_LOW                   	0xFFFF3300 // AJIT default-SPI-master data-register low (word).
 #define ADDR_SPI_DATA_REGISTER_HIGH                  	0xFFFF3304 // AJIT default-SPI-master data-register high (word).
 #define ADDR_SPI_COMMAND_STATUS_REGISTER             	0xFFFF3308 // AJIT default-SPI-command/status register (word).
