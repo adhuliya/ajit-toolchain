@@ -19,7 +19,7 @@ void ajit_spi_flash_send_byte(uint8_t dev_id, uint8_t byte_to_send, uint8_t dese
 	// write 32-bits but only bottom 8-bits are used.
 	*((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW) = byte_to_send;
 
-	// write 32-bits but only bottom 8-bits are used.
+	// write the transfer command to the SPI master.
 	uint32_t cmd = 1 | ((deselect_after_send & 0x1) << 1) | ((dev_id & 0x7) << 3);
 	*((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER) = cmd;
 
