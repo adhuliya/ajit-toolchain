@@ -57,7 +57,7 @@ def createDir(dirPath, existOk=True) -> str:
     os.makedirs(absPath, exist_ok=existOk)
   except Exception as e:
     _log.error("Error creating directory {},\n{}".format(absPath, e))
-    return None
+    exit(1)
 
   return absPath
 
@@ -285,13 +285,38 @@ def runCommand(
   return completed.returncode
 
 
-def runCommandGetOutput(cmd: str) -> str:
+def runCommandGetOutput(cmd: str) -> Tuple[int, str]:
   """Runs the given command without capturing the output."""
   print(f"CoRTOS: command: {cmd}")
   status, output = subp.getstatusoutput(cmd)
   print(f"CoRTOS: {'OK' if not status else 'ERROR'}:"
         f" command return code {status}")
-  return output
+  return status, output
+
+def getSizeStr(sizeInBytes : int) -> str:
+  """e.g. converts 4100 bytes to 4KB + 4B, etc. Only GB, MB, KB supported."""
+  sizeStr = ""
+
+  multiple = sizeInBytes // (2**30) # for megabytes
+  add = " + " if sizeStr else ""
+  if multiple: sizeStr = f"{sizeStr}{add}{multiple}GB"
+  sizeInBytes -= multiple * (2**30)
+
+  multiple = sizeInBytes // (2**20) # for megabytes
+  add = " + " if sizeStr else ""
+  if multiple: sizeStr = f"{sizeStr}{add}{multiple}MB"
+  sizeInBytes -= multiple * (2**20)
+
+  multiple = sizeInBytes // (2**10) # for kilobyte
+  add = " + " if sizeStr else ""
+  if multiple: sizeStr = f"{sizeStr}{add}{multiple}KB"
+  sizeInBytes -= multiple * (2**10)
+
+  add = " + " if sizeStr else ""
+  if sizeInBytes: sizeStr = f"{sizeStr}{add}{sizeInBytes}B"
+
+  return sizeStr
+
 
 
 def getConfigurationParameter(

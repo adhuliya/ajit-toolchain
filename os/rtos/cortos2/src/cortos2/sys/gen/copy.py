@@ -35,6 +35,8 @@ def copyVmapFile(
 ) -> None:
   """Automatically generate vmap file entries."""
   with open(consts.VMAP_FILE_NAME, "w") as f:
+    f.write(f"! All region sizes are at least multiples of 4KB pages.\n")
+    f.write(f"! Virtual Address == Physical Address.\n")
     for region in confObj.memoryLayout.regionSeq:
       for line in region.getVmapFileEntryLines():
         f.write(line)

@@ -22,7 +22,7 @@ void cortos_brel(void *buf);
 
 % end
 
-% if confObj.hardware.memory.ncram.getSizeInBytes():
+% if confObj.hardware.memory.ncram[0].getSizeInBytes():
 
 // get/allocate a memory of `size` bytes from NCRAM region
 // Note: Some internal space may be wasted to make size align to 2^3 boundary.

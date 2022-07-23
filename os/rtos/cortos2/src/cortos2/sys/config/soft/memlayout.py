@@ -173,18 +173,11 @@ class MemoryLayout:
       )
       self.checkAndAppendMemoryRegion(region, not dummyLayout)
 
-    if self.memory.ncram.getSizeInBytes():
-      region = self.memory.ncram
-      self.checkAndAppendMemoryRegion(region, check=False)
+    for ncrm in self.memory.ncram:
+      if ncrm.getSizeInBytes():
+        self.checkAndAppendMemoryRegion(ncrm, check=False)
 
-    region = common.MemoryRegion(
-      name="MemoryMappedIO",
-      oneLineDescription="Reserved space for memory mapped IO.",
-      sizeInBytes=2 ** 16,  # 64KB
-      virtualStartAddr=0xFFFF0000,
-      physicalStartAddr=0xFFFF0000,
-      cacheable=False,
-      permissions=consts.MemoryPermissions.S_RWX_U_RWX,
-    )
-    self.checkAndAppendMemoryRegion(region, check=False)
+    for mmio in self.memory.mmio:
+      if mmio.getSizeInBytes():
+        self.checkAndAppendMemoryRegion(mmio, check=False)
 

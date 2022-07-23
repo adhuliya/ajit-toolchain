@@ -2,6 +2,8 @@
 
 A writer sends four values to the reader.
 The reader collects the values and sums them up.
+
+Also note the use of the `volatile` keyword.
 */
 
 #include <math.h>

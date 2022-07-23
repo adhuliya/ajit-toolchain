@@ -4,8 +4,8 @@
 % startAddr = confObj.software.bget.getStartAddr()
 % memSizeInBytes = confObj.software.bget.getSizeInBytes()
 
-% startAddrNcram = confObj.hardware.memory.ncram.getFirstByteAddr()
-% memSizeInBytesNcram = confObj.hardware.memory.ncram.getSizeInBytes()
+% startAddrNcram = confObj.hardware.memory.ncram[0].getFirstByteAddr()
+% memSizeInBytesNcram = confObj.hardware.memory.ncram[0].getSizeInBytes()
 
 #include "__bget.h"
 #include "__bget_ncram.h"

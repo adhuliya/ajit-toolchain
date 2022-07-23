@@ -119,7 +119,7 @@ class Program:
     self.textSectionSizeInBytes = textSize
     self.dataSectionSizeInBytes = dataSize
     # don't let the bss section size be zero
-    self.bssSectionSizeInBytes = bssSize if bssSize else 4096
+    self.bssSectionSizeInBytes = bssSize if bssSize else 4096 # at least a 4KB page
 
 
   def getSizeOfProgram(self):

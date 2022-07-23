@@ -164,7 +164,10 @@ class MemoryRegion(util.PrettyStr):
   def getVmapFileEntryLines(self) -> List[str]:
     """Returns the entry lines to be put in a vmap file."""
     entryLines: List[str] = []
+    pagedSizeStr = util.getSizeStr(self.pagedSizeInBytes())
     entryLines.append(f"!{self.name}: {self.oneLineDescription}{os.linesep}")
+    entryLines.append(f"! {pagedSizeStr} : Virtual {hex(self.virtualStartAddr)}"
+                      f" to {hex(self.getLastByteAddr(True))}{os.linesep}")
 
     virtualAddr = self.virtualStartAddr
     physicalAddr = self.physicalStartAddr
@@ -180,14 +183,10 @@ class MemoryRegion(util.PrettyStr):
           permissions=self.permissions.value,
         )
         entryLines.append(entryLine)
-        if self.name == "TextSection": #delit
-          print(f"EntryLine: {entryLine}") #delit
 
       virtualAddr += page_size * count
       physicalAddr += page_size * count
 
-    # if self.name == "TextSection":  #delit
-    #   exit() #delit
     return entryLines
 
 

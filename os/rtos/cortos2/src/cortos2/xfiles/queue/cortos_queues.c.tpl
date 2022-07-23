@@ -6,27 +6,33 @@
 #include <cortos_bget.h>
 % end
 
+#define QUEUE_ALIGNMENT 16
+
 % if confObj.software.bget.enable:
 CortosQueueHeader*
 cortos_reserveQueue(uint32_t msgSizeInBytes, uint32_t length, uint8_t nc) {
   uint8_t* queue = 0;
   uint32_t size = sizeof(CortosQueueHeader) + (msgSizeInBytes * length);
   if (nc) {
-    queue = (uint8_t*)cortos_bget_ncram(size);
+    queue = (uint8_t*)cortos_bget_ncram(size + QUEUE_ALIGNMENT);
   } else {
-    queue = (uint8_t*)cortos_bget(size);
+    queue = (uint8_t*)cortos_bget(size + QUEUE_ALIGNMENT);
   }
   if (queue == 0) return 0;
 
+  // QUEUE_ALIGNMENT related - align properly
+  uint32_t rem = ((uint32_t)queue) % QUEUE_ALIGNMENT;
+
   // initialize the queue header
   CortosQueueHeader *hdr;
-  hdr = (CortosQueueHeader*)queue;
+  hdr = (CortosQueueHeader*) (queue + (QUEUE_ALIGNMENT - rem));
   hdr->totalMsgs = 0;
   hdr->readIndex = 0;
   hdr->writeIndex = 0;
   hdr->msgSizeInBytes = msgSizeInBytes;
   hdr->length = length;
   hdr->lock = cortos_reserveLock(1);
+  hdr->bget_addr = queue; // original address returned by bget
 
   return hdr;
 }
@@ -34,9 +40,9 @@ cortos_reserveQueue(uint32_t msgSizeInBytes, uint32_t length, uint8_t nc) {
 void cortos_freeQueue(CortosQueueHeader *hdr) {
   cortos_freeLock(hdr->lock);
   if (cortos_IsNcRamAddr((void*)hdr)) {
-    cortos_brel_ncram((void*)hdr);
+    cortos_brel_ncram((void*)hdr->bget_addr);
   } else {
-    cortos_brel((void*)hdr);
+    cortos_brel((void*)hdr->bget_addr);
   }
 }
 % end

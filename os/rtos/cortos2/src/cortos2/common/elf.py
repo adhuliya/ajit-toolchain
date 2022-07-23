@@ -100,11 +100,14 @@ def getTextDataBssSize(elfFileName: str) -> Tuple[int, int, int]:
         text    data     bss     dec     hex filename
         1623     600       8    2231     8b7 a.out
   """
-  output = util.runCommandGetOutput(CMD_ELF_SIZE.format(name=elfFileName))
-  secondLine = output.split(os.linesep)[1] # get the second output line
+  status, output = util.runCommandGetOutput(CMD_ELF_SIZE.format(name=elfFileName))
+  if status != 0:
+    print(f"CoRTOS: ERROR: cannot find size of elf {elfFileName}. Does it exist ?")
+    exit(1)
 
+  secondLine = output.split(os.linesep)[1]
   words = secondLine.split()
-  #                        text      ,    data       +     bss
+  #                                 text     ,     data     ,      bss
   textSize, dataSize, bssSize = int(words[0]), int(words[1]),  int(words[2])
   return textSize, dataSize, bssSize # in bytes
 

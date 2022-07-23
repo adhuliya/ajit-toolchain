@@ -15,6 +15,8 @@ typedef struct _CortosQueueHeader {
   uint32_t length;
   uint32_t msgSizeInBytes;
   uint8_t *lock;
+  uint8_t *bget_addr;
+  uint32_t misc;
 } CortosQueueHeader;
 
 % if confObj.software.bget.enable:

@@ -69,7 +69,7 @@ CORTOS_SETUP_THREADS:
   call __cortos_bpool
   nop
 % end
-% if confObj.hardware.memory.ncram.sizeInBytes:
+% if confObj.hardware.memory.ncram[0].sizeInBytes:
   ! acquire memory for bget ncram just once
   call __cortos_bpool_ncram
   nop
