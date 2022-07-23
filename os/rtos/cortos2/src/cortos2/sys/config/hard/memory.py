@@ -49,9 +49,40 @@ class Memory:
     ncram = Memory.generateNcRamRegions(config, prevKeySeq)
     mmio = Memory.generateMmioRegions(config, prevKeySeq)
 
+    regionSeq: List[MemoryRegion] = []
+    regionSeq.append(flash)
+    regionSeq.append(ram)
+    regionSeq.extend(ncram)
+    regionSeq.extend(mmio)
+    Memory.checkMemoryLayout(regionSeq)
+
     prevKeySeq.pop()
     memory = Memory(flash, ram, ncram, mmio, physicalAddrWidth)
     return memory
+
+
+  @staticmethod
+  def checkMemoryLayout(regionSeq: List[MemoryRegion]):
+    regionSeq.sort(key=lambda x: x.physicalStartAddr)
+
+    overlap = False
+    prev = None
+    for region in regionSeq:
+      if prev is None:
+        prev = region
+        continue
+      if prev.sizeInBytes == 0 or region.sizeInBytes == 0:
+        continue
+      if prev.getLastByteAddr(False) >= region.getFirstByteAddr(False):
+        print(f"CoRTOS: ERROR: Region '{prev.name}' overlaps region '{region.name}'")
+        print(f"        {prev.name}: {prev.getRangeStr(False)}")
+        print(f"        {region.name}: {region.getRangeStr(False)}")
+        overlap = True
+      prev = region
+
+    if overlap:
+      print(f"CoRTOS: ERROR: Overlaps in hardware memory regions. See the prints above.")
+      exit(1)
 
 
   @staticmethod

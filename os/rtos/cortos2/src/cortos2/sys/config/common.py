@@ -78,6 +78,13 @@ class MemoryRegion(util.PrettyStr):
     return memoryRegion
 
 
+  def getRangeStr(self, virtualAddr=True):
+    if virtualAddr:
+      return f"({hex(self.virtualStartAddr)}, {hex(self.getLastByteAddr(True))})"
+    else:
+      return f"({hex(self.physicalStartAddr)}, {hex(self.getLastByteAddr(False))})"
+
+
   def initPageTableLevels(self):
     """Determine the number of pages and their levels needed for this region.
     It tries to minimize space wastage and also minimize the number of
