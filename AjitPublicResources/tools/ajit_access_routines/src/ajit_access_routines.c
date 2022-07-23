@@ -1062,6 +1062,19 @@ uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
 	return(__ajit_do_spi_transfer_inner__(1, device_id, send_byte, deselect_after_transfer));
 }
 
+uint8_t  __ajit_configure_spi_master___ (uint8_t clk_divide_count)
+{
+	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
+	// transfer width is kept to 8 bits, clk divide count is modified.
+	__ajit_store_word_mmu_bypass__(((0x1 << 4) | (clk_divide_count & 0xf)), addr);
+}
+
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count)
+{
+	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
+	// transfer width is kept to 8 bits, clk divide count is modified.
+	*((uint32_t*) addr) = (0x1 << 4) | (clk_divide_count & 0xf);
+}
 
 // times out after 8K clock cycles.
 uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,

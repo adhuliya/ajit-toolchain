@@ -10,6 +10,23 @@
 #define ADD_TO_MMAP_OP 		1
 #define DELETE_FROM_MMAP_OP 	2
 
+#define ERR_NO_ROOM_IN_ALLOCATOR   1
+#define ERR_LOOKUP_FAILED	   2
+
+
+typedef struct __PageTableAllocator {
+	uint64_t base_physical_address;
+	uint64_t allocated_size;
+	uint64_t free_pointer;
+
+} PageTableAllocator;
+void initPageTableAllocator (PageTableAllocator* pta, uint64_t base_addr, uint32_t allocated_size);
+//
+// returns a 0 on success...
+//
+uint32_t  allocatePageTableBlock (PageTableAllocator* pts, uint8_t level, uint64_t* block_base_address);
+
+
 // Given page table level, return the index into the table.
 uint32_t ajit_mmap_index_in_table(uint8_t level, uint32_t va);
 
@@ -47,9 +64,10 @@ uint32_t ajit_mmap_make_pte(uint8_t level, uint8_t acc, uint32_t va, uint64_t pa
 //   *pdte_a address ofpage table descriptor/entry at which search ended.
 //   *pdte   page table descriptor/entry at which search ended.
 // 
+//
 // return 
-//        0 if matching pte found
-//        1 if matching pte not found.
+//        1 if no matching pte found
+//        0 if matching pte found.
 //
 int ajit_lookup_mmap (
 	// page table base address
@@ -96,7 +114,9 @@ int ajit_lookup_mmap (
 // 
 // 
 int ajit_mmap_operation 
-	(	// base address of page table
+	(	
+		PageTableAllocator* pts,
+		// base address of page table
 		uint64_t page_table_base_phy_address,
 		// operation? ADD/DELETE.
 		uint8_t operation,
@@ -109,7 +129,7 @@ int ajit_mmap_operation
 		// virtual address of page
 		uint32_t va, 
 		// physical address of page
-		uint32_t pa
+		uint64_t pa
 	);
 
 #endif

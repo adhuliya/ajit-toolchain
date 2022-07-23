@@ -127,12 +127,14 @@ int main(int argc, char* argv[])
 	if(in_file == NULL)
 	{
 		fprintf(stderr,"Error: could not open infile %s\n", argv[1]);
+		return(1);
 	}
 
 	out_file = fopen(argv[2],"w");
 	if(out_file == NULL)
 	{
 		fprintf(stderr,"Error: could not open outfile %s\n", argv[2]);
+		return(1);
 	}
 
 

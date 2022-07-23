@@ -517,6 +517,15 @@ inline uint8_t __ajit_read_spi_master_register__(uint8_t reg_id);
 uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer);
+
+
+//
+// spi master's output clock is clock_frequency/(2^(clk_divide_count+1))
+// only the bottom 4-bits of clk_divide_count are used.  So we can
+// get spi clk frequencies in the range clk to clk/2^17.
+//
+uint8_t  __ajit_configure_spi_master___ (uint8_t clk_divide_count);
+
 //---------------------------------------------------------------------------------------------
 // with normal load/store with non-cacheable page
 //---------------------------------------------------------------------------------------------
@@ -525,6 +534,13 @@ uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
 
 uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
 							uint8_t send_byte, uint8_t deselect_after_transfer);
+//
+// spi master's output clock is clock_frequency/(2^(clk_divide_count+1))
+// only the bottom 4-bits of clk_divide_count are used.  So we can
+// get spi clk frequencies in the range clk to clk/2^17.
+//
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count);
+
 
 // do an SPI transfer..  send send_byte to spi slave device_id, and
 // return byte received from slave.

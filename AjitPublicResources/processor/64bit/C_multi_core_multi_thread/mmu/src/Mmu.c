@@ -1130,23 +1130,23 @@ void printMmuStatistics(MmuState* ms)
 #ifdef SW
 	assert(ms != NULL);
 
-	printf("\nMmu statistics for cpuid=%d: MMU ENABLED = %d", ms->core_id, MmuEnabled(ms) );
-	printf("\n	TLB size (L0 %d L1 %d L2 %d L3 %d)",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
-	printf("\n	Accesses with Mmu bypassed or disabled 	= %d",    ms->Num_Mmu_bypass_accesses);
-	printf("\n	Mmu_probe_requests  	= %d",     ms->Num_Mmu_probe_requests);
-	printf("\n	Mmu_flush_requests  	= %d",     ms->Num_Mmu_flush_requests);
-	printf("\n	Mmu_register_reads   	= %d",     ms->Num_Mmu_register_reads);
-	printf("\n	Mmu_register_writes 	= %d",    ms->Num_Mmu_register_writes);
-	printf("\n	Mmu_translated_accesses = %d",    ms->Num_Mmu_translated_accesses);
-	printf("\n	Mmu_TLB_hits            = %d",    ms->Num_Mmu_TLB_hits);
-	printf("\n");
-	printf("\nMmu Register values :");
-	printf("\n	Control register 	= 0x%x",    ms->MmuControlRegister);
-	printf("\n	Context table ptr 	= 0x%x",    ms->MmuContextTablePointerRegister);
-	printf("\n	Context register   	= 0x%x",    ms->MmuContextRegister);
-	printf("\n	FSR		   	= 0x%x",    ms->MmuFaultStatusRegister);
-	printf("\n	FAR		 	= 0x%x",    ms->MmuFaultAddressRegister);
-	printf("\n");
+	fprintf(stderr,"\nMmu statistics for cpuid=%d: MMU ENABLED = %d", ms->core_id, MmuEnabled(ms) );
+	fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
+	fprintf(stderr,"\n	Accesses with Mmu bypassed or disabled 	= %d",    ms->Num_Mmu_bypass_accesses);
+	fprintf(stderr,"\n	Mmu_probe_requests  	= %d",     ms->Num_Mmu_probe_requests);
+	fprintf(stderr,"\n	Mmu_flush_requests  	= %d",     ms->Num_Mmu_flush_requests);
+	fprintf(stderr,"\n	Mmu_register_reads   	= %d",     ms->Num_Mmu_register_reads);
+	fprintf(stderr,"\n	Mmu_register_writes 	= %d",    ms->Num_Mmu_register_writes);
+	fprintf(stderr,"\n	Mmu_translated_accesses = %d",    ms->Num_Mmu_translated_accesses);
+	fprintf(stderr,"\n	Mmu_TLB_hits            = %d",    ms->Num_Mmu_TLB_hits);
+	fprintf(stderr,"\n");
+	fprintf(stderr,"\nMmu Register values :");
+	fprintf(stderr,"\n	Control register 	= 0x%x",    ms->MmuControlRegister);
+	fprintf(stderr,"\n	Context table ptr 	= 0x%x",    ms->MmuContextTablePointerRegister);
+	fprintf(stderr,"\n	Context register   	= 0x%x",    ms->MmuContextRegister);
+	fprintf(stderr,"\n	FSR		   	= 0x%x",    ms->MmuFaultStatusRegister);
+	fprintf(stderr,"\n	FAR		 	= 0x%x",    ms->MmuFaultAddressRegister);
+	fprintf(stderr,"\n");
 
 
 #endif
