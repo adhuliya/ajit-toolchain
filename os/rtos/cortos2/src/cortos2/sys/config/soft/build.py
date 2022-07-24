@@ -156,7 +156,7 @@ class Build:
     enableSerialInt: bool = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=[keyName],
-      default= consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      default= consts.DEFAULT_ENABLE_SERIAL_INTERRUPT,
       prevKeySeq=prevKeySeq,
     )
 

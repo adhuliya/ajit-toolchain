@@ -11,11 +11,14 @@ uint32_t b;
 /// The user can add any system level initialization to this function.
 void setup() {
   b = 13;
+  
+  // // enable interrupts
+  // enableInterruptsControllerAndAllInterrupts(0,0);
 }
 
 void main() {
   // printing is similar to calling printf()
-  CORTOS_DEBUG("Hello There. Value of b is %d", b);
+  CORTOS_DEBUG("Hello There. Value of b is %d.", b);
   b = (uint32_t) cos(0);
   #ifdef CORTOS_ENV
   CORTOS_DEBUG("CORTOS_ENV has been defined!");

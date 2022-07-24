@@ -14,7 +14,8 @@ void cortos_init_hw_traps() {
   ajit_set_interrupt_handler({{handler.index}}, &({{handler.function}}));
   % end
 
-  enableInterruptControllerAndAllInterrupts(0,0);
+  // // user can choose to enable interrupts explicitly
+  // enableInterruptControllerAndAllInterrupts(0,0);
 }
 
 void cortos_init_sw_traps() {
