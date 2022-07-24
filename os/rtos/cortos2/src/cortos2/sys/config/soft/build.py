@@ -1,4 +1,5 @@
 """The build related configuration."""
+import os
 from typing import Dict, Optional as Opt, List
 
 from cortos2.common import consts, util
@@ -84,6 +85,7 @@ class Build:
       buildArgs=buildArgs,
     )
     return build
+
 
   @staticmethod
   def generateDebugParam(
@@ -210,6 +212,23 @@ class Build:
       prevKeySeq=prevKeySeq,
     )
 
+    prevKeySeq.append(keyName)
+    buildArgs = Build.checkBuildArgs(buildArgs, prevKeySeq)
+    prevKeySeq.pop()
+
+    return buildArgs
+
+
+  @staticmethod
+  def checkBuildArgs(
+      buildArgs : str,
+      prevKeySeq: Opt[List] = None,
+  ) -> str:
+    buildArgs2 = buildArgs.replace('\n', '\\\n')
+    if '\n' != os.linesep and '\n' not in os.linesep:
+      buildArgs2 = buildArgs2.replace(f'{os.linesep}', f'\\{os.linesep}')
+    if len(buildArgs2) != len(buildArgs):
+      print(f"Escaped newlines in {util.createKeySeqStr(prevKeySeq)}.")
     return buildArgs
 
 

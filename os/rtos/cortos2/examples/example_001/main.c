@@ -9,7 +9,7 @@ uint32_t b;
 /// This is the first user function to run on bootup.
 /// All threads wait for this function to finish.
 /// The user can add any system level initialization to this function.
-void startup_initialization() {
+void setup() {
   b = 13;
 }
 

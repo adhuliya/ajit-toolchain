@@ -76,6 +76,14 @@ class Hardware:
         data[device.name] = device
         prevKeySeq.pop()
 
+    Hardware.checkDevices(data)
+
     prevKeySeq.pop()
     return data
+
+
+  @staticmethod
+  def checkDevices(deviceMap: Dict[str, Device]):
+    if "ScratchArea" not in deviceMap:
+      util.exitWithError(f"Device 'ScratchArea' not provided. This device is required.")
 

@@ -81,7 +81,7 @@ def getParser() -> argparse.ArgumentParser:
   subpar.add_argument('-g', '--debug', action='store_true', default=False,
                       help="Enable debug build. If enabled, optimization level is set to 0.")
   subpar.add_argument('-p', '--port', type=int, default=8888,
-                      help="Starting debug server port sequence.")
+                      help="Starting debug server port sequence. Default is 8888.")
   subpar.add_argument('-O0', '--O0', action='store_true', default=False,
                       help="Optimization level 0 (O0).")
   subpar.add_argument('-O1', '--O1', action='store_true', default=False,

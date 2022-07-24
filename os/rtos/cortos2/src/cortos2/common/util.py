@@ -355,7 +355,7 @@ def getConfigurationParameter(
     fullKeySeq.extend(keySeq)
     printKeySeqMessage(fullKeySeq, default)
     if fail:
-      exitProgram(f"required: {createKeySeqStr(fullKeySeq)}")
+      exitWithError(f"required: {createKeySeqStr(fullKeySeq)}")
 
   return data if keySeqFound else default
 
@@ -397,7 +397,7 @@ def getSizeInBytes(
     printKeySeqMessage(prevKeySeq, default=default,
       message="Size not specified.")
     if fail:
-      exitProgram(f"required: size of {createKeySeqStr(prevKeySeq)}")
+      exitWithError(f"required: size of {createKeySeqStr(prevKeySeq)}")
 
   return sizeInBytes
 
@@ -433,6 +433,9 @@ def printKeySeqMessage(
         f" Default value {default}. {message}")
 
 
-def exitProgram(message: str, status: int = 1):
-  print(f"CoRTOS: error: {message}")
+def exitWithError(message: str, status: int = 1):
+  printError(message)
   exit(status)
+
+def printError(message: str):
+  print(f"CoRTOS: ERROR: {message}")

@@ -165,7 +165,7 @@ class Program:
       if coreThread is None:
         util.printKeySeqMessage(prevKeySeq,
           message="No H/W thread to schedule program.")
-        util.exitProgram("User programs exceed available h/w threads.")
+        util.exitWithError("User programs exceed available h/w threads.")
 
       programThread = ProgramThread.generateObject(
         userProvidedConfig=programThread,

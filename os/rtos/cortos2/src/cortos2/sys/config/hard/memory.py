@@ -1,5 +1,6 @@
 """The configuration and layout of the system memory."""
 from typing import List, Optional as Opt, Dict
+import os
 
 from cortos2.common import util, consts
 from cortos2.sys.config import common
@@ -74,15 +75,15 @@ class Memory:
       if prev.sizeInBytes == 0 or region.sizeInBytes == 0:
         continue
       if prev.getLastByteAddr(False) >= region.getFirstByteAddr(False):
-        print(f"CoRTOS: ERROR: Region '{prev.name}' overlaps region '{region.name}'")
-        print(f"        {prev.name}: {prev.getRangeStr(False)}")
-        print(f"        {region.name}: {region.getRangeStr(False)}")
+        util.printError(
+        f"Region '{prev.name}' overlaps region '{region.name}'{os.linesep}"
+        f"        {prev.name}: address range {prev.getRangeStr(False)}{os.linesep}"
+        f"        {region.name}: address range {region.getRangeStr(False)}")
         overlap = True
       prev = region
 
     if overlap:
-      print(f"CoRTOS: ERROR: Overlaps in hardware memory regions. See the prints above.")
-      exit(1)
+      util.exitWithError(f"Overlaps in hardware memory regions. See the prints above.")
 
 
   @staticmethod

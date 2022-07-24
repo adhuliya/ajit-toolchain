@@ -99,7 +99,12 @@ def runBuildScript(confObj: config.SystemConfig) -> None:
   print("CoRTOS: CWD:", os.getcwd())
 
   # STEP 2: execute the `build.sh` script
-  util.runCommand(f"bash {consts.BUILD_SH_FILE_NAME}")
+  status = util.runCommand(f"bash {consts.BUILD_SH_FILE_NAME}")
+  if status != 0:
+    util.exitWithError(
+      f"Status {status} while executing {os.getcwd()}/{consts.BUILD_SH_FILE_NAME}"
+      f" -- Correct the errors above."
+    )
 
   # STEP 3: return back to the previous directory
   os.chdir(cwd)

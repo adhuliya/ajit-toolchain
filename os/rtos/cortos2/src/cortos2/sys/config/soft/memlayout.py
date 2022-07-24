@@ -47,7 +47,7 @@ class MemoryLayout:
     if check and region.getLastByteAddr(False) > self.memory.ram.getLastByteAddr(False):
       for reg in self.regionSeq:
         print(f"Allocated Region: {reg.name}, SizeInBytes: {reg.sizeInBytes}")
-      util.exitProgram(f"Memory overflow at region {region.name} sizeInBytes {region.getSizeInBytes()}.", status=1)
+      util.exitWithError(f"Memory overflow at region {region.name} sizeInBytes {region.getSizeInBytes()}.", status=1)
     else:
       self.regionSeq.append(region)
 
