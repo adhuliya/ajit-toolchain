@@ -515,6 +515,8 @@ repeat:
     if (*fmt == 'l' || *fmt == 'L') {
       qualifier2 = 'l'; // specifically for %lld
       fmt++;
+    } else {
+      qualifier2 = '\0';
     }
 
     // Default base

@@ -33,6 +33,7 @@ cortos_reserveQueue(uint32_t msgSizeInBytes, uint32_t length, uint8_t nc) {
   hdr->length = length;
   hdr->lock = cortos_reserveLock(1);
   hdr->bget_addr = queue; // original address returned by bget
+  hdr->misc = 0;
 
   return hdr;
 }
@@ -53,7 +54,11 @@ uint32_t cortos_writeMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
   uint32_t process = count;
   uint32_t i;
 
-  cortos_lock_acquire_buzy(hdr->lock);
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+    cortos_lock_acquire_buzy(hdr->lock);
+  } else {
+    if (hdr->totalMsgs > 0) return 0; // write only when total msgs are zero
+  }
 
   uint32_t totalMsgs      = hdr->totalMsgs;
   uint32_t writeIndex     = hdr->writeIndex;
@@ -71,10 +76,12 @@ uint32_t cortos_writeMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
     ++totalMsgs; --process;
   }
 
-  hdr->totalMsgs  = totalMsgs;
   hdr->writeIndex = writeIndex;
+  hdr->totalMsgs  = totalMsgs;
 
-  cortos_lock_release(hdr->lock);
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+    cortos_lock_release(hdr->lock);
+  }
   return (count - process);
 }
 
@@ -84,7 +91,11 @@ uint32_t cortos_readMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t cou
   uint32_t process = count;
   uint32_t i;
 
-  cortos_lock_acquire_buzy(hdr->lock);              // ACQUIRE LOCK
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+    cortos_lock_acquire_buzy(hdr->lock);
+  } else {
+    if (hdr->totalMsgs == 0) return 0; // read only when there are messages
+  }
 
   uint32_t totalMsgs      = hdr->totalMsgs;
   uint32_t readIndex      = hdr->readIndex;
@@ -102,10 +113,12 @@ uint32_t cortos_readMessages(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t cou
     --totalMsgs; --process;
   }
 
-  hdr->totalMsgs  = totalMsgs;
   hdr->readIndex  = readIndex;
+  hdr->totalMsgs  = totalMsgs;
 
-  cortos_lock_release(hdr->lock);              // RELEASE LOCK
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+    cortos_lock_release(hdr->lock);              // RELEASE LOCK
+  }
   return (count - process);
 }
 

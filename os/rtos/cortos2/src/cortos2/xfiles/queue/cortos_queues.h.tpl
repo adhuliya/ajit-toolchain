@@ -16,8 +16,14 @@ typedef struct _CortosQueueHeader {
   uint32_t msgSizeInBytes;
   uint8_t *lock;
   uint8_t *bget_addr;
+  // if misc == 1, then assume single writer and single reader and don't use locks
   uint32_t misc;
 } CortosQueueHeader;
+
+/// Denotes a single reader-writer queue.
+/// The writer will not write until the reader has read all the messages.
+/// The reader will not read until there are messages in the queue.
+#define SINGLE_RW_QUEUE 0x1
 
 % if confObj.software.bget.enable:
 /* Reserve a cortos queue.
