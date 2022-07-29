@@ -43,12 +43,12 @@ int __cortos_log_printf(
 
 
   clock_time = cortos_get_clock_time();
-  time = &clock_time;
+  // time = &clock_time;
 
   n += ee_printf(
-   "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%lu,%lu]. ",
+   "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%llu]. ",
    levelName, (asrValue & 0xFF00) >> 8, asrValue & 0xFF,
-   fileName, lineNum, funcName, *time, *(time+1));
+   fileName, lineNum, funcName, clock_time);
 
   va_start(args, fmt);
   ee_vsprintf(buf, fmt, args);

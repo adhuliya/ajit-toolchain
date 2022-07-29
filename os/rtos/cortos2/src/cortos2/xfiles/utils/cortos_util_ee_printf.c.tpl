@@ -5,7 +5,8 @@ Author: Anshuman Dhuliya (AD) (anshumandhuliya at gmail)
 */
 
 /* File : barebones/ee_printf.c
-	This file contains an implementation of ee_printf that only requires a method to output a char to a UART without pulling in library code.
+	This file contains an implementation of ee_printf that only requires
+	a method to output a char to a UART without pulling in library code.
 
 This code is based on a file that contains the following:
  Copyright (C) 2002 Michael Ringgaard. All rights reserved.
@@ -83,7 +84,7 @@ static int skip_atoi(const char **s)
   return i;
 }
 
-static char *number(char *str, long num, int base, int size, int precision, int type)
+static char *number(char *str, long long num, int base, int size, int precision, int type)
 {
   char c, sign, tmp[66];
   char *dig = digits;
@@ -131,8 +132,8 @@ static char *number(char *str, long num, int base, int size, int precision, int 
   {
     while (num != 0)
     {
-      tmp[i++] = dig[((unsigned long) num) % (unsigned) base];
-      num = ((unsigned long) num) / (unsigned) base;
+      tmp[i++] = dig[((unsigned long long) num) % (unsigned) base];
+      num = ((unsigned long long) num) / (unsigned) base;
     }
   }
 
@@ -441,7 +442,7 @@ static char *flt(char *str, double num, int size, int precision, char fmt, int f
 int ee_vsprintf(char *buf, const char *fmt, va_list args)
 {
   int len;
-  unsigned long num;
+  unsigned long long num;
   int i, base;
   char *str;
   char *s;
@@ -451,6 +452,7 @@ int ee_vsprintf(char *buf, const char *fmt, va_list args)
   int field_width;      // Width of output field
   int precision;        // Min. # of digits for integers; max number of chars for from string
   int qualifier;        // 'h', 'l', or 'L' for integer fields
+  int qualifier2;       // 'l', or 'L' for integer fields %lld
 
   for (str = buf; *fmt; fmt++)
   {
@@ -507,7 +509,11 @@ repeat:
     qualifier = -1;
     if (*fmt == 'l' || *fmt == 'L')
     {
-      qualifier = *fmt;
+      qualifier = 'l';
+      fmt++;
+    }
+    if (*fmt == 'l' || *fmt == 'L') {
+      qualifier2 = 'l'; // specifically for %lld
       fmt++;
     }
 
@@ -586,7 +592,9 @@ repeat:
         continue;
     }
 
-    if (qualifier == 'l')
+    if (qualifier == 'l' && qualifier2 == 'l')
+      num = va_arg(args, unsigned long long);
+    else if (qualifier == 'l')
       num = va_arg(args, unsigned long);
     else if (flags & SIGN)
       num = va_arg(args, int);
@@ -636,8 +644,6 @@ void uart_send_char(char c) {
 		if(!(ctrl_reg & TX_FULL) || !(ctrl_reg & TX_ENABLE))
 			break;
 	}
-
-
 }
 
 int ee_printf(const char *fmt, ...)
