@@ -115,11 +115,15 @@ class Program:
 
 
   def computeBinarySize(self, elfFileName: str):
-    textSize, dataSize, bssSize = elf.getTextDataBssSize(elfFileName)
-    self.textSectionSizeInBytes = textSize
-    self.dataSectionSizeInBytes = dataSize
+    size_dict =  elf.getSectionSizes(elfFileName, [".text",".rodata",".data",".bss"])
+    print(f".text section size in bytes: {size_dict['.text']}")
+    self.textSectionSizeInBytes = size_dict[".text"] + consts.TEXT_SIZE_BUFFER_IN_BYTES
+    print(f".rodata section size in bytes: {size_dict['.rodata']}")
+    print(f".data section size in bytes: {size_dict['.data']}")
+    self.dataSectionSizeInBytes = size_dict[".rodata"] + size_dict[".data"]
     # don't let the bss section size be zero
-    self.bssSectionSizeInBytes = bssSize if bssSize else 4096 # at least a 4KB page
+    print(f".bss section size in bytes: {size_dict['.bss']}")
+    self.bssSectionSizeInBytes = size_dict[".bss"] if size_dict[".bss"] else 4096 # at least a 4KB page
 
 
   def getSizeOfProgram(self):
