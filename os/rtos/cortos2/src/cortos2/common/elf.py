@@ -13,7 +13,7 @@ Install the elftools package:
 
 """
 import os
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 from elftools.elf.elffile import ELFFile
 import sys
@@ -89,6 +89,25 @@ def getPtLoadSectionsSize(elfFile: str):
 
   f.close() # at END only
   return totalSize
+
+
+def getSectionSizes(
+    elfFile: str,
+    section_names: List[str], # [".text", ".rodata", ".data", ".bss"]
+) -> Dict[str, int]:
+  """Returns the names of the sections that are loaded into memory."""
+
+  f = open(elfFile, "rb")
+  elfFile = ELFFile(f) # throws exception
+
+  sections = [sec for sec in elfFile.iter_sections()]
+
+  sec_sizes = dict()
+  for sec in sections:
+    if sec.name in section_names:
+      sec_sizes[sec.name] = sec.data_size
+
+  return sec_sizes
 
 
 def getTextDataBssSize(elfFileName: str) -> Tuple[int, int, int]:
