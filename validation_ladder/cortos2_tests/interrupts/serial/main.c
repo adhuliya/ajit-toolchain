@@ -29,16 +29,24 @@ void my_serial_interrupt_handler()
 		exit_flag = 1;
 }
 
-int main () 
+void setup ()
 {
-	cortos_printf("Starting\n");
+	// enable serial 0 device..  enable_tx, enable_rx, enable_interrupts	
+	__ajit_serial_configure_via_vmap__ (1, 1, 1);
+	// set baud rate.
+	__ajit_serial_set_baudrate_via_vmap__ (115200, CLK_FREQUENCY);
+	// bring uart out of reset.
+	__ajit_serial_set_uart_reset_via_vmap__ (0);
+
+	cortos_printf ("enabled serial\n");
 
 	// enable interrupt controller for the current thread.
 	enableInterruptControllerAndAllInterrupts(0,0);
+}
 
-	// reenable the timer, right away..
-	// __ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
-
+int main () 
+{
+	cortos_printf("Starting\n");
 
 	// infinite loop
 	while(!exit_flag)

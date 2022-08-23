@@ -65,6 +65,8 @@ Hardware:
         Permissions: RW
 
 Software:
+  StartupFuncName : setup
+
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
@@ -74,7 +76,7 @@ Software:
     EnableSerial: No # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    #BuildArgs: 
+    BuildArgs: " -D CLK_FREQUENCY=80000000"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

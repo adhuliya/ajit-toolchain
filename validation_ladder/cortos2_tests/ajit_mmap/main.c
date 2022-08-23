@@ -8,8 +8,12 @@
 PageTableAllocator pta;
 uint32_t page_table_array [16 * 1024];
 
+void startup_init()
+{
+}
+
 int main(void) {
-	
+
 
 	// first find the context table pointer...
 	uint32_t c_ptr   = __ajit_load_word_mmu_reg__ ( MMU_REG_CONTEXT_TABLE_PTR );
@@ -28,17 +32,17 @@ int main(void) {
 	{	
 		va = 0x40000000 + (P*4096);
 		int status = ajit_lookup_mmap (c_ptr_pa, context, va, 
-							&level, &pa, &ptde_a, &ptde);
+				&level, &pa, &ptde_a, &ptde);
 
 		if (!status)
 			cortos_printf("Translated VA 0x%x -> PA 0x%x level=%d\n", va, (uint32_t) pa, level);
 		else
-			cortos_printf("Translation of VA 0x%x failed.\n", va);
+			cortos_printf("Error: translation of VA 0x%x failed.\n", va);
 	}
 
 	// Lets map some pages..
 	uint64_t npa = ((uint64_t) &(page_table_array[0]));
-	initPageTableAllocator(&pta, npa, 64*1024);
+	initPageTableAllocator(&pta, npa, 16*1024);
 
 	// Now mmap level 3 pages..
 	for(P = 0; P < NPAGES; P++)
@@ -46,17 +50,17 @@ int main(void) {
 		va = 0x80000000 + (P*4096);
 		pa = 0x90000000 + (P*4096);
 		int status = ajit_mmap_operation(&pta, 
-							npa,  
-							ADD_TO_MMAP_OP, 
-							1,
-							3, 	
-							3,
-							va,
-							pa);
+				npa,  
+				ADD_TO_MMAP_OP, 
+				1,
+				3, 	
+				3,
+				va,
+				pa);
 		if(!status)
 			cortos_printf("In npa, mapped 0x%x -> 0x%x level %d entry.\n", va, (uint32_t) pa, 3);
 		else
-			cortos_printf("In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 3);
+			cortos_printf("Error: In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 3);
 	}
 
 
@@ -67,17 +71,17 @@ int main(void) {
 		va = 0xa0000000 + (P*64*4096);
 		pa = 0xb0000000 + (P*64*4096);
 		int status = ajit_mmap_operation(&pta, 
-							npa,  
-							ADD_TO_MMAP_OP, 
-							1,
-							2, 	
-							3,
-							va,
-							pa);
+				npa,  
+				ADD_TO_MMAP_OP, 
+				1,
+				2, 	
+				3,
+				va,
+				pa);
 		if(!status)
 			cortos_printf("In npa, mapped 0x%x -> 0x%x level %d entry.\n", va, (uint32_t) pa, 2);
 		else
-			cortos_printf("In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 2);
+			cortos_printf("Error: In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 2);
 	}
 
 	// Now mmap level 1 pages 16MB.
@@ -86,17 +90,17 @@ int main(void) {
 		va = 0xc0000000 + (P*4096*4096);
 		pa = 0xd0000000 + (P*4096*4096);
 		int status = ajit_mmap_operation(&pta, 
-							npa,  
-							ADD_TO_MMAP_OP, 
-							1,
-							1, 	
-							3,
-							va,
-							pa);
+				npa,  
+				ADD_TO_MMAP_OP, 
+				1,
+				1, 	
+				3,
+				va,
+				pa);
 		if(!status)
 			cortos_printf("In npa, mapped 0x%x -> 0x%x level %d entry.\n", va, (uint32_t) pa, 1);
 		else
-			cortos_printf("In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 1);
+			cortos_printf("Error: In npa, failed to mmap 0x%x -> 0x%x level %d entry.\n", va, pa, 1);
 	}
 
 
@@ -105,13 +109,13 @@ int main(void) {
 	{
 		va = 0x80000000 + (P*4096);
 		int status = ajit_lookup_mmap (npa, 1, va, 
-							&level, &pa, &ptde_a, &ptde);
+				&level, &pa, &ptde_a, &ptde);
 
 		if (!status)
 			cortos_printf("In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
-									va, (uint32_t) pa, level);
+					va, (uint32_t) pa, level);
 		else
-			cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+			cortos_printf("Error: In npa, translation  of VA 0x%x failed.\n", va);
 	}
 
 	// lookup what you have mapped level 2
@@ -119,13 +123,13 @@ int main(void) {
 	{
 		va = 0xa0000000 + (P*64*4096);
 		int status = ajit_lookup_mmap (npa, 1, va, 
-							&level, &pa, &ptde_a, &ptde);
+				&level, &pa, &ptde_a, &ptde);
 
 		if (!status)
 			cortos_printf("In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
-									va, (uint32_t) pa, level);
+					va, (uint32_t) pa, level);
 		else
-			cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+			cortos_printf("Error: In npa, translation  of VA 0x%x failed.\n", va);
 	}
 
 
@@ -134,15 +138,43 @@ int main(void) {
 	{
 		va = 0xc0000000 + (P*4096*4096);
 		int status = ajit_lookup_mmap (npa, 1, va, 
-							&level, &pa, &ptde_a, &ptde);
+				&level, &pa, &ptde_a, &ptde);
 
 		if (!status)
 			cortos_printf("In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
-									va, (uint32_t) pa, level);
+					va, (uint32_t) pa, level);
 		else
-			cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+			cortos_printf("Error: In npa, translation  of VA 0x%x failed.\n", va);
 	}
 
+	// try the failed cases of translation.
+	va = 0x80000000 + (NPAGES*4096);
+	int status = ajit_lookup_mmap (npa, 1, va, &level, &pa, &ptde_a, &ptde);
+	if(status)
+		cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+	else
+		cortos_printf("Error: In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
+				va, (uint32_t) pa, level);
+
+	{
+		va = 0xa0000000 + (NPAGES*64*4096);
+		int status = ajit_lookup_mmap (npa, 1, va, &level, &pa, &ptde_a, &ptde);
+		if(status)
+			cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+		else
+			cortos_printf("Error: In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
+					va, (uint32_t) pa, level);
+	}
+
+	{
+		va = 0xc0000000 + (P*4096*4096);
+		int status = ajit_lookup_mmap (npa, 1, va, &level, &pa, &ptde_a, &ptde);
+		if(status)
+			cortos_printf("In npa, translation  of VA 0x%x failed.\n", va);
+		else
+			cortos_printf("Error: In npa,  translated VA 0x%x -> PA 0x%x level=%d\n", 
+					va, (uint32_t) pa, level);
+	}
 
 }
 
