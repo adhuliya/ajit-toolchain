@@ -2,24 +2,25 @@
 ! does a lot of user-level work.
 
 !
-! When you get here, you are in the trap window T
-! which may or may not be an available window.  Our first
-! job is to make T an available window, by executing a
-! restore/save combination.  Save the globals. 
-! And then work from T. Need to be careful while 
-! RETT-ing by making window T+1 valid before RETT.
+! There was an interrupt in window W, we move to trap window T
+! Trap window T is either valid or invalid..  If it is valid,
+! then we can give it a stack..  
 !
-!
-!
-!  psr, tbr are as received in the trap table.
-!  traps are disabled.
-!
-!  Note: T is is trap handler window and may be invalid!
+! If T is invalid, then we make it valid as follows:
+!    make T-1 invalid by saving its registers to stack.
+!         and adjusting wim
+!    make T valid
+! endif 
+!    Give T a stack relative to that in W.
+!    save T state into W. 
+!    deepen the stack in T.
+!    call the ajit generic interrupt handler from T.
+!    on return, make window T+1 available to 
+!           rett into.. using a restore/save combination.
+!    recover the critical information stored on stack in T
+!    jmpl/rett into T+1 and go on.
 !
 !  ASSUMPTIONS
-!    Invalid stack pointers are initialized to 0x0.
-!           This is critical in order to manage the 
-!           stack on an interrupt.
 !    l0 contains PSR
 !    l3 contains TBR
 !
@@ -38,6 +39,16 @@ generic_vectored_isr:
 
 handle_invalid_T:
 
+   ! window T-1 will be made invalid...
+   mov %wim,%l3
+   sll %l3,7,%l4
+   srl %l3,1,%l3
+   or  %l3,%l4,%l3
+   and %l3,0xff,%l3
+
+   ! wim = 0.
+   mov %g0,%wim
+
    ! T is invalid.. go to T-1 and
    ! make it valid.
    save
@@ -54,38 +65,18 @@ handle_invalid_T:
    std %i4, [%sp + 48]
    std %i6, [%sp + 56]
 
-   /* rotate WIM one bit right, we have 8 windows */
-   mov %wim,%l3
-   sll %l3,7,%l4
-   srl %l3,1,%l3
-   or  %l3,%l4,%l3
-   and %l3,0xff,%l3
-
-   ! WIM says T-1 is invalid.
-   mov %l3, %wim
-
    ! back in T.
    restore
 
+   ! WIM says T-1 is invalid, but T is valid.
+   mov %l3, %wim
+
+
 continue_with_valid_T:
 
-   ! Save the %sp for recovery.
-   mov %sp, %l7
-
-   !
-   ! give T a stack pointer
-   !
-   cmp %sp, 0x0
-
-   ! if %sp is 0, get it from %fp.
-   be,a continue_with_stack
+   ! Give window T a stack..
    sub %fp, 96, %sp
 
-   ! If $sp is not zero, it is valid,
-   ! and expand the stack.
-   sub %sp, 96, %sp
-
-continue_with_stack:
 
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    ! save state in stack of window T.
@@ -93,7 +84,7 @@ continue_with_stack:
    !    Save the PSR (for the flags!)
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !
-   !   Store globals ins and psr in stack of T.
+   !   Store globals ins psr l1 l2 in stack of T.
    !   Will be recovered later.
    !
    st  %l0, [%sp]            ! Save PSR
@@ -101,18 +92,12 @@ continue_with_stack:
    std %g2, [%sp + 8]
    std %g4, [%sp + 16]
    std %g6, [%sp + 24]
-   std %i0, [%sp + 32]
-   std %i2, [%sp + 40]
-   std %i4, [%sp + 48]
-   std %i6, [%sp + 56]
    ! for rett
-   st  %l1, [%sp + 64]
-   st  %l2, [%sp + 68]
-   ! old stack pointer
-   st %l7, [%sp + 72]
+   st  %l1, [%sp + 32]
+   st  %l2, [%sp + 36]
    ! y carries state.
    mov %y, %l7
-   st  %l7,  [%sp + 76]
+   st  %l7,  [%sp + 40]
 
    ! floating point state is not saved here,
    ! but should be managed in the C handler.
@@ -128,14 +113,15 @@ continue_with_stack:
    !   the interrupt handler.
    !
    or %l0, 0x20, %l7       ! ET=1
-   or %l7, 0xf00, %l7     ! [11:8] = 0xf
-   wr %l7, %psr           ! write to PSR
+   or %l7, 0xf00, %l7      ! [11:8] = 0xf
+   wr %l7, %psr            ! write to PSR
 
    ! Step 6
    !  call the interrupt handler.. free to
    !  do whatever it wants... return should
    !  bring it home to this window..
    rd %tbr, %o0
+
    ! This is a  C routine with one argument
    ! namely, the TBR value.
    !
@@ -151,9 +137,11 @@ continue_with_stack:
    ! You have come back from the actual handler..
    ! Interrupts are still disabled... 
 
-   ! But traps are enabled...  
+   ! Traps are enabled...  
    !  make window T+1 available for RETT!
    restore
+
+   ! back in T.
    save
 
 recover_and_leave:
@@ -170,17 +158,11 @@ recover_and_leave:
    ldd [%sp + 8],  %g2
    ldd [%sp + 16], %g4
    ldd [%sp + 24], %g6
-   ldd [%sp + 32], %i0
-   ldd [%sp + 40], %i2
-   ldd [%sp + 48], %i4
-   ldd [%sp + 56], %i6
-   ld  [%sp + 64], %l1
-   ld  [%sp + 68], %l2
-   ld  [%sp + 72], %l6
-   ld  [%sp + 76], %l7
+   ld  [%sp + 32], %l1
+   ld  [%sp + 36], %l2
+   ld  [%sp + 40], %l7
 
-   ! revert to the pre-existing stack pointer
-   mov %l6, %sp
+   ! recover y.
    mov %l7, %y
 
 jmpl_and_return:

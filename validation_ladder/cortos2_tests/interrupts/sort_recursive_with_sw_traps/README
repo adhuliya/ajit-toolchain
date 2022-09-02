@@ -1,0 +1,5 @@
+An example in which both software traps and interrupts are 
+used.
+
+The main program uses software traps, while the interrupt 
+maintains a counter..  

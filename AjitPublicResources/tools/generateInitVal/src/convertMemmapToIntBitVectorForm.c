@@ -51,12 +51,7 @@ void byte_to_binary_string(uint8_t curr_byte)
 //
 int main(int argc, char* argv [])
 {
-	
-	if(argc > 1)
-	{
-		fprintf(stderr,"Usage: %s  < infile > outfile.\n", argv[0]);
-		return(-1);
-	}
+	fprintf(stderr,"Usage: %s  < infile > outfile.\n", argv[0]);
 
 
 	while (1)

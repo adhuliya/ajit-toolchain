@@ -55,7 +55,7 @@
 	Save T's psr, X (original SP(T)), globals, input-regs, %l1,%l2, 
 	registers into this stack.
 
-	Make the of T bigger to allow window overflow
+	Make the stack of T bigger to allow window overflow
 	saves
 		SP(T) = SP(T) - 96
 
