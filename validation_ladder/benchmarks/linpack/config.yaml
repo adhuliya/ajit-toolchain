@@ -1,0 +1,99 @@
+# yaml configuration file for linker/loader of Co-RTOS
+# yaml 10 minutes tutorial:
+#   https://www.youtube.com/watch?v=cdLNKUoMc6c
+
+# Note: size of a logical memory region is increased to become multiples of 4KB.
+
+Hardware:
+  Processor:
+    # Required: Number of cores and threads per core.
+    Cores: 1
+    ThreadsPerCore: 1
+    ISA: 32 # 32/64 bit (Default: 32)
+
+  Memory:
+    MaxPhysicalAddrBitWidth: 36
+    #Flash:
+    #StartAddr: 0x0  # physical address
+      # EndAddr: ...
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
+      # SizeInMegaBytes: 16
+      # Permissions: RXC  # (Read,Write,eXecute,Cacheable)
+    RAM: # The RAM region - default Permissions RWXC
+      StartAddr: 0x40000000
+      SizeInMegaBytes: 128
+      Permissions: RWXC
+      #NCRAM: # Non-Cacheable RAM - default Permissions RW
+    #      - StartAddr: 0x000000
+    #   SizeInMegaBytes: 0
+    #    Permissions: RW
+    #  - StartAddr: 0x0000000
+    #   SizeInMegaBytes: 0
+    ##   Permissions: RW
+    MMIO: # Memory Mapped IO Region - default Permissions RW
+      StartAddr: 0xFFFF0000  # physical address
+      EndAddr:   0xFFFFFFFF
+      Permissions: RW
+
+  # see ./AjitPublicResources/tools/ajit_access_routines_mt/include/device_addresses.h
+  Devices:
+    - Name: Timer
+      MemoryRegion:
+        StartAddr: 0xFFFF3100 # physical address (in MMIO)
+        SizeInBytes: 256 # 16x16
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3100
+    - Name: InterruptController
+      MemoryRegion:
+        StartAddr: 0xFFFF3000
+        SizeInBytes: 32
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3000
+    - Name: Serial
+      MemoryRegion:
+        StartAddr: 0xFFFF3200
+        SizeInBytes: 64
+        Permissions: RW
+      NamedRegisters:
+        Control: 0xFFFF3200
+        TX: 0xFFFF3204
+        RX: 0xFFFF3208
+    - Name: ScratchArea
+      MemoryRegion:
+        StartAddr: 0xFFFF2C00
+        SizeInBytes: 1024
+        Permissions: RW
+
+Software:
+  # specify a startup function of type `void (void)` that
+  # is invoked before all other user functions.
+  # StartupFuncName: setup
+
+  BuildAndExecute:
+    # Optional: Specify the log level. Default is NONE.
+    # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
+    LogLevel: DEBUG
+    OptimizationLevel: 3 # i.e. O2 (Accepted values: 0, 1, 2)
+    Debug: No # Yes/No (Default: No)
+    FirstDebugPort: 8888  # default: 8888
+    BuildArgs: -D CORTOS_ENV
+               -D OTHER_ENV
+               -D ANOTHER_ENV
+               #
+  # Required: Which functions execute on each ajit thread.
+  ProgramThreads:
+    - CortosInitCalls:
+        - main
+  # One can also specify an infinite loop on the function (or a list of functions):
+  #   CortosLoopCalls: # calls main1, then main 2, then main1, ...
+  #     - main1
+  #     - main2
+      StackSize:
+        SizeInKiloBytes: 32768
+
+  DynamicMemory: # Dynamic Memory Configuration.
+    SizeInKiloBytes: 50000
+
