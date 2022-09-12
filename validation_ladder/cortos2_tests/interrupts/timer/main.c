@@ -103,7 +103,6 @@ int main ()
 	}
 
 	cortos_printf("found %d primes.\n", P);
-
 	cortos_printf("Inter-interrupt interval over %d interrupts:\n Min=%f Max=%f Avge=%f\n", 
 				timer_interrupt_counter,			
 				min_interval, 

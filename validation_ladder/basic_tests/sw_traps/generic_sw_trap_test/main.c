@@ -33,8 +33,7 @@ void __t5_handler(uint32_t arg1, uint32_t arg2, uint32_t arg3)
 
 
 //
-// This is the function you use to read a physical memory location using
-// an address space identifier (between 0x20 and 0x2f).
+// This is the function you use to read a physical memory location 
 //
 void read_physical_memory (uint32_t address, uint32_t value_pointer)
 {

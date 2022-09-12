@@ -14,9 +14,6 @@
 !  Note: T is is trap handler window and may be invalid!
 !
 !  ASSUMPTIONS
-!    Invalid stack pointers are initialized to 0x0.
-!           This is critical in order to manage the 
-!           stack on an interrupt.
 !    In window T+1, 
 !       i0,i1,i2 contain 3 args which are to be passed
 !       to the software trap handler.
@@ -35,6 +32,15 @@ generic_vectored_sw_trap:
    nop
 
 handle_invalid_T:
+   ! window T-1 will be made invalid... build the wim.
+   mov %wim,%l3
+   sll %l3,7,%l4
+   srl %l3,1,%l3
+   or  %l3,%l4,%l3
+   and %l3,0xff,%l3
+
+   ! wim = 0... no traps in save/restore.
+   mov %g0,%wim
 
    ! T is invalid.. go to T-1 and
    ! make it valid.
@@ -52,39 +58,17 @@ handle_invalid_T:
    std %i4, [%sp + 48]
    std %i6, [%sp + 56]
 
-   /* rotate WIM one bit right, we have 8 windows */
-   mov %wim,%l3
-   sll %l3,7,%l4
-   srl %l3,1,%l3
-   or  %l3,%l4,%l3
-   and %l3,0xff,%l3
-
-   ! WIM says T-1 is invalid.
-   mov %l3, %wim
-
    ! back in T.
    restore
 
+   ! WIM says T-1 is invalid, but T is valid.
+   mov %l3, %wim
+
 continue_with_valid_T:
 
-   ! Save the %sp for recovery.
-   mov %sp, %l7
-
-
-   !
-   ! give T a stack pointer
-   !
-   cmp %sp, 0x0
-
-   ! if %sp is 0, get it from %fp.
-   be,a continue_with_stack
+   ! stack for T
    sub %fp, 96, %sp
 
-   ! If $sp is not zero, it is valid,
-   ! and expand the stack.
-   sub %sp, 96, %sp
-
-continue_with_stack:
 
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    ! save state in stack of window T.
@@ -92,7 +76,7 @@ continue_with_stack:
    !    Save the PSR (for the flags!)
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !
-   !   Store globals ins and psr in stack of T.
+   !   Store globals ins psr l1 l2 in stack of T.
    !   Will be recovered later.
    !
    st  %l0, [%sp]            ! Save PSR
@@ -100,18 +84,13 @@ continue_with_stack:
    std %g2, [%sp + 8]
    std %g4, [%sp + 16]
    std %g6, [%sp + 24]
-   std %i0, [%sp + 32]
-   std %i2, [%sp + 40]
-   std %i4, [%sp + 48]
-   std %i6, [%sp + 56]
    ! for rett
-   st  %l1, [%sp + 64]
-   st  %l2, [%sp + 68]
-   ! old stack pointer
-   st %l7, [%sp + 72]
+   st  %l1, [%sp + 32]
+   st  %l2, [%sp + 36]
    ! y carries state.
    mov %y, %l7
-   st  %l7,  [%sp + 76]
+   st  %l7,  [%sp + 40]
+
 
    ! floating point state is not saved here,
    ! but should be managed in the C handler.
@@ -168,6 +147,8 @@ continue_with_stack:
    ! But traps are enabled...  
    !  make window T+1 available for RETT!
    restore
+
+   ! back in T.
    save
 
 recover_and_leave:
@@ -184,17 +165,12 @@ recover_and_leave:
    ldd [%sp + 8],  %g2
    ldd [%sp + 16], %g4
    ldd [%sp + 24], %g6
-   ldd [%sp + 32], %i0
-   ldd [%sp + 40], %i2
-   ldd [%sp + 48], %i4
-   ldd [%sp + 56], %i6
-   ld  [%sp + 64], %l1
-   ld  [%sp + 68], %l2
-   ld  [%sp + 72], %l6
-   ld  [%sp + 76], %l7
+   ld  [%sp + 32], %l1
+   ld  [%sp + 36], %l2
+   ld  [%sp + 40], %l7
 
-   ! revert to the pre-existing stack pointer
-   mov %l6, %sp
+
+   ! recover y
    mov %l7, %y
 
 jmpl_and_return:
