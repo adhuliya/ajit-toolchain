@@ -1,9 +1,10 @@
 #include <stdint.h>
 
-#define VECTOR_SIZE  32
+#define VECTOR_SIZE  64
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
+#define INTERRUPT_LIMIT 1024
 
 volatile int volatile timer_interrupt_counter = 0;
 
@@ -78,20 +79,24 @@ int main()
 		VALUES[I] = VECTOR_SIZE - I;
 	}
 
+	int iterations = 0;
 	while(1)
 	{
 		sort (VALUES, VECTOR_SIZE-1);
-		if(timer_interrupt_counter >= VECTOR_SIZE)
+		if(timer_interrupt_counter >= INTERRUPT_LIMIT)
 			break;
 		else
 		{
-			cortos_printf("finished  %d interrupts.\n", timer_interrupt_counter);
+			if((iterations % 64) == 0)
+			{
+				cortos_printf("finished  %d interrupts.\n", timer_interrupt_counter);
+			}
 			for(I = 0; I < VECTOR_SIZE; I++)
 			{
-				VALUES[I] = VECTOR_SIZE - I;
+				VALUES[I] = iterations + VECTOR_SIZE - I;
 			}
 		}
-
+		iterations++;
 	}
 
 	for(I = 0; I < VECTOR_SIZE; I++)

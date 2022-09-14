@@ -2,8 +2,6 @@
 # yaml 10 minutes tutorial:
 #   https://www.youtube.com/watch?v=cdLNKUoMc6c
 
-# Note: size of a logical memory region is increased to become multiples of 4KB.
-
 Hardware:
   Processor:
     # Required: Number of cores and threads per core.
@@ -13,27 +11,26 @@ Hardware:
 
   Memory:
     MaxPhysicalAddrBitWidth: 36
-    #Flash:
-    #StartAddr: 0x0  # physical address
+    Flash:
+      StartAddr: 0x0  # physical address
       # EndAddr: ...
       # SizeInBytes: ...
       # SizeInKiloBytes: ...
-      # SizeInMegaBytes: 16
-      # Permissions: RXC  # (Read,Write,eXecute,Cacheable)
-    RAM: # The RAM region - default Permissions RWXC
+      SizeInMegaBytes: 16
+      Permissions: RXC  # (Read,Write,eXecute,Cacheable)
+    RAM:
       StartAddr: 0x40000000
+      # EndAddr: ...
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
       SizeInMegaBytes: 128
       Permissions: RWXC
-      #NCRAM: # Non-Cacheable RAM - default Permissions RW
-    #      - StartAddr: 0x000000
-    #   SizeInMegaBytes: 0
-    #    Permissions: RW
-    #  - StartAddr: 0x0000000
-    #   SizeInMegaBytes: 0
-    ##   Permissions: RW
-    MMIO: # Memory Mapped IO Region - default Permissions RW
+    MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
+      # SizeInBytes: ...
+      # SizeInKiloBytes: ...
+      # SizeInKiloBytes: 4
       Permissions: RW
 
   # see ./AjitPublicResources/tools/ajit_access_routines_mt/include/device_addresses.h
@@ -68,32 +65,56 @@ Hardware:
         Permissions: RW
 
 Software:
-  # specify a startup function of type `void (void)` that
-  # is invoked before all other user functions.
-  # StartupFuncName: setup
+  StartupFuncName : setup
 
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
+    # specify argument string for C compiler......
+    EnableSerial: No # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
-    FirstDebugPort: 8888  # default: 8888
-    BuildArgs: -D CORTOS_ENV
-               -D OTHER_ENV
-               -D ANOTHER_ENV
-               #
+    FirstDebugPort: 8888
+    BuildArgs: " -D CLK_FREQUENCY=80000000"
+
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
         - main
-  # One can also specify an infinite loop on the function (or a list of functions):
-  #   CortosLoopCalls: # calls main1, then main 2, then main1, ...
+  # One can also specify an infinite loop on the function:
+  #   CortosLoopCalls:
   #     - main1
-  #     - main2
       StackSize:
-        SizeInKiloBytes: 32768
+        SizeInKiloBytes: 8
 
   DynamicMemory: # Dynamic Memory Configuration.
-    SizeInKiloBytes: 50000
+    # SizeInBytes: ...
+    SizeInKiloBytes: 1000
+    # SizeInMegaBytes: ...
 
+  Locks: # Locks for synchronization between threads.
+      Cacheable: 32
+#     NonCacheable: 32
+#
+#   MessageQueues: # List of queues in the system.
+#     - QueueIdStart: 0    # goes to QueueIdStart+NumOfQueues-1
+#       NumOfQueues: 32
+#       MessageSizeInBytes: 32
+#       TotalMessageCapacity: 32 # num. of messages
+#
+#     - QueueIdStart: 32    # goes to QueueIdStart+NumOfQueues-1
+#       NumOfQueues: 16
+#       MessageSizeInBytes: 8
+#       TotalMessageCapacity: 256 # num. of messages
+  ################################################################
+  Interrupts: # hardware interrupts
+    - Index: 10 # timer
+      Function: my_timer_interrupt_handler
+    - Index: 12  # serial interrupt index
+      Function: my_serial_interrupt_handler
+     #  - Index: 13  # external interrupt index
+     #    Function: my_external_interrupt_handler
+  #Traps: # by software
+    #- Index: 5
+      #Function: user_handler05

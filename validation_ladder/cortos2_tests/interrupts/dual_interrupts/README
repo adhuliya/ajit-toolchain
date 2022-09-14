@@ -1,0 +1,3 @@
+Two interrupt handlers active at the same time...
+
+Each interrupt handler only lets in NMI when active.

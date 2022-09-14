@@ -1,0 +1,7 @@
+An example in which both software traps and interrupts are 
+used.
+
+The main routine as well as the interrupt service routine
+hammer the stack.
+
+This checks out the generic_isr_mt.s implementation somewhat.

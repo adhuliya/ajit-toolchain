@@ -1,0 +1,2 @@
+An example illustrating the rotation of interrupts across two threads
+in a 1x2 system.

@@ -79,6 +79,16 @@ int isAPrime(int R)
 
 int main () 
 {
+	// enable serial 0 device..  enable_tx, enable_rx, enable_interrupts	
+	__ajit_serial_configure_via_vmap__ (1, 1, 1);
+
+
+#ifdef SAC_PROCESSOR
+	// set baud rate.
+	__ajit_serial_set_baudrate_via_vmap__ (115200, CLK_FREQUENCY);
+	// bring uart out of reset.
+	__ajit_serial_set_uart_reset_via_vmap__ (0);
+#endif
 	cortos_printf("Starting\n");
 
 	// enable interrupt controller for the current thread.
