@@ -93,14 +93,25 @@ class MemoryRegion(util.PrettyStr):
     self.pageTableLevels = []
     firstPageSizeInBytes = None
 
+    firstAddress = self.physicalStartAddr
     sizeInBytes = self.sizeInBytes
-    for level in sorted((x for x in consts.PageTableLevel), key=lambda x: x.value):
-      pageSizeInBytes = consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[level]
-      numOfPages = sizeInBytes // pageSizeInBytes
+    levels = sorted((x for x in consts.PageTableLevel), key=lambda x: x.value)
+    while sizeInBytes >= 2 ** 12:
+      for level in levels:
+        numOfPages = 0
+        pageSizeInBytes = consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[level]
+        if firstAddress % pageSizeInBytes == 0:
+          if sizeInBytes / pageSizeInBytes >= 0.9:
+            numOfPages = 1
+            break
+          else:
+            continue
+      print(f"{self.name}: {hex(pageSizeInBytes)} {numOfPages}")
       if firstPageSizeInBytes is None:
         firstPageSizeInBytes = pageSizeInBytes if numOfPages else None
       self.pageTableLevels.append((level, numOfPages))
       sizeInBytes -= numOfPages * pageSizeInBytes
+      firstAddress += pageSizeInBytes
 
     # fit the size left in a 4KB page
     if sizeInBytes > 0:
@@ -151,6 +162,8 @@ class MemoryRegion(util.PrettyStr):
     """Returns the address of the first byte just after the allocated space."""
     baseAddr = self.virtualStartAddr if virtualAddr else self.physicalStartAddr
     nextToLastByteAddr = baseAddr + self.pagedSizeInBytes()
+    print(f"Region: {self.name} {hex(self.physicalStartAddr)}, {hex(self.pagedSizeInBytes())}"
+    f", last byte {hex(nextToLastByteAddr)}") #delit
     return nextToLastByteAddr
 
 

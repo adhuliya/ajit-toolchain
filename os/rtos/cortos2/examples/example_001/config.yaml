@@ -22,7 +22,7 @@ Hardware:
       Permissions: RXC  # (Read,Write,eXecute,Cacheable)
     RAM: # The RAM region - default Permissions RWXC
       StartAddr: 0x40000000
-      SizeInMegaBytes: 128
+      SizeInMegaBytes: 1
       Permissions: RWXC
     NCRAM: # Non-Cacheable RAM - default Permissions RW
       - StartAddr: 0x8000000
@@ -92,8 +92,8 @@ Software:
   #     - main1
   #     - main2
       StackSize:
-        SizeInKiloBytes: 16
+        SizeInKiloBytes: 400
 
   DynamicMemory: # Dynamic Memory Configuration.
-    SizeInKiloBytes: 64
+    SizeInKiloBytes: 290
 
