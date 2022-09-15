@@ -471,6 +471,14 @@ void ajit_thread(void* id_ptr)
 						thread_state->status_reg.wim,
 						thread_state->status_reg.psr);
 			}
+			else if(thread_state->report_traps)
+			{
+				fprintf(stderr,"Info: at pc=0x%x, now fp=0x%x, sp=0x%x, wim=0x%x, psr=0x%x\n", 
+						thread_state->status_reg.pc,  
+						frame_pointer(thread_state), stack_pointer(thread_state),
+						thread_state->status_reg.wim,
+						thread_state->status_reg.psr);
+			}
 
 			//if logging is enabled,
 			//Compute a signature containing information about
@@ -718,7 +726,7 @@ void generateLogMessage( ThreadState *s)
 	
 	if(global_verbose_flag)
 	{
-		fprintf(stderr,"Info:psr_update: pc=0x%lx psr=0x%lx\n", f->pc, r->psr);
+		fprintf(stderr,"Info:psr_update: pc=0x%x psr=0x%x\n", f->pc, r->psr);
 	}
 
 	//if(f->pc) pc_log = f->pc; //pc was updated inside an instruction

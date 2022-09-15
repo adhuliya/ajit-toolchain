@@ -399,6 +399,13 @@ void monitorLogger_core(MonitorLoggerState* mls)
 						reg_write_log,
 						fp_reg_write_log,
 						store_log);
+				if(reg_write_log & (0x1 << 16))
+				{
+					fprintf(stderr,"%d. PC=%08x, Wrote CWP=%d, GPR-Id=%d, Signature=0x%x  \n", 
+							counter, pc_log, (reg_write_log >> 20) & 0x7, 
+							(reg_write_log >> 8) & 0x1f, 
+							(reg_write_log & 0xff)); 
+				}
 			}
 
 			if(mls->global_verbose_flag && (mls->long_reg_write_file!=NULL))

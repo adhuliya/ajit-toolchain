@@ -109,8 +109,8 @@ Software:
 #       TotalMessageCapacity: 256 # num. of messages
   ################################################################
   Interrupts: # hardware interrupts
-    #- Index: 10 # timer
-    #  Function: my_timer_interrupt_handler
+    - Index: 10 # timer
+      Function: my_timer_interrupt_handler
     - Index: 12  # serial interrupt index
       Function: my_serial_interrupt_handler
      #  - Index: 13  # external interrupt index

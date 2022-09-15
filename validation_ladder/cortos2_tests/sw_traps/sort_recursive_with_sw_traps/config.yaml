@@ -65,18 +65,16 @@ Hardware:
         Permissions: RW
 
 Software:
-  StartupFuncName : setup
-
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
     LogLevel: DEBUG
-    OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
+    OptimizationLevel: 0 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: No # Yes/No (Default: Yes)
-    Debug: No # Yes/No (Default: No)
+    Debug: Yes # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " -D CLK_FREQUENCY=80000000"
+    BuildArgs: " -D CLK_FREQUENCY=80000000 "
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
@@ -86,7 +84,7 @@ Software:
   #   CortosLoopCalls:
   #     - main1
       StackSize:
-        SizeInKiloBytes: 8
+        SizeInKiloBytes: 64
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
@@ -108,13 +106,13 @@ Software:
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
   ################################################################
-  Interrupts: # hardware interrupts
+  #Interrupts: # hardware interrupts
     #- Index: 10 # timer
     #  Function: my_timer_interrupt_handler
-    - Index: 12  # serial interrupt index
-      Function: my_serial_interrupt_handler
-     #  - Index: 13  # external interrupt index
-     #    Function: my_external_interrupt_handler
-  #Traps: # by software
-    #- Index: 5
-      #Function: user_handler05
+    # - Index: 12  # serial interrupt index
+    #  Function: my_serial_interrupt_handler
+    #  - Index: 13  # external interrupt index
+    #    Function: my_external_interrupt_handler
+  Traps: # by software
+    - Index: 5
+      Function: __t5_handler

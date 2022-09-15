@@ -3,60 +3,65 @@
 #include <stdio.h>
 #include <ajit_access_routines.h>
 #include <ajit_mt_irc.h>
-#include <core_portme.h>
+#include <cortos.h>
 
-#define TIMERCOUNT 10000000
+#define TIMERCOUNT 100
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
 
 volatile int volatile serial_interrupt_counter = 0;
-volatile int volatile exit_flag  = 0;
-
-char buffer[1024];
+volatile int volatile timer_interrupt_counter = 0;
 
 void my_serial_interrupt_handler()
 {
 	uint8_t c = __ajit_read_serial_rx_register_via_vmap__();
-
-	buffer[serial_interrupt_counter] = c;
-	buffer[serial_interrupt_counter+1]= 0;
-
 	serial_interrupt_counter++;
+	cortos_printf ("serial_interrupt_handler: read %c, timer_interrupt_counter=%d.\n", 
+					c, 
+					timer_interrupt_counter);
+}
 
-	//__ajit_serial_puts_via_vmap__ (buffer, 1023);
+void my_timer_interrupt_handler()
+{
+	// clear timer control register.
+	__ajit_write_timer_control_register_via_vmap__ (0x0);
 
-	if((c == 'q') || (serial_interrupt_counter == 1022))
-		exit_flag = 1;
+	timer_interrupt_counter++;
+	//cortos_printf ("timer_interrupt_handler: serial_interrupt_counter=%d.\n", serial_interrupt_counter);
+
+	// reenable the timer..
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
 }
 
 void setup ()
 {
 	// enable serial 0 device..  enable_tx, enable_rx, enable_interrupts	
 	__ajit_serial_configure_via_vmap__ (1, 1, 1);
-
-#ifdef SAC_PROCESSOR
 	// set baud rate.
 	__ajit_serial_set_baudrate_via_vmap__ (115200, CLK_FREQUENCY);
 	// bring uart out of reset.
 	__ajit_serial_set_uart_reset_via_vmap__ (0);
-#endif
 
 	cortos_printf ("enabled serial\n");
 
 	// enable interrupt controller for the current thread.
 	enableInterruptControllerAndAllInterrupts(0,0);
+
+	// enable the timer, right away..
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
+
 }
 
 int main () 
 {
+	setup();
 	cortos_printf("Starting\n");
 
 	// infinite loop
-	while(!exit_flag)
+	while(1)
 	{
 	}
 
-	cortos_printf("echo %s", buffer);
 	return(0);
 }
 
