@@ -92,8 +92,8 @@ Software:
   #     - main1
   #     - main2
       StackSize:
-        SizeInKiloBytes: 400
+        SizeInKiloBytes: 490
 
   DynamicMemory: # Dynamic Memory Configuration.
-    SizeInKiloBytes: 290
+    SizeInKiloBytes: 400
 

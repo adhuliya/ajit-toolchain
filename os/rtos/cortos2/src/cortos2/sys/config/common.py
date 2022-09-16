@@ -33,6 +33,8 @@ class MemoryRegion(util.PrettyStr):
     self.permissions = permissions
     self.regionType = regionType
     self.initToZero = initToZero
+    # Stores the extra space allocated to this region while allocating pages
+    self.unusedSizeInBytes = 0
 
     if initPageTableLevels and self.sizeInBytes > 0:
       self.initPageTableLevels()
@@ -97,16 +99,18 @@ class MemoryRegion(util.PrettyStr):
     sizeInBytes = self.sizeInBytes
     levels = sorted((x for x in consts.PageTableLevel), key=lambda x: x.value)
     while sizeInBytes >= 2 ** 12:
+      numOfPages = pageSizeInBytes = 0
       for level in levels:
-        numOfPages = 0
         pageSizeInBytes = consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[level]
         if firstAddress % pageSizeInBytes == 0:
-          if sizeInBytes / pageSizeInBytes >= 0.9:
+          ratio = sizeInBytes / pageSizeInBytes
+          if ratio >= 0.9:
             numOfPages = 1
+            if ratio < 1:
+              self.unusedSizeInBytes = int(pageSizeInBytes * (1 - ratio))
             break
-          else:
-            continue
-      print(f"{self.name}: {hex(pageSizeInBytes)} {numOfPages}")
+          continue
+      assert(numOfPages == 1 and pageSizeInBytes, f"{self.name}: {numOfPages}, {pageSizeInBytes}")
       if firstPageSizeInBytes is None:
         firstPageSizeInBytes = pageSizeInBytes if numOfPages else None
       self.pageTableLevels.append((level, numOfPages))
@@ -115,11 +119,11 @@ class MemoryRegion(util.PrettyStr):
 
     # fit the size left in a 4KB page
     if sizeInBytes > 0:
-      assert sizeInBytes < consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[consts.PageTableLevel.LEVEL3], \
-        f"{sizeInBytes} should be lower than 4KB."
+      pageSizeInBytes4KB = consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[consts.PageTableLevel.LEVEL3]
+      assert sizeInBytes < pageSizeInBytes4KB, f"{sizeInBytes} should be lower than 4KB."
+      self.unusedSizeInBytes = pageSizeInBytes4KB - sizeInBytes
       if firstPageSizeInBytes is None:
-        firstPageSizeInBytes = \
-          consts.PAGE_TABLE_LEVELS_TO_PAGE_SIZE[consts.PageTableLevel.LEVEL3]
+        firstPageSizeInBytes = pageSizeInBytes4KB
       self.pageTableLevels.append((consts.PageTableLevel.LEVEL3, 1))
 
     assert firstPageSizeInBytes is not None, f"{self.name}, {self.sizeInBytes}"
@@ -162,8 +166,6 @@ class MemoryRegion(util.PrettyStr):
     """Returns the address of the first byte just after the allocated space."""
     baseAddr = self.virtualStartAddr if virtualAddr else self.physicalStartAddr
     nextToLastByteAddr = baseAddr + self.pagedSizeInBytes()
-    print(f"Region: {self.name} {hex(self.physicalStartAddr)}, {hex(self.pagedSizeInBytes())}"
-    f", last byte {hex(nextToLastByteAddr)}") #delit
     return nextToLastByteAddr
 
 

@@ -293,9 +293,13 @@ def runCommandGetOutput(cmd: str) -> Tuple[int, str]:
         f" command return code {status}")
   return status, output
 
+
 def getSizeStr(sizeInBytes : int) -> str:
   """e.g. converts 4100 bytes to 4KB + 4B, etc. Only GB, MB, KB supported."""
   sizeStr = ""
+
+  if sizeInBytes == 0:
+    return "0B"
 
   multiple = sizeInBytes // (2**30) # for megabytes
   add = " + " if sizeStr else ""
@@ -409,11 +413,13 @@ def configInfo(
   keySeqStr = ".".join(keySeq)
   print(f"Config key: {keySeqStr}\n  {message}")
 
+
 def configError(
     keySeq: List[str],
     message: str,
 ) -> None:
   configInfo(keySeq, f"error: {message}")
+
 
 def createKeySeqStr(keySeq: List):
   """Puts integers in the sequence into square brackets '[]'
@@ -436,6 +442,7 @@ def printKeySeqMessage(
 def exitWithError(message: str, status: int = 1):
   printError(message)
   exit(status)
+
 
 def printError(message: str):
   print(f"CoRTOS: ERROR: {message}")
