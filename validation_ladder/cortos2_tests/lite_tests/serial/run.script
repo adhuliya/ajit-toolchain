@@ -1,0 +1,5 @@
+r mode
+w rst 1
+m cortos_build/main.mmap.remapped
+w rst 0
+
