@@ -1,0 +1,3 @@
+1	Add USE_VMAP option to config sw section. 
+2.	If USE_VMAP option is supplied, then
+	add "-D USE_VMAP" to build args.2.	
