@@ -8,6 +8,7 @@
 # include <core_portme.h>
 int main ( );
 double cpu_time ( );
+extern void adaxpy(int n, double da, double dx[], int incx, double dy[], int incy );
 void daxpy ( int n, double da, double dx[], int incx, double dy[], int incy );
 double ddot ( int n, double dx[], int incx, double dy[], int incy );
 int dgefa ( double a[], int lda, int n, int ipvt[] );
@@ -41,7 +42,7 @@ int main ( )
     N is the problem size.
 */
 {
-# define N 160
+# define N 50
 # define LDA ( N + 1 )
 
   double *a;
@@ -597,7 +598,7 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
         a[l-1+(j-1)*lda] = a[k-1+(j-1)*lda];
         a[k-1+(j-1)*lda] = t;
       }
-      daxpy ( n-k, t, a+k+(k-1)*lda, 1, a+k+(j-1)*lda, 1 );
+      adaxpy ( n-k, t, a+k+(k-1)*lda, 1, a+k+(j-1)*lda, 1 );
     }
 
   }
@@ -688,7 +689,7 @@ void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
         b[k-1] = t;
       }
 
-      daxpy ( n-k, t, a+k+(k-1)*lda, 1, b+k, 1 );
+      adaxpy ( n-k, t, a+k+(k-1)*lda, 1, b+k, 1 );
 
     }
 
@@ -696,7 +697,7 @@ void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
     {
       b[k-1] = b[k-1] / a[k-1+(k-1)*lda];
       t = -b[k-1];
-      daxpy ( k-1, t, a+0+(k-1)*lda, 1, b, 1 );
+      adaxpy ( k-1, t, a+0+(k-1)*lda, 1, b, 1 );
     }
   }
 /*
