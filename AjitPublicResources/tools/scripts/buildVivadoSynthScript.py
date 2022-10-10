@@ -106,6 +106,7 @@ def main ():
     
     print >> tcl_file, "read_vhdl -library aHiR_ieee_proposed " + "$AHIR_RELEASE/vhdl/aHiR_ieee_proposed.vhdl" 
     print >> tcl_file, "read_vhdl -library ahir " + "$AHIR_RELEASE/vhdl/ahir.vhdl" 
+    print >> tcl_file, "read_vhdl -library simpleUartLib " + "$AJIT_PROJECT_HOME/processor/vhdl/lib/simpleUartLib.vhdl" 
     print >> tcl_file, "read_vhdl -library AjitCustom " + "$AJIT_PROJECT_HOME/processor/vhdl/lib/AjitCustom.vhdl" 
 
     for root, dirs, files in os.walk(root_directory_path, topdown=False, followlinks=True):
@@ -121,9 +122,11 @@ def main ():
                             full_vhdl_file_path = os.path.join(vhdl_lib_dir, vhdl_file)
 			    print >> tcl_file, "read_vhdl -library " + vhdl_lib + " " + full_vhdl_file_path
                  
-    print >> tcl_file, "read_xdc ./clocking.xdc"
+    xdc_file = open ("clocking.xdc","w")
+    print >> xdc_file, "create_clock -add -name clk -period 10.00 -waveform {0 5}   [get_ports clk]"
 
-    print >> tcl_file, "synth_design -fsm_extraction off -top " + top_entity_name + " -part " +  FPGA_PART 
+    print >> tcl_file, "read_xdc ./clocking.xdc "
+    print >> tcl_file, "synth_design -mode out_of_context -fsm_extraction off -top " + top_entity_name + " -part " +  FPGA_PART 
     print >> tcl_file, "write_edif -force " + top_entity_name + ".edn"
     print >> tcl_file, "report_timing_summary -file timing.postsynth.rpt -nworst 10"
     print >> tcl_file, "report_utilization -file utilization_post_synth.rpt"

@@ -76,7 +76,7 @@ Software:
     EnableSerial: No # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " -D CLK_FREQUENCY=80000000"
+    BuildArgs: " -D CLK_FREQUENCY=80000000 -D USE_VMAP"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

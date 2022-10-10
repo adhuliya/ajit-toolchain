@@ -16,7 +16,7 @@ char buffer[1024];
 
 void my_serial_interrupt_handler()
 {
-	uint8_t c = __ajit_read_serial_rx_register_via_vmap__();
+	uint8_t c = __ajit_read_serial_rx_register__();
 
 	buffer[serial_interrupt_counter] = c;
 	buffer[serial_interrupt_counter+1]= 0;
@@ -32,11 +32,11 @@ void my_serial_interrupt_handler()
 void setup ()
 {
 	// enable serial 0 device..  enable_tx, enable_rx, enable_interrupts	
-	__ajit_serial_configure_via_vmap__ (1, 1, 1);
+	__ajit_serial_configure__ (1, 1, 1);
 	// set baud rate.
-	__ajit_serial_set_baudrate_via_vmap__ (115200, CLK_FREQUENCY);
+	__ajit_serial_set_baudrate__ (115200, CLK_FREQUENCY);
 	// bring uart out of reset.
-	__ajit_serial_set_uart_reset_via_vmap__ (0);
+	__ajit_serial_set_uart_reset__ (0);
 
 	cortos_printf ("enabled serial\n");
 

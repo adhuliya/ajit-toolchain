@@ -297,16 +297,27 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 // Timer
 //---------------------------------------------------------------------------------------------
 //
+inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
+inline uint32_t __ajit_read_timer_control_register_via_bypass__();		  
+
 // bypass based methods.
 //
-inline void __ajit_write_timer_control_register__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
-inline uint32_t __ajit_read_timer_control_register__();		  
+inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
+inline uint32_t __ajit_read_timer_control_register_via_bypass__();		  
 
 //
 //  normal load-store with non-cacheable page.
 //
 inline void __ajit_write_timer_control_register_via_vmap__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
 inline uint32_t __ajit_read_timer_control_register_via_vmap__();		  
+
+#ifdef USE_VMAP
+#define __ajit_write_timer_control_register__	__ajit_write_timer_control_register_via_vmap__
+#define __ajit_read_timer_control_register__	__ajit_read_timer_control_register_via_vmap__
+#else
+#define __ajit_write_timer_control_register__	__ajit_write_timer_control_register_via_bypass__
+#define __ajit_read_timer_control_register__	__ajit_read_timer_control_register_via_bypass__
+#endif
 
 
 //---------------------------------------------------------------------------------------------
@@ -339,44 +350,32 @@ inline uint32_t __ajit_read_timer_control_register_via_vmap__();
 	__AJIT_LOAD_UBYTE_MMU_BYPASS__(ADDR_SERIAL_RX_REGISTER, val);}
 
 //---------------------------------------------------------------------------------------------
+// Serial access routines: Two versions are provided, one via direct memory
+// referencing (using virtual to physical map), the other via bypass accesses.
+//
+// Note: bypass accesses can be executed only in supervisor mode.
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
 // Bypass routines (using bypass asi 0x20).   These can be executed only
 // in supervisor mode.
 //---------------------------------------------------------------------------------------------
-void 		__ajit_write_serial_control_register__(uint32_t val);
-uint32_t	__ajit_read_serial_control_register__();
-void 		__ajit_write_serial_tx_register__(uint8_t val);
-uint8_t		__ajit_read_serial_tx_register__();
-uint8_t 	__ajit_read_serial_rx_register__();
-void     	__ajit_write_serial_baud_limit_register__(uint32_t bcv);
-uint32_t 	__ajit_read_serial_baud_limit_register__();
-
-void     	__ajit_write_serial_baud_frequency_register__(uint32_t bcv);
-uint32_t 	__ajit_read_serial_baud_frequency_register__();
-
-// configuration..
-void	 	__ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
-void  		__ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency);
-void    	__ajit_serial_set_uart_reset__ (uint8_t reset_value);
-
-
-// transmit a character on the serial device.  
-// Can block indefinitely if the serial device
-// is not able to transmit.
-int   		__ajit_serial_putchar__  (char c);
-
-// receive a character on the serial device.
-// Can block indefinitely if there is no input
-// to the serial device.
-int   		__ajit_serial_getchar__ ();
-
-
-// print upto (not including) null character, 
-// but at most length characters.
-void  		__ajit_serial_puts__ (char* s, uint32_t length);
-
-// get string until (including trailing 0), max length chars.
-void  		__ajit_serial_gets__ (char* s, uint32_t length);
-
+void 		__ajit_write_serial_control_register_via_bypass__(uint32_t val);
+uint32_t	__ajit_read_serial_control_register_via_bypass__();
+void 		__ajit_write_serial_tx_register_via_bypass__(uint8_t val);
+uint8_t		__ajit_read_serial_tx_register_via_bypass__();
+uint8_t 	__ajit_read_serial_rx_register_via_bypass__();
+void     	__ajit_write_serial_baud_limit_register_via_bypass__(uint32_t bcv);
+uint32_t 	__ajit_read_serial_baud_limit_register_via_bypass__();
+void     	__ajit_write_serial_baud_frequency_register_via_bypass__(uint32_t bcv);
+uint32_t 	__ajit_read_serial_baud_frequency_register_via_bypass__();
+void	 	__ajit_serial_configure_via_bypass__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr);
+void  		__ajit_serial_set_baudrate_via_bypass__ (uint32_t baud_rate, uint32_t clock_frequency);
+void    	__ajit_serial_set_uart_reset_via_bypass__ (uint8_t reset_value);
+int   		__ajit_serial_putchar_via_bypass__  (char c);
+int   		__ajit_serial_getchar_via_bypass__ ();
+void  		__ajit_serial_puts_via_bypass__ (char* s, uint32_t length);
+void  		__ajit_serial_gets_via_bypass__ (char* s, uint32_t length);
 
 //---------------------------------------------------------------------------------------------
 // virtual map based routines... In these, you can directly access peripheral registers using
@@ -387,14 +386,7 @@ uint32_t 	__ajit_read_serial_control_register_via_vmap__();
 void    	__ajit_write_serial_tx_register_via_vmap__(uint8_t val);
 uint8_t 	__ajit_read_serial_tx_register_via_vmap__();
 uint8_t		__ajit_read_serial_rx_register_via_vmap__();
-
-// transmit a character on the serial device.  
-// Can block indefinitely if the serial device
-// is not able to transmit.
 int   		__ajit_serial_putchar_via_vmap__  (char c);
-// receive a character on the serial device.
-// Can block indefinitely if there is not input
-// to the serial device.
 int   		__ajit_serial_getchar_via_vmap__ ();
 void  		__ajit_serial_puts_via_vmap__ (char* s, uint32_t length);
 void  		__ajit_serial_gets_via_vmap__ (char* s, uint32_t length);
@@ -402,12 +394,51 @@ void  		__ajit_serial_configure_via_vmap__ (uint8_t enable_tx, uint8_t enable_rx
 void  		__ajit_serial_set_uart_reset_via_vmap__ (uint8_t reset_val);
 void  		__ajit_serial_set_uart_reset_inner__ (uint8_t use_vmap, uint32_t serial_device_id, uint8_t rst_val);
 void  		__ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency);
-
 uint32_t	__ajit_read_serial_baud_limit_register_via_vmap__();
 void     	__ajit_write_serial_baud_limit_register_via_vmap__(uint32_t bcv);
-
 uint32_t 	__ajit_read_serial_baud_frequency_register_via_vmap__();
 void     	__ajit_write_serial_baud_frequency_register_via_vmap__(uint32_t bcv);
+
+//---------------------------------------------------------------------------------------------
+// Macros for convenience.. selects version of serial access routine based on USE_VMAP
+// define flag..
+//---------------------------------------------------------------------------------------------
+#ifdef USE_VMAP
+#define 	__ajit_write_serial_control_register__ __ajit_write_serial_control_register_via_vmap__
+#define		__ajit_read_serial_control_register__  __ajit_read_serial_control_register_via_vmap__
+#define 	__ajit_write_serial_tx_register__      __ajit_write_serial_tx_register_via_vmap__
+#define		__ajit_read_serial_tx_register__       __ajit_read_serial_tx_register_via_vmap__
+#define 	__ajit_read_serial_rx_register__       __ajit_read_serial_rx_register_via_vmap__
+#define     	__ajit_write_serial_baud_limit_register__ 	__ajit_write_serial_baud_limit_register_via_vmap__
+#define 	__ajit_read_serial_baud_limit_register__  	__ajit_read_serial_baud_limit_register_via_vmap__
+#define     	__ajit_write_serial_baud_frequency_register__	__ajit_write_serial_baud_frequency_register_via_vmap__
+#define 	__ajit_read_serial_baud_frequency_register__	__ajit_read_serial_baud_frequency_register_via_vmap__
+#define	 	__ajit_serial_configure__	 __ajit_serial_configure_via_vmap__
+#define		__ajit_serial_set_baudrate__	 __ajit_serial_set_baudrate_via_vmap__
+#define    	__ajit_serial_set_uart_reset__ 	 __ajit_serial_set_uart_reset_via_vmap__
+#define 	__ajit_serial_putchar__  	__ajit_serial_putchar_via_vmap__
+#define		__ajit_serial_getchar__ 	__ajit_serial_getchar_via_vmap__
+#define		__ajit_serial_puts__ 		__ajit_serial_puts_via_vmap__
+#define 	__ajit_serial_gets__ 		__ajit_serial_gets_via_vmap__
+#else
+#define 	__ajit_write_serial_control_register__ __ajit_write_serial_control_register_via_bypass__
+#define		__ajit_read_serial_control_register__  __ajit_read_serial_control_register_via_bypass__
+#define 	__ajit_write_serial_tx_register__      __ajit_write_serial_tx_register_via_bypass__
+#define		__ajit_read_serial_tx_register__       __ajit_read_serial_tx_register_via_bypass__
+#define 	__ajit_read_serial_rx_register__       __ajit_read_serial_rx_register_via_bypass__
+#define     	__ajit_write_serial_baud_limit_register__ 	__ajit_write_serial_baud_limit_register_via_bypass__
+#define 	__ajit_read_serial_baud_limit_register__  	__ajit_read_serial_baud_limit_register_via_bypass__
+#define     	__ajit_write_serial_baud_frequency_register__	__ajit_write_serial_baud_frequency_register_via_bypass__
+#define 	__ajit_read_serial_baud_frequency_register__	__ajit_read_serial_baud_frequency_register_via_bypass__
+#define	 	__ajit_serial_configure__	 __ajit_serial_configure_via_bypass__
+#define		__ajit_serial_set_baudrate__	 __ajit_serial_set_baudrate_via_bypass__
+#define    	__ajit_serial_set_uart_reset__ 	 __ajit_serial_set_uart_reset_via_bypass__
+#define 	__ajit_serial_putchar__  	__ajit_serial_putchar_via_bypass__
+#define		__ajit_serial_getchar__ 	__ajit_serial_getchar_via_bypass__
+#define		__ajit_serial_puts__ 		__ajit_serial_puts_via_bypass__
+#define 	__ajit_serial_gets__ 		__ajit_serial_gets_via_bypass__
+#endif
+
 //---------------------------------------------------------------------------------------------
 // Serial "inner" routines used by the other serial access functions.
 //---------------------------------------------------------------------------------------------
@@ -447,11 +478,11 @@ void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, 
 //
 //
 //  using mmu-bypass
-inline void __ajit_write_irc_control_register__(uint32_t val);
+inline void __ajit_write_irc_control_register_via_bypass__(uint32_t val);
 #define __AJIT_WRITE_IRC_CONTROL_REGISTER__(val) {\
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER, val);}
 
-inline uint32_t __ajit_read_irc_control_register__();
+inline uint32_t __ajit_read_irc_control_register_via_bypass__();
 #define __AJIT_READ_IRC_CONTROL_REGISTER__(val) {\
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER, val);}
 
@@ -464,7 +495,13 @@ inline uint32_t __ajit_read_irc_control_register__();
 inline void 	__ajit_write_irc_control_register_via_vmap__(uint32_t val);
 inline uint32_t __ajit_read_irc_control_register_via_vmap__();
 
-
+#ifdef USE_VMAP
+#define __ajit_write_irc_control_register__     __ajit_write_irc_control_register_via_vmap__
+#define __ajit_read_irc_control_register__     __ajit_read_irc_control_register_via_vmap__
+#else
+#define __ajit_write_irc_control_register__     __ajit_write_irc_control_register_via_bypass__
+#define __ajit_read_irc_control_register__     __ajit_read_irc_control_register_via_bypass__
+#endif
 
 //---------------------------------------------------------------------------------------------
 // Spi-master
@@ -499,7 +536,7 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__();
 //---------------------------------------------------------------------------------------------
 // with mmu bypass..
 //---------------------------------------------------------------------------------------------
-inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_val);
+inline void     __ajit_write_spi_master_register_via_bypass__(uint8_t reg_id, uint8_t reg_val);
 
 // 
 // use this to read the data-registers, status (command) register
@@ -508,13 +545,13 @@ inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_v
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t __ajit_read_spi_master_register__(uint8_t reg_id);
+inline uint8_t __ajit_read_spi_master_register_via_bypass__(uint8_t reg_id);
 
 // In SPI, we send a byte and simultaneously receive a byte,
 // which is returned by this routine.   Deselection of
 // the slave device after the transfer is controlled by
 // deselect_after_transfer.
-uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_bypass__ (uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer);
 
@@ -524,7 +561,7 @@ uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
 // only the bottom 4-bits of clk_divide_count are used.  So we can
 // get spi clk frequencies in the range clk to clk/2^17.
 //
-uint8_t  __ajit_configure_spi_master___ (uint8_t clk_divide_count);
+uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count);
 
 //---------------------------------------------------------------------------------------------
 // with normal load/store with non-cacheable page
@@ -541,6 +578,18 @@ uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
 //
 uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count);
 
+#ifdef USE_VMAP
+#define   __ajit_write_spi_master_register__		__ajit_write_spi_master_register_via_vmap__
+#define   __ajit_read_spi_master_register__		__ajit_read_spi_master_register_via_vmap__
+#define   __ajit_do_spi_transfer__ 			__ajit_do_spi_transfer_via_vmap__ 
+#define   __ajit_configure_spi_master_via_vmap__  	__ajit_configure_spi_master_via_vmap___ 
+#else
+#define   __ajit_write_spi_master_register__		__ajit_write_spi_master_register_via_bypass__
+#define   __ajit_read_spi_master_register__		__ajit_read_spi_master_register_via_bypass__
+#define   __ajit_do_spi_transfer__ 			__ajit_do_spi_transfer_via_bypass__ 
+#define   __ajit_configure_spi_master__ 	 	__ajit_configure_spi_master_via_bypass___ 
+#endif
+
 
 // do an SPI transfer..  send send_byte to spi slave device_id, and
 // return byte received from slave.
@@ -554,17 +603,23 @@ inline uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 // 8-bit GPIO  via SPI
 //---------------------------------------------------------------------------------------------
 uint8_t __ajit_spi_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out);
-uint8_t __ajit_spi_gpio_xfer_via_vmap__(uint8_t gpio_dev_id, uint8_t gpio_out);
 
 //---------------------------------------------------------------------------------------------
 // 32-bit GPIO 
 //---------------------------------------------------------------------------------------------
-uint32_t  __ajit_read_gpio_32__  ();
-void      __ajit_write_gpio_32__ (uint32_t w);
+uint32_t  __ajit_read_gpio_32_via_bypass__  ();
+void      __ajit_write_gpio_32_via_bypass__ (uint32_t w);
 
 uint32_t  __ajit_read_gpio_32_via_vmap__  ();
 void      __ajit_write_gpio_32_via_vmap__ (uint32_t w);
 
+#ifdef USE_VMAP
+#define  __ajit_read_gpio_32__  __ajit_read_gpio_32_via_vmap__  
+#define  __ajit_write_gpio_32__ __ajit_write_gpio_32_via_vmap__ 
+#else
+#define  __ajit_read_gpio_32__  __ajit_read_gpio_32_via_bypass__  
+#define  __ajit_write_gpio_32__ __ajit_write_gpio_32_via_bypass__ 
+#endif
 //---------------------------------------------------------------------------------------------
 // Trap
 //---------------------------------------------------------------------------------------------

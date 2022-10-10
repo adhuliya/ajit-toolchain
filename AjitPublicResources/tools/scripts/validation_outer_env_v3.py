@@ -75,6 +75,15 @@ def setGlobals(work_dir):
 
    ret_val = 0
    validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
+   if (validation_exec_location == None):
+	reportError("environment variable AJIT_AA_VALIDATION_EXECUTION_LOCATION  not defined")
+	return 1
+
+   validation_exec_bin = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE')
+   if (validation_exec_bin == None):
+	reportError("environment variable AJIT_AA_VALIDATION_EXECUTION not defined")
+	return 1
+   
    ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
    if (ajit_project_home == None):
 	reportError("environment variable AJIT_PROJECT_HOME not defined")
@@ -113,7 +122,7 @@ def setGlobals(work_dir):
    path_compileToSparc = "compileToSparc.py"
   
    # give path of processor executable
-   path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
+   path_proc_exec_aa = validation_exec_location + "/" + validation_exec_bin
    path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
    path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_simplified_vhdl_sim_testbench"
 

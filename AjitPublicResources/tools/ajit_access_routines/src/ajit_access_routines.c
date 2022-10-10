@@ -480,14 +480,14 @@ inline void __ajit_flush_dcache__(void)
 //---------------------------------------------------------------------------------------------
 // Timer
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_timer_control_register__(uint32_t val)
+inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_TIMER_CONTROL_REGISTER;
 	__ajit_store_word_mmu_bypass__(val,addr);
 					
 }
 
-inline uint32_t __ajit_read_timer_control_register__()
+inline uint32_t __ajit_read_timer_control_register_via_bypass__()
 {
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(ADDR_TIMER_CONTROL_REGISTER);
 	return(ret_val);
@@ -508,13 +508,13 @@ inline uint32_t __ajit_read_timer_control_register_via_vmap__()
 //---------------------------------------------------------------------------------------------
 // Serial
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_serial_control_register__(uint32_t val)
+inline void __ajit_write_serial_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_SERIAL_CONTROL_REGISTER;
 	__AJIT_STORE_WORD_MMU_BYPASS__(addr,val);
 }
 
-inline uint32_t __ajit_read_serial_control_register__()
+inline uint32_t __ajit_read_serial_control_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_CONTROL_REGISTER;
 	uint32_t ret_val = 0;
@@ -522,13 +522,13 @@ inline uint32_t __ajit_read_serial_control_register__()
 	return(ret_val);
 }
 
-inline void __ajit_write_serial_tx_register__(uint8_t val)
+inline void __ajit_write_serial_tx_register_via_bypass__(uint8_t val)
 {
 	uint32_t addr = ADDR_SERIAL_TX_REGISTER;
 	__AJIT_STORE_UBYTE_MMU_BYPASS__(addr, val);
 }
 
-inline uint8_t __ajit_read_serial_tx_register__()
+inline uint8_t __ajit_read_serial_tx_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_TX_REGISTER;
 	uint8_t ret_val = 0;
@@ -536,7 +536,7 @@ inline uint8_t __ajit_read_serial_tx_register__()
 	return(ret_val);
 }
 
-inline uint8_t __ajit_read_serial_rx_register__()
+inline uint8_t __ajit_read_serial_rx_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_RX_REGISTER;
 	uint8_t ret_val = 0;
@@ -544,12 +544,12 @@ inline uint8_t __ajit_read_serial_rx_register__()
 	return(ret_val);
 }
 
-void 	__ajit_write_serial_baud_limit_register__(uint32_t bcv)
+void 	__ajit_write_serial_baud_limit_register_via_bypass__(uint32_t bcv)
 {
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_LIMIT_REGISTER, bcv);
 }
 
-uint32_t __ajit_read_serial_baud_limit_register__()
+uint32_t __ajit_read_serial_baud_limit_register_via_bypass__()
 {
 	uint32_t ret_val;
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_LIMIT_REGISTER, ret_val);
@@ -557,12 +557,12 @@ uint32_t __ajit_read_serial_baud_limit_register__()
 }
 
 
-void 	__ajit_write_serial_baud_frequency_register__(uint32_t bcv)
+void 	__ajit_write_serial_baud_frequency_register_via_bypass__(uint32_t bcv)
 {
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_FREQUENCY_REGISTER, bcv);
 }
 
-uint32_t __ajit_read_serial_baud_frequency_register__()
+uint32_t __ajit_read_serial_baud_frequency_register_via_bypass__()
 {
 	uint32_t ret_val;
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SERIAL_BAUD_FREQUENCY_REGISTER, ret_val);
@@ -570,23 +570,23 @@ uint32_t __ajit_read_serial_baud_frequency_register__()
 }
 
 
-void	__ajit_serial_configure__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
+void	__ajit_serial_configure_via_bypass__ (uint8_t enable_tx, uint8_t enable_rx, uint8_t enable_intr)
 {
 	__ajit_serial_configure_inner__ (0,0, enable_tx, enable_rx, enable_intr);
 }
 
-inline void __ajit_serial_set_baudrate__ (uint32_t baud_rate, uint32_t clock_frequency)
+inline void __ajit_serial_set_baudrate_via_bypass__ (uint32_t baud_rate, uint32_t clock_frequency)
 {
 	__ajit_serial_set_baudrate_inner__ (0,0, baud_rate, clock_frequency);
 }
 
-void __ajit_serial_set_uart_reset__ (uint8_t reset_val)
+void __ajit_serial_set_uart_reset_via_bypass__ (uint8_t reset_val)
 {
 	__ajit_serial_set_uart_reset_inner__(0,0, reset_val);
 }
 
 // returns 1 on successful transmission, 0 on failure.
-int __ajit_serial_putchar__ (char c)
+int __ajit_serial_putchar_via_bypass__ (char c)
 {
 	return (__ajit_serial_putchar_inner__ (0,0,c));
 }
@@ -595,7 +595,7 @@ int __ajit_serial_putchar__ (char c)
 // returns character read from serial device.  Can block
 // indefinitely.
 //
-int __ajit_serial_getchar__ ()
+int __ajit_serial_getchar_via_bypass__ ()
 {
 	int ret_val = 0;
 	char c;
@@ -606,14 +606,14 @@ int __ajit_serial_getchar__ ()
 	return(c);
 }
 
-void __ajit_serial_puts__ (char* s, uint32_t length)
+void __ajit_serial_puts_via_bypass__ (char* s, uint32_t length)
 {
 	__ajit_serial_puts_inner__(0,0,s,length);
 }
 
 // reads at most length characters... stops reading when null character is reached.
 //  (null character is stored!)
-void __ajit_serial_gets__ (char* s, uint32_t length)
+void __ajit_serial_gets_via_bypass__ (char* s, uint32_t length)
 {
 	__ajit_serial_gets_inner__(0,0,s,length);
 }
@@ -954,13 +954,13 @@ void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, 
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_irc_control_register__(uint32_t val)
+inline void __ajit_write_irc_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
 	__ajit_store_word_mmu_bypass__(val, addr);
 }
 
-inline uint32_t __ajit_read_irc_control_register__()
+inline uint32_t __ajit_read_irc_control_register_via_bypass__()
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
@@ -1007,7 +1007,7 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__()
 //               the clock-division is by (2**(clk_divide_count+1))
 //        The transfer length ranges from 00-11 (4/8/12/16 bits)
 //
-inline void     __ajit_write_spi_master_register__(uint8_t reg_id, uint8_t reg_val)
+inline void     __ajit_write_spi_master_register_via_bypass__(uint8_t reg_id, uint8_t reg_val)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
 	__ajit_store_word_mmu_bypass__(reg_val, addr);
@@ -1030,7 +1030,7 @@ inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t  __ajit_read_spi_master_register__(uint8_t reg_id)
+inline uint8_t  __ajit_read_spi_master_register_via_bypass__(uint8_t reg_id)
 {
 	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
@@ -1048,7 +1048,7 @@ inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
 }
 
 
-uint8_t __ajit_do_spi_transfer__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_bypass__ (uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer)
 {
@@ -1062,7 +1062,7 @@ uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
 	return(__ajit_do_spi_transfer_inner__(1, device_id, send_byte, deselect_after_transfer));
 }
 
-uint8_t  __ajit_configure_spi_master___ (uint8_t clk_divide_count)
+uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count)
 {
 	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
 	// transfer width is kept to 8 bits, clk divide count is modified.
@@ -1126,7 +1126,7 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 }
 
 //---------------------------------------------------------------------------------------------
-// GPIO!
+// SPI GPIO! 8-bit in and out.
 //---------------------------------------------------------------------------------------------
 // write gpio-out to GPIO_OUT pins and read back GPIO_IN pins.
 uint32_t __ajit_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out)
@@ -1160,65 +1160,34 @@ uint32_t __ajit_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out)
 	return(ret_val);
 }
 
-uint32_t __ajit_gpio_xfer_via_vmap__(uint8_t gpio_dev_id, uint8_t gpio_out)
-{
 
-	int retry_limit;
-
-	uint32_t ret_val = 0;
-	uint32_t status_reg = 1;
-
-	// write data-l in master.
-	__ajit_write_spi_master_register_via_vmap__(0, gpio_out);
-
-	// master-command
-	// spi-dev-id = gpio_dev_id, deselect = 1, start-xfer = 1.
-	uint8_t cmd_to_master = (((gpio_dev_id & 0x7) << 3) | 0x3);
-
-	// write master-command
-	__ajit_write_spi_master_register_via_vmap__(2, cmd_to_master);
-
-	// check status-reg..
-	retry_limit = 256;
-	while(status_reg & (retry_limit > 0))
-	{
-		status_reg = __ajit_read_spi_master_register_via_vmap__(2);
-		retry_limit--;
-	}
-
-	// read back data-l
-	ret_val = __ajit_read_spi_master_register_via_vmap__(0);
-	return(ret_val);
-}
-
-uint32_t  __ajit_read_gpio_32__  ()
+//---------------------------------------------------------------------------------------------
+// 32-bit GPIO 
+//---------------------------------------------------------------------------------------------
+uint32_t  __ajit_read_gpio_32_via_vmap__  ()
 {
 	uint32_t ret_val = *((uint32_t*) ADDR_GPIO_DIN_REGISTER); 
 	return(ret_val);
 }
 
-//---------------------------------------------------------------------------------------------
-// 32-bit GPIO 
-//---------------------------------------------------------------------------------------------
-
-void      __ajit_write_gpio_32__ (uint32_t w)
+void      __ajit_write_gpio_32_via_vmap__ (uint32_t w)
 {
 	*((uint32_t*) ADDR_GPIO_DOUT_REGISTER) = w;
 }
 
-uint32_t  __ajit_read_gpio_32_via_vmap__  ()
+uint32_t  __ajit_read_gpio_32_via_bypass__  ()
 {
 	uint32_t rval;
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_GPIO_DIN_REGISTER, rval);
 	return(rval);
 }
-void      __ajit_write_gpio_32_via_vmap__ (uint32_t w)
+void      __ajit_write_gpio_32_via_bypass__ (uint32_t w)
 {
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_GPIO_DOUT_REGISTER, w);
 }
 
 //---------------------------------------------------------------------------------------------
-// 32-bit GPIO 
+// Miscellaneous
 //---------------------------------------------------------------------------------------------
 inline void __ajit_ta_0__ ()
 {

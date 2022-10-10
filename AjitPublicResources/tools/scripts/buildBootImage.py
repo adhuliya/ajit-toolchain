@@ -93,15 +93,15 @@ def main():
        logError("Error in mmapToAssyU64")
        return
 
-    make_linker_script_cmd = ajit_project_home + "/tools/scripts/makeLinkerScript.py -t 0x0 -d 0x10000 -o .bootstrapLinkerScript.lnk "
+    make_linker_script_cmd = ajit_project_home + "/tools/linker/makeLinkerScript.py -t 0x0 -d 0x10000 -o .bootstrapLinkerScript.lnk "
     execSysCmd(make_linker_script_cmd)
 
     compile_bootstrap_cmd = ajit_project_home + "/tools/scripts/compileToSparcUclibc.py  "
-    compile_bootstrap_cmd += " -s " + ajit_flash_image_dir + "/asm/bootstrap_u64.s "
+    compile_bootstrap_cmd += " -N bootstrap -s " + ajit_flash_image_dir + "/asm/bootstrap_u64.s "
     compile_bootstrap_cmd += " -s __copy_asm.s -L .bootstrapLinkerScript.lnk "
     boots_status = execSysCmd(compile_bootstrap_cmd)
 
-    bin_cmd = ajit_flash_image_dir + "/bin/mmapToBin " + hex(log_boot_bin_size) +  " bootstrap.bin"
+    bin_cmd = ajit_flash_image_dir + "/bin/mmapToBin " + hex(log_boot_bin_size) +  " bootstrap.mmap bootstrap.bin"
     return ret_status
 
 if __name__ == '__main__':

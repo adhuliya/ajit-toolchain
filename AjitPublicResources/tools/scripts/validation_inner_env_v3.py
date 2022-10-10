@@ -39,6 +39,7 @@ import re
 
 ajit_project_home = os.environ.get('AJIT_PROJECT_HOME')
 validation_exec_location = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE_LOCATION')
+validation_exec_bin = os.environ.get('AJIT_AA_VALIDATION_EXECUTABLE')
 validation_C_exec_location = (os.environ.get('AJIT_C_REF_MODEL'))+'/testbench/bin'
 
 def setGlobals():
@@ -47,7 +48,7 @@ def setGlobals():
    global path_proc_exec_C 
    global path_proc_exec_FPGA
 
-   path_proc_exec_aa = validation_exec_location + "/ajit_simplified_sys_sw_uarch_test"
+   path_proc_exec_aa = validation_exec_location + "/" + validation_exec_bin
    path_proc_exec_C = validation_C_exec_location + "/ajit_C_system_model"
    path_proc_exec_FPGA = validation_exec_location + "/ajit_chip_vhdl_sim_testbench"
 
