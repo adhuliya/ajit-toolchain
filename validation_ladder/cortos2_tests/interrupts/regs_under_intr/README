@@ -1,0 +1,2 @@
+Ensure that the ISR leaves the machine with basically the same registers
+as before.

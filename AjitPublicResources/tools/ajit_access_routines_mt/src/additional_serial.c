@@ -43,7 +43,7 @@ int   __ajit_serial_1_getchar_via_bypass__ ()
 	
 	char c;
 
-	 __ajit_serial_getchar_inner__ (0,1, &c);
+	 __ajit_serial_getchar_inner_via_bypass__ (0,1, &c);
 
 	return(c);
 }

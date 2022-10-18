@@ -1,10 +1,10 @@
 #include <stdint.h>
 
 #define VECTOR_SIZE  64
-#define TIMERCOUNT 100000
+#define TIMERCOUNT 100
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
-#define INTERRUPT_LIMIT 1024
+#define INTERRUPT_LIMIT 32
 
 volatile int volatile timer_interrupt_counter = 0;
 
@@ -54,6 +54,8 @@ void my_timer_interrupt_handler()
 	// reenable the timer, right away..
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
 
+	//ee_printf("Timer Intr!\n");
+
 	// interrupt counter incremented.
 	timer_interrupt_counter++;
 }
@@ -87,10 +89,8 @@ int main()
 			break;
 		else
 		{
-			if((iterations % 64) == 0)
-			{
-				cortos_printf("finished  %d interrupts.\n", timer_interrupt_counter);
-			}
+			cortos_printf("finished  %d interrupts, %d iterations\n", 
+						timer_interrupt_counter, iterations);
 			for(I = 0; I < VECTOR_SIZE; I++)
 			{
 				VALUES[I] = iterations + VECTOR_SIZE - I;

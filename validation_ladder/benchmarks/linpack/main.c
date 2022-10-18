@@ -194,7 +194,7 @@ cortos_printf ( " matrix is non-singular \n");
   cortos_printf ( "\n" );
   cortos_printf ( "     Norm. Resid      Resid           MACHEP         X[1]          X[N]\n" );
   cortos_printf ( "\n" );
-  cortos_printf ( "  %14f  %14f  %14e  %14f  %14f\n", residn, resid_max, eps, b[0], b[N-1] );
+  cortos_printf ( "  %14.6f  %14.6f  %14.6f  %14.6f  %14.6f\n", residn, resid_max, eps, b[0], b[N-1] );
   cortos_printf ( "\n" );
   cortos_printf ( "      Factor     Solve      Total     MFLOPS       Unit      Cray-Ratio\n" );
   cortos_printf ( "\n" );

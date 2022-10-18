@@ -8,9 +8,10 @@
 #define TIMERINITVAL ((COUNT << 1) | 1)
 #define ITERATIONS   32
 
-volatile int volatile timer_interrupt_counter = 0;
-volatile uint32_t volatile VALUES[VECTOR_SIZE];
-volatile uint32_t volatile VALUES_1[VECTOR_SIZE];
+extern volatile int volatile timer_interrupt_counter;
+extern volatile int volatile time_stamps[ITERATIONS];
+extern uint32_t volatile VALUES[VECTOR_SIZE];
+extern uint32_t volatile VALUES_1[VECTOR_SIZE];
 
 void setup_serial()
 {
@@ -78,29 +79,15 @@ void set_values(uint32_t* VALUES)
 	}
 }
 
-void my_timer_interrupt_handler()
-{
-	cortos_printf("in ISR (%d).\n", timer_interrupt_counter);
-
-	// clear timer control register.
-	__ajit_write_timer_control_register_via_vmap__ (0x0);
-
-
-	// interrupt counter incremented.
-	if(timer_interrupt_counter < ITERATIONS)
-	{
-		// lets hammer the stack....
-		set_values(VALUES);
-		sort (VALUES, VECTOR_SIZE-1);
-
-		timer_interrupt_counter++;
-		__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);	
-	}
-}
 
 int main()
 {
 	setup_serial();
+	int I;
+	for(I = 0; I < ITERATIONS; I++)
+	{
+		time_stamps[I] = -1;
+	}
 
 	cortos_printf("Starting: enabling the interrupt controller.\n");
 
@@ -123,9 +110,17 @@ int main()
 
 	disableInterruptController(0,0);
 
-	int I;
 	for(I = 0; I < VECTOR_SIZE; I++)
 	{
 		cortos_printf("0x%x 0x%x\n", VALUES[I], VALUES_1[I]);
+	}
+
+	for(I = 0; I < ITERATIONS; I++)
+	{
+		if(time_stamps[I] != I)
+		{
+			cortos_printf("Error: time_stamps[%d]=%d, expected %d.\n",
+						I, time_stamps[I], I);
+		}
 	}
 }

@@ -257,7 +257,13 @@ uint8_t recvByteFromSpecifiedUart(int fd)
 		int n = read(fd, &ret_val, 1);
 		pthread_mutex_unlock(&serial_device_mutex);
 		if(n == 1)
+		{
+			if(uart_verbose_flag)
+			{
+				fprintf(stderr,"Info: uart: received 0x%x\n", ret_val);
+			}
 			break;
+		}
 
 		usleep(10);
 	}

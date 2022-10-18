@@ -23,6 +23,7 @@
 #include "Mmu.h"
 #include "CacheInterface.h"
 
+extern int global_verbose_flag;
 
 //
 //
@@ -217,6 +218,12 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 	if(mae2)
 	{	tv = setBit32(tv, _TRAP_, 1) ;
 		tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
+	}
+		
+	if(global_verbose_flag && is_trap)
+	{
+		fprintf(stderr,"EXCEPTION: at pc=0x%x, load from 0x%x, asi=0x%x.\n", 
+				status_reg->pc, address, addr_space);
 	}
 
 	if(is_double_word_inst) 		f = setBit8(f, _DOUBLE_RESULT_, 1);
@@ -418,6 +425,11 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 			{
 				tv = setBit32(tv, _TRAP_, 1) ;
 				tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
+				if(global_verbose_flag)
+				{
+					fprintf(stderr,"EXCEPTION: at pc 0x%x, store to 0x%x, asi=0x%x.\n", 
+							status_reg->pc, address, addr_space);
+				}
 			}
 
 			

@@ -1,0 +1,6 @@
+r mode
+w rst 1
+m whetstone.mmap
+w ipc 0x40000000
+w inpc 0x40000004
+w rst 0
