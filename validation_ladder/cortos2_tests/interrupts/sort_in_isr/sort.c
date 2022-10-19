@@ -3,7 +3,7 @@
 #include <ajit_access_routines.h>
 
 #define VECTOR_SIZE  32
-#define TIMERCOUNT 100
+#define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
 #define ITERATIONS   32
