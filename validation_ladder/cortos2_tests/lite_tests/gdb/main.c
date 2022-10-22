@@ -11,6 +11,10 @@ void main_00 ()
 	__ajit_serial_set_uart_reset__ (0);
 	
 	//float f  = fp (0.1, 1.1);
+
+	cortos_printf("Hello: 1\n");
+	cortos_printf("Hello: 2\n");
+	cortos_printf("Hello: 3\n");
 	
 	char buffer[256];
 
