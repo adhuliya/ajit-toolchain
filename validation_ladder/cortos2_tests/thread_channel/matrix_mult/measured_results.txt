@@ -1,0 +1,6 @@
+ORDER = 128
+	Single-thread time=158310195.000000 ticks, Two-thread time=80346980.000000 ticks.
+	Single-thread time=158305406.000000 ticks, Two-thread time=80347008.000000 ticks.                                  
+
+	Thats almost a 2X advantage.
+

@@ -142,9 +142,7 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 
 //
 // reads high and low clock counters to return
-// the value...   Returns the number of elapsed ticks
-// where one tick is 256 clock cycles.
-//   (Thus, if the clock is 100mhz, 1 tick is 2.56 micro-seconds).
+// the value...   
 // 
 inline uint64_t __ajit_get_clock_time();
 //
