@@ -1,0 +1,79 @@
+	A clock for implementation of synchronized threads
+	on the AJIT multi-core architecture
+
+	Madhav Desai
+
+1. Overview
+------------
+
+	A peer-to-peer synchronous programming model is popular in
+	the implementation of reactive embedded systems on
+	the AJIT multi-threaded multi-core.
+
+	The key enabler for this programming model is a clock.
+
+2. ACLOCK implementation
+-------------------------
+
+	The programmer is required to initialize the clock implementation
+	with a specified number of threads, exactly once...
+
+		void initAclock(Aclock* clk, uint32_t number_of_threads)
+
+	Each thread is required to register with the clock implementation
+	
+		uint32_t registerThreadWithAclock(Aclock* clk)
+
+	If successful, this returns a non-zero thread id.
+
+
+	The programmer must construct each thread with the following
+	pattern:
+
+	my_tid = registerThreadWithAclock(clk);
+	uint64_t time_stamp = 0;
+	while(1)
+	{
+
+		// Do thread specific work.. anywhere....
+		myTidWork (....);
+
+		// time-stamp incremented before every tick.
+		time_stamp++;
+
+		/////////////////  START TICK ////////////////////////
+		// start synch sequence
+		synchStart (clk, time_stamp, my_tid, my_args);
+
+		// get other args and use them...  This is optional.
+		for(I = 1; I <= getNumberOfThreads(clk); I++)
+		{
+			if (I != my_tid)
+			{
+				void* arg = NULL;
+				while(1) {
+					status = getSynchedArg(clk, time_stamp, I, &arg);
+					if(status == 0)
+						break;
+				}
+	
+				// use arg..
+			}
+
+		}
+
+		// complete synch.
+		while(1)
+		{
+			status = synchComplete (clk, time_stamp, my_tid);
+			if(!status)
+				break;
+		}
+		///////////////// END TICK ////////////////////////
+	}
+
+3. Ramifications...
+-----------------------
+
+	With the clock implementation, one can implement reactive systems
+	in a easily verifiable way.
