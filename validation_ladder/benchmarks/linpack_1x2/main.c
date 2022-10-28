@@ -6,10 +6,9 @@
 # include <time.h>
 # include <ajit_access_routines.h>
 # include <core_portme.h>
-#include "score_board.h"
+#include "thread_channel.h"
 int main ( );
 double cpu_time ( );
-extern void adaxpy(uint32_t argc, uint32_t* argv, uint32_t ret_argc, uint32_t* ret_argv);
 void daxpy ( int n, double da, double dx[], int incx, double dy[], int incy );
 double ddot ( int n, double dx[], int incx, double dy[], int incy );
 int dgefa ( double a[], int lda, int n, int ipvt[] );
@@ -18,24 +17,19 @@ void dscal ( int n, double sa, double x[], int incx );
 int idamax ( int n, double dx[], int incx );
 double r8_random ( int iseed[4] );
 double *r8mat_gen ( int lda, int n );
+void row_elim(int s,int k, int l,int n,int lda, double a[]);
 //void timestamp ( );
+ThreadChannel tc;
 
-
-typedef struct __SBarg {
-        int k;
+typedef struct argstruct__ {
+        int s;
+	int k;
+        int l;
 	int n;
 	int lda;
-	double a[];
-	int l;
-	int t;
-} SBarg;
+	double* a;
+} argstruct;
 
-volatile ThreadChannel tc;
-
-void startup_routine()
-{
-        initChannel(&tc);
-}
 
 /******************************************************************************/
 
@@ -60,8 +54,9 @@ int main ( )
     N is the problem size.
 */
 {
-# define N 6
-# define LDA o N + 1 )
+initChannel(&tc, 1);
+# define N 20
+# define LDA ( N)
   double *a;
   double a_max;
   double *b;
@@ -384,16 +379,13 @@ void daxpy ( int n, double da, double dx[], int incx, double dy[], int incy )
   else
 	  
   {
-	 //daxpy (n,da,&dx[0],incx,&dy[0],incy); 
-   //m = n % 4;
-   m = n & (0x3);
+ 
+   m = n % 4;
 
     for ( i = 0; i < m; i++ )
     {
       dy[i] = dy[i] + da * dx[i];
     }
-
-//split this m-(n+m)/2 and (m+n)/2-n
 
     for ( i = m; i < n; i = i + 4 )
     {
@@ -402,33 +394,9 @@ void daxpy ( int n, double da, double dx[], int incx, double dy[], int incy )
       dy[i+2] = dy[i+2] + da * dx[i+2];
       dy[i+3] = dy[i+3] + da * dx[i+3];
     }
-
-    
-    /*uint32_t last_request_id = 0;
-    int i;//for return argc
-    SBarg arg0,arg1;
-    arg0.n = (m+n)/2;
-    arg0.da =da;
-    arg0.dx = &dx[m];
-    arg0.dy = &dy[m];
-    arg1.n = n;
-    arg1.da =da;
-    arg1.dx = &dx[(m+n)/2];
-    arg1.dy = &dy[(m+n)/2];
-    SBarg* addr0 = &arg0;
-    SBarg* addr1 = &arg1;
-    scheduleChannelJob(CALL_FUNCTION, &adaxpy,1,&addr1, &tc);
-    adaxpy(1,&addr0,i,&arg0);*/
-
   }
   return;
 }
-
-void main_01 ()
-{
-        sidekickServer(0, 0,1,&tc);
-}
-
 /******************************************************************************/
 
 double ddot ( int n, double dx[], int incx, double dy[], int incy )
@@ -546,6 +514,21 @@ double ddot ( int n, double dx[], int incx, double dy[], int incy )
   }
   return dtemp;
 }
+
+
+void callfn(void* varg)
+{
+	CORTOS_DEBUG("entering callfn\n");
+        argstruct* arg = (argstruct*) varg;
+        row_elim (arg->s,arg->k, arg->l,arg->n, arg->lda,arg->a);
+	CORTOS_DEBUG("exiting callfn\n");
+}
+
+
+
+
+
+
 /******************************************************************************/
 
 int dgefa ( double a[], int lda, int n, int ipvt[] )
@@ -634,33 +617,30 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
 */
     t = -1.0 / a[k-1+(k-1)*lda];
     dscal ( n-k, t, a+k+(k-1)*lda, 1 );
-    
-    uint32_t last_request_id = 0;
-    int i;//for return argc
-    SBarg arg0,arg1;
-    arg0.k = k;
-    arg0.n = n;
-    arg0.lda =lda;
-    arg0.a = a;
-    arg0.l =l;
-    arg0.t =t;
-    arg1.k = ((k+1)/2);      
-    arg1.n = n;
-    arg1.lda =lda;
-    arg1.a = a;
-    arg1.l =l;
-    arg1.t =t;
-    SBarg* addr0 = &arg0;
-    SBarg* addr1 = &arg1;
-    scheduleChannelJob(CALL_FUNCTION, &row_elim,1,&addr1, &tc);
-    row_elim(1,&addr0,i,&arg0);
-    
-       
- 
- 		
 
+/*
+ *
+ * */
+ 	int p;
+        argstruct sarg;
+	sarg.s = p;
+        sarg.k = k;
+	sarg.l =l;
+	sarg.n=((p+n)>>1);
+	sarg.lda=lda;
+	sarg.a=a;
+	scheduleChannelJob(&tc, (void*) &callfn, (void*) &sarg);
+        argstruct* rarg;
+	int q = ((p+n)>>1);
+        row_elim (q,k,l,n+1,lda,a);
 
-  /*Row elimination with column indexing.
+        while(getChannelResponse(&tc, (void**) &rarg))
+        {
+        }
+        tc.status = CH_FREE;
+
+/*
+  Row elimination with column indexing.
 
     for ( j = k+1; j <= n; j++ )
     {
@@ -684,19 +664,16 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
   return info;
 }
 
-/* Function for row elimination - will be called from dgefa
- * adaxpy called from here 
- * */
-int row_elim(int k, int n , int lda, double a[],int l,int t);
-int row_elim(uint32_t argc, uint32_t* argv, uint32_t ret_argc, uint32_t* ret_argv)
-{
-	int j;
-        SBarg* marg;
-        marg = (SBarg*)(*arg);
 
-    for ( j = k+1; j <= n; j++ )
+void row_elim(int s,int k, int l,int n,int lda, double a[])
+{
+    
+    CORTOS_DEBUG("entering row_elim\n");		
+    int j;
+    double t;
+    for ( j = s; j < n; j++ )
     {
-      t = a[l-1+(j-1)*lda];
+       t = a[l-1+(j-1)*lda];
       if ( l != k )
       {
         a[l-1+(j-1)*lda] = a[k-1+(j-1)*lda];
@@ -704,13 +681,28 @@ int row_elim(uint32_t argc, uint32_t* argv, uint32_t ret_argc, uint32_t* ret_arg
       }
       daxpy ( n-k, t,a+k+(k-1)*lda,1, a+k+(j-1)*lda, 1 );
     }
+    CORTOS_DEBUG("exiting row_elim\n");
+
 }
 
 
 
+void main_01 ()
+{
+        while(1)
+        {
+        void (*__fn) (void*);
 
-
-
+        void *__arg;
+        while(getChannelJob(&tc, (void**) &__fn, (void**) &__arg))
+        {
+        }
+      //  cortos_printf("started jobi \n");
+        (*__fn)(__arg);
+        tc.status = CH_COMPLETED;
+//	cortos_printf("started jobi \n");
+        }
+}
 /******************************************************************************/
 
 void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
@@ -797,7 +789,7 @@ void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
     {
       b[k-1] = b[k-1] / a[k-1+(k-1)*lda];
       t = -b[k-1];
-      daxpy ( k-1, t, a+0+(k-1)*lda,1, b,1 );
+     daxpy ( k-1, t, a+0+(k-1)*lda,1, b,1 );
     }
   }
 /*
