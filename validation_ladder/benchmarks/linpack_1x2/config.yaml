@@ -75,7 +75,7 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: DEBUG
+    LogLevel: NONE
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888  # default: 8888
@@ -101,5 +101,5 @@ Software:
         SizeInKiloBytes: 32768
 
   DynamicMemory: # Dynamic Memory Configuration.
-    SizeInKiloBytes: 50000
+    SizeInKiloBytes: 500
 
