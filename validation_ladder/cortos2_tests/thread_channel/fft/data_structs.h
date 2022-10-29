@@ -1,7 +1,7 @@
 #ifndef data_structs_h____
 #define data_structs_h____
 
-#define q	10		/* for 2^10 points */
+#define q	3		/* for 2^10 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;
@@ -34,7 +34,7 @@ void fft( complex *v, int n, complex *tmp );
 void ifft( complex *v, int n, complex *tmp );
 void twiddle_factors(int inv_flag, int start_index, int stride, complex* v, complex* vo, complex* ve, int n);
 void setXfftArgs (xfftArgs* args, int n, complex* v, complex* tmp);
-void setXtwiddleArgs (xtwiddleArgs* args, 
+void setXtwiddleArgs (xtwiddleFactorArgs* args, 
 			int inv_flag,
 			int n,
 			int start_index,
@@ -45,5 +45,10 @@ void setXtwiddleArgs (xtwiddleArgs* args,
 void twiddle_factors_thread (void *vargs);
 void fft_thread (void* args);
 void ifft_thread (void* args);
+
+void print_vector(
+	     const char *title,
+	     complex *x,
+	     int n);
 #endif
 

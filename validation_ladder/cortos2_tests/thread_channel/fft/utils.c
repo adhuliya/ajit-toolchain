@@ -13,7 +13,7 @@ void setXfftArgs (xfftArgs* args, int n, complex* v, complex* tmp)
 	args->tmp = tmp;
 }
 
-void setXtwiddleArgs (xtwiddleArgs* args, 
+void setXtwiddleArgs (xtwiddleFactorArgs* args, 
 			int inv_flag,
 			int n,
 			int start_index,
@@ -33,7 +33,7 @@ void setXtwiddleArgs (xtwiddleArgs* args,
 
 void twiddle_factors_thread (void *vargs)
 {
-	xtwiddleArgs* args = (xtwiddleFactorArgs*) vargs;
+	xtwiddleFactorArgs* args = (xtwiddleFactorArgs*) vargs;
 	twiddle_factors (args->inv_flag,
 				args->start_index,
 				args->stride,
@@ -44,7 +44,7 @@ void twiddle_factors_thread (void *vargs)
 }
 		
 /* Print a vector of complexes as ordered pairs. */
-static void
+void
 print_vector(
 	     const char *title,
 	     complex *x,
@@ -57,7 +57,7 @@ print_vector(
   return;
 }
 
-void fft_thread (void* args)
+void fft_thread (void* vargs)
 {
     int n = ((xfftArgs*)vargs)->n;
     complex* v = ((xfftArgs*)vargs)->v;
@@ -65,7 +65,7 @@ void fft_thread (void* args)
     fft(v,n,tmp);
 }
 
-void ifft_thread (void* args)
+void ifft_thread (void* vargs)
 {
     int n = ((xfftArgs*)vargs)->n;
     complex* v = ((xfftArgs*)vargs)->v;

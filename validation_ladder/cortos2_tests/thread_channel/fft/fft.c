@@ -4,80 +4,83 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <cortos.h>
 #include <thread_channel.h>
+#include <ajit_access_routines.h>
 #include <data_structs.h>
 
+complex v[N], v1[N], scratch[N];
 ThreadChannel tc;
 
 xfftArgs fft_args;
-xtwiddleArgs twiddle_args;
+xtwiddleFactorArgs twiddle_args;
 
 void twiddle_factors(int inv_flag, int start_index, int stride, complex* v, complex* vo, complex* ve, int n)
 {
-    int m;
-    complex w, z;
-    for(m=start_index; m<n/2; m += stride) {
-	    if(inv_flag)
-	    {
-		    w.Re = cos(2*PI*m/(double)n);
-		    w.Im = sin(2*PI*m/(double)n);
-		    z.Re = w.Re*vo[m].Re - w.Im*vo[m].Im;	/* Re(w*vo[m]) */
-		    z.Im = w.Re*vo[m].Im + w.Im*vo[m].Re;	/* Im(w*vo[m]) */
-	    }
-	    else
-	    {
-		    w.Re = cos(2*PI*m/(double)n);
-		    w.Im = -sin(2*PI*m/(double)n);
-		    z.Re = w.Re*vo[m].Re - w.Im*vo[m].Im;	/* Re(w*vo[m]) */
-		    z.Im = w.Re*vo[m].Im + w.Im*vo[m].Re;	/* Im(w*vo[m]) */
-	    }
-	    v[  m  ].Re = ve[m].Re + z.Re;
-	    v[  m  ].Im = ve[m].Im + z.Im;
-	    v[m+n/2].Re = ve[m].Re - z.Re;
-	    v[m+n/2].Im = ve[m].Im - z.Im;
-    }
+	int m;
+	complex w, z;
+	for(m=start_index; m<n/2; m += stride) {
+		if(inv_flag)
+		{
+			w.Re = cos(2*PI*m/(double)n);
+			w.Im = sin(2*PI*m/(double)n);
+			z.Re = w.Re*vo[m].Re - w.Im*vo[m].Im;	/* Re(w*vo[m]) */
+			z.Im = w.Re*vo[m].Im + w.Im*vo[m].Re;	/* Im(w*vo[m]) */
+		}
+		else
+		{
+			w.Re = cos(2*PI*m/(double)n);
+			w.Im = -sin(2*PI*m/(double)n);
+			z.Re = w.Re*vo[m].Re - w.Im*vo[m].Im;	/* Re(w*vo[m]) */
+			z.Im = w.Re*vo[m].Im + w.Im*vo[m].Re;	/* Im(w*vo[m]) */
+		}
+		v[  m  ].Re = ve[m].Re + z.Re;
+		v[  m  ].Im = ve[m].Im + z.Im;
+		v[m+n/2].Re = ve[m].Re - z.Re;
+		v[m+n/2].Im = ve[m].Im - z.Im;
+	}
 }
 
 
-void
-fft_top(complex* v, int N, complex* tmp)
+void fft_top(complex* v, int n, complex* tmp)
 {
-    int k,m;    complex z, w, *vo, *ve;
-    ve = tmp; vo = tmp+n/2;
-    for(k=0; k<n/2; k++) {
-      ve[k] = v[2*k];
-      vo[k] = v[2*k+1];
-    }
+	int k,m;    complex z, w, *vo, *ve;
+	ve = tmp; vo = tmp+n/2;
+	for(k=0; k<n/2; k++) {
+		ve[k] = v[2*k];
+		vo[k] = v[2*k+1];
+	}
 
-    // fft( ve, n/2, v );		/* FFT on even-indexed elements of v[] */
-    setXfftArgs(&fft_args, n/2, ve, tmp);
-    scheduleChannelJob(&tc, (void*) fft_thread, &fft_args);
+	// fft( ve, n/2, v );		/* FFT on even-indexed elements of v[] */
+	setXfftArgs(&fft_args, n/2, ve, tmp);
+	scheduleChannelJob(&tc, (void*) fft_thread, &fft_args);
 
-    // local execution..
-    fft( vo, n/2, v );		/* FFT on odd-indexed elements of v[] */
+	// local execution..
+	fft( vo, n/2, v );		/* FFT on odd-indexed elements of v[] */
 
 
-    void* vptr = MULL;
-    while(getChannelResponse(&tc, &vptr))
-    {
-    }
+	void* vptr = NULL;
+	while(getChannelResponse(&tc, &vptr))
+	{
+	}
 
-    // on sidekick
-    setXtwiddleArgs(&twiddle_args, 
+	// on sidekick
+	setXtwiddleArgs(&twiddle_args, 
 			0,
 			n,
 			0,
 			2,
 			v, vo, ve);
-    scheduleChannelJob(&tc, (void*) twiddle_factors_thread, &twiddle_args);
+	scheduleChannelJob(&tc, (void*) twiddle_factors_thread, &twiddle_args);
 
-    // locally.
-    twiddle_factors(0, 1,2,v,vo,ve, n);
+	// locally.
+	twiddle_factors(0, 1,2,v,vo,ve, n);
 
-    vptr = NULL;
-    while(getChannelResponse(&tc, &vptr))
-    {
-    }
+	vptr = NULL;
+	while(getChannelResponse(&tc, &vptr))
+	{
+	}
 
 }
 
@@ -96,7 +99,7 @@ fft_top(complex* v, int N, complex* tmp)
    [7]   Let w.im = -sin(2*PI*m/N)
    [8]   Let v[m] = ve[m] + w*vo[m]
    [9]   Let v[m+N/2] = ve[m] - w*vo[m]
-   */
+ */
 	void
 fft( complex *v, int n, complex *tmp )
 {
@@ -127,7 +130,7 @@ fft( complex *v, int n, complex *tmp )
    [7]   Let w.im = sin(2*PI*m/N)
    [8]   Let v[m] = ve[m] + w*vo[m]
    [9]   Let v[m+N/2] = ve[m] - w*vo[m]
-   */
+ */
 	void
 ifft( complex *v, int n, complex *tmp )
 {
@@ -146,42 +149,42 @@ ifft( complex *v, int n, complex *tmp )
 	return;
 }
 
-void
+	void
 ifft_top( complex *v, int n, complex *tmp )
 {
-    int k,m;    complex z, w, *vo, *ve;
-    ve = tmp; vo = tmp+n/2;
-    for(k=0; k<n/2; k++) {
-      ve[k] = v[2*k];
-      vo[k] = v[2*k+1];
-    }
+	int k,m;    complex z, w, *vo, *ve;
+	ve = tmp; vo = tmp+n/2;
+	for(k=0; k<n/2; k++) {
+		ve[k] = v[2*k];
+		vo[k] = v[2*k+1];
+	}
 
-    // ifft( ve, n/2, v );		/* FFT on even-indexed elements of v[] */
-    setXfftArgs(&fft_args, n/2, ve, tmp);
-    scheduleChannelJob(&tc, (void*) ifft_thread, &fft_args);
+	// ifft( ve, n/2, v );		/* FFT on even-indexed elements of v[] */
+	setXfftArgs(&fft_args, n/2, ve, tmp);
+	scheduleChannelJob(&tc, (void*) ifft_thread, &fft_args);
 
-    ifft( vo, n/2, v );		/* FFT on odd-indexed elements of v[] */
+	ifft( vo, n/2, v );		/* FFT on odd-indexed elements of v[] */
 
-    void* vptr = MULL;
-    while(getChannelResponse(&tc, &vptr))
-    {
-    }
+	void* vptr = NULL;
+	while(getChannelResponse(&tc, &vptr))
+	{
+	}
 
-    // on sidekick
-    setXtwiddleArgs(&twiddle_args, 
+	// on sidekick
+	setXtwiddleArgs(&twiddle_args, 
 			1,
 			n,
 			0,
 			2,
 			v, vo, ve);
-    scheduleChannelJob(&tc, (void*) twiddle_factors_thread, &twiddle_args);
-    twiddle_factors(1, 1,2,v,vo,ve,n);
+	scheduleChannelJob(&tc, (void*) twiddle_factors_thread, &twiddle_args);
+	twiddle_factors(1, 1,2,v,vo,ve,n);
 
 
-    vptr = NULL;
-    while(getChannelResponse(&tc, &vptr))
-    {
-    }
+	vptr = NULL;
+	while(getChannelResponse(&tc, &vptr))
+	{
+	}
 }
 
 
@@ -191,14 +194,13 @@ void setup()
 	__ajit_serial_set_baudrate__ (115200, 80000000);
 	__ajit_serial_set_uart_reset__ (0);
 
-	CORTOS_DEBUG("Init channel.\n");
+	cortos_printf("Init channel.\n");
 	// initialize scoreboard.
 	initChannel(&tc, 1);
 }
 
-int main_00(void)
+int main_00()
 {
-	complex v[N], v1[N], scratch[N];
 	int k;
 
 	/* Fill v[] with a function of known FFT: */
@@ -232,15 +234,15 @@ int main_00(void)
 	print_vector("iFFT", v1, N);
 
 	cortos_printf("Times: %f %f %f %f\n",
-			 (double) (t1 - t0),
-			 (double) (t3 - t2),
-			 (double) (t5 - t4),
-			 (double) (t7 - t6));
-			
+			(double) (t1 - t0),
+			(double) (t3 - t2),
+			(double) (t5 - t4),
+			(double) (t7 - t6));
+
 	exit(EXIT_SUCCESS);
 }
 
-int main_01 (void)
+int main_01 ()
 {
 	void (*__fn) (void*);
 	void *__arg;
