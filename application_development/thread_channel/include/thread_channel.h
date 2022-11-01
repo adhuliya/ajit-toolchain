@@ -8,6 +8,11 @@
 
 #define __THREAD_ID(c,t)      ((NTHREADS_PER_CORE*c) + t)
 
+#ifdef NO_CORTOS
+#define PRINTF ee_printf
+#else
+#define PRINTF cortos_printf
+#endif
 /*
 typedef enum {
 	FREE=1,
@@ -44,6 +49,8 @@ void initChannel   (ThreadChannel* tc, uint32_t id);
 uint32_t scheduleChannelJob (ThreadChannel* tc, void *fn_ptr, void* arg_ptr);
 // return 0 on success.
 uint32_t getChannelResponse (ThreadChannel* tc, void** arg_ptr);
+// return 0 on success.
+uint32_t setChannelResponse (ThreadChannel* tc, void* arg_ptr);
 // return 0 on success.
 uint32_t getChannelJob (ThreadChannel* tc, void** __fn, void** __arg);
 

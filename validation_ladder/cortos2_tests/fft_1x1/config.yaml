@@ -6,7 +6,7 @@ Hardware:
   Processor:
     # Required: Number of cores and threads per core.
     Cores: 1
-    ThreadsPerCore: 2
+    ThreadsPerCore: 1
     ISA: 32 # 32/64 bit (Default: 32)
 
   Memory:
@@ -68,37 +68,31 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: NONE
+    LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
-    EnableSerial: No # Yes/No (Default: Yes)
+    EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " -D USE_CORTOS -F lm  -D USE_VMAP -C ./ -I $AJIT_HOME/application_development/thread_channel/include -C $AJIT_HOME/application_development/thread_channel/src "
+    BuildArgs: -D CLK_FREQUENCY=80000000
 
-  StartupFuncName: setup
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
-        - main_00
+        - main
   # One can also specify an infinite loop on the function:
   #   CortosLoopCalls:
   #     - main1
       StackSize:
         SizeInKiloBytes: 8
-    - CortosInitCalls:
-        - main_01
-      StackSize:
-        SizeInKiloBytes: 8
 
-  #DynamicMemory: # Dynamic Memory Configuration.
+  DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    #SizeInKiloBytes: 1000
+    SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
-  #Locks: # Locks for synchronization between threads.
-      #Cacheable: 32
-
+  Locks: # Locks for synchronization between threads.
+      Cacheable: 32
 #     NonCacheable: 32
 #
 #   MessageQueues: # List of queues in the system.

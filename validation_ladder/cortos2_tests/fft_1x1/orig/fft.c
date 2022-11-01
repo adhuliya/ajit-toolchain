@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 
-#define q	3		/* for 2^10 points */
+#define q	10		/* for 2^10 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;

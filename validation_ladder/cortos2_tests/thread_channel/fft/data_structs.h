@@ -1,7 +1,7 @@
 #ifndef data_structs_h____
 #define data_structs_h____
 
-#define q	3		/* for 2^10 points */
+#define q	10		/* for 2^10 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;
@@ -9,6 +9,12 @@ typedef struct{real Re; real Im;} complex;
 
 #ifndef PI
 # define PI	3.14159265358979323846264338327950288
+#endif
+
+#ifdef USE_CORTOS
+#define PRINTF cortos_printf
+#else
+#define PRINTF ee_printf
 #endif
 
 

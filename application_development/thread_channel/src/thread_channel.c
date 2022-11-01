@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#ifndef NO_CORTOS
 #include <cortos.h>
+#endif
 #include "ajit_access_routines.h"
 #include "thread_channel.h"
 
@@ -26,7 +28,25 @@ uint32_t scheduleChannelJob (ThreadChannel* tc, void *fn_ptr, void* arg_ptr)
 		tc->fn_ptr = fn_ptr;
 		tc->arg_ptr = arg_ptr;
 		tc->status = CH_REQUESTED;
-		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->status);
+#ifndef NO_CORTOS
+		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->id, tc->status);
+#endif
+		ret_val = 0;
+	}
+	return(ret_val);
+}
+
+// return 0 on success.
+uint32_t setChannelResponse (ThreadChannel* tc, void* arg_ptr)
+{
+	uint32_t ret_val = 1;
+	if(tc->status == CH_IN_PROGRESS)
+	{
+		tc->arg_ptr = arg_ptr;
+		tc->status  = CH_COMPLETED;
+#ifndef NO_CORTOS
+		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->id, tc->status);
+#endif
 		ret_val = 0;
 	}
 	return(ret_val);
@@ -44,7 +64,9 @@ uint32_t getChannelResponse (ThreadChannel* tc, void** arg_ptr)
 		tc->arg_ptr = NULL;
 		tc->status = CH_FREE;
 
+#ifndef NO_CORTOS
 		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->id, tc->status);
+#endif
 		ret_val = 0;
 	}
 	return(ret_val);
@@ -59,7 +81,9 @@ uint32_t getChannelJob (ThreadChannel* tc, void** __fn, void** __arg)
 		*__fn = tc->fn_ptr;
 		*__arg = tc->arg_ptr;
 		tc->status = CH_IN_PROGRESS;
+#ifndef NO_CORTOS
 		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->id, tc->status);
+#endif
 		ret_val = 0;
 	}
 	return(ret_val);

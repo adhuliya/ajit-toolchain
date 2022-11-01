@@ -4,8 +4,10 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef USE_CORTOS
+#include <cortos.h>
+#endif
 #include <data_structs.h>
-
 void setXfftArgs (xfftArgs* args, int n, complex* v, complex* tmp)
 {
 	args->n = n;
@@ -51,9 +53,10 @@ print_vector(
 	     int n)
 {
   int i;
-  cortos_printf("%s (dim=%d):", title, n);
-  for(i=0; i<n; i++ ) printf(" %5.2f,%5.2f ", x[i].Re,x[i].Im);
-  cortos_printf("\n");
+  PRINTF("%s (dim=%d):", title, n);
+  for(i=0; i<n; i++ ) 
+	PRINTF(" %5.2f,%5.2f ", x[i].Re,x[i].Im);
+  PRINTF("\n");
   return;
 }
 
@@ -62,7 +65,11 @@ void fft_thread (void* vargs)
     int n = ((xfftArgs*)vargs)->n;
     complex* v = ((xfftArgs*)vargs)->v;
     complex* tmp = ((xfftArgs*)vargs)->tmp;
+	
+    CORTOS_DEBUG("calling fft(0x%x, %d, 0x%x.\n",
+			(uint32_t) v, n, (uint32_t) tmp);
     fft(v,n,tmp);
+
 }
 
 void ifft_thread (void* vargs)
@@ -70,6 +77,8 @@ void ifft_thread (void* vargs)
     int n = ((xfftArgs*)vargs)->n;
     complex* v = ((xfftArgs*)vargs)->v;
     complex* tmp = ((xfftArgs*)vargs)->tmp;
+    CORTOS_DEBUG("calling ifft(0x%x, %d, 0x%x.\n",
+			(uint32_t) v, n, (uint32_t) tmp);
     ifft(v,n,tmp);
 }
 

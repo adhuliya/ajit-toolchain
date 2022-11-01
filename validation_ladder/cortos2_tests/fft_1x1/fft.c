@@ -4,18 +4,26 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <ajit_access_routines.h>
+#include <cortos.h>
 
 
-#define q	3		/* for 2^10 points */
+#define q	10		/* for 2^10 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;
 typedef struct{real Re; real Im;} complex;
 
+  
+complex v[N], v1[N], scratch[N];
+
 #ifndef PI
 # define PI	3.14159265358979323846264338327950288
 #endif
 
+
+#define __getTime(t) uint64_t  t = __ajit_get_clock_time();
 
 /* Print a vector of complexes as ordered pairs. */
 static void
@@ -25,9 +33,9 @@ print_vector(
 	     int n)
 {
   int i;
-  printf("%s (dim=%d):", title, n);
-  for(i=0; i<n; i++ ) printf(" %5.2f,%5.2f ", x[i].Re,x[i].Im);
-  putchar('\n');
+  cortos_printf("%s (dim=%d):", title, n);
+  for(i=0; i<n; i++ ) cortos_printf(" %5.2f,%5.2f ", x[i].Re,x[i].Im);
+  cortos_printf("\n");
   return;
 }
 
@@ -114,7 +122,6 @@ ifft( complex *v, int n, complex *tmp )
 int
 main(void)
 {
-  complex v[N], v1[N], scratch[N];
   int k;
 
   /* Fill v[] with a function of known FFT: */
@@ -127,17 +134,31 @@ main(void)
     
   /* FFT, iFFT of v[]: */
   print_vector("Orig", v, N);
+  __getTime (t0);
   fft( v, N, scratch );
+  __getTime (t1);
   print_vector(" FFT", v, N);
+  __getTime (t2);
   ifft( v, N, scratch );
+  __getTime (t3);
   print_vector("iFFT", v, N);
 
   /* FFT, iFFT of v1[]: */
   print_vector("Orig", v1, N);
+  __getTime (t4);
   fft( v1, N, scratch );
+  __getTime (t5);
   print_vector(" FFT", v1, N);
+  __getTime (t6);
   ifft( v1, N, scratch );
+  __getTime (t7);
   print_vector("iFFT", v1, N);
 
-  exit(EXIT_SUCCESS);
+  cortos_printf("Times: %f %f %f %f\n",
+			((double) (t1 - t0))/CLK_FREQUENCY,
+			((double) (t3 - t2))/CLK_FREQUENCY,
+			((double) (t5 - t4))/CLK_FREQUENCY,
+			((double) (t7 - t6))/CLK_FREQUENCY);
+
+  return(0);
 }
