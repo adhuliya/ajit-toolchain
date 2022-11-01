@@ -9,6 +9,7 @@
 #include "thread_channel.h"
 int main ( );
 double cpu_time ( );
+extern void adaxpy(int n, double da, double dx[], int incx, double dy[], int incy );
 void daxpy ( int n, double da, double dx[], int incx, double dy[], int incy );
 double ddot ( int n, double dx[], int incx, double dy[], int incy );
 int dgefa ( double a[], int lda, int n, int ipvt[] );
@@ -17,19 +18,19 @@ void dscal ( int n, double sa, double x[], int incx );
 int idamax ( int n, double dx[], int incx );
 double r8_random ( int iseed[4] );
 double *r8mat_gen ( int lda, int n );
-void row_elim(int s,int k, int l,int n,int lda, double a[]);
+void row_elim(int s,int f,int k, int l,int n,int lda, double a[]);
 //void timestamp ( );
 ThreadChannel tc;
-
+int start1 =1;
 typedef struct argstruct__ {
         int s;
+	int f;
 	int k;
         int l;
 	int n;
 	int lda;
 	double* a;
 } argstruct;
-
 
 /******************************************************************************/
 
@@ -55,8 +56,8 @@ int main ( )
 */
 {
 initChannel(&tc, 1);
-# define N 20
-# define LDA ( N)
+# define N 55
+# define LDA (N)
   double *a;
   double a_max;
   double *b;
@@ -121,6 +122,7 @@ initChannel(&tc, 1);
       b[i] = b[i] + a[i+j*LDA] * x[j];
     }
   }
+ 
   t1 = cpu_time ( );
   info = dgefa ( a, LDA, N, ipvt );
   t2 = cpu_time ( );
@@ -137,7 +139,7 @@ cortos_printf ( " matrix is non-singular \n");
   time[0] = t2 - t1;
 
   t1 = cpu_time ( );
-
+start1=0;
   job = 0;
   dgesl ( a, LDA, N, ipvt, b, job );
 
@@ -146,6 +148,12 @@ cortos_printf ( " matrix is non-singular \n");
 
   total = time[0] + time[1];
 
+  /*for (i=0;i<=N;i++)
+  {
+	  cortos_printf("value of X Is X[%d] = %lf\n",i,b[i] );
+  }
+  cortos_printf("time[0] = %lf, time[1] = %lf, total = %lf\n", time[0],time[1],total);
+*/
   brel ( a );
 /*
   Compute a residual to verify results.
@@ -520,7 +528,7 @@ void callfn(void* varg)
 {
 	CORTOS_DEBUG("entering callfn\n");
         argstruct* arg = (argstruct*) varg;
-        row_elim (arg->s,arg->k, arg->l,arg->n, arg->lda,arg->a);
+        row_elim (arg->s,arg->f,arg->k, arg->l,arg->n, arg->lda,arg->a);
 	CORTOS_DEBUG("exiting callfn\n");
 }
 
@@ -582,11 +590,13 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
   int k;
   int l;
   double t;
-
+  double t10,t11,tot=0;
 /*
   Gaussian elimination with partial pivoting.
 */
   info = 0;
+
+  //find one pivot index then next while waiting for response in channel
 
   for ( k = 1; k <= n-1; k++ )
   {
@@ -617,32 +627,31 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
 */
     t = -1.0 / a[k-1+(k-1)*lda];
     dscal ( n-k, t, a+k+(k-1)*lda, 1 );
-
-/*
- *
- * */
- 	int p;
+ 	int p=k+1;
         argstruct sarg;
 	sarg.s = p;
+	//sarg.f = n+1;
+	sarg.f = ((p+n)>>1);
         sarg.k = k;
 	sarg.l =l;
-	sarg.n=((p+n)>>1);
+	sarg.n=n;
 	sarg.lda=lda;
 	sarg.a=a;
 	scheduleChannelJob(&tc, (void*) &callfn, (void*) &sarg);
         argstruct* rarg;
+	//int q = p+1;
 	int q = ((p+n)>>1);
-        row_elim (q,k,l,n+1,lda,a);
-
-        while(getChannelResponse(&tc, (void**) &rarg))
+        row_elim (q,n+1,k,l,n,lda,a);
+	
+	
+      while(getChannelResponse(&tc, (void**) &rarg))
         {
         }
-        tc.status = CH_FREE;
+        tc.status = CH_FREE;  
 
-/*
-  Row elimination with column indexing.
+  //Row elimination with column indexing.
 
-    for ( j = k+1; j <= n; j++ )
+    /*for ( j = k+1; j <= n; j++ )
     {
       t = a[l-1+(j-1)*lda];
       if ( l != k )
@@ -650,11 +659,9 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
         a[l-1+(j-1)*lda] = a[k-1+(j-1)*lda];
         a[k-1+(j-1)*lda] = t;
       }
-      daxpy ( n-k, t,a+k+(k-1)*lda,1, a+k+(j-1)*lda, 1 );
+	adaxpy ( n-k, t,a+k+(k-1)*lda,1, a+k+(j-1)*lda, 1 );
     }*/
-
   }
-
   ipvt[n-1] = n;
 
   if ( a[n-1+(n-1)*lda] == 0.0 )
@@ -665,21 +672,26 @@ int dgefa ( double a[], int lda, int n, int ipvt[] )
 }
 
 
-void row_elim(int s,int k, int l,int n,int lda, double a[])
+void row_elim(int s,int f,int k, int l,int n,int lda, double a[])
 {
     
-    CORTOS_DEBUG("entering row_elim\n");		
+    CORTOS_DEBUG("entering row_elim\n");	
+
     int j;
     double t;
-    for ( j = s; j < n; j++ )
+    
+    for ( j = s; j < f; j++ )
     {
+
        t = a[l-1+(j-1)*lda];
       if ( l != k )
       {
         a[l-1+(j-1)*lda] = a[k-1+(j-1)*lda];
         a[k-1+(j-1)*lda] = t;
       }
-      daxpy ( n-k, t,a+k+(k-1)*lda,1, a+k+(j-1)*lda, 1 );
+    
+      adaxpy ( n-k, t,a+k+(k-1)*lda,1, a+k+(j-1)*lda, 1 );
+     
     }
     CORTOS_DEBUG("exiting row_elim\n");
 
@@ -689,19 +701,18 @@ void row_elim(int s,int k, int l,int n,int lda, double a[])
 
 void main_01 ()
 {
+	
         while(1)
-        {
+        {	
         void (*__fn) (void*);
 
         void *__arg;
         while(getChannelJob(&tc, (void**) &__fn, (void**) &__arg))
         {
         }
-      //  cortos_printf("started jobi \n");
         (*__fn)(__arg);
         tc.status = CH_COMPLETED;
-//	cortos_printf("started jobi \n");
-        }
+	}
 }
 /******************************************************************************/
 
@@ -781,7 +792,7 @@ void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
         b[k-1] = t;
       }
 
-      daxpy ( n-k, t,a+k+(k-1)*lda,1, b+k,1 );
+      adaxpy ( n-k, t,a+k+(k-1)*lda,1, b+k,1 );
 
     }
 
@@ -789,7 +800,7 @@ void dgesl ( double a[], int lda, int n, int ipvt[], double b[], int job )
     {
       b[k-1] = b[k-1] / a[k-1+(k-1)*lda];
       t = -b[k-1];
-     daxpy ( k-1, t, a+0+(k-1)*lda,1, b,1 );
+     adaxpy ( k-1, t, a+0+(k-1)*lda,1, b,1 );
     }
   }
 /*
@@ -1115,6 +1126,14 @@ double *r8mat_gen ( int lda, int n )
       a[i-1+(j-1)*lda] = r8_random ( init ) - 0.5;
     }
   }
+ /*for ( j = 0; j < n; j++ )
+  {
+    for ( i = 0; i < n; i++ )
+    {
+      cortos_printf("Matrix A[%d][%d] = %lf\n",i,j,a[i+(j*n)]);
+    }
+  }*/
+
 
   return a;
 }
