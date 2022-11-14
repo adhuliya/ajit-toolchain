@@ -74,9 +74,12 @@ Software:
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: No # Yes/No (Default: Yes)
-    Debug: No # Yes/No (Default: No)
+    Debug: Yes # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " -D CLK_FREQUENCY=80000000 -D USE_VMAP"
+    BuildArgs:  -D CLK_FREQUENCY=80000000 -D USE_VMAP  -D EE_PRINTF_AVAILABLE
+                -I $AJIT_HOME/application_development/ajit_context/include 
+                -C $AJIT_HOME/application_development/ajit_context/src
+                -s $AJIT_HOME/application_development/ajit_context/asm/ajit_context_asm.s
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

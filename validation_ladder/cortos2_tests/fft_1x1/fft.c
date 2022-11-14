@@ -155,10 +155,10 @@ main(void)
   print_vector("iFFT", v1, N);
 
   cortos_printf("Times: %f %f %f %f\n",
-			((double) (t1 - t0))/CLK_FREQUENCY,
-			((double) (t3 - t2))/CLK_FREQUENCY,
-			((double) (t5 - t4))/CLK_FREQUENCY,
-			((double) (t7 - t6))/CLK_FREQUENCY);
+			((double) (t1 - t0)),
+			((double) (t3 - t2)),
+			((double) (t5 - t4)),
+			((double) (t7 - t6)));
 
   return(0);
 }
