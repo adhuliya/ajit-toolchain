@@ -1,0 +1,27 @@
+/*========================================================*/
+/*                                                        */
+/* Linker script for Ajit Sparc      	                  */
+/*                                                        */
+/*========================================================*/
+
+ENTRY(_start)
+__DYNAMIC = 0;
+SECTIONS
+{
+  . = 0x40000000;
+  .text ALIGN(8) : {
+    KEEP(*(.text.ajitstart))  /* NOTE: in file `init_00.s` */
+    *(.text)
+    *(.text.*)
+    KEEP(*(.text.pagetablesetup)) /* NOTE: not needed */
+    KEEP(*(.text.traphandlers))  /* NOTE: in file `trap_handlers.s` */
+    KEEP(*(.text.traptablebase))  /* NOTE: in file `trap_handlers.s` */
+  }
+
+  . = 0x40010000;
+  .rodata ALIGN(8) : { * (.rodata) * (.rodata.*) }
+  .data   ALIGN(8) : { * (.data) * (.data.*)}
+
+  . = 0x40011000;
+  .bss   ALIGN(8) : { * (.bss) }
+}
