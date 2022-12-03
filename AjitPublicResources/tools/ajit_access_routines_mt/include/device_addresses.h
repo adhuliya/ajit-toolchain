@@ -53,7 +53,7 @@
 // Note: the next two are byte accesses..
 #define ADDR_SERIAL_TX_REGISTER      			0xFFFF3204 // AJIT default-serial-device transmit register (byte).
 #define ADDR_SERIAL_RX_REGISTER      			0xFFFF3208 // AJIT default-serial-device receive register (byte).
-#define ADDR_SERIAL_BAUD_CONTROL_REGISTER		0xFFFF320c // AJIT default-serial-device control register
+#define ADDR_SERIAL_BAUD_CONTROL_REGISTER		0xFFFF320c // AJIT baud control register (UNUSED)
 #define ADDR_SERIAL_BAUD_LIMIT_REGISTER			0xFFFF320c //  baud-limit
 #define ADDR_SERIAL_BAUD_FREQUENCY_REGISTER		0xFFFF3210 //  baud-control
 #define ADDR_SERIAL_MAX 				0xFFFF3213 // Max serial address.

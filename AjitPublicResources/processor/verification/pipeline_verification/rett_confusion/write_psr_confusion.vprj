@@ -1,0 +1,8 @@
+SOURCES = write_psr_confusion.s
+
+
+
+RESULTS = 
+g1=0xE0
+g2=0x10E0
+g3=0x80
