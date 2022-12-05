@@ -1,0 +1,10 @@
+A bare metal test of the timer interrupt.
+
+The program sets up the timer and responds to the
+interrupt. 
+
+The compile script in the SMALLMEM directory use two constants (using -D)
+   TIMERCOUNT
+	(keep this 100 for the C model, and 100000 for the FPGA run).
+   TIMERSAMPLES
+	(keep this 10 for the C model, and 1024 for the FPGA run).

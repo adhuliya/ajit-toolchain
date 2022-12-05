@@ -1,0 +1,6 @@
+A test program for the serial device including rx, tx and interrupt.
+
+Once started, it saves all keystrokes in a buffer and once the
+character 'q' is seen, the buffer is dumped and the program
+exits.
+

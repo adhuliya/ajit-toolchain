@@ -1,0 +1,7 @@
+bare_metal
+	contains three examples which directly
+	program the bare metal.
+
+cortos2
+	the same three programs using CORTOS2,
+	much less to worry about.
