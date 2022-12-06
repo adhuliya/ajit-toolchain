@@ -53,7 +53,7 @@ uint8_t ajit_spi_flash_receive_byte(uint8_t dev_id, uint8_t deselect_after_send)
 #ifdef USE_VMAP
 	*((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW) = 0;
 #else
-	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_DATA_REGISTER_LOW, 0);}
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_DATA_REGISTER_LOW, 0);
 #endif
 
 	uint32_t cmd = 1 | ((deselect_after_send & 0x1) << 1) | ((dev_id & 0x7) << 3);
@@ -61,7 +61,7 @@ uint8_t ajit_spi_flash_receive_byte(uint8_t dev_id, uint8_t deselect_after_send)
 #ifdef USE_VMAP
 	*((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER) = cmd;
 #else
-	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_COMMAND_STATUS_REGISTER, cmd);}
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_COMMAND_STATUS_REGISTER, cmd);
 #endif
 
 	while(1)
@@ -70,7 +70,7 @@ uint8_t ajit_spi_flash_receive_byte(uint8_t dev_id, uint8_t deselect_after_send)
 #ifdef USE_VMAP
 		status =  *((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER);
 #else
-		__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_COMMAND_STATUS_REGISTER, status);}
+		__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_COMMAND_STATUS_REGISTER, status);
 #endif
 		if(!(status & 0x1))
 			break;
@@ -83,7 +83,7 @@ uint8_t ajit_spi_flash_receive_byte(uint8_t dev_id, uint8_t deselect_after_send)
 #ifdef USE_VMAP
 	recv_byte = *((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW);
 #else
-	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SPI_DATA_REGISTER_LOW, recv_byte);}
+	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_SPI_DATA_REGISTER_LOW, recv_byte);
 #endif
 	return(recv_byte);
 }
@@ -104,7 +104,7 @@ void ajit_spi_set_clock_frequency (uint8_t clk_divide_count)
 #ifdef USE_VMAP
 	*((uint32_t*) ADDR_SPI_CONFIG_REGISTER) = w;
 #else
-	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_CONFIG_REGISTER, w);}
+	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_SPI_CONFIG_REGISTER, w);
 #endif
 }
 

@@ -6,7 +6,7 @@ __ajit_getcontext__:
 	!
 	! This function was called from window T, move to window T-1.
         !	
-	save 
+	save %sp, -256, %sp
 
 	!
 	! Register %i0 is assumed to hold the pointer to the 
@@ -105,7 +105,7 @@ __ajit_setcontext__:
 	!
 	! This function was called from window T, move to window T-1.
         !	
-	save 
+	save %sp, -256, %sp
 
 	! i0 could get clobbered..
 	! we keep it in g1, and g7

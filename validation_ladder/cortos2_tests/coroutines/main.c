@@ -82,29 +82,25 @@ int main ()
    	__ajit_context_init__(cp_0);
    	__ajit_context_init__(cp_1);
 
-	cp_0_ctrl.status = WAITING_FOR_INIT;
-	cp_0_ctrl.context = cp_0;
-
-	cp_1_ctrl.status = WAITING_FOR_INIT;
-	cp_1_ctrl.context = cp_1;
-
-
 	cortos_printf("initialized two contexts\n");
 
 	// 
 	// make context..
 	//
 	cortos_printf("making context cp_0\n");
-   	__ajit_makecontext__ (cp_0, &coroutine_0, cp_0);
+	__ajit_getcontext__(cp_0);
 	__ajit_context_set_stack__(cp_0, ((uint8_t*) &stack_0), 4*1024);
 	cortos_printf("Setting stack of cp_0 to 0x%x\n", ((uint32_t) &stack_0));
-	// __ajit_print_mcontext__(cp_0);
+	__ajit_makecontext__(cp_0, (void*) &coroutine_0, NULL);
+
+	//__ajit_print_mcontext__(cp_0);
 
 	cortos_printf("making context cp_1\n");
-   	__ajit_makecontext__ (cp_1, &coroutine_1, cp_1);
+	__ajit_getcontext__(cp_1);
 	__ajit_context_set_stack__(cp_1, ((uint8_t*) &stack_1), 4*1024);
+	__ajit_makecontext__(cp_1, (void*) &coroutine_1, NULL);
 	cortos_printf("Setting stack of cp_1 to 0x%x\n", ((uint32_t) &stack_1));
-	// __ajit_print_mcontext__(cp_1);
+	//__ajit_print_mcontext__(cp_1);
 
 	__ajit_setcontext__(cp_0);
 	cortos_printf("echo %s\nDone.\n", buffer);

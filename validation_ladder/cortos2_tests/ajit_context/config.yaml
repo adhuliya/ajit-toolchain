@@ -75,6 +75,8 @@ Software:
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs: " -c ../main.c -s $AJIT_HOME/application_development/ajit_context/asm/ajit_context_asm.s 
+                   -I $AJIT_PROJECT_HOME/tools/ajit_access_routines_mt/include 
+                   -C $AJIT_PROJECT_HOME/tools/ajit_access_routines_mt/src 
                    -I $AJIT_HOME/application_development/ajit_context/include 
 		   -c $AJIT_HOME/application_development/ajit_context/src/ajit_context.c 
 		    -D EE_PRINTF_AVAILABLE "

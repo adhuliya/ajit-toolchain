@@ -26,7 +26,7 @@ This raedme explains the steps to setup docker with ajit-toolchain.
 
 	# STEP 3: attach a shell to the docker container and setup the toolchain. 
 	./attach_shell.sh;
-	source ./set_sjit_home
+	source ./set_ajit_home
 	./setup.sh
 
 	You can now use the complete ajit system from this shell. 

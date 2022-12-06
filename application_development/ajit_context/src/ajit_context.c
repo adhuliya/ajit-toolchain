@@ -15,6 +15,9 @@ void __ajit_context_set_stack__(ajit_context_t* ctxt, uint32_t stack_base_addr, 
 {
 	uint32_t window_id = (ctxt->mctxt.psr & 0x7);
 
+	CORTOS_DEBUG("In __ajit_context_set_stack__ window_id=%d, stack_base=0x%x.\n",
+				window_id, stack_base_addr);
+
 	// stack pointer is o6 in current window.
 	uint32_t sp_index = (window_id * 16) + 14;
 	ctxt->mctxt.r[sp_index] = (stack_base_addr + stack_size - 256);

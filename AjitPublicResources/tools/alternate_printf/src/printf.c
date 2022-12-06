@@ -51,6 +51,7 @@ extern "C" {
 #include <stdint.h>
 
 #include <printf.h>
+#include <ajit_access_routines.h>
 
 # define mp_printf    printf_
 # define mp_sprintf   sprintf_
@@ -344,7 +345,7 @@ static inline void append_termination_with_gadget(output_gadget_t* gadget)
 static inline void putchar_wrapper(char c, void* unused)
 {
   (void) unused;
-  putchar_(c);
+  __ajit_serial_putchar__(c);
 }
 
 static inline output_gadget_t discarding_gadget()
@@ -422,7 +423,8 @@ static void out_rev_(output_gadget_t* output, const char* buf, printf_size_t len
 
   // pad spaces up to given width
   if (!(flags & FLAGS_LEFT) && !(flags & FLAGS_ZEROPAD)) {
-    for (printf_size_t i = len; i < width; i++) {
+    printf_size_t i;
+    for (i = len; i < width; i++) {
       putchar_via_gadget(output, ' ');
     }
   }

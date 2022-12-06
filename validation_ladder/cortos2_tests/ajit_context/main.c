@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <cortos.h>
+#include <ajit_access_routines.h>
 #include <ajit_context.h>
 
 void func_0(void*);
@@ -22,7 +23,7 @@ int main(void) {
    __ajit_context_init__(cp_0);
    __ajit_context_init__(cp_1);
 
-    //__cortos_enable_serial();
+   __cortos_enable_serial();
 
    cortos_printf("starting\n");
    __ajit_makecontext__ (cp_0, &func_0, &x);
@@ -99,6 +100,10 @@ void foo()
 
 
 void func_0(void* px) {
+	uint32_t sp;
+	 __AJIT_GET_IU_REGISTER(14,sp);
+	cortos_printf("func_0 sp=0x%x.\n", sp);
+
 	*((int*) px) += 1;
 	cortos_printf("in func_0, set x = %d.\n", *((int*) px) );
 	int v = *((int*) px);
