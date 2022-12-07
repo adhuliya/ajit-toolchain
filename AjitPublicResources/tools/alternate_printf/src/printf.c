@@ -345,7 +345,23 @@ static inline void append_termination_with_gadget(output_gadget_t* gadget)
 static inline void putchar_wrapper(char c, void* unused)
 {
   (void) unused;
-  __ajit_serial_putchar__(c);
+  while(1)
+  {
+      int success = __ajit_serial_putchar__(c);
+      if(success)
+	break;
+  }
+
+  //
+  // check that tx-full is back to 0.
+  //
+  while (1)
+  {
+	  uint32_t ctrl_reg = 0;
+	  ctrl_reg = __ajit_read_serial_control_register__();
+	  if(!(ctrl_reg & TX_FULL) || !(ctrl_reg & TX_ENABLE))
+		  break;
+  }
 }
 
 static inline output_gadget_t discarding_gadget()
