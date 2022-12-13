@@ -54,15 +54,16 @@ fi
   sleep 1;
 
   mkdir -p $AJIT_HOME/build;
+  docker load -i $AJIT_HOME/docker/ajit_base.tar;
 
-  echo -e "\n\n\n\n\n";
-  echo "################################################";
-  echo "##  Building ajit_base image.";
-  echo "################################################";
-  sleep 1;
-  pushd $AJIT_HOME/docker/ajit_base;
-  ./build.sh;
-  popd;
+##  echo -e "\n\n\n\n\n";
+##  echo "################################################";
+##  echo "##  Building ajit_base image.";
+##  echo "################################################";
+##  sleep 1;
+##  pushd $AJIT_HOME/docker/ajit_base;
+##  ./build.sh;
+##  popd;
 
 
   echo -e "\n\n\n\n\n";
@@ -72,6 +73,7 @@ fi
   sleep 1;
   pushd $AJIT_HOME/docker/ajit_build_dev;
   ./build.sh;
+  ./run.sh;
   popd;
 
 
