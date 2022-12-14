@@ -25,7 +25,7 @@ void setDebugInterpreterNcoresNthreadsPerCore(int n, int t)
 	else
 		fprintf(stderr,"Error: number of cores can be at most %d.\n", MAX_NCORES);
 
-	if(n <= MAX_NTHREADS_PER_CORE)
+	if(t <= MAX_NTHREADS_PER_CORE)
 		ajit_debug_interpreter_mt_nthreads_per_core = t;
 	else
 		fprintf(stderr,"Error: number of threads-per-core can be at most %d.\n", 

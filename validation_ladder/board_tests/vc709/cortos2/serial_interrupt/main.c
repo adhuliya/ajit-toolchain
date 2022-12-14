@@ -5,10 +5,6 @@
 #include <ajit_mt_irc.h>
 #include <core_portme.h>
 
-#define TIMERCOUNT 10000000
-#define COUNT TIMERCOUNT
-#define TIMERINITVAL ((COUNT << 1) | 1)
-
 volatile int volatile serial_interrupt_counter = 0;
 volatile int volatile exit_flag  = 0;
 
