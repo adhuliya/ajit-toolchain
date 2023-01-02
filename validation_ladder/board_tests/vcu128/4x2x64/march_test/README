@@ -1,0 +1,11 @@
+8 threads.
+
+All threads write to parts of a global array.
+Thread T writes to elements T, T+8, T+16, ...
+
+After all threads have completed their writes,
+Each threads reads back all elements of the
+global array and confirms the observed values.
+
+This checks out the snoop invalidate mechanism
+and also the invalidation sequencing (sort of).
