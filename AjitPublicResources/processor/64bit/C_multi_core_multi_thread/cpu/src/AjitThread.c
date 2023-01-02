@@ -727,6 +727,13 @@ void generateLogMessage( ThreadState *s)
 	if(global_verbose_flag)
 	{
 		fprintf(stderr,"Info:psr_update: pc=0x%x psr=0x%x\n", f->pc, r->psr);
+		if(f->gpr_updated)
+		{
+			fprintf(stderr,"Info: iu-reg updated: pc=0x%x, psr=0x%x, "
+					"reg-id=0x%x, double=%d, reg-vals 0x%x 0x%x\n",
+					f->pc, r->psr, f->reg_id, f->double_word_write, 
+					f->reg_val_high, f->reg_val_low);
+		}
 	}
 
 	//if(f->pc) pc_log = f->pc; //pc was updated inside an instruction

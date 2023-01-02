@@ -1,41 +1,39 @@
 .section .text.traphandlers
+
 .align 8
 ! at entry, %o0 contains the pointer to the context data structure.
 .global __ajit_getcontext__
 __ajit_getcontext__:
+	! Register %o0 is assumed to hold the pointer to the 
+	! context data structure.
 	!
-	! This function was called from window T, move to window T-1.
-        !	
-	save %sp, -256, %sp
-
-	!
-	! Register %i0 is assumed to hold the pointer to the 
-	! thread data structure.
-	!
-	rd %psr, %l6
-	st %l6, [%i0 + 32]
-
-	rd %wim, %l6
-	st %l6, [%i0+ 36]
-
-	rd %tbr, %l6
-	st %l6, [%i0 + 40]
-	
-	rd %y,  %l6
-	st %l6, [%i0+ 44]
-
-	st %fsr, [%i0 + 48]
 
         ! store the globals..
-	std %g0, [%i0 + 64]
-	std %g2, [%i0 + 72]
-	std %g4, [%i0 + 80]
-	std %g6, [%i0 + 88]
+	std %g0, [%o0 + 64]
+	std %g2, [%o0 + 72]
+	std %g4, [%o0 + 80]
+	std %g6, [%o0 + 88]
+
+	rd %psr, %g7
+	st %g7, [%o0 + 32]
+
+	rd %wim, %g7
+	st %g7, [%o0+ 36]
+
+	rd %tbr, %g7
+	st %g7, [%o0 + 40]
+	
+	rd %y,  %g7
+	st %g7, [%o0+ 44]
+
+	st %fsr, [%o0 + 48]
+
 
 
 	! use globals for temp work from now on.
-	mov %i0, %g7
-	add %i0, 96, %g1
+	mov %o0, %g7
+	add %o0, 96, %g1
+
 
 	! set window to 0.
 	rd %psr, %g3
@@ -46,6 +44,7 @@ __ajit_getcontext__:
 	! clear the wim
 	mov %g0, %wim
 
+	! Save all windows into the context data structure.
 	mov 8, %g4
 save_window:
 	std %o0, [%g1]
@@ -62,7 +61,7 @@ save_window:
 	bnz save_window
 	nop
 
-	! store FP regs into R state.
+	! store FP regs into the context data structure.
 save_fp:
 	std %f0, [%g1]
 	std %f2, [%g1 + 8]
@@ -81,7 +80,7 @@ save_fp:
 	std %f28, [%g1 + 112]
 	std %f30, [%g1 + 120]
 
-	! get back the psr
+	! get back the psr.. points to window T
 	ld [%g7 + 32], %g2
 	mov %g2, %psr
 	
@@ -95,31 +94,44 @@ save_fp:
 	ldd [%g7 + 80], %g4
 	ldd [%g7 + 88], %g6
 
+
 	! Thats it...
-	ret
-	restore
+	retl
 	nop
 
+
+!
+! %o0 contains the address to the context data structure.
+! %o7 contains the return pointer.
+!
+!  This function is passed a context data structure pointer
+!  in register %o0.   The entire machine state is read from
+!  this into the registers, and the thing runs...
+!
 .global __ajit_setcontext__
 __ajit_setcontext__:
-	!
-	! This function was called from window T, move to window T-1.
-        !	
-	save %sp, -256, %sp
 
-	! i0 could get clobbered..
-	! we keep it in g1, and g7
-	mov %i0, %g1
-	mov %i0, %g7
+	! Use globals...
+	mov %o0, %g1
+	mov %o0, %g7
 
 	!
-	! Register %i0 is assumed to hold the pointer to the 
-	! thread data structure.
+	! if the function to be called is NULL,
+	! and if the link context is NULL, then
+	! return -1.
+	!
+
+	!
+	! Register %o0 holds the pointer to the 
+	! context data structure, but it has been saved into 
+	! g1 and g7.
+	!
+
 	!
 	! get the psr and other status registers
 	!
 	ld [%g1 + 32], %g2
-	mov %g2, %psr
+	mov %g2, %psr  ! this will change o0 but we are using globals.
 	ld [%g1+ 36], %g2
 	mov %g2, %wim
 	ld [%g1+ 40], %g2
@@ -132,15 +144,17 @@ __ajit_setcontext__:
 	add %g1, 96, %g1
 
 	! get the window registers.
-	mov %psr, %g2
-        set 0xffffffe0, %g3
-	and %g2, %g3, %g3
-	mov %g3, %psr
+        ! set the window pointer in the
+	! psr to 0.
+	mov  %psr, %g2
+        andn %g2, 0x7, %g2
+	mov  %g2, %psr
 
 	! clear the wim
 	mov %g0, %wim
 
-	mov 8, %g4
+	mov 8, %g2
+
 restore_window:
 	ldd [%g1], %o0
 	ldd [%g1 + 8], %o2
@@ -152,7 +166,7 @@ restore_window:
 	ldd [%g1 + 56], %l6
 	add %g1, 64, %g1
 	restore 
-	subcc %g4, 1, %g4
+	subcc %g2, 1, %g2
 	bnz restore_window
 	nop
 
@@ -183,158 +197,98 @@ restore_fp:
 	ld [%g7 + 36], %g2
 	mov %g2, %wim
 
-	! now get back the globals..
+
+	! store g7 in l3..
+	mov %g7, %l4
+
+	! get back the globals..
 	ldd [%g7+ 64], %g0
 	ldd [%g7+ 72], %g2
 	ldd [%g7+ 80], %g4
-	ldd [%g7+ 88], %g6
+	ldd [%g7+ 88], %g6 
 
-	! now call func if pointer
-	! is available.
-	ld [%i0],  %o4
-	subcc %o4, 0, %o4
-	bz switch_to_link_context
+all_regs_restored:
+
+	! l4 is the context pointer
+	ld [%l4], %l5        ! function to be called.
+	ld [%l4 + 4], %o0    ! argument for function.
+	
+
+	! will call func if function pointer
+	! is not null.
+	subcc %l5, 0, %l5
+
+	! switch to link context...
+	bz,a  switch_to_link_context
 	nop
 
-	ld [%i0 + 4], %o0
-	call %o4
+
+	!
+	! call the link function...
+	!
+	call %l5
 	nop
+
+
+
 
 switch_to_link_context:
-	ld [%i0 + 8], %o4
-	subcc %o4, 0, %o4
-	bz switch_to_return
+
+	ld [%l4 + 8], %o0   ! link context.
+
+	! link context is in l6
+	subcc %o0, 0, %o0
+
+	bz  skip_to_return
 	nop
 
-	mov %o4, %o0
+
+	! setcontext to o0
 	call __ajit_setcontext__
 	nop
 
-switch_to_return:
-	ret
-	restore
-	nop	
 
-! o0 contains context pointer
-! o1 contains the function which needs
-!    to be called.
-! o2 contains the argument...
-!
-! Start in window T
-.global __ajit_makecontext__
-__ajit_makecontext__:
-	!
-        ! Need to save the return pointer somewhere.
-	!
-	st %o7, [%o0 + 56]
-
-	! store the func and arg
-	st %o1, [%o0]
-	st %o2, [%o0 + 4]
-
-	! ajit_getcontext will save window T-1
-        call __ajit_getcontext__
-	nop
-
-	! get back the return pointer
-	ld [%o0 + 56], %o7
-
-	! back in window T
-
-	!
-	! now we need to update register
-	! i7 from window T-1 in the context data structure.
-	! (ie o7 from window T)
-	!
-
-	!
-	! o0 contains the context pointer, in window T
-	! o7 contains the return pointer,  in window T
-	 
-patch_return_location: 
-	save 
-
-	! now in T-1 
-	! i0 contains the context pointer.  
-	! i7 contains the return pointer.  
-	! calculate the offset for window 
-	! T in the context data structure.    
-	mov %psr, %l3 
-	and 0x7, %l3, %l3 
-	add %l3, 0x1, %l3 
-	and 0x7, %l3, %l3
-
-	! l3 contains the window pointer T
-
-	! offset for register window T in
-	! context data structure.
-	umul %l3, 64,  %l3
-	add  %l3, 96,  %l3
-	add  %l3, %i0, %l3
-
-	! update o7 in window T in
-	! context data structure.
-	st %i7, [%l3 + 28]
-	restore
-
-	! back in T, with patched 
-	! return location.
-
-return_from_makecontext:
-        ! return from window T
+skip_to_return:
+	mov -1,  %o0
 	retl
-	nop
-	
+	nop	
 
 ! o0 contains old-context, o1 new-context.
 ! o7 as usual, contains the caller.
+! called from window T
 .global __ajit_swapcontext__
 __ajit_swapcontext__:
+	mov %o1, %o2
+	mov %o7, %o3
+
 	!
-        ! Need to save the return pointer somewhere.
+	! get the context. %i0 contains
+	! the source context pointer.
 	!
-	! get the context.
 	call __ajit_getcontext__
-	st %o7, [%o0 + 56]
+	nop
 
-	! get back the return pointer
-	ld [%o0 + 56], %o7
-
-	! return pointer in getcontext
-	! should in context should point
-	! to return point for swapcontext.
-patch_return_location_again: 
-	save 
-
-	! now in T-1 
-	! i0 contains the context pointer.  
-	! i7 contains the return pointer.  
-	! calculate the offset for window 
-	! T in the context data structure.    
-	mov %psr, %l3 
-	and 0x7, %l3, %l3 
-	add %l3, 0x1, %l3 
-	and 0x7, %l3, %l3
-
-	! l3 contains the window pointer T
-
-	! offset for register window T in
-	! context data structure.
-	umul %l3, 64,  %l3
-	add  %l3, 96,  %l3
-	add  %l3, %i0, %l3
-
-	! update o7 in window T in
-	! context data structure.
-	st %i7, [%l3 + 28]
-	restore
+	!
+	! setcontext should return to this
+	! place..
+	!
+	mov %o3, %o1
+	call __ajit_set_context_return_pointer__
+	nop
 
 	! now move o1 to o0 and call
 	! setcontext
-	mov %o1, %o0
+	mov %o2, %o0
 	call __ajit_setcontext__
 	nop
 
+
+return_from_swap_context:
 	retl
 	nop
+
+	ta 0
+	
+	
+
 

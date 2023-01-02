@@ -70,7 +70,7 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: DEBUG
+    LogLevel: NONE
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: No # Yes/No (Default: Yes)

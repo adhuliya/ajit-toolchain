@@ -3,3 +3,28 @@ A first cut implementation of getcontext and
 setcontext which can lead us to co-routines
 and to yield/resume structures in cooperative
 multi-threading.
+
+
+getcontext
+--------------------
+
+	When getcontext is called, do the following
+		- execute a save	
+		- save all register windows in the context data structure.
+		- save all status regs in the context data structure.
+		- restore and return.
+
+makecontext
+--------------------
+
+	make links.
+
+
+swapcontext
+--------------------
+	save
+	
+	
+
+
+

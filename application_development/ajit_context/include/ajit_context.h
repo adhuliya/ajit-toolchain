@@ -9,10 +9,10 @@ typedef struct ajit_mcontext_t__ {
 	uint32_t y;      
 	uint32_t fsr; 	  
 
-	// reserved. 
-	uint32_t reserved_0;
-	uint32_t reserved_1;
-	uint32_t reserved_2;
+	// scratch. 
+	uint32_t scratch_0;
+	uint32_t scratch_1;
+	uint32_t scratch_2;
 
 	// global registers.
 	uint32_t g[8];
@@ -37,7 +37,7 @@ struct ajit_context_t__ {
 	uint32_t  func;
 	uint32_t  func_arg;
 	ajit_context_t*  uc_link;
-	uint32_t  stack_base_addr;
+	uint32_t  stack_pointer;
 	uint32_t  stack_size_in_bytes;
 	uint32_t  reserved_0;
 	uint32_t  reserved_1;
@@ -76,5 +76,7 @@ int __ajit_swapcontext__ (ajit_context_t *__oucp, const ajit_context_t *__ucp);
 void __ajit_makecontext__ (ajit_context_t *__ucp, void (*__func) (void*), void* arg);
 
 void __ajit_print_mcontext__ (ajit_context_t* t);
+
+void __ajit_set_context_return_pointer (ajit_context_t* t, uint32_t o7);
 
 #endif /* ajit_context.h */

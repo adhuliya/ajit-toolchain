@@ -1,0 +1,6 @@
+A cooked up example.. Create two contexts, assign
+work to each.   In the work, control is passed to
+the other context until an exit condition is
+detected.
+
+
