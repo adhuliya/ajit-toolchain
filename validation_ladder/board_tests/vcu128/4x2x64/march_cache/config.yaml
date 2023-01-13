@@ -7,7 +7,7 @@ Hardware:
     # Required: Number of cores and threads per core.
     Cores: 4
     ThreadsPerCore: 2
-    ISA: 32 # 32/64 bit (Default: 32)
+    ISA: 64 # 32/64 bit (Default: 32)
 
   Memory:
     MaxPhysicalAddrBitWidth: 36
