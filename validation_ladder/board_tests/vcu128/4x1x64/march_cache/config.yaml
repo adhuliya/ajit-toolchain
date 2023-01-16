@@ -6,8 +6,8 @@ Hardware:
   Processor:
     # Required: Number of cores and threads per core.
     Cores: 4
-    ThreadsPerCore: 2
-    ISA: 32 # 32/64 bit (Default: 32)
+    ThreadsPerCore: 1
+    ISA: 64 # 32/64 bit (Default: 32)
 
   Memory:
     MaxPhysicalAddrBitWidth: 36
@@ -79,22 +79,20 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: NONE
+    LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: "-I $AJIT_HOME/application_development/thread_channel/include -C $AJIT_HOME/application_development/thread_channel/src "
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
         - main_00
-      StackSize:
-        SizeInKiloBytes: 8
-    - CortosInitCalls:
-        - main_01
+  # One can also specify an infinite loop on the function:
+  #   CortosLoopCalls:
+  #     - main1
       StackSize:
         SizeInKiloBytes: 8
     - CortosInitCalls:
@@ -102,23 +100,11 @@ Software:
       StackSize:
         SizeInKiloBytes: 8
     - CortosInitCalls:
-        - main_11
-      StackSize:
-        SizeInKiloBytes: 8
-    - CortosInitCalls:
         - main_20
       StackSize:
         SizeInKiloBytes: 8
     - CortosInitCalls:
-        - main_21
-      StackSize:
-        SizeInKiloBytes: 8
-    - CortosInitCalls:
         - main_30
-      StackSize:
-        SizeInKiloBytes: 8
-    - CortosInitCalls:
-        - main_31
       StackSize:
         SizeInKiloBytes: 8
 

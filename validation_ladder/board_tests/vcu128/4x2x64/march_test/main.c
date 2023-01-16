@@ -60,6 +60,11 @@ int callfn (void* varg)
 
 void main_00 () 
 {
+	initChannel(&tc0, 1);
+	initChannel(&tc1, 1);
+	initChannel(&tc2, 1);
+	initChannel(&tc3, 1);
+
 	go_flag = 1;
 	uint64_t t00 = cortos_get_clock_time();
 	argstruct sarg0;

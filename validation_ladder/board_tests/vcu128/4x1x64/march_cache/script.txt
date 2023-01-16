@@ -1,0 +1,15 @@
+w rst 1
+t 1 0
+w rst 1
+t 2 0
+w rst 1
+t 3 0
+w rst 1
+m cortos_build/main.mmap.remapped
+w rst 0
+t 2 0
+w rst 0
+t 1 0 
+w rst 0
+t 0 0 
+w rst 0
