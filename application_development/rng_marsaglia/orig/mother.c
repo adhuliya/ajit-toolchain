@@ -1,10 +1,8 @@
 #include <string.h>
 #include <memory.h>
-#include <stdint.h>
-#include <stdio.h>
-static int16_t mother1[10];
-static int16_t mother2[10];
-static int16_t mStart=1;
+static short mother1[10];
+static short mother2[10];
+static short mStart=1;
 
 #define m16Long 65536L                          /* 2^16 */
 #define m16Mask 0xFFFF          /* mask for lower 16 bits */
@@ -38,12 +36,14 @@ static int16_t mStart=1;
 */
 
 
-void Mother(uint32_t *pSeed,double *res)
+double Mother(unsigned long *pSeed,double *res)
 {
-        uint32_t  number, number1, number2;
-        int16_t n,
+        unsigned long  number,
+                                                number1,
+                                                number2;
+        short n,
                         *p;
-        uint16_t sNumber;
+        unsigned short sNumber;
 
                 /* Initialize motheri with 9 random values the first time */
         if (mStart) {
@@ -64,8 +64,8 @@ void Mother(uint32_t *pSeed,double *res)
         }
 
                 /* Move elements 1 to 8 to 2 to 9 */
-        memmove(((char*)mother1)+2,((char*)mother1)+1,8*sizeof(int16_t));
-        memmove(((char*)mother2)+2,((char*)mother2)+1,8*sizeof(int16_t));
+        memcpy((char*)mother1+2,(char*)mother1+1,8*sizeof(short));
+        memcpy((char*)mother2+2,(char*)mother2+1,8*sizeof(short));
 
                 /* Put the carry values in numberi */
         number1=mother1[0];
@@ -78,15 +78,6 @@ void Mother(uint32_t *pSeed,double *res)
 		  1812 * mother1[4] + 1776 * mother1[5] +
 	  	  1492 * mother1[6] + 1215 * mother1[7] + 
 		  1066 * mother1[8] + 12013 * mother1[9];
-
-	#ifdef AJIT_DEBUG__
-		ee_printf("number1= 0x%x\n", number1);
-	#else 
-		#ifdef DEBUG__
-			fprintf(stderr, "number1= 0x%lx\n", number1);
-		#endif
-	#endif
-
 
 	number2 += 1111 * mother2[2] + 2222 * mother2[3] + 
 		   3333 * mother2[4] + 4444 * mother2[5] + 
@@ -105,13 +96,6 @@ void Mother(uint32_t *pSeed,double *res)
 
                 /* Return a double value between 0 and 1 */
         *res = ((double)*pSeed)/m32Double;
-}
-
-double ajit_marsaglia_rng (uint32_t *pseed)
-{
-	double res;
-	Mother(pseed, &res);
-	return(res);
 }
 
 /*  Marsaglia's comments: 

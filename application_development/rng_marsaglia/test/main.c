@@ -12,12 +12,13 @@ int main(int argc, char* argv[])
 		return(1);
 	}
 
-	unsigned long seed = atoi(argv[1]);
+	uint32_t seed = atoi(argv[1]);
+	fprintf(stdout, "seed = 0x%x\n", seed);
 	int I;
 	for (I = 0; I < 100; I++)
 	{
 		double v = ajit_marsaglia_rng (&seed);
-		fprintf(stdout, "%f\n", v);
+		fprintf(stdout, "0x%x %f\n", seed, v);
 	}
 	
 }
