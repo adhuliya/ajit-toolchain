@@ -1,0 +1,40 @@
+Linpack benchmark with shared worload across two threads - 
+
+
+Programming model -
+
+										
+	  Thread 0(Master thread)                  Thread 1(Slave Thread)
+
+	Starts running the program		Waits for job after thread channel 
+	and initializes thread channel		is initialized by polling channel
+
+	Schedules job on thread channel         Receieves job, starts working
+
+	Continue working while waiting 		Gives response and starts polling channel 
+	for response from channel               for job again
+
+
+
+
+Workload Division - 
+
+
+The daxpy routine takes 90% of the total time, so we parallelize it. 
+
+
+Thread 0 works on column 0 2 4 etc. and Thread 1 works on column 1 3 5 etc.
+
+
+
+Results - 
+
+
+N	1X1	     1x1 mmap on 1x2 	t2 sleeping    t2 spinning	t2 working
+					
+50	19.066202	13.606313	13.20736	12.581913	19.371515
+55	19.780069	13.606313	13.60978	12.962809	20.130917
+100	12.654765	10.554378	10.472365	10.265102	13.474528
+500	12.408366	10.576501	10.481403	10.3678	        10.584868
+1000	12.590573	10.713815	10.629037	10.520215	10.696787
+
