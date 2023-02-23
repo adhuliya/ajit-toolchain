@@ -1,1 +1,19 @@
 A test to figure out the associativity of the data cache.
+
+Cacheable marches... on test_array starting at 0x40010000
+1  0.002013
+2  0.001148
+4  0.000360
+8  0.000180
+16  0.000090
+Cacheable marches... done.
+
+Take the first number and multiply it by the
+second.  We get
+
+    0.002
+    0.002..
+-----------------------------------------
+    0.00144   4-way set associative!
+    0.001444
+    0.00144
