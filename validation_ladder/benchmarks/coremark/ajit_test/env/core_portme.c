@@ -113,7 +113,7 @@ void portable_init(core_portable *p)
 	// enable AJIT serial device.
 	__ajit_serial_configure__ (1,0,0);
 
-	__ajit_serial_puts__ ("\nHiFromAjit\n\n", 13);
+	// __ajit_serial_puts__ ("\nHiFromAjit\n\n", 13);
 
 	if (sizeof(ee_ptr_int) != sizeof(ee_u8 *)) {
 		ee_printf("ERROR! Please define ee_ptr_int to a type that holds a pointer!\n");

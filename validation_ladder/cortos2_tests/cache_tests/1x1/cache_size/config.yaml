@@ -22,16 +22,16 @@ Hardware:
       StartAddr: 0x40000000
       # EndAddr: ...
       # SizeInBytes: ...
-      SizeInKiloBytes: 512
+      SizeInKiloBytes: 1024
       # SizeInMegaBytes: 512
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x40080000
+      StartAddr: 0x40100000
       #EndAddr:   0x7fffffff
       # SizeInBytes: ...
-      SizeInKiloBytes:   256
+      SizeInKiloBytes:   1024
       # SizeInMegaBytes: 2
-      Permissions: RWXC     
+      Permissions: RWX     
     MMIO: # Memory Mapped IO
       StartAddr: 0xFFFF0000  # physical address
       EndAddr:   0xFFFFFFFF
@@ -81,7 +81,7 @@ Software:
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: -D CLK_FREQUENCY=80000000 -D NREPS=1024  -D NCRAM_BASE=0x40080000
+    BuildArgs: -D CLK_FREQUENCY=80000000 -D NREPS=256  -D NCRAM_BASE=0x40100000
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

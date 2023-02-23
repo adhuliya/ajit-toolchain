@@ -8,5 +8,5 @@ DEFS="-D NO_GLIBC -D PERFORMANCE_RUN=1 -D ITERATIONS=2000 -D CORE_DEBUG=0 -D COM
 makeLinkerScript.py -t 0x40040000 -d 0x40050000 -o customLinkerScript.lnk
 
 #Step 2: Compile the application using uclibc
-compileToSparcUclibc.py -o 3 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm' 
+compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm' 
 

@@ -1,16 +1,10 @@
-With two threads active, we get total CM/MHz of 2.81 compared to
-1.81 on a single thread.  A speedup of 1.55X.
+With instruction buffers present, there is a 3% improvement in program performance.
 
-The performance of the core-mark pair is dependent on the mutex timing...
-If a thread is spinning while the other is working, we get too much
-memory load/store traffic...  Need to slow down the mutex spin-loop.
-
-CPU = 0.
 2K performance run parameters for coremark.
 CoreMark Size    : 666
-Total ticks      : 5549208
-Total time (secs): 14.205972
-Iterations/Sec   : 140.785856
+Total ticks      : 5410419
+Total time (secs): 13.850673
+Iterations/Sec   : 144.397319
 Iterations       : 2000
 Compiler version : sparc-linux-gcc 4.7.4
 Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
@@ -21,13 +15,13 @@ seedcrc          : 0xe9f5
 [0]crcstate      : 0x8e3a
 [0]crcfinal      : 0x4983
 Correct operation validated. See readme.txt for run and reporting rules.
-CoreMark 1.0 : 140.785856 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+CoreMark 1.0 : 144.397319 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
 CPU = 1.
 2K performance run parameters for coremark.
 CoreMark Size    : 666
-Total ticks      : 5549185
-Total time (secs): 14.205914
-Iterations/Sec   : 140.786440
+Total ticks      : 5410417
+Total time (secs): 13.850668
+Iterations/Sec   : 144.397373
 Iterations       : 2000
 Compiler version : sparc-linux-gcc 4.7.4
 Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
@@ -38,33 +32,16 @@ seedcrc          : 0xe9f5
 [0]crcstate      : 0x8e3a
 [0]crcfinal      : 0x4983
 Correct operation validated. See readme.txt for run and reporting rules.
-CoreMark 1.0 : 140.786440 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+CoreMark 1.0 : 144.397373 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
 
 
-With -o 2, it runs faster!
-CPU = 1.
-2K performance run parameters for coremark.
-CoreMark Size    : 666
-Total ticks      : 5026169
-Total time (secs): 12.866993
-Iterations/Sec   : 155.436477
-Iterations       : 2000
-Compiler version : sparc-linux-gcc 4.7.4
-Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
-Memory location  : STATIC
-seedcrc          : 0xe9f5
-[0]crclist       : 0xe714
-[0]crcmatrix     : 0x1fd7
-[0]crcstate      : 0x8e3a
-[0]crcfinal      : 0x4983
-Correct operation validated. See readme.txt for run and reporting rules.
-CoreMark 1.0 : 155.436477 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+////////////////////////////////  Optimized version ////////////////////////////////////////////////////////////
 CPU = 0.
 2K performance run parameters for coremark.
 CoreMark Size    : 666
-Total ticks      : 5026171
-Total time (secs): 12.866998
-Iterations/Sec   : 155.436415
+Total ticks      : 4848313
+Total time (secs): 12.411681
+Iterations/Sec   : 161.138524
 Iterations       : 2000
 Compiler version : sparc-linux-gcc 4.7.4
 Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
@@ -75,5 +52,21 @@ seedcrc          : 0xe9f5
 [0]crcstate      : 0x8e3a
 [0]crcfinal      : 0x4983
 Correct operation validated. See readme.txt for run and reporting rules.
-CoreMark 1.0 : 155.436415 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
-
+CoreMark 1.0 : 161.138524 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC
+CPU = 1.
+2K performance run parameters for coremark.
+CoreMark Size    : 666
+Total ticks      : 4848313
+Total time (secs): 12.411681
+Iterations/Sec   : 161.138524
+Iterations       : 2000
+Compiler version : sparc-linux-gcc 4.7.4
+Compiler flags   :  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm 
+Memory location  : STATIC
+seedcrc          : 0xe9f5
+[0]crclist       : 0xe714
+[0]crcmatrix     : 0x1fd7
+[0]crcstate      : 0x8e3a
+[0]crcfinal      : 0x4983
+Correct operation validated. See readme.txt for run and reporting rules.
+CoreMark 1.0 : 161.138524 / sparc-linux-gcc 4.7.4  -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm  / STATIC

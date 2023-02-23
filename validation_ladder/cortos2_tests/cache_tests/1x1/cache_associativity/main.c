@@ -4,11 +4,13 @@
 #include <ajit_access_routines.h>
 #include <cortos.h>
 
+// fits into the cache..
 #define NWORDS  (8*1024)
+#define CACHE_SIZE_IN_BYTES  (32*1024)
 
-// 32 KB
+// 32 KB  + 32 KB
 //   base address should have bits 14:6 0.
-uint32_t  test_array[8*1024]  __attribute__ ((aligned(16*1024)));
+uint32_t  test_array[16*1024]  __attribute__ ((aligned(64*1024)));
 
 /*
 	32KB cache: with associativity A of 1/2/4/8/16.
@@ -35,49 +37,31 @@ int runMarch (uint32_t start_addr, int A, int nreps, double* t)
 	int I,J,K;
 	uint64_t tstart = cortos_get_clock_time();
 
+	uint32_t set_way_size_in_bytes = 64 * 512/A;
+
 	while(nreps > 0)
 	{
 		nreps--;
 
-		for(I = 0; I < S; I++)
-		// across all sets.
+		// write in low way and then in high way..
+		for(I = 0; I < set_way_size_in_bytes; I += 4)
 		{
-			for(J = 0; J < A; J++)
-			// A lines in the set..
-			{
-				uint32_t line_index =  I + (J*S);
-				uint32_t line_addr = (line_index  << 6);
-
-				// write to line.
-				for(K = 0; K < 16; K++)
-				// each line has 16 words.
-				{
-					uint32_t t_index = (line_addr + (K << 2)) >> 2;
-					test_array[t_index] = t_index;
-					// CORTOS_DEBUG("Wrote to index %d.\n", t_index);
-				}
-			}
+			test_array[(I >> 2)] = I;
+			test_array[(I + CACHE_SIZE_IN_BYTES) >> 2] = I + CACHE_SIZE_IN_BYTES;
 		}
 
-		for(I = 0; I < S; I++)
+		// read back from low way and then in high way..
+		for(I = 0; I < set_way_size_in_bytes; I += 4)
 		// across all sets.
 		{
-			for(J = 0; J < A; J++)
-			{
-				uint32_t line_index =  I + (J*S);
-				uint32_t line_addr = (line_index  << 6);
+			int J = test_array[(I >> 2)];
+			int K = test_array[(I + CACHE_SIZE_IN_BYTES) >> 2];
 
-				// write to line.
-				for(K = 0; K < 16; K++)
-				{
-					uint32_t t_index = (line_addr + (K << 2)) >> 2;
-					if(test_array[t_index] != t_index)
-						err = 1;
-				}
-			}
+			if((J != I) || (K != (I + CACHE_SIZE_IN_BYTES)))
+				err = 1;
 		}
 
-
+		nreps--;
 	}
 	uint64_t tend = cortos_get_clock_time();
 	*t = ((double) (tend - tstart))/((double) CLK_FREQUENCY);
@@ -97,7 +81,7 @@ int main_00 ()
 		if(err)
 			cortos_printf("Error: runMarch A=%d.\n", A);
 
-		cortos_printf ("%d  %f\n", size, t/NREPS);
+		cortos_printf ("%d  %f\n", A, t/NREPS);
 	}
 	cortos_printf("Cacheable marches... done.\n");
 	return(0);

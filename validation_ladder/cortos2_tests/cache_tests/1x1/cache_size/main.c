@@ -11,21 +11,25 @@ uint32_t  test_array[16*1024];
 int runMarch (uint32_t start_addr, uint32_t nwords, int nreps, double* t)
 {
 	int err = 0;
+	cortos_printf("runMarch (0x%x, %d, %d) ...\n", start_addr, nwords, nreps);
 	uint64_t tstart = cortos_get_clock_time();
 	while (nreps > 0)
 	{
 		uint32_t I;
 		for(I = 0; I < nwords; I++)
 		{
-			uint32_t* addr = (uint32_t*) (start_addr + (nwords << 2));
+			uint32_t* addr = (uint32_t*) (start_addr + (I << 2));
 			*addr = I;
 		}
 		for(I = 0; I < nwords; I++)
 		{
-			uint32_t* addr = (uint32_t*) (start_addr + (nwords << 2));
+			uint32_t* addr = (uint32_t*) (start_addr + (I << 2));
 			if(*addr != I)
+			{
 				err = 1;
+			}
 		}
+		nreps--;
 	}
 	uint64_t tend = cortos_get_clock_time();
 

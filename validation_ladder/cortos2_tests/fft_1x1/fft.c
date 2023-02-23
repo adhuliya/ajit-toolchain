@@ -9,7 +9,7 @@
 #include <cortos.h>
 
 
-#define q	10		/* for 2^10 points */
+#define q	4		/* for 2^10 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;

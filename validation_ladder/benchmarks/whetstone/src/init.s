@@ -2,8 +2,8 @@
 .global _start;
 _start:
 	! stack..
-	set -256, %sp
-        set -8, %fp
+	set 0x40040000, %sp
+        set 0x40040000, %fp
 
 	set 0x1, %l0		! window 1 is marked invalid...  we start at window 7
 	wr %l0, 0x0, %wim	!
