@@ -53,6 +53,8 @@ volatile int volatile count[] = {0,0,0,0,0,0,0,0};
 
 volatile double volatile  time[] = {0,0,0,0};
 
+volatile int volatile err_flg[] = {0,0,0,0,0,0,0,0};
+
 void runMarch(int tid)
 {
 	
@@ -61,15 +63,25 @@ void runMarch(int tid)
 	}*/
  
 
-	uint32_t I,J;
+	uint32_t I,J,K;
 	uint32_t start = (( tid & 0x6)*(ORDER/8)); 
-	for(I = start; I < (start+(ORDER/4)); I += 1)
+	for(K = 0; K < MARCH_ITER; K++)
 	{
-		for(J = ((tid&0x1)*(ORDER/2)) ; J < (tid&0x1)*(ORDER/2)+(ORDER/2); J += 1)
+		// multiple read writes
+		for(I = start; I < (start+(ORDER/4)); I += 1)
 		{
-			// two writes
-			global_storage_matrix[I][J] = 0;
-			global_storage_matrix[I][J] = I+J;
+			for(J = ((tid&0x1)*(ORDER/2)) ; J < (tid&0x1)*(ORDER/2)+(ORDER/2); J += 1)
+			{
+				// two writes
+				global_storage_matrix[I][J] = 0;
+				global_storage_matrix[I][J] = I+J+K;
+				if(global_storage_matrix[I][J] != I+J+K)
+				{
+					err_flg[tid] = 1;
+					return;
+				}
+	
+			}
 		}
 	}
 	done[tid] = 1;
@@ -106,8 +118,8 @@ void main_00 ()
         }
 
 	uint64_t t01 = cortos_get_clock_time();
-        time[0] = (double)(t01-t00) * 1.0e-8; 
-        //cortos_printf("time taken for core 0 is = %lf \n", time0);
+        time[0] = (double)(t01-t00) * 1.25e-8; 
+        //cortos_printf("time taken for core 0 is = %lf \n", (time0/MARCH_ITER));
 
 
 	int I,J;
@@ -127,14 +139,26 @@ void main_00 ()
 			break;
 	}
 	
+	int K;
+	for(K = 0; K<8; K++)
+	{
+		if(err_flg[K] == 1)
+		{
+			cortos_printf("Error in thread = %d\n", K);
+		}
+		else
+			cortos_printf("thread = %d success.\n",K);
+	}
+
+
 	// print time required for each core.
 	for(I = 0; I < 4; I++)
 	{
 		
-        	cortos_printf("time taken for core %d is = %lf \n",I, time[I]);
+        	cortos_printf("time taken for core %d is = %lf \n",I, time[I]/MARCH_ITER);
 	}
 	
-	for(I = 0; I < ORDER; I++)
+	/*for(I = 0; I < ORDER; I++)
         {
 		for(J = 0; J < ORDER; J++)
 		{
@@ -144,7 +168,7 @@ void main_00 ()
                         	cortos_printf("Error: runMarch MEM[%d][%d] = %d, expected %d.\n", I, J, R, (I+J));
 	                }	
 		}
-	}
+	}*/
 	/*for(I = 0; I < ORDER; I++)
 	{
 		for(J = 0; J < ORDER; J++)
@@ -193,7 +217,7 @@ void main_10 ()
         {
         }
 	uint64_t t11 = cortos_get_clock_time();
-	time[1] = (double)(t11-t10) * 1.0e-8;
+	time[1] = (double)(t11-t10) * 1.25e-8;
 	//cortos_printf("time taken for core 1 is = %lf \n", time1);
 }
 
@@ -234,7 +258,7 @@ void main_20 ()
         }
 
 	uint64_t t21 = cortos_get_clock_time();
-        time[2] = (double)(t21-t20) * 1.0e-8;
+        time[2] = (double)(t21-t20) * 1.25e-8;
         //cortos_printf("time taken for core 2 is = %lf \n", time2);
 
 }
@@ -277,7 +301,7 @@ void main_30 ()
         {
         }
 	uint64_t t31 = cortos_get_clock_time();
-        time[3] = (double)(t31-t30) * 1.0e-8;
+        time[3] = (double)(t31-t30) * 1.25e-8;
         //cortos_printf("time taken for core 3 is = %lf \n", time3);
 
 }
