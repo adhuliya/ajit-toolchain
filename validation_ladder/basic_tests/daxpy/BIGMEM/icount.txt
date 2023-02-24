@@ -1,0 +1,9 @@
+    number-of-instructions-executed = 374601
+    number-of-instructions-executed = 363210
+
+		diff                =  11391 for 10
+		per = 1139
+
+		hw  = 1162
+
+	

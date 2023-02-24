@@ -1,0 +1,10 @@
+10 iterations:    number-of-instructions-executed = 17060
+20 iterations:    number-of-instructions-executed = 26816
+
+number of instructions executed per iteration = (26817-17060)/10 = 976 instructions per iteration.
+
+measured from hardware at 80MHz
+Elapsed time=      0.012630, MFLOPS=40.538842
+		# of cycles = 0.012630*80000 = 1010
+
+Therefore IPC = 976/1010 = 0.97 IPC   Not bad.

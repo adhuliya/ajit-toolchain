@@ -1,0 +1,17 @@
+
+    number-of-instructions-executed = 374601
+    number-of-instructions-executed = 363210
+
+		diff                =  11391 for 10
+		per = 1139
+
+
+	
+    Hardware:
+	Elapsed time=      0.014529, MFLOPS=52.858752
+
+	# of cycles at  80MHz = 1162
+
+	Therefore IPC = 1139/1162 = 0.98
+
+	Not bad at all.
