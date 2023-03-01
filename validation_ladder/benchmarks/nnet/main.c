@@ -8,7 +8,7 @@
 #include "arrays.h"
 #include <ajit_access_routines.h>
 
-
+#define CLOCKS_PER_SEC 80000000
 
 #define sprintf cortos_printf
 #define output_string cortos_printf
@@ -283,6 +283,9 @@ for (patt=0; patt<26; patt++)
 /*
 ** See if we need to perform self adjustment loop.
 */
+
+//double sec;
+//sec =(((double)global_min_ticks)*1.0e-8);
 if(locnnetstruct->adjust==0)
 {
         /*
@@ -296,7 +299,7 @@ if(locnnetstruct->adjust==0)
           {     /*randnum(3L); */
                 randnum((int32)3);
                 if(DoNNetIteration(locnnetstruct->loops)
-                        >global_min_ticks) break;
+                        >global_min_ticks)break;
           }
 }
 //cortos_printf("loops = %lld\n",locnnetstruct->loops);
@@ -334,10 +337,11 @@ return;
 ** Do a single iteration of the neural net benchmark.
 ** By iteration, we mean a "learning" pass.
 */
-static ulong DoNNetIteration(ulong nloops)
+static uint64_t DoNNetIteration(ulong nloops)
 {
-//cortos_printf("starting iteration\n");
-ulong elapsed;          /* Elapsed time */
+
+//cortos_printf("starting iterationi nloops = %llu \n", nloops);
+uint64_t elapsed;          /* Elapsed time */
 int patt;
 
 /*
@@ -372,16 +376,19 @@ while(nloops--)
                 }
 		//cortos_printf("numpats --  \n");
                 numpasses ++;
-		learned = (numpasses==req_passes) ? TRUE : FALSE;
-		check_out_error();
-//                learned = check_out_error();
+	//	learned = (numpasses==req_passes) ? TRUE : FALSE;
+	//	check_out_error();
+                learned = check_out_error();
         }
-//#ifdef DEBUG
-//cortos_printf("Learned in %d passes\n",numpasses);
-//#endif
+#ifdef DEBUG
+cortos_printf("Learned in %d passes\n",numpasses);
+#endif
 }
 uint64_t t1 = cortos_get_clock_time();
 elapsed = (t1-t0);
+
+//double value;
+//value = ((double) elapsed ) * 1.0e-8;
 return((elapsed));
 }
 /***************************
@@ -402,17 +409,17 @@ for (neurode=0;neurode<MID_SIZE; neurode++)
         {       /* compute weighted sum of input signals */
                 sum += mid_wts[neurode][i]*in_pats[patt][i];
         }
-	for (i=0; i<IN_SIZE; i++)
+/*	for (i=0; i<IN_SIZE; i++)
         {
                 CORTOS_DEBUG("sum=%lf and mid_wts[%d][%d] = %lf \n",sum,neurode,i,mid_wts[neurode][i]);
         }
-
+*/
         /*
         ** apply sigmoid function f(x) = 1/(1+exp(-x)) to weighted sum
         */
         sum = 1.0/(1.0+exp(-sum));
         mid_out[neurode] = sum;
-	CORTOS_DEBUG("mid_out is %lf \n",mid_out[neurode]);
+//	CORTOS_DEBUG("mid_out is %lf \n",mid_out[neurode]);
 }
 return;
 }
