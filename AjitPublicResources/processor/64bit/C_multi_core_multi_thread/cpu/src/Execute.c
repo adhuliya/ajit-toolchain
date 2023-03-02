@@ -290,6 +290,12 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 				fprintf(stderr,"\tInfo:executeStore: Flushing ICACHE due to MMU-CTRl-REGISTER-WRITE/FLUSH-PROBE (asi=0x%x) \n", asi);
 #endif
 				flushCache(state->icache);
+
+				// flush instruction buffer...
+				if(state->i_buffer != NULL)
+				{
+					clearInstructionDataBuffer(state->i_buffer);	
+				}
 			}
 		}
 
@@ -2047,6 +2053,10 @@ uint32_t executeFlush(uint32_t flush_addr, uint32_t trap_vector, StateUpdateFlag
 	//address is ignored, the entire cache is flushed
 	//as per current implementation if Icache
 	flushIcacheLine(state->thread_id, state->mmu_state,  state->icache, flush_asi, flush_addr, &flush_mae);
+	
+	// flush instruction buffer.
+	if(state->i_buffer != NULL)
+		clearInstructionDataBuffer(state->i_buffer);
 
 	if(flush_mae)
 	{

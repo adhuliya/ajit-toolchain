@@ -7,6 +7,7 @@
 #include "ThreadHWserverInterface.h"
 #include "StartHwServerThreads.h"
 #include "StartAjitThreads.h"
+#include "instruction_data_buffer.h"
 
 void  setPageBit(CoreState* s, uint32_t virtual_addr)
 {
@@ -42,13 +43,11 @@ void  dumpPageBits(CoreState* s)
 
 void  	printCoreStatistics (CoreState* s) 
 {
-	
 	dumpPageBits(s);
 
 	printMmuStatistics(s->mmu_state);
 	printCacheStatistics(s->icache);
 	printCacheStatistics(s->dcache);
-
 }
 
 void init_core(CoreState* s, 

@@ -27,6 +27,17 @@
 //#define REQUEST_TYPE_STBAR  3
 //#define REQUEST_TYPE_WRFSRFAR  4
 
+void readInstructionPair(int cpu_id,
+				MmuState* ms,  WriteThroughAllocateCache* icache, 
+				uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *ipair, 
+				uint32_t* mmu_fsr)
+{
+	// set the top bit of the asi to 1 to indicate "thread head"
+	cpuIcacheAccess(cpu_id, ms, icache, (asi | 0x80), 
+					(addr & (~0x7)),  // double word address!
+					REQUEST_TYPE_IFETCH,  0xff, mae, ipair, mmu_fsr);
+}
+
 
 
 //read an Instruction by accessing the instruction fetch interface

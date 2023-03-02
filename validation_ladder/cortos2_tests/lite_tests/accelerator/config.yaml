@@ -22,7 +22,7 @@ Hardware:
       StartAddr: 0x0
       # EndAddr: ...
       # SizeInBytes: ...
-      SizeInKiloBytes: 128
+      SizeInKiloBytes: 256
       #SizeInMegaBytes: 128
       Permissions: RWXC
     MMIO: # Memory Mapped IO

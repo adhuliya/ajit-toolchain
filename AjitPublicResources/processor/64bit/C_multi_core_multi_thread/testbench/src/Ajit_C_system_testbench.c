@@ -136,6 +136,7 @@ void print_usage(char* app_name)
 	// specify  one port per thread (first is for thread 0,0, second for thread 0,1 etc...)
 	fprintf(stderr, "   -p <gdb-port-number>, required with -g, to specify remote debug port.\n");
 	fprintf(stderr, "   -d  : optional, use if doval utility is to be run...\n");
+	fprintf(stderr, "   -y  : optional, use if instruction buffer is to be used in each thread...\n");
 	fprintf(stderr, "   -r <results-file>  : required with -d, specifies expected register/memory values at end of run.\n");
 	fprintf(stderr, "   -l <log-file>      : required with -d, specifies a log-file of the validation checks.\n");
 	fprintf(stderr, "   -w <reg-writes-dump>: optional. if specified, a log of all register and memory writes is generated.\n");
@@ -206,6 +207,7 @@ char* logger_server_ip_address;
 int   logger_server_port_number;
 int   global_verbose_flag = 0;
 char* bridge_targets_file = NULL;
+int   use_instruction_buffer = 0;
 
 
 
@@ -267,7 +269,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "hvdgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -282,6 +284,10 @@ int main(int argc, char **argv)
 			case 'A':
 				dcache_associativity = atoi(optarg);
 				fprintf(stderr,"Info: dcache associativity=%d.\n", dcache_associativity);
+				break;
+			case 'y':
+				fprintf(stderr,"Info: use instruction buffer=true\n");
+				use_instruction_buffer = 1;
 				break;
 			case 'N':
 				icache_number_of_lines = atoi(optarg);

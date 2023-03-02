@@ -8,6 +8,7 @@
 #include "RegisterFile.h"
 #include "Mmu.h"
 #include "CacheInterface.h"
+#include "instruction_data_buffer.h"
 #include "StartCacheThreads.h"
 #include "hwServerStruct.h"
 #include "monitorLogger.h"
@@ -168,6 +169,9 @@ typedef struct _ThreadState
 	hwServerState* hw_server;
 	MonitorLoggerState* monitor_logger;
 	
+
+	// Instruction data buffer for the thread
+	InstructionDataBuffer* i_buffer;
 
 	
 	// Gdb/debug stuff.

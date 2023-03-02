@@ -726,6 +726,9 @@ void  calculate_baud_control_values_for_uart (uint32_t baud_rate, uint32_t clock
 							uint32_t* baud_limit,
 							uint32_t* baud_frequency)
 {
+	*baud_limit = 0;
+	*baud_frequency = 0;
+
 	// GCD (clk_freq, 16*baud_rate);	
 	uint32_t A = 16*baud_rate; 
 	uint32_t B = clock_frequency;
@@ -1067,6 +1070,7 @@ uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count)
 	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
 	// transfer width is kept to 8 bits, clk divide count is modified.
 	__ajit_store_word_mmu_bypass__(((0x1 << 4) | (clk_divide_count & 0xf)), addr);
+	return(0);
 }
 
 uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count)
@@ -1074,6 +1078,7 @@ uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count)
 	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
 	// transfer width is kept to 8 bits, clk divide count is modified.
 	*((uint32_t*) addr) = (0x1 << 4) | (clk_divide_count & 0xf);
+	return(0);
 }
 
 // times out after 8K clock cycles.

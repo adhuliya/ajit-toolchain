@@ -14,6 +14,10 @@
 void readInstruction(int cpu_id,
 			MmuState* ms,  WriteThroughAllocateCache* icache, 
 			uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *inst, uint32_t* mmu_fsr);
+void readInstructionPair(int cpu_id,
+				MmuState* ms,  WriteThroughAllocateCache* icache, 
+				uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *ipair, 
+				uint32_t* mmu_fsr);
 
 //Request ICACHE to flush line containing a given doubleword.
 //returns mae=0 after flush is complete

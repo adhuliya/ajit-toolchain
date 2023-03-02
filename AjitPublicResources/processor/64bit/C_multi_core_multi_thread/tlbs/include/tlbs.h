@@ -67,4 +67,5 @@ void operateOnSetAssociativeMemory(setAssociativeMemory* m,
 					uint16_t write_set_id,
 					uint8_t lookup_flag, uint64_t lookup_tag, uint16_t lookup_set_id, 
 					uint8_t* lookup_valid, uint64_t* lookup_data);
+int searchForTag(setAssociativeMemory* m, int set_id, uint64_t tag);
 #endif

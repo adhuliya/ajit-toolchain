@@ -83,6 +83,7 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 		{	
 			icache->number_of_hits++;
 			*instr_pair = getDwordFromCache	(icache,addr);
+			*mae = (1 << 7) | (acc << 4);
 		}
 		else
 		{
@@ -96,6 +97,11 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 					mae, &cacheable, &acc, (uint64_t*) line_data, 
 					mmu_fsr,
 					&synonym_invalidation_word);
+
+			// mae fields
+			//   7 6:4 3:2 1 0
+			//   cacheable acc unused err exception.
+			*mae = (cacheable << 7) | (acc << 4) | (0x3 & *mae);
 
 			if(synonym_invalidation_word != 0)
 			{

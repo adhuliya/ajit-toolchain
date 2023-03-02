@@ -3,6 +3,8 @@
 .global main
 main:
 _start:
+	set 0x100, %o0
+        sta %o0, [%g0] 0x4      
 	
 	! initialize register values.. these will
 	! be overwritten in the delay slots below.

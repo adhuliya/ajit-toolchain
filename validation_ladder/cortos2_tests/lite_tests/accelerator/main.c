@@ -113,6 +113,10 @@ void main ()
 
 		interrupt_flag = 0;
 
+		// flush the cache to ensure that there
+		// is no residual.
+		__ajit_flush_dcache__();
+
 		dump_memory (I);
 	}
 

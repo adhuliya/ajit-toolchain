@@ -5,13 +5,15 @@
 
 setAssociativeMemory* mem_list = NULL;
 
+
+
 void generateName(setAssociativeMemory* ms, char* nbuf)
 {
 	if(ms != NULL)
 	{
 		sprintf(nbuf,"m_%d_%d_%d_%d_%d",
 				ms->model_id, ms->tag_width, ms->data_width,
-						ms->log_mem_size, ms->log_set_size);
+				ms->log_mem_size, ms->log_set_size);
 	}
 }
 
@@ -39,20 +41,20 @@ int twoPower(int x)
 
 
 setAssociativeMemory* findOrAllocateSetAssociativeMemory(uint8_t model_id,
-								uint8_t tag_width, uint8_t data_width,
-								uint8_t log_mem_size, uint8_t log_set_size)
+		uint8_t tag_width, uint8_t data_width,
+		uint8_t log_mem_size, uint8_t log_set_size)
 {
 	setAssociativeMemory* rval = NULL;
 	setAssociativeMemory* ml;
 	for(ml = mem_list; ml != NULL; ml = ml->next)
 	{
 		if( (ml->model_id == model_id) &&
-			(ml->tag_width == tag_width) &&
-			(ml->data_width == data_width) &&
-			(ml->log_mem_size == log_mem_size) &&
-			(ml->log_set_size == log_set_size))
+				(ml->tag_width == tag_width) &&
+				(ml->data_width == data_width) &&
+				(ml->log_mem_size == log_mem_size) &&
+				(ml->log_set_size == log_set_size))
 		{
-			
+
 			rval = ml;
 			break;
 		}
@@ -98,7 +100,7 @@ setAssociativeMemory* findOrAllocateSetAssociativeMemory(uint8_t model_id,
 		{
 			rval->last_modified_index_per_set[I] = rval->set_size-1; 
 		}
-  
+
 		pthread_mutex_init (&(rval->pm), NULL);
 
 		rval->next = mem_list;
@@ -129,37 +131,37 @@ int searchForTag(setAssociativeMemory* m, int set_id, uint64_t tag)
 
 // return lookup valid, data in lookup_data..
 int lookupSetAssociativeMemory(setAssociativeMemory* m, uint64_t lookup_tag, uint16_t lookup_set_id,
-					uint64_t* lookup_data)
+		uint64_t* lookup_data)
 {
 	uint8_t lv = 0;
 	operateOnSetAssociativeMemory(m, 0,
-					0,0,0,
-					0,0,0,
-					1,lookup_tag, lookup_set_id,
-					&lv, lookup_data);
+			0,0,0,
+			0,0,0,
+			1,lookup_tag, lookup_set_id,
+			&lv, lookup_data);
 	return(lv);
 }
 
 void writeIntoSetAssociativeMemory(setAssociativeMemory* m, uint64_t write_tag, uint64_t write_data, 
-										uint16_t write_set_id)
+		uint16_t write_set_id)
 {
 	uint8_t lv;
 	uint64_t ld;
 	operateOnSetAssociativeMemory(m,0,
-					0,0,1,
-					write_data,write_tag,write_set_id,
-					0,0,0,
-					&lv, &ld);
+			0,0,1,
+			write_data,write_tag,write_set_id,
+			0,0,0,
+			&lv, &ld);
 }
 void eraseFromSetAssociativeMemory(setAssociativeMemory* m, uint64_t write_tag, uint16_t write_set_id)
 {
 	uint8_t lv;
 	uint64_t ld;
 	operateOnSetAssociativeMemory(m,0,
-					0,1,0,
-					0,write_tag,write_set_id,
-					0,0,0,
-					&lv, &ld);
+			0,1,0,
+			0,write_tag,write_set_id,
+			0,0,0,
+			&lv, &ld);
 }
 
 void clearSetAssociativeMemory(setAssociativeMemory* m)
@@ -167,31 +169,33 @@ void clearSetAssociativeMemory(setAssociativeMemory* m)
 	uint8_t lv;
 	uint64_t ld;
 	operateOnSetAssociativeMemory(m,0,
-					1,0,0,
-					0,0,0,
-					0,0,0,
-					&lv, &ld);
+			1,0,0,
+			0,0,0,
+			0,0,0,
+			&lv, &ld);
 }
 
-	
+
 void operateOnSetAssociativeMemory(setAssociativeMemory* m, 
-					uint8_t ignore_collisions,
-					uint8_t clear_flag,
-					uint8_t erase_flag, 
-					uint8_t write_flag,
-					uint64_t write_data,uint64_t write_tag, 
-					uint16_t write_set_id,
-					uint8_t lookup_flag, uint64_t lookup_tag, uint16_t lookup_set_id, 
-					uint8_t* lookup_valid, uint64_t* lookup_data)
+		uint8_t ignore_collisions,
+		uint8_t clear_flag,
+		uint8_t erase_flag, 
+		uint8_t write_flag,
+		uint64_t write_data,uint64_t write_tag, 
+		uint16_t write_set_id,
+		uint8_t lookup_flag, uint64_t lookup_tag, uint16_t lookup_set_id, 
+		uint8_t* lookup_valid, uint64_t* lookup_data)
 {
-	
+
 	pthread_mutex_lock (&(m->pm));
 
-	*lookup_valid = 0;
-	*lookup_data = 0;
+	if(lookup_valid != NULL)
+		*lookup_valid = 0;
+	if(lookup_data != NULL)
+		*lookup_data = 0;
 
 	int collision = (!ignore_collisions && write_flag && !erase_flag && !erase_flag && 
-				(lookup_set_id == write_set_id) && (lookup_tag == write_tag));
+			(lookup_set_id == write_set_id) && (lookup_tag == write_tag));
 
 	if(clear_flag)
 	{
@@ -204,10 +208,12 @@ void operateOnSetAssociativeMemory(setAssociativeMemory* m,
 	{
 		if(collision)
 		{
-			*lookup_valid = 1;
-			*lookup_data  = write_data;
+			if(lookup_valid != NULL)
+				*lookup_valid = 1;
+			if(lookup_data != NULL)
+				*lookup_data  = write_data;
 			fprintf(stderr,"Info: lookup/write collision in set %d, tag=0x%x, data=0x%llx\n",
-						lookup_set_id, lookup_tag, write_data);
+					lookup_set_id, lookup_tag, write_data);
 		}
 		else
 		{
@@ -216,8 +222,10 @@ void operateOnSetAssociativeMemory(setAssociativeMemory* m,
 			{
 				assert(li < m->mem_size);
 
-				*lookup_valid = 1;
-				*lookup_data = m->data[li];
+				if(lookup_valid != NULL)
+					*lookup_valid = 1;
+				if(lookup_data != NULL)
+					*lookup_data = m->data[li];
 
 #ifdef TLBS_DEBUG
 				char nbuf[256];

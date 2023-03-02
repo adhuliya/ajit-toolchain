@@ -18,6 +18,13 @@
 #define PC_RESET_VALUE 	0x0
 #define NPC_RESET_VALUE	0x4
 
+//
+// instruction data buffer parameters.
+//
+#define INSTRUCTION_BUFFER_N_ENTRIES	     128	 // 1KB
+#define INSTRUCTION_BUFFER_ASSOCIATIVITY       1
+
+
 
 //---------------------------------
 // Cache Parameters.

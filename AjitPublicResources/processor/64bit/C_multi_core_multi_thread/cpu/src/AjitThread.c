@@ -25,8 +25,10 @@
 #include "Mmu.h"
 #include "rlut.h"
 #include "ImplementationDependent.h"
+#include "AjitThreadUtils.h"
 
 extern int global_verbose_flag;
+extern int use_instruction_buffer;
 
 
 void increment_instruction_count(ThreadState* s) 
@@ -72,6 +74,8 @@ void  	printThreadStatistics (ThreadState* s)
 						s->branch_predictor.branch_count,
 						s->branch_predictor.mispredicts);
 	fprintf(stderr,"    cycle-count estimate = %lu\n",getCycleEstimate(s));
+	if(s->i_buffer)
+		reportInstructionDataBufferStatistics(s->i_buffer);	
 
 }
 
@@ -543,6 +547,23 @@ void init_ajit_thread (ThreadState *s, uint32_t core_id,
 	s->register_file  =  makeRegisterFile ();
 
 
+	// instruction buffer
+	if(use_instruction_buffer)
+	{
+		s->i_buffer = (InstructionDataBuffer*) malloc (sizeof(InstructionDataBuffer));
+		initInstructionDataBuffer(s->i_buffer,
+				s->core_id,
+				s->thread_id,
+				1, 
+				INSTRUCTION_BUFFER_N_ENTRIES,
+				(INSTRUCTION_BUFFER_N_ENTRIES/INSTRUCTION_BUFFER_ASSOCIATIVITY));
+	}
+	else
+	{
+		s->i_buffer = NULL;
+	}
+
+
 
 	// these maye get populated
 	// by someone else.
@@ -764,10 +785,62 @@ uint8_t isFloatCompareInstruction(Opcode op)
 uint8_t fetchInstruction(ThreadState* s,  
 				uint8_t addr_space, uint32_t addr, uint32_t *inst, uint32_t* mmu_fsr)
 {
-	uint8_t mae_value;
-	readInstruction(s->thread_id, s->mmu_state, s->icache,  addr_space, addr, &mae_value, inst, mmu_fsr);
+	uint8_t mae_value = 0;
+
+	// check if the instruction is available in the instruction buffer.
+	uint64_t ipair;
+	uint8_t acc;
+
+	int is_buffer_hit = 0;
+	if(s->i_buffer != NULL)
+	{
+		is_buffer_hit = lookupInstructionDataBuffer (s->i_buffer, addr & 0xfffffff8, &acc, &ipair);
+		is_buffer_hit = is_buffer_hit && privilegesOk(addr_space & 0x7f, 1, 1, acc);
+	}
+
+	if(!is_buffer_hit)
+	{
+
+		readInstructionPair(s->thread_id, 
+				s->mmu_state, 
+				s->icache,  
+				addr_space, 
+				addr & 0xfffffff8, 
+				&mae_value, 
+				&ipair, 
+				mmu_fsr);
+
+		if(s->i_buffer != NULL)
+		{
+			if((mae_value  & 0x3) == 0)
+			{
+				uint8_t cacheable = (mae_value >> 7) & 0x1;
+				if(cacheable)
+				{
+					uint8_t acc = (mae_value >> 4) & 0x7;
+					insertIntoInstructionDataBuffer(s->i_buffer,
+							addr & 0xfffffff8,
+							acc,
+							ipair);
+				}
+			}
+		}
+	}
+
 	setPageBit((CoreState*) s->parent_core_state,addr);
-	return mae_value;
+
+	if(getBit32(addr,2)) 
+		*inst = ipair;
+	else 
+		*inst = ipair>>32;
+
+	if(global_verbose_flag)
+	{
+	   fprintf(stderr,"Info:fetchInstruction addr=0x%x instr=0x%x  buf-hit=%d\n", addr, *inst, is_buffer_hit);
+	}
+
+	// only bottom bit of mae value is used
+	return (0x1 & mae_value);
 }
 
 void writeBackResult(RegisterFile* rf, uint8_t dest_reg, uint32_t result_h, uint32_t result_l, uint8_t flags, uint8_t cwp, uint32_t pc, StateUpdateFlags* reg_update_flags)
@@ -787,7 +860,7 @@ void writeBackResult(RegisterFile* rf, uint8_t dest_reg, uint32_t result_h, uint
 			writeRegister(rf,  setBit8(dest_reg, 0, 0), cwp, result_h);
 			writeRegister(rf, setBit8(dest_reg, 0, 1), cwp, result_l);
 		}
-		
+
 		//Information to be logged:
 		reg_update_flags->gpr_updated=1;
 		if(is_double_result) 
@@ -807,8 +880,8 @@ void writeBackResult(RegisterFile* rf, uint8_t dest_reg, uint32_t result_h, uint
 	else
 	{
 		reg_update_flags->fpreg_updated = 1;
-                reg_update_flags->fpreg_val_low = result_l;
-                reg_update_flags->fpreg_id = dest_reg;
+		reg_update_flags->fpreg_val_low = result_l;
+		reg_update_flags->fpreg_id = dest_reg;
 
 		if(!is_double_result)
 		{
@@ -822,18 +895,18 @@ void writeBackResult(RegisterFile* rf, uint8_t dest_reg, uint32_t result_h, uint
 			writeFRegister(rf, dest_reg, result_l);
 
 			reg_update_flags->fpreg_double_word_write = 1;
-                        reg_update_flags->fpreg_val_high = result_h;
+			reg_update_flags->fpreg_val_high = result_h;
 		}
 	}
 }
 
 uint32_t completeFPExecution(ThreadState* s,
-			 	Opcode opcode, 
-				uint32_t operand2_3, uint32_t operand2_2, 
-				uint32_t operand2_1, uint32_t operand2_0, 
-				uint32_t operand1_3, uint32_t operand1_2, 
-				uint32_t operand1_1, uint32_t operand1_0,
-				uint8_t dest_reg, StatusRegisters *ptr, uint32_t trap_vector)
+		Opcode opcode, 
+		uint32_t operand2_3, uint32_t operand2_2, 
+		uint32_t operand2_1, uint32_t operand2_0, 
+		uint32_t operand1_3, uint32_t operand1_2, 
+		uint32_t operand1_1, uint32_t operand1_0,
+		uint8_t dest_reg, StatusRegisters *ptr, uint32_t trap_vector)
 {
 	RegisterFile* rf = s->register_file;
 	uint32_t tv, result_l2, result_l1, result_h2, result_h1;
