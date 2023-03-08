@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <ajit_access_routines.h>
 #include <ajit_mt_irc.h>
-#include <core_portme.h>
+#include <cortos.h>
 
 #define TIMERCOUNT 10000000
 #define COUNT TIMERCOUNT
@@ -52,7 +52,7 @@ void setup ()
 	// bring uart out of reset.
 	__ajit_serial_set_uart_reset__ (0);
 
-	bypass_printf ("enabled serial\n");
+	cortos_printf ("enabled serial\n");
 
 	// enable interrupt controller for the current thread.
 	enableInterruptControllerAndAllInterrupts(0,0);
@@ -60,14 +60,14 @@ void setup ()
 
 int main () 
 {
-	bypass_printf("Starting\n");
+	cortos_printf("Starting\n");
 
 	// infinite loop
 	while(!exit_flag)
 	{
 	}
 
-	bypass_printf("echo %s\nDone.\n", buffer);
+	cortos_printf("echo %s\nDone.\n", buffer);
 	__ajit_serial_puts__ (buffer, 1023);
 	return(0);
 }

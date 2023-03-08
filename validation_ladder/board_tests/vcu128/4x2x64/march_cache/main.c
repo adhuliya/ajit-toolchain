@@ -103,11 +103,16 @@ void main_00 ()
 
 	go_flag = 1;
 	uint64_t t00 = cortos_get_clock_time();
+
 	argstruct sarg0;
         sarg0.thid = 1;
         argstruct* rarg0;
         scheduleChannelJob(&tc0, (void*) &callfn, (void*) &sarg0);
+
+	//-->  MEASURE THIS TIME
         runMarch(0);
+	//<--  MEASURE THIS TIME
+
         while(getChannelResponse(&tc0, (void**) &rarg0))
         {
         }
@@ -184,7 +189,10 @@ void main_01 ()
         {
         }
 
+	//-->  MEASURE THIS TIME
         (*__fn)(__arg);
+	//<--  MEASURE THIS TIME
+
         tc0.status = CH_COMPLETED;
 }
 
@@ -200,7 +208,11 @@ void main_10 ()
         sarg1.thid = 3;
         argstruct* rarg1;
 	scheduleChannelJob(&tc1, (void*) &callfn, (void*) &sarg1);
+
+	//-->  MEASURE THIS TIME
 	runMarch(2);
+	//<--  MEASURE THIS TIME
+
 	while(getChannelResponse(&tc1, (void**) &rarg1))
         {
         }
@@ -218,7 +230,10 @@ void main_11 ()
         {
         }
 
+	//-->  MEASURE THIS TIME
         (*__fn)(__arg);
+	//<--  MEASURE THIS TIME
+
         tc1.status = CH_COMPLETED;
 }
 
@@ -233,7 +248,11 @@ void main_20 ()
         sarg2.thid = 5;
         argstruct* rarg2;
         scheduleChannelJob(&tc2, (void*) &callfn, (void*) &sarg2);
+
+	//-->  MEASURE THIS TIME
         runMarch(4);
+	//<--  MEASURE THIS TIME
+
         while(getChannelResponse(&tc2, (void**) &rarg2))
         {
         }
@@ -253,7 +272,10 @@ void main_21 ()
         {
         }
 
+	//-->  MEASURE THIS TIME
         (*__fn)(__arg);
+	//<--  MEASURE THIS TIME
+
         tc2.status = CH_COMPLETED;
 }
 
@@ -270,7 +292,11 @@ void main_30 ()
         sarg3.thid = 7;
         argstruct* rarg3;
         scheduleChannelJob(&tc3, (void*) &callfn, (void*) &sarg3);
+
+	//-->  MEASURE THIS TIME
         runMarch(6);
+	//<--  MEASURE THIS TIME
+
         while(getChannelResponse(&tc3, (void**) &rarg3))
         {
         }
@@ -289,7 +315,11 @@ void main_31 ()
         {
         }
 
+	//-->  MEASURE THIS TIME
         (*__fn)(__arg);
+	//<--  MEASURE THIS TIME
+
+
         tc3.status = CH_COMPLETED;
 }
 

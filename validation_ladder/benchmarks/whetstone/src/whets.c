@@ -358,8 +358,6 @@ int main()
 #ifdef AJIT
 	__ajit_write_serial_control_register__ ( TX_ENABLE );
 #endif 
-		
-	PRINTF("AJIT Whetstone Run\n");
 
 #ifdef PRINTON
 	PRINTF("\n");
@@ -681,9 +679,6 @@ void whetstones(long xtra, long x100, int calibrate)
 	/* Section 8, Standard functions */
 	x = 0.75;
 	timea = dtime();
-#ifdef PRINTON
-	PRINTF("N8: timea=%f\n",timea);
-#endif
 	{
 		for (ix=0; ix<xtra; ix++)
 		{
@@ -693,13 +688,7 @@ void whetstones(long xtra, long x100, int calibrate)
 			}
 		}
 	}
-#ifdef PRINTON
-	PRINTF("N8: timea=%f\n",timea);
-#endif
 	timeb = dtime()-timea;
-#ifdef PRINTON
-	PRINTF("N8: timea=%f, timeb=%f\n", timea, timeb);
-#endif
 	pout("N8 exp,sqrt etc. \0",(float)(n8*4)*(float)(xtra),
 			2,x,timeb,calibrate,8);
 
