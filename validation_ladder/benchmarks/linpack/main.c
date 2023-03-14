@@ -42,7 +42,7 @@ int main ( )
     N is the problem size.
 */
 {
-# define N 100
+# define N  64
 # define LDA ( N + 1 )
 
   double *a;

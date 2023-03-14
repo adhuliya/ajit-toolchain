@@ -1,0 +1,16 @@
+10 iterations
+    number-of-instructions-executed = 129726
+    number-of-traps  = 2
+    number-of-cti  = 34295, mispredicts=1300
+
+20 iterations
+    number-of-instructions-executed = 135576
+    number-of-traps  = 2
+    number-of-cti    = 35464, mispredicts=1423
+
+instructions-per-iteration = 585
+mispredicts-per-iteration  = 12
+
+Time (us) per iteration = 8.41 us
+
+IPC =0.696
