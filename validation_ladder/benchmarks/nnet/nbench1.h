@@ -371,7 +371,7 @@ char *inpath="NNET.DAT";
 ** PROTOTYPES
 */
 void DoNNET(void);
-static ulong DoNNetIteration(ulong nloops);
+static uint64_t DoNNetIteration(ulong nloops);
 static void do_mid_forward(int patt);
 static void do_out_forward();
 void display_output(int patt);

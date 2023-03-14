@@ -844,7 +844,7 @@ return((unsigned long)(tickamount/1000000));
 
 #ifdef CLOCKWCPS
 /* Everybody else */
-return((unsigned long)(tickamount/100000000));
+return((unsigned long)(tickamount/CLOCKS_PER_SEC));
 #endif
 
 #ifdef WIN31TIMER
@@ -873,7 +873,7 @@ return((double)tickamount/(double)1000000);
 
 #ifdef CLOCKWCPS
 /* Everybody else */
-return((double)tickamount/(double)100000000);
+return((double)tickamount/(double)CLOCKS_PER_SEC);
 #endif
 
 #ifdef WIN31TIMER
