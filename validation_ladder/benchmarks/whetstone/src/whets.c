@@ -339,7 +339,7 @@ SPDP run_times[9];
 #include <core_portme.h>
 #include "ajit_access_routines.h"
 #define PRINTF ee_printf
-#define EE_TICKS_PER_SEC (100000000.0/256)
+#define EE_TICKS_PER_SEC (100000000.0)
 //#define EE_TICKS_PER_SEC (1000.0/256)
 #else
 #define PRINTF printf
@@ -392,7 +392,7 @@ int main()
 
 	while (count > 0);
 
-	if (TimeUsed > 0) xtra = (long)((SPDP)(duration * xtra) / TimeUsed);
+	if (TimeUsed > 0) xtra = 2*((long)((SPDP)(duration * xtra) / TimeUsed));
 	if (xtra < 1) xtra = 1;
 
 	calibrate = 0;
@@ -613,6 +613,8 @@ void whetstones(long xtra, long x100, int calibrate)
 		}
 	}
 	timeb = dtime()-timea;
+
+	ee_printf("fixmops timeb = %16.8f\n", timeb);
 	x = e1[0]+e1[1];
 	pout("N4 fixed point   \0",(float)(n4*15)*(float)(xtra),
 			2,x,timeb,calibrate,4);
@@ -968,18 +970,10 @@ SPDP dtime()
 /*****************************************************/
 SPDP __attribute__((optimize("O0"))) dtime()
 {
-
-#ifndef FAKECLOCK
-	uint32_t uq = ajit_barebones_clock();
+	uint64_t uq = __ajit_get_clock_time();
 	SPDP ret_val = ((SPDP) uq)*(1.0/((SPDP)EE_TICKS_PER_SEC));
 	// PRINTF("dtime: uq=0x%x, ret_val=%f\n", uq, ret_val);
 	return (ret_val);
-#else
-	static SPDP curr_time = 0.0;
-	curr_time += 5.0;
-	return(curr_time);
-#endif
-
 }
 #endif
 
