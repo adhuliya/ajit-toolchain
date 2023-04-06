@@ -168,7 +168,7 @@ void *t_run_test_nnet(struct TCDef *tcdef,void *in_params) {
 	tcdef->CRC=0;
 	tcdef->expected_CRC=0;
 	params->iterations=DoNNetIteration(params);
-	
+	cortos_printf("after donnet call");	
 	if (!params->gen_ref && (params->iterations != params->ref_iterations)) 
 		tcdef->CRC|=1;
 
@@ -216,9 +216,9 @@ int bmark_verify_nnet(void *in_params) {
 		}
 		th_printf("}; /* ref err */\n\n"); 
 		th_fpprintf("static intparts ref_average_error_index=%s;\n",th_sprint_fp(params->average_error,sbuf));
-		th_printf("static int ref_passes[] = {\n");
+		cortos_printf("static int ref_passes[] = {\n");
 		for (i=0; i<params->loops; i++) {
-			th_printf("\t%d",params->ref_passes[i]);
+			cortos_printf("\t%d",params->ref_passes[i]);
 			if (i<params->loops-1)
 				th_printf(",\n");
 		}
@@ -271,17 +271,23 @@ if (params->gen_ref)
 ** the learning cycle is the weight randomization and
 ** zeroing of changes.  
 */
-while(nloops--)
+//while(nloops--)
+int i=1;
+while(i--)
 {
+	
+	cortos_printf("no of loops - cou be 1000 = %d\n",nloops);
 	int learned = FALSE;
-	int req_passes=999999;
-	if (!params->gen_ref) req_passes = params->ref_passes[curloop++];
+	int req_passes=9;
+	//if (!params->gen_ref) req_passes = params->ref_passes[curloop++];
 	randomize_wts(params);
 	zero_changes(params);
 	params->pass_count=1;
 	numpasses = 0;
+	cortos_printf("req passes= %d\n",req_passes);
 	while (learned == FALSE)
 	{
+		cortos_printf("learned?\n");
 		for (patt=0; patt<params->n_in; patt++)
 		{
 			params->worst_error = FPCONST(0.0);      /* reset this every pass through data */
@@ -304,6 +310,7 @@ th_printf("Required %d passes\n",req_passes);
 th_printf("Learned in %d passes\n",numpasses);
 #endif
 }
+cortos_printf("what baout end of donnetiteration\n");
 return numpasses;
 }
 

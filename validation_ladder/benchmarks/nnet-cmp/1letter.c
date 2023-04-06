@@ -12,7 +12,7 @@ Please refer to LICENSE.md for the specific license agreement that pertains to t
 
 /**** START DATASET ****/
 #include "th_lib.h"
-#include "../nnet.h"
+#include "nnet.h"
 static e_u8 in_data_1[]={
 0,0,1,0,0,
 0,1,0,1,0,

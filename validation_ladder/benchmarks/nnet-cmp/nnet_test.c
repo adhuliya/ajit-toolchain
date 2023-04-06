@@ -102,11 +102,13 @@ int main(int argc, char *argv[])
 	if (orig_dataname) {
 		th_strncpy(dataname,"NULL",MITH_MAX_NAME);
 	}
+	workload->mcl = 0;
 	retval=define_params_nnet(0,name,dataname);
 	real_items[0]=helper_nnettest(workload,retval,name,bmark_init_nnet,bench_repeats,t_run_test_nnet,bmark_clean_nnet,bmark_fini_nnet,bmark_verify_nnet,1,(e_u32)567581359,(e_u32)880349224);
 
 	/* Run the workload */
 	cortos_printf("num context is %d \n",num_contexts);
+	
 	mith_main(workload,workload->iterations,num_contexts,oversubscribe_allowed,num_workers);
 
 	/* And cleanup */
