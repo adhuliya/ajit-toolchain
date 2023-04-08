@@ -922,6 +922,8 @@ void *th_calloc_x( size_t nmemb, size_t size, const char *file, int line )
 	   file=file; 
 	   line=line;
 	p=bget( nmemb*size); /*, file, line );*/
+	memset(p, 0, nmemb*size);
+	//cortos_printf("bget returns = %p \n",p);
 #if THDEBUG>2
    if (p==NULL)
 	   th_printf("calloc failed from %s:%d\n",file,line);

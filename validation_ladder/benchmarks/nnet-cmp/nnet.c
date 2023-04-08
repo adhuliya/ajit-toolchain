@@ -168,7 +168,8 @@ void *t_run_test_nnet(struct TCDef *tcdef,void *in_params) {
 	tcdef->CRC=0;
 	tcdef->expected_CRC=0;
 	params->iterations=DoNNetIteration(params);
-	cortos_printf("after donnet call");	
+	cortos_printf("params iterations is %d ",params->iterations);
+	//cortos_printf("after donnet call");	
 	if (!params->gen_ref && (params->iterations != params->ref_iterations)) 
 		tcdef->CRC|=1;
 
@@ -182,7 +183,7 @@ void *t_run_test_nnet(struct TCDef *tcdef,void *in_params) {
 	tcdef->v2=params->iterations;
 	tcdef->dbl_data[0]=params->average_error;
 	tcdef->dbl_data[1]=params->worst_error;
-	
+	cortos_printf("params iterations is %d ",params->iterations);
 	return tcdef;
 }
 
@@ -276,18 +277,18 @@ int i=1;
 while(i--)
 {
 	
-	cortos_printf("no of loops - cou be 1000 = %d\n",nloops);
+	//cortos_printf("no of loops - cou be 1000 = %d\n",nloops);
 	int learned = FALSE;
-	int req_passes=9;
+	int req_passes=1;
 	//if (!params->gen_ref) req_passes = params->ref_passes[curloop++];
 	randomize_wts(params);
 	zero_changes(params);
 	params->pass_count=1;
 	numpasses = 0;
-	cortos_printf("req passes= %d\n",req_passes);
+//	cortos_printf("req passes= %d\n",req_passes);
 	while (learned == FALSE)
 	{
-		cortos_printf("learned?\n");
+//		cortos_printf("learned?\n");
 		for (patt=0; patt<params->n_in; patt++)
 		{
 			params->worst_error = FPCONST(0.0);      /* reset this every pass through data */
@@ -310,7 +311,7 @@ th_printf("Required %d passes\n",req_passes);
 th_printf("Learned in %d passes\n",numpasses);
 #endif
 }
-cortos_printf("what baout end of donnetiteration\n");
+//cortos_printf("what baout end of donnetiteration \n");
 return numpasses;
 }
 

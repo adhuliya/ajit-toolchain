@@ -132,6 +132,7 @@ void *bench_thread(void *inarg) {
 		if (item==NULL)
 			break; /* stop only when no more items to process */
 		mycontext->inv=item->assigned;
+		cortos_printf("bench thread done?");
 		/* if this is part of a chain, make sure all chain items are active before continue */
 		if (item->chain_id>=0) {
 			/* release the special mutex if last chain item is assigned */
@@ -170,6 +171,7 @@ void *bench_thread(void *inarg) {
 	th_sprintf(logbuf," * completed [%d]%s[%d] in %d",item->uid,item->shortname,mycontext->inv,mycontext->id);
 	th_log(TH_INFO,logbuf);
 #endif
+cortos_printf("bench thread completed");
 			/* verify output */
 			if (verify_output) {
 				failed = (Bool)(item->veri_func(mycontext->params)<=0);
@@ -219,7 +221,7 @@ void *bench_thread(void *inarg) {
 	th_sprintf(logbuf," * all done in %d",mycontext->id);
 	th_log(TH_INFO,logbuf);
 #endif
-
+	cortos_printf("are u exiting bench-thread?");
 	/* TODO: Is there anything that needs to be done with the bench thread output? */
 	return retval;
 }

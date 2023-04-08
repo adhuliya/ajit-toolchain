@@ -147,10 +147,14 @@ int mith_wl_reset(ee_workload *workload,unsigned int num_iterations,
 		th_exit(TH_ERROR,"This workload contains a chain that cannot be instantiated with currently defined number of contexts!");
 		return 0;
 	}
-	cortos_printf("finished mcl check in mith_wl_reset");
+	cortos_printf("finished mcl check in mith_wl_reset\n");
 	for (i=0; i<workload->max_idx; i++) {
 		if (workload->load[i] != NULL) {
-			cortos_printf("reached inside woarkload in mith_wl_reset");
+			cortos_printf("reached inside woarkload in mith_wl_reset \n");
+			cortos_printf("address of workolaod is %x \n",&(workload));
+			cortos_printf("address of workolaod-ee_item is %x \n",&(workload-> load[i]));
+			cortos_printf("address of workolaod-ee_item is %x \n",&(workload-> load[i]->shortname));
+			cortos_printf("address of workolaod-ee_item-required is %x \n ",&(workload->load[i]->required));
 			workload->load[i]->required=num_iterations;
 			workload->load[i]->assigned=0;
 			workload->load[i]->finished=0;
