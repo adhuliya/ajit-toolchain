@@ -7,7 +7,7 @@ echo "Ajit: Removing any container with name ajit_build_dev";
 docker rm --force ajit_build_dev;
 
 echo "Ajit: Starting container with name ajit_build_dev";
-echo "Ajit: Mounting Host Dir: ajit-toolchain in container at $_CONT_MOUNT_POINT";
+echo "Ajit: Mounting Host Dir: ajit-toolchain in container at /home/ajit/ajit-toolchain ";
 docker run \
   --detach \
   --name ajit_build_dev \
