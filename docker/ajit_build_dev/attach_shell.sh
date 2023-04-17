@@ -11,6 +11,6 @@ done
 
 # If the above for loop doesn't lead to exit then attache shell as normal user.
 # Attach shell as a normal user:
-docker exec -u $(id -nu) -w /home/ajit/ajit-toolchain -it ajit_build_dev  /bin/bash;
+docker exec -w /home/ajit/ajit-toolchain -it ajit_build_dev  /bin/bash;
 
 
