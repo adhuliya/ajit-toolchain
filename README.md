@@ -139,6 +139,8 @@ Note: Don't be a root or sudo user when invoking any of the commands.
 
 Once the above setup is done, you can refer `./docker/README.md` for more details.
 
+NOTE: For access to USB serial ports see docker/ajit_buil_dev/run.sh.
+
 ## Docker Setup: Run a test program
 
 To run and test a sample examples,
