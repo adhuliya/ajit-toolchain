@@ -137,6 +137,8 @@ Note: Don't be a root or sudo user when invoking any of the commands.
     exit;
     ## now you are outside the container
 
+If any error persists, refer to docker/Docker_setup.txt to setup manually.
+
 Once the above setup is done, you can refer `./docker/README.md` for more details.
 
 NOTE: For access to USB serial ports see docker/ajit_buil_dev/run.sh.
