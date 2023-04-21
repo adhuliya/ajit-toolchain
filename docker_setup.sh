@@ -54,8 +54,8 @@ fi
   sleep 1;
 
   mkdir -p $AJIT_HOME/build;
-  wget --no-check-certificate --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=18erSMxMXyPrAFdkIr9ntFrDeU4PPn0s1' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=18erSMxMXyPrAFdkIr9ntFrDeU4PPn0s1" -O docker/ajit_base.tar && rm -rf /tmp/cookies.txt
-  docker load -i $AJIT_HOME/docker/ajit_base.tar;
+  wget --no-check-certificate --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1gUQWaEeitF-WQza42AnueKAnlB7C8ATd' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1gUQWaEeitF-WQza42AnueKAnlB7C8ATd" -O docker/ajit_tools_image.tar && rm -rf /tmp/cookies.txt
+  docker load -i $AJIT_HOME/docker/ajit_tools_image.tar;
 
 ##  echo -e "\n\n\n\n\n";
 ##  echo "################################################";
@@ -73,7 +73,7 @@ fi
   echo "################################################";
   sleep 1;
   pushd $AJIT_HOME/docker/ajit_build_dev;
-  ./build.sh;
+  ./build.sh
   ./run.sh;
   popd;
 

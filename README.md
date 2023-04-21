@@ -126,18 +126,16 @@ Note: Don't be a root or sudo user when invoking any of the commands.
 
     source ./set_ajit_home;   # sets AJIT_HOME
     $AJIT_HOME/install_docker.sh;      # installs docker and more
-    $AJIT_HOME/docker_setup.sh;        # creates the docker images 
-
-    # on success
-    cd ./docker/ajit_build_dev; # go to the image utility directory
-    ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
-    ## now you are inside the container ajit_build_dev
+    $AJIT_HOME/docker_setup.sh;        # creates the docker images and starts the dokcer container
+    ## now you are inside the container ajit_tools
+    source ./set_ajit_home
     ./setup.sh;                 # build and setup the Ajit system
     exit;
     ## now you are outside the container
 
 Once the above setup is done, you can refer `./docker/README.md` for more details.
+
+NOTE: For access to USB serial ports see docker/ajit_buil_dev/run.sh.
 
 ## Docker Setup: Run a test program
 
@@ -145,10 +143,11 @@ To run and test a sample examples,
 
     # STEP 1: Enter the docker container.
     cd ./docker/ajit_build_dev; # go to the image utility directory
-    ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
-    ## now you are inside the container ajit_build_dev
+    ./run.sh;                   # starts docker container `ajit_tools`
+    ## now you are inside the container ajit_tools
     # STEP 2: Execute a single test.
+    source ./set_ajit_home
+    source ./ajit_env
     cd ./tests/examples/misc/sin-model-test;
     ./build.sh;
     ./run_cmodel.sh;
@@ -165,10 +164,11 @@ from the root of the repository,
 
     # STEP 1: Enter the docker container.
     cd ./docker/ajit_build_dev; # go to the image utility directory
-    ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
-    ## now you are inside the container ajit_build_dev
+    ./run.sh;                   # starts docker container `ajit_tools`
+    ## now you are inside the container ajit_tools
     # STEP 2: Execute all the tests.
+    source ./set_ajit_home
+    source ./ajit_env
     cd ./tests; ./test.sh;
     cd ..; cd ./tests/verfication; ./verify.sh;
 

@@ -3,6 +3,10 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{comment}
+\usepackage{float}
 \usetikzlibrary{positioning}
 \usepackage[utf8]{inputenc}
 \setlength{\arrayrulewidth}{.5mm}
@@ -232,11 +236,41 @@ As we can see from the figure, improvement of minimum of 40\% and a maximum of u
 
 This reduce in instructions is mainly due to the fact that about only half the number of iterations were required in the main loops (where maximum time is spent by the function), as we could use 64 bit operations.
 
-\begin{figure}[htbp]
- \hbox{\hspace{-7cm}\includegraphics[scale=1.35]{string_data.pdf}}
-    \caption{Performance comparison of the implemented functions} 
-    \label{Fig 1}
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strcasecmp.png}
+         \caption{strcasecmp}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strcmp.png}
+         \caption{strcmp}
+         \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strcat.png}
+         \caption{strcat}
+     \end{subfigure}
+       \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strncpy.png}
+         \caption{strncpy}
+         \end{subfigure}
+       \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strcpy.png}
+         \caption{strcpy}
+     \end{subfigure}
+        \caption{String functions}
+        \label{fig:three graphs}
 \end{figure}
+
 \newpage
 
 \section{Conclusion}
