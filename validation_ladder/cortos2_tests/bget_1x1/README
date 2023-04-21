@@ -1,0 +1,4 @@
+A simple bget example..
+ 	- config.yaml specifies 1000KB
+	  region for bget.
+        - main.c allocates and frees several times.

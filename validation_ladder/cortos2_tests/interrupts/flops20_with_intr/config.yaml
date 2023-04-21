@@ -6,7 +6,7 @@ Hardware:
   Processor:
     # Required: Number of cores and threads per core.
     Cores: 1
-    ThreadsPerCore: 2
+    ThreadsPerCore: 1
     ISA: 32 # 32/64 bit (Default: 32)
 
   Memory:
@@ -68,37 +68,31 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: NONE
+    LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: No # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
-    FirstDebugPort: 8888
-    BuildArgs: " -D USE_CORTOS -F lm  -D USE_VMAP -C ./ -I $AJIT_HOME/application_development/thread_channel/include -C $AJIT_HOME/application_development/thread_channel/src -F funroll-loops "
+    FirstDebugPorg: 8888
+    BuildArgs: " -D AJIT -D DP -D HAS_FLOAT -D PRINTOUT -D D_LOOP_COUNT=10000 -D D_CONTINUOUS=1 -D CLK_FREQUENCY=80000000 -D USE_VMAP "
 
-  StartupFuncName: setup
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
-        - main_00
+        - ajit_main
   # One can also specify an infinite loop on the function:
   #   CortosLoopCalls:
   #     - main1
       StackSize:
         SizeInKiloBytes: 8
-    - CortosInitCalls:
-        - main_01
-      StackSize:
-        SizeInKiloBytes: 8
 
-  #DynamicMemory: # Dynamic Memory Configuration.
+  DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    #SizeInKiloBytes: 1000
+    SizeInKiloBytes: 1000
     # SizeInMegaBytes: ...
 
-  #Locks: # Locks for synchronization between threads.
-      #Cacheable: 32
-
+  Locks: # Locks for synchronization between threads.
+      Cacheable: 32
 #     NonCacheable: 32
 #
 #   MessageQueues: # List of queues in the system.
@@ -111,9 +105,14 @@ Software:
 #       NumOfQueues: 16
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
-#
-#   InterruptHandler:
-#     - TypeCode: 0x4
-#       Function: functionName4
-#     - TypeCode: 0x5
-#       Function: functionName5
+  ################################################################
+  Interrupts: # hardware interrupts
+    - Index: 10 # timer
+      Function: my_timer_interrupt_handler
+    # - Index: 12  # serial interrupt index
+    #  Function: my_serial_interrupt_handler
+    #  - Index: 13  # external interrupt index
+    #    Function: my_external_interrupt_handler
+  #Traps: # by software
+    #- Index: 5
+      #Function: user_handler05

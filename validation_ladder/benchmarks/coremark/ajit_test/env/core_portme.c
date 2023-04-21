@@ -112,6 +112,8 @@ void portable_init(core_portable *p)
 {
 	// enable AJIT serial device.
 	__ajit_serial_configure__ (1,0,0);
+	__ajit_serial_set_baudrate_via_vmap__(115200, 80000000);
+        __ajit_serial_set_uart_reset_via_vmap__(0);
 
 	// __ajit_serial_puts__ ("\nHiFromAjit\n\n", 13);
 

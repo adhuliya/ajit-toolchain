@@ -345,6 +345,11 @@ SPDP run_times[9];
 #define PRINTF printf
 #endif
 
+	
+extern int j_ext;
+extern int k_ext;
+extern int l_ext;
+
 int main()
 {
 	int count = 10;
@@ -595,9 +600,9 @@ void whetstones(long xtra, long x100, int calibrate)
 			2,(SPDP)(j),timeb,calibrate,3);
 
 	/* Section 4, Integer arithmetic */
-	j = 1;
-	k = 2;
-	l = 3;
+	j = j_ext;
+	k = k_ext;
+	l = l_ext;
 	timea = dtime();
 	{
 		for (ix=0; ix<xtra; ix++)
@@ -614,7 +619,6 @@ void whetstones(long xtra, long x100, int calibrate)
 	}
 	timeb = dtime()-timea;
 
-	ee_printf("fixmops timeb = %16.8f\n", timeb);
 	x = e1[0]+e1[1];
 	pout("N4 fixed point   \0",(float)(n4*15)*(float)(xtra),
 			2,x,timeb,calibrate,4);

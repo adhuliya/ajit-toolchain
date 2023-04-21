@@ -31,7 +31,11 @@
 #define EE_TICKS_PER_SECOND  (100000000/256)
 int __enable_serial()
 {
+
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
+	__ajit_serial_set_baudrate_via_vmap__(115200, 80000000);
+        __ajit_serial_set_uart_reset_via_vmap__(0);
+	
 	return(0);
 }
 

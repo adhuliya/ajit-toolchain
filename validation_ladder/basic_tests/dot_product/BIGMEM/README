@@ -3,8 +3,14 @@
 
 number of instructions executed per iteration = (26817-17060)/10 = 976 instructions per iteration.
 
-measured from hardware at 80MHz
-Elapsed time=      0.012630, MFLOPS=40.538842
+measured from hardware at 80MHz (April 20, 2023)
+Elapsed time=      0.012622, MFLOPS=40.562889
 		# of cycles = 0.012630*80000 = 1010
 
 Therefore IPC = 976/1010 = 0.97 IPC   Not bad.
+
+On 1x2 (single thread active)
+Updated: on 1x2 FinalStretch (April 20, 2023)
+	Elapsed time=      0.012624, MFLOPS=40.558712
+
+Almost the same performance.

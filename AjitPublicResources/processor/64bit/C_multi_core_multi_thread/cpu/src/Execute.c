@@ -2274,20 +2274,50 @@ uint32_t executeInstruction(
 		uint32_t bp_nnpc;
 		uint32_t bp_idx = 0;
 
-		if(branchPrediction(&(s->branch_predictor), old_pc, &bp_idx, &bp_nnpc))
+		uint8_t br_taken = ((s->status_reg.pc + 4) != s->status_reg.npc);
+
+		if(is_call)
 		{
-			if(bp_nnpc != s->status_reg.npc) {
-				incrementMispredicts (&(s->branch_predictor));
-				updateBranchPredictEntry(&(s->branch_predictor), bp_idx, s->status_reg.npc);
+			pushIntoReturnAddressStack (&(s->return_address_stack), old_pc + 8);
+		}
+
+		uint8_t is_ret_or_retl = (is_jmpl && imm_flag && (operand2 == 8) &&  ((rs1 == 15) || (rs1 == 31)));
+	
+		if(is_ret_or_retl)	
+		// issue here..  retl can jump back into the return address stack..  this will cause a few
+		// mispredicts
+		{
+			uint32_t pop_val = popFromReturnAddressStack(&(s->return_address_stack));
+			if(pop_val & 0x1)
+			{
+				if((pop_val & (~ 0x1)) != s->status_reg.npc)
+				{
+					incrementRasMispredicts(&(s->return_address_stack));
+					fprintf(stderr,"RAS: mispredict on 0x%x\n", pop_val & (~0x1));
+				}
 			}
 		}
-		else
+		else 
 		{
-			if((s->status_reg.pc+4) != s->status_reg.npc)
+			if(branchPrediction(&(s->branch_predictor), old_pc, s->status_reg.pc,  &bp_idx, &bp_nnpc))
 			{
-				incrementMispredicts (&(s->branch_predictor));
+				if(bp_nnpc != s->status_reg.npc) {
+					incrementMispredicts (&(s->branch_predictor));
+				}
+
+				updateBranchPredictEntry(&(s->branch_predictor), 
+						bp_idx, 
+						br_taken,
+						s->status_reg.npc);
 			}
-			addBranchPredictEntry(&(s->branch_predictor), old_pc, s->status_reg.npc);
+			else
+			{
+				if((s->status_reg.pc+4) != s->status_reg.npc)
+				{
+					incrementMispredicts (&(s->branch_predictor));
+				}
+				addBranchPredictEntry(&(s->branch_predictor), br_taken, old_pc, s->status_reg.npc);
+			}
 		}
 	}
 
@@ -2301,7 +2331,7 @@ uint32_t executeInstruction(
 				s->status_reg.npc,
 				s->status_reg.psr,
 				s->status_reg.wim
-				);
+		       );
 		fprintf(stderr," instruction word = 0x%x\n",s->instruction);
 	}
 #endif
@@ -2316,26 +2346,26 @@ void trapToString (uint32_t tv, uint8_t intrpt_level, uint8_t ticc_trap_type, ch
 	sprintf(tt,"NO_TRAP");
 	if(!reset_trap)
 	{
-	 if(getBit32(tv, _DATA_STORE_ERROR_) )			sprintf(tt,"DATA_STORE_ERROR");
-	 else if(getBit32(tv, _INSTRUCTION_ACCESS_ERROR_) )	sprintf(tt,"INSTR_ACCESS_ERROR");
-	 else if(getBit32(tv, _R_REGISTER_ACCESS_ERROR_) )	sprintf(tt,"R_REG_ACCESS_ERROR");
-	 else if(getBit32(tv, _INSTRUCTION_ACCESS_EXCEPTION_) )	sprintf(tt,"INSTR_ACCESS_EXCEPTION");
-	 else if(getBit32(tv, _PRIVILEGED_INSTRUCTION_) )	sprintf(tt,"PRIVILEGED_INSTR");
-	 else if(getBit32(tv, _ILLEGAL_INSTRUCTION_) )		sprintf(tt,"ILLEGAL_INSTR");
-	 else if(getBit32(tv, _FP_DISABLED_) )			sprintf(tt,"FP_DISABLED");
-	 else if(getBit32(tv, _CP_DISABLED_) )			sprintf(tt,"CP_DISABLED");
-	 else if(getBit32(tv, _UNIMPLEMENTED_FLUSH_) )		sprintf(tt,"UNIMPLEMENTED_FLUSH");
-	 else if(getBit32(tv, _WINDOW_OVERFLOW_) )		sprintf(tt,"WINDOW_OVERFLOW");
-	 else if(getBit32(tv, _WINDOW_UNDERFLOW_) )		sprintf(tt,"WINDOW_UNDERFLOW");
-	 else if(getBit32(tv, _MEM_ADDRESS_NOT_ALIGNED_) ) 	sprintf(tt,"MEM_ADDR_NOT_ALIGNED");
-	 else if(getBit32(tv, _FP_EXCEPTION_) )			sprintf(tt,"FP_EXCEPTION");
-	 else if(getBit32(tv, _CP_EXCEPTION_) )			sprintf(tt,"CP_EXCEPTION");
-	 else if(getBit32(tv, _DATA_ACCESS_ERROR_) )		sprintf(tt,"DATA_ACCESS_ERROR");
-	 else if(getBit32(tv, _DATA_ACCESS_EXCEPTION_) )	sprintf(tt,"DATA_ACCESS_EXCEPTION");
-	 else if(getBit32(tv, _TAG_OVERFLOW_) )			sprintf(tt,"TAG_OVERFLOW");
-	 else if(getBit32(tv, _DIVISION_BY_ZERO_) )		sprintf(tt,"DIV_BY_ZERO");
-	 else if(getBit32(tv, _TRAP_INSTRUCTION_) )		sprintf(tt,"TRAP_INSTR_TRAP (ta %d)\n", ticc_trap_type);
-	 else if((intrpt_level > 0) )				sprintf(tt,"INTERRUPT (level=%d)\n", intrpt_level);
+		if(getBit32(tv, _DATA_STORE_ERROR_) )			sprintf(tt,"DATA_STORE_ERROR");
+		else if(getBit32(tv, _INSTRUCTION_ACCESS_ERROR_) )	sprintf(tt,"INSTR_ACCESS_ERROR");
+		else if(getBit32(tv, _R_REGISTER_ACCESS_ERROR_) )	sprintf(tt,"R_REG_ACCESS_ERROR");
+		else if(getBit32(tv, _INSTRUCTION_ACCESS_EXCEPTION_) )	sprintf(tt,"INSTR_ACCESS_EXCEPTION");
+		else if(getBit32(tv, _PRIVILEGED_INSTRUCTION_) )	sprintf(tt,"PRIVILEGED_INSTR");
+		else if(getBit32(tv, _ILLEGAL_INSTRUCTION_) )		sprintf(tt,"ILLEGAL_INSTR");
+		else if(getBit32(tv, _FP_DISABLED_) )			sprintf(tt,"FP_DISABLED");
+		else if(getBit32(tv, _CP_DISABLED_) )			sprintf(tt,"CP_DISABLED");
+		else if(getBit32(tv, _UNIMPLEMENTED_FLUSH_) )		sprintf(tt,"UNIMPLEMENTED_FLUSH");
+		else if(getBit32(tv, _WINDOW_OVERFLOW_) )		sprintf(tt,"WINDOW_OVERFLOW");
+		else if(getBit32(tv, _WINDOW_UNDERFLOW_) )		sprintf(tt,"WINDOW_UNDERFLOW");
+		else if(getBit32(tv, _MEM_ADDRESS_NOT_ALIGNED_) ) 	sprintf(tt,"MEM_ADDR_NOT_ALIGNED");
+		else if(getBit32(tv, _FP_EXCEPTION_) )			sprintf(tt,"FP_EXCEPTION");
+		else if(getBit32(tv, _CP_EXCEPTION_) )			sprintf(tt,"CP_EXCEPTION");
+		else if(getBit32(tv, _DATA_ACCESS_ERROR_) )		sprintf(tt,"DATA_ACCESS_ERROR");
+		else if(getBit32(tv, _DATA_ACCESS_EXCEPTION_) )	sprintf(tt,"DATA_ACCESS_EXCEPTION");
+		else if(getBit32(tv, _TAG_OVERFLOW_) )			sprintf(tt,"TAG_OVERFLOW");
+		else if(getBit32(tv, _DIVISION_BY_ZERO_) )		sprintf(tt,"DIV_BY_ZERO");
+		else if(getBit32(tv, _TRAP_INSTRUCTION_) )		sprintf(tt,"TRAP_INSTR_TRAP (ta %d)\n", ticc_trap_type);
+		else if((intrpt_level > 0) )				sprintf(tt,"INTERRUPT (level=%d)\n", intrpt_level);
 	}
 	else sprintf(tt,"RESET_TRAP");
 
@@ -2354,20 +2384,20 @@ void selectTrap( uint32_t *trap_vector, uint32_t *tbr, uint8_t et, ThreadMode *p
 
 	if(!reset_trap)
 	{
-	 if(!et) 					mode	= _ERROR_MODE_ ;
-	 if(getBit32(tv, _DATA_STORE_ERROR_) )			tt= 0x2B ;
-	 else if(getBit32(tv, _INSTRUCTION_ACCESS_ERROR_) )	tt= 0x21 ;
-	 else if(getBit32(tv, _R_REGISTER_ACCESS_ERROR_) )	tt= 0x20 ;
-	 else if(getBit32(tv, _INSTRUCTION_ACCESS_EXCEPTION_) )	tt= 0x1 ;
-	 else if(getBit32(tv, _PRIVILEGED_INSTRUCTION_) )	tt= 0x3 ;
-	 else if(getBit32(tv, _ILLEGAL_INSTRUCTION_) )		tt= 0x2 ;
-	 else if(getBit32(tv, _FP_DISABLED_) )			tt= 0x4 ;
-	 else if(getBit32(tv, _CP_DISABLED_) )			tt= 0x24 ;
-	 else if(getBit32(tv, _UNIMPLEMENTED_FLUSH_) )		tt= 0x25 ;
-	 else if(getBit32(tv, _WINDOW_OVERFLOW_) )		tt= 0x5 ;
-	 else if(getBit32(tv, _WINDOW_UNDERFLOW_) )		tt= 0X6 ;
-	 else if(getBit32(tv, _MEM_ADDRESS_NOT_ALIGNED_) ) 	tt= 0x7 ;
-	 else if(getBit32(tv, _FP_EXCEPTION_) )			tt= 0x8 ;
+		if(!et) 					mode	= _ERROR_MODE_ ;
+		if(getBit32(tv, _DATA_STORE_ERROR_) )			tt= 0x2B ;
+		else if(getBit32(tv, _INSTRUCTION_ACCESS_ERROR_) )	tt= 0x21 ;
+		else if(getBit32(tv, _R_REGISTER_ACCESS_ERROR_) )	tt= 0x20 ;
+		else if(getBit32(tv, _INSTRUCTION_ACCESS_EXCEPTION_) )	tt= 0x1 ;
+		else if(getBit32(tv, _PRIVILEGED_INSTRUCTION_) )	tt= 0x3 ;
+		else if(getBit32(tv, _ILLEGAL_INSTRUCTION_) )		tt= 0x2 ;
+		else if(getBit32(tv, _FP_DISABLED_) )			tt= 0x4 ;
+		else if(getBit32(tv, _CP_DISABLED_) )			tt= 0x24 ;
+		else if(getBit32(tv, _UNIMPLEMENTED_FLUSH_) )		tt= 0x25 ;
+		else if(getBit32(tv, _WINDOW_OVERFLOW_) )		tt= 0x5 ;
+		else if(getBit32(tv, _WINDOW_UNDERFLOW_) )		tt= 0X6 ;
+		else if(getBit32(tv, _MEM_ADDRESS_NOT_ALIGNED_) ) 	tt= 0x7 ;
+		else if(getBit32(tv, _FP_EXCEPTION_) )			tt= 0x8 ;
 	 else if(getBit32(tv, _CP_EXCEPTION_) )			tt= 0x28 ;
 	 else if(getBit32(tv, _DATA_ACCESS_ERROR_) )		tt= 0x29 ;
 	 else if(getBit32(tv, _DATA_ACCESS_EXCEPTION_) )	tt= 0x9 ;

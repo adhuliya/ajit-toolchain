@@ -58,7 +58,7 @@
  #endif
 #endif
 #ifndef COMPILER_FLAGS 
- #define COMPILER_FLAGS " -m32 -mcpu=v8 -nostdlib -ffreestanding -O3 -funroll-loops -fgcse-sm " /* "Please put compiler flags here (e.g. -o3)" */
+ #define COMPILER_FLAGS " -m32 -mcpu=v8 -nostdlib -ffreestanding -O2 -funroll-loops -fgcse-sm " /* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION 
  #define MEM_LOCATION "STATIC"

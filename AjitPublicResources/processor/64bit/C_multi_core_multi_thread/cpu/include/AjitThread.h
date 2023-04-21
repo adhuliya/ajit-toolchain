@@ -22,19 +22,48 @@ typedef enum _ThreadMode
 	_ERROR_MODE_
 } ThreadMode;
 
+// return address stack.
+#define RAS_DEPTH   16
+typedef struct _ReturnAddressStack {
+
+	uint32_t push_count;
+	uint32_t pop_count;
+
+	int surplus;
+
+	uint32_t mispredicts;
+	uint32_t write_pointer;
+	uint32_t read_pointer;
+
+	// pc | 0x1.
+	uint32_t entries[RAS_DEPTH];
+} ReturnAddressStack;
+void initReturnAddressStack(ReturnAddressStack* ras);
+void pushIntoReturnAddressStack(ReturnAddressStack* ras, uint32_t return_address);
+uint32_t popFromReturnAddressStack(ReturnAddressStack* ras);
+uint32_t topOfReturnAddressStack(ReturnAddressStack* ras);
+void incrementRasMispredicts(ReturnAddressStack* ras);
+void dumpReturnAddressStackStatus(ReturnAddressStack* ras);
+
+
+
 // branch predictor..  
+#define BP_MAX_COUNT_VALUE   4
 typedef struct _BranchPredictorState {
 	uint32_t table_size;
 	uint32_t branch_count;
 	uint32_t mispredicts;
 	uint32_t* pc_tags;
 	uint32_t* nnpc_values;
+	uint8_t*  saturating_counters;
 } BranchPredictorState;
 void initBranchPredictorState(BranchPredictorState* bps, uint32_t tsize);
 void resetBranchPredictorState(BranchPredictorState* bps);
-void addBranchPredictEntry (BranchPredictorState* bps, uint32_t pc, uint32_t nnpc);
-void updateBranchPredictEntry (BranchPredictorState* bps, uint32_t idx, uint32_t nnpc);
-int branchPrediction(BranchPredictorState* bps, uint32_t pc, uint32_t* bp_idx, uint32_t* nnpc);
+void addBranchPredictEntry (BranchPredictorState* bps, uint8_t br_taken, uint32_t pc, uint32_t nnpc);
+void updateBranchPredictEntry (BranchPredictorState* bps,    uint32_t idx, uint8_t br_taken, uint32_t nnpc);
+int branchPrediction(BranchPredictorState* bps, uint32_t pc, uint32_t npc,  uint32_t* bp_idx, uint32_t* nnpc);
+void dumpBranchPredictorStatus(BranchPredictorState* bps);
+
 
 void incrementMispredicts(BranchPredictorState* bps);
 uint32_t numberOfMispredicts(BranchPredictorState* bps);
@@ -146,6 +175,7 @@ typedef struct _ThreadState
 	RegisterFile* register_file;
 
 	BranchPredictorState branch_predictor;
+	ReturnAddressStack   return_address_stack;
 
 	uint64_t num_ifetches;
 	uint64_t num_instructions_executed;

@@ -1,13 +1,32 @@
-for 10 iterations
-    number-of-instructions-executed = 81239
-    number-of-traps  = 2
-    number-of-cti  = 18269, mispredicts=890
+-------------------------------------------------------------
+with -O 3
+-------------------------------------------------------------
+    10 iterations number-of-instructions-executed = 78694
+    20 iterations number-of-instructions-executed = 80544
 
-for 20 iterations
-    number-of-instructions-executed = 82694
-    number-of-traps  = 2
-    number-of-cti  = 18410, mispredicts=890
+	per-iteration = 185 
+			1.85 us
 
-instructions per iteration = 145
-time per iteration = 2.47us
-IPC = 0.59
+	achieved        2.38 us
+			revised on final stretch, 2.30 us 
+
+	IPC =  		0.78
+			revised on final stretch to 0.8
+
+		DMIPS/MHz = 2.4
+			revised to 2.46 on final stretch.
+
+-------------------------------------------------------------
+with -O 2
+-------------------------------------------------------------
+    number-of-instructions-executed = 119561
+    number-of-instructions-executed = 122761
+
+	per-iteration 320
+			3.2 us
+
+	achieved 4.36 us
+
+	IPC = 0.73
+		
+		DMIPS/MHz = 1.3

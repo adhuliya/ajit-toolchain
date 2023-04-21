@@ -1,23 +1,7 @@
-Number of instructions per iteration of dhrystone is 445.
+    10 iterations number-of-instructions-executed = 123900
+    20 iterations number-of-instructions-executed = 127425
+	
+	per iteration 353   3.53us/terations
+	achieved 4.9 us/iteration
 
-IPC for Direct-mapped cache is 0.84  (5.29 us/iteration)
-IPC for Set-associative (4-way) cache is 0.82  (5.41 us/iteration).
-
-
-with -o 2 -funroll-loops
-
-for 10 iterations
-    number-of-instructions-executed = 129495
-    number-of-traps  = 2
-    number-of-cti  = 34088, mispredicts=4980
-
-for 20 iterations
-    number-of-instructions-executed = 131965
-    number-of-traps  = 2
-    number-of-cti  = 34476, mispredicts=5055
-
-Time per iteration = 5.09us
-insrtuctions per iteration = 247 
-
-IPC =  0.49
-
+	IPC = 0.72

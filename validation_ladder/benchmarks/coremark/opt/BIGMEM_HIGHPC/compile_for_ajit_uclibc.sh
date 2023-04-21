@@ -9,5 +9,5 @@ makeLinkerScript.py -t 0x40000000 -d 0x40020000 -o customLinkerScript.lnk
 
 #Step 2: Compile the application using uclibc
 #compileToSparcUclibc.py -o 3 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops'
-compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops'
+compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops' -F 'finline-functions'
 

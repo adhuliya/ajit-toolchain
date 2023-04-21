@@ -8,5 +8,8 @@ DEFS="-D NO_GLIBC -D PERFORMANCE_RUN=1 -D ITERATIONS=2500 -D CORE_DEBUG=0 -D COM
 makeLinkerScript.py -t 0x40000000 -d 0x40020000 -o customLinkerScript.lnk
 
 #Step 2: Compile the application using uclibc
-compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops' 
+
+# Gives 208.9 CM
+#compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops'  -F 'finline-functions'
+compileToSparcUclibc.py -o 2 -U -N ${MAIN} $INCLUDES $SRCS -L customLinkerScript.lnk $DEFS -F 'fgcse-sm'  -F 'funroll-loops'  -F 'finline-functions' 
 

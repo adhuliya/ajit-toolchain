@@ -137,6 +137,7 @@
 #define FP_DP_SQROOT_PENALTY    24
 
 #define TRAP_PENALTY		16
+#define CTI_MISPREDICT_PENALTY   4
 
 
 // invalidate queue size.

@@ -14,5 +14,5 @@ SRCS="-c main.c -s init.s -s $MUTEXES -s $TRAP_HANDLERS -C $AAR/src -C $PT/src"
 # compile includes.
 INCLUDES="-I ../ -I $AAR/include -I $PT/include -I $AJIT_UCLIBC_HEADERS -I $AJIT_LIBGCC_INSTALL_DIR/include "
 # compile the application.
-compileToSparcUclibc.py -o 2  -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk 
+compileToSparcUclibc.py -o 2  -U $SRCS $INCLUDES -N ${MAIN} -L customLinkerScript.lnk -F 'fgcse-sm' -F 'funroll-loops'  -F 'finline-functions'
 

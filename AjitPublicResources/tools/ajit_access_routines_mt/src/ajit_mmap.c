@@ -265,7 +265,9 @@ int ajit_mmap_operation
 							&ign_pa,
 							&pdte_a,
 							&pdte);
+#ifdef CORTOS2
 	cortos_printf("ajit_mmap_operation: lookup-status = %d, pdte_level = %d\n", status, pdte_level);
+#endif
 	if(status == 0)
 	{
 		if(operation == ADD_TO_MMAP_OP)

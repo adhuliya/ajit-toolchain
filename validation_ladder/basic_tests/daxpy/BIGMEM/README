@@ -15,3 +15,19 @@
 	Therefore IPC = 1139/1162 = 0.98
 
 	Not bad at all.
+
+    Note: TrimCost branch on 30/3/2023
+
+	Elapsed time=      0.014514, MFLOPS=52.915931
+
+    Note: release version on 20/4/2023
+
+	Elapsed time=      0.014513, MFLOPS=52.917025
+
+		
+    Note: 1x2 on 8/4/23 (only single thread active).
+	
+	Elapsed time=      0.016483, MFLOPS=46.593142                                                                                                  perf. loss = 12%.
+
+	Latest 1x2 is almost the same as 1x1
+

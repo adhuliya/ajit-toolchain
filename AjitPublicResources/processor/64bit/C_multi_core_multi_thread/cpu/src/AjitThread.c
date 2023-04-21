@@ -58,6 +58,7 @@ uint64_t getCycleEstimate (ThreadState* s)
 	ret_val += s->num_iu_divs_executed * IU_DIV_PENALTY;
 
 	ret_val += s->num_traps * TRAP_PENALTY;
+	ret_val += s->branch_predictor.mispredicts * CTI_MISPREDICT_PENALTY;
 
 	return(ret_val);
 }
@@ -77,6 +78,9 @@ void  	printThreadStatistics (ThreadState* s)
 	if(s->i_buffer)
 		reportInstructionDataBufferStatistics(s->i_buffer);	
 
+
+	dumpBranchPredictorStatus(&(s->branch_predictor));
+	dumpReturnAddressStackStatus(&(s->return_address_stack));
 }
 
 
@@ -588,6 +592,8 @@ void init_ajit_thread (ThreadState *s, uint32_t core_id,
 	initBranchPredictorState(&(s->branch_predictor), bp_table_size);
 	resetThreadState (s);
 
+	initReturnAddressStack(&(s->return_address_stack));
+
 	s->reset_called_once = 0;
 
 	//input signals to the cpu hardwired to 
@@ -1047,11 +1053,71 @@ uint32_t frame_pointer(ThreadState* s)
 	return(ret_val);
 }
 
+
+void initReturnAddressStack(ReturnAddressStack* ras)
+{
+	int I;
+	for(I = 0; I < RAS_DEPTH; I++)
+	{
+		ras->entries[I] = 0;
+	}
+
+	ras->push_count = 0;
+	ras->pop_count  = 0;
+	ras->mispredicts = 0;
+	ras->write_pointer = 0;
+	ras->read_pointer  = 0;
+	ras->surplus = 0;
+}
+
+void pushIntoReturnAddressStack(ReturnAddressStack* ras, uint32_t return_address)
+{
+
+	ras->entries[ras->write_pointer] = (return_address | 0x1);
+	ras->read_pointer = ras->write_pointer;
+	ras->write_pointer = (ras->write_pointer+1) & (RAS_DEPTH-1);
+	ras->push_count++;
+	ras->surplus++;
+
+	if(global_verbose_flag)
+		fprintf(stderr,"RAS: pushed 0x%x [%d]\n", return_address, ras->surplus);
+
+}
+uint32_t popFromReturnAddressStack(ReturnAddressStack* ras)
+{
+	uint32_t ret_val = ras->entries[ras->read_pointer];
+	ras->entries[ras->read_pointer] = 0;
+	ras->write_pointer = ras->read_pointer;
+	ras->read_pointer  = (ras->read_pointer + RAS_DEPTH - 1) & (RAS_DEPTH-1);
+
+	ras->pop_count++;
+	ras->surplus--;
+
+	if(global_verbose_flag)
+		fprintf(stderr,"RAS: popped 0x%x [%d]\n", ret_val & (~0x1), ras->surplus);
+	return(ret_val);
+}
+
+uint32_t topOfReturnAddressStack(ReturnAddressStack* ras)
+{
+	return(ras->entries[ras->read_pointer]);
+}
+
+void incrementRasMispredicts(ReturnAddressStack* ras)
+{
+	ras->mispredicts++;
+}
+
+void dumpReturnAddressStackStatus(ReturnAddressStack* ras)
+{
+	fprintf(stderr,"    RAS: push-count=%d, pop-count=%d, mispredicts=%d (surplus=%d).\n", ras->push_count, ras->pop_count, ras->mispredicts, ras->surplus);
+}
 void initBranchPredictorState(BranchPredictorState* bps, uint32_t tsize)
 {
 	bps->table_size = tsize;
 	bps->pc_tags    = (uint32_t*) malloc(tsize*sizeof(uint32_t));
 	bps->nnpc_values = (uint32_t*) malloc(tsize*sizeof(uint32_t));
+	bps->saturating_counters = (uint8_t*) malloc(tsize*sizeof(uint8_t));
 }
 
 void resetBranchPredictorState(BranchPredictorState* bps)
@@ -1061,21 +1127,31 @@ void resetBranchPredictorState(BranchPredictorState* bps)
 
 	int I;
 	for(I=0; I < bps->table_size; I++)
+	{
 		bps->pc_tags[I] = 0;
+		bps->saturating_counters[I] = 0;
+	}
 }
 
-void addBranchPredictEntry (BranchPredictorState* bps, uint32_t pc, uint32_t nnpc)
+void addBranchPredictEntry (BranchPredictorState* bps, uint8_t br_taken, uint32_t pc, uint32_t nnpc)
 {
-	// insert at random
 	uint32_t index = (pc >> 2) % bps->table_size;
+		
 	bps->pc_tags[index] = pc | 1;
 	bps->nnpc_values[index] = nnpc;	
+
+	if(br_taken)
+		bps->saturating_counters[index] = 0;
+	else 
+		bps->saturating_counters[index] = BP_MAX_COUNT_VALUE -1 ;
 }
 
-int branchPrediction(BranchPredictorState* bps, uint32_t pc, uint32_t* bp_idx, uint32_t* nnpc)
+int branchPrediction(BranchPredictorState* bps, uint32_t pc, uint32_t npc, uint32_t* bp_idx, uint32_t* nnpc)
 {
 	int ret_val = 0;
+
 	*bp_idx = 0;
+	*nnpc = (npc + 4);
 
 	uint32_t index = (pc >> 2) % bps->table_size;
 	uint32_t pc_tag = bps->pc_tags[index];
@@ -1083,18 +1159,52 @@ int branchPrediction(BranchPredictorState* bps, uint32_t pc, uint32_t* bp_idx, u
 	{
 		if(pc_tag == (pc | 1))
 		{
-			*nnpc = bps->nnpc_values[index];
-			ret_val = 1;
-			*bp_idx = index;
+			uint8_t sat_counter = bps->saturating_counters[index];
+
+			uint8_t rv = drand48() * 4;
+			if((rv >= sat_counter) && (sat_counter < BP_MAX_COUNT_VALUE -1 ))
+			{
+				*nnpc = bps->nnpc_values[index];
+				ret_val = 1;
+				*bp_idx = index;
+			}
 		}
 	}
 
 	bps->branch_count++;
 	return(ret_val);
 }
-void updateBranchPredictEntry (BranchPredictorState* bps, uint32_t idx, uint32_t nnpc)
+
+void dumpBranchPredictorStatus(BranchPredictorState* bps)
 {
-	bps->nnpc_values[idx] = nnpc;
+	fprintf(stderr,"Branch-predictor entries.\n");
+	int I;
+	for(I = 0; I < bps->table_size; I++)
+	{
+		if((bps->pc_tags[I] & 0x1) != 0)
+		{
+			fprintf(stderr, "\t 0x%x 0x%x 0x%x\n",
+					(bps->pc_tags[I] & 0xfffffffe),
+					bps->nnpc_values[I], bps->saturating_counters[I]);
+		}
+	}
+}
+
+void updateBranchPredictEntry (BranchPredictorState* bps, uint32_t idx, uint8_t br_taken, uint32_t nnpc)
+{
+	if(br_taken)
+	{
+		bps->nnpc_values[idx] = nnpc;
+		if(bps->saturating_counters[idx] > 0)
+			bps->saturating_counters[idx] -= 1;
+			
+	}
+	else 
+	{
+		if(bps->saturating_counters[idx] < BP_MAX_COUNT_VALUE -1 )
+			bps->saturating_counters[idx] += 1;
+	}
+		
 }
 
 void incrementMispredicts(BranchPredictorState* bps)
