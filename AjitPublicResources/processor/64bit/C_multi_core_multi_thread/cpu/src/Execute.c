@@ -2293,7 +2293,8 @@ uint32_t executeInstruction(
 				if((pop_val & (~ 0x1)) != s->status_reg.npc)
 				{
 					incrementRasMispredicts(&(s->return_address_stack));
-					fprintf(stderr,"RAS: mispredict on 0x%x\n", pop_val & (~0x1));
+					if (global_verbose_flag)
+						fprintf(stderr,"RAS: mispredict on 0x%x\n", pop_val & (~0x1));
 				}
 			}
 		}

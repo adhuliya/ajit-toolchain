@@ -58,16 +58,17 @@ void main_00 ()
 	t1 = __ajit_get_clock_time();
 
 	CORTOS_DEBUG("Shared run.\n");
+
+
+
+	argstruct* rarg;
+
 	// second run...
 	t2 = __ajit_get_clock_time();
 
-
-	// arguments
 	argstruct sarg;
 	sarg.start_index = 0;
 	sarg.stride = 2;
-
-	argstruct* rarg;
 
 	scheduleChannelJob(&tc, (void*) &mmul_s, (void*) &sarg);
 

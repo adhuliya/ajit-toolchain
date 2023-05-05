@@ -229,26 +229,23 @@ int main_00()
 {
 	int k;
 
-	int T;
-	for(T = 0; T < 16; T++)
-	{
-		set_values();
-		uint64_t t00_0 =__ajit_get_clock_time();
-		fft(vg,N,scratchg);
-		uint64_t t00_1 = __ajit_get_clock_time();
-		print_vector("Single-thread fft ", vg, N);
-		uint64_t t00_2 =__ajit_get_clock_time();
-		ifft(vg,N,scratchg);
-		uint64_t t00_3 = __ajit_get_clock_time();
-		print_vector("Single-thread ifft ", vg, N);
-		PRINTF("Single thread Times: %f %f\n",
-				(double) (t00_1 - t00_0),
-				(double) (t00_3 - t00_2));
-	}
-
+	// measure on single thread.
 	set_values();
+	uint64_t t00_0 =__ajit_get_clock_time();
+	fft(vg,N,scratchg);
+	uint64_t t00_1 = __ajit_get_clock_time();
+	print_vector("Single-thread fft ", vg, N);
+	uint64_t t00_2 =__ajit_get_clock_time();
+	ifft(vg,N,scratchg);
+	uint64_t t00_3 = __ajit_get_clock_time();
+	print_vector("Single-thread ifft ", vg, N);
+	PRINTF("Single thread Times: %f %f\n",
+			(double) (t00_1 - t00_0),
+			(double) (t00_3 - t00_2));
 
 
+	// measure on two threads
+	set_values();
 	/* FFT, iFFT of v[]: */
 	print_vector("Orig", vg, N);
 	uint64_t t0 =__ajit_get_clock_time();
