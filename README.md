@@ -125,6 +125,8 @@ from the root of the repository,
 Please install docker on you system before proceeding with the steps given below.
 Note: Steps to install docker can be found at - https://docs.docker.com/
 
+Note: A video tutorial for using docker can be found at $AJIT_HOME/dokcer/docker-usage.mkv
+
 Note: Don't be a root or sudo user when invoking any of the commands.
 
     source ./set_ajit_home;   # sets AJIT_HOME
