@@ -70,6 +70,7 @@ The following functions are being implemented here -
     \item strcmp
     \item strcasecmp
     \item strcat
+    \item strlen	
 \end{enumerate}
 .
 We are comparing these new libraries with the uclibc string library. Both of them are compiled to the SPARC V8. An improvement of about 40\% to 90\% was observed in the various functions 
@@ -267,6 +268,13 @@ This reduce in instructions is mainly due to the fact that about only half the n
          \includegraphics[width=\textwidth]{strcpy.png}
          \caption{strcpy}
      \end{subfigure}
+       \hfill
+     \begin{subfigure}[b]{0.4\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{strlen.png}
+         \caption{strcpy}
+     \end{subfigure}
+
         \caption{String functions}
         \label{fig:three graphs}
 \end{figure}
