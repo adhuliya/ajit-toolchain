@@ -24,6 +24,12 @@
 #define INSTRUCTION_BUFFER_N_ENTRIES	     128	 // 1KB
 #define INSTRUCTION_BUFFER_ASSOCIATIVITY       1
 
+//
+//  data buffer parameters.
+//
+#define DATA_BUFFER_N_ENTRIES	     128	 // 1KB
+#define DATA_BUFFER_ASSOCIATIVITY       1
+
 
 
 //---------------------------------

@@ -228,7 +228,8 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 
 	if(is_double_word_inst) 		f = setBit8(f, _DOUBLE_RESULT_, 1);
 	if((op == _LDF_) || (op == _LDDF_)) 	f = setBit8(f, _FLOAT_INSTRUCTION_, 1);
-	uint8_t no_write_back = ((op == _LDC_) || (op == _LDFSR_) || (op == _LDCSR_) || (op == _LDDC_));
+	//uint8_t no_write_back = ((op == _LDC_) || (op == _LDFSR_) || (op == _LDCSR_) || (op == _LDDC_));
+	uint8_t no_write_back = ((op == _LDC_) || (op == _LDCSR_) || (op == _LDDC_));
 	if(!no_write_back ) f = setBit8(f, _NEED_WRITE_BACK_, 1);
 
 	*result_l = (is_double_word_inst ? word1 : word0);
@@ -2293,8 +2294,7 @@ uint32_t executeInstruction(
 				if((pop_val & (~ 0x1)) != s->status_reg.npc)
 				{
 					incrementRasMispredicts(&(s->return_address_stack));
-					if (global_verbose_flag)
-						fprintf(stderr,"RAS: mispredict on 0x%x\n", pop_val & (~0x1));
+					fprintf(stderr,"RAS: mispredict on 0x%x\n", pop_val & (~0x1));
 				}
 			}
 		}

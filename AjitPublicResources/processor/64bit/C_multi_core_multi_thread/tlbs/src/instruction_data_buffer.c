@@ -140,6 +140,37 @@ void clearInstructionDataBuffer (InstructionDataBuffer* ib)
 	ib->number_of_flushes++;
 }
 
+
+void invalidateLineInInstructionDataBuffer(InstructionDataBuffer* db,  uint32_t line_address)
+{
+	uint32_t I;
+	for(I = 0; I < 8; I++)
+	{
+		invalidateDwordInInstructionDataBuffer(db, line_address + (I << 3));
+	}
+}
+
+void invalidateDwordInInstructionDataBuffer(InstructionDataBuffer* db, uint32_t dword_address)
+{
+	uint32_t write_tag = generateIDbufferTag (db, dword_address);
+	uint32_t write_set_id =  generateIDbufferSetIndex (db, dword_address);
+	uint8_t  lv = 0;
+	uint64_t ld = 0;
+
+	operateOnSetAssociativeMemory (db->tlb,
+					0, // ignore collision
+					0, // clear
+					1, // erase
+					0, // write
+					0, // write-data
+					write_tag,
+					write_set_id,
+					0, // lookup
+					0, 0, // lookup-tag, lookup-set-id
+					&lv, &ld);
+}
+
+
 void reportInstructionDataBufferStatistics(InstructionDataBuffer* ib)
 {
 	fprintf(stderr,"Statistics for %s buffer for cpu %d,%d.\n", 

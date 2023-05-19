@@ -5,9 +5,6 @@
 ! NOTE : register g1 is reserved for storing the trap number.
 ! On normal exit a test should end in trap 0, so g1=0x80.
 ! Upon exit with an error condition during testing, g1=0xBAD
-
-
-
 .global main
 main:
 _start:

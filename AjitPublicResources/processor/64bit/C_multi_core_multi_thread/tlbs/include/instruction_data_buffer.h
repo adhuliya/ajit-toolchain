@@ -37,5 +37,11 @@ void reportInstructionDataBufferStatistics(InstructionDataBuffer* ib);
 uint32_t generateIDbufferTag(InstructionDataBuffer* ib, uint32_t va);
 uint32_t generateIDbufferSetIndex(InstructionDataBuffer* ib, uint32_t va);
 
+// invalidation..
+void invalidateLineInInstructionDataBuffer(InstructionDataBuffer* db,  uint32_t line_address);
+void invalidateDwordInInstructionDataBuffer(InstructionDataBuffer* db, uint32_t dword_address);
+
+
+
 
 #endif
