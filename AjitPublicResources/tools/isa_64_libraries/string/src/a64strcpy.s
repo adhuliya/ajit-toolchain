@@ -1,23 +1,36 @@
 .section ".text"
 .global a64strcpy
 .type a64strcpy, #function
+
+! i0, i1 contain source and destination pointers.
 a64strcpy:
 	save %sp,-96,%sp
+        ! register pair l2l3 initialized to 0x70x7
 	mov 0x7,%l2
 	mov 0x7,%l3
+        ! compare source and destination pointers.
 	anddcc %l2,%i0,%l2
+        ! if one of them is not aligned to double word
+	! jump to b5
 	bne b5
 
-begin64:mov 0x8, %l2
+begin64:
+	! some initialization for again64 loop..
+	mov 0x8, %l2
 	mov 0x8, %l3
 	mov %i0,%o0
-again64:ldd [%i1], %l0
+
+again64:
+	ldd [%i1], %l0
 	addd %l2,%i0,%i0
 	zbytedpos %l0, 0xff, %l4
 	cmp %l4, 0x0
+        ! if no zero-byte, then back to again64
 	be,a again64
 	std %l0, [%i0 + -8]
-zcheck: srld %l0, 0x38, %l4
+
+zcheck: 
+	srld %l0, 0x38, %l4
         btst 0xff, %l5
         be b8
         srld %l0, 0x30, %l4
@@ -47,44 +60,52 @@ zcheck: srld %l0, 0x38, %l4
         be b1
         nop
 
-b8:     clrb [%i0 + -8]
+b8:     
+	clrb [%i0 + -8]
         mov %o0,%i0
         restore
         retl
         nop
-b7:     sth  %l5, [%i0 + -8]
+b7:     
+	sth  %l5, [%i0 + -8]
         mov %o0,%i0
         restore
         retl
         nop
-b6:     sth  %l5, [%i0 + -8]
+b6:     
+	sth  %l5, [%i0 + -8]
         clrb [%i0 + -6]
         mov %o0,%i0
         restore
         retl
         nop
-b4:     clrb [%i0 + -4]
+b4:     
+	clrb [%i0 + -4]
         mov %o0,%i0
         restore
         retl
         nop
-b3:     sth %l5, [%i0 + -4]
+b3:     
+	sth %l5, [%i0 + -4]
         mov %o0,%i0
         restore
         retl
         nop
-b2:     sth %l5, [%i0 + -4]
+b2:     
+	sth %l5, [%i0 + -4]
         clrb [%i0 + -2]
         mov %o0,%i0
         restore
         retl
         nop
-b1:     st %l1,[%i0 + -4]
+b1:     
+	st %l1,[%i0 + -4]
         mov %o0,%i0
         restore
         retl
 	nop
-b5:	mov %o0,%i0
+b5:	
+	mov %o0,%i0
         restore
 	retl
 	nop

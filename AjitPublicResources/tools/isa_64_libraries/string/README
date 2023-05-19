@@ -8,3 +8,24 @@ Basic string library using the 64-bit extensions.
 
 
 Example using these functions can be found at - validation_ladder/string_tests.
+
+
+The details of these functions
+
+	__a64_strcpy
+
+	SYNOPSYS
+		What does it do?
+
+	ARGUMENTS
+		What are the arguments and the assumptions about these arguments
+
+	RETURN VALUE
+		How to interpret the return value
+
+
+	SIDE EFFECTS
+		What does this function modify in the arguments passed to it?
+
+	CALLING CONVENTION
+		arguments passed through registers/stack?
