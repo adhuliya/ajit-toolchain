@@ -8,9 +8,9 @@ ajit_C_system_model \
   -n 1 \
   -t 1 \
   -i 0x40000000 \
-  -m ${_MAIN}.mmap.remapped \
-  -w ${_MAIN}.wtrace \
-  -r main.results \
-  -l ${_MAIN}.log \
+  -m cortos_build/${_MAIN}.mmap.remapped \
+  -w cortos_build/${_MAIN}.wtrace \
+  -r cortos_build/main.results \
+  -l cortos_build/${_MAIN}.log \
   -u 64 \
 ;

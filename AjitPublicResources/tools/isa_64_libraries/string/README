@@ -5,3 +5,6 @@ Basic string library using the 64-bit extensions.
 	_a64_strcmp
 	_a64_strcasecmp
 	_a64_strcat
+
+
+Example using these functions can be found at - validation_ladder/string_tests.
