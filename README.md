@@ -122,10 +122,15 @@ from the root of the repository,
 
 ### Docker Setup: Install/Setup docker images
 
+Please install docker on you system before proceeding with the steps given below.
+Note: Steps to install docker can be found at - https://docs.docker.com/
+
+Note: A video tutorial for using docker can be found at $AJIT_HOME/dokcer/docker-usage.mkv
+
 Note: Don't be a root or sudo user when invoking any of the commands.
 
     source ./set_ajit_home;   # sets AJIT_HOME
-    $AJIT_HOME/install_docker.sh;      # installs docker and more
+    $AJIT_HOME/install_docker.sh;      # adds user to docker group to run without sudo 
     $AJIT_HOME/docker_setup.sh;        # creates the docker images and starts the dokcer container
     ## now you are inside the container ajit_tools
     source ./set_ajit_home
