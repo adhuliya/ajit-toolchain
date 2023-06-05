@@ -1,0 +1,18 @@
+This is an example for the ajit string copy function a64strcpy. 
+
+a64strcpy - 
+
+Description -
+		a64strcpy (char* dest, char* src);
+	
+		Copies the source stribg pointed to by src into destination strng pointed to by dest. 
+
+Arguments - 
+		It takes two arguments - first is the destination address second is the source address. 
+
+Return Value - 	
+		It returns the address to the destination string.
+
+ 
+
+NOTE: Please read the document - strcpy.pdf for details on program flow and working.
