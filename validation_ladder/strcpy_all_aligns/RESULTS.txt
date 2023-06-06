@@ -1,0 +1,15 @@
+Performance results for a64strcpy.
+
+A comparison of the performance of strcpy and a64strcpy is given below. The performance is checked at various lengths.
+
+We compare the performance for each length, where it has looped over all the alignments at that length. 
+For eg-
+	at length 800 - source was of length 600 at first iteration and dword aligned. But in the next iteration length is of 799 and iit will be byte aligned. This loop runs 9 times to cover all alignments.
+
+The table gives the number of clock cycles required by the ajit 64 bit a64strcpy compared to the 32 bit strcpy.
+
+	Length 		32bit 		64bit
+	 576		16329 		6518
+	 640		15027		7052
+	 788		19378		9720
+	 800		18645		8571
