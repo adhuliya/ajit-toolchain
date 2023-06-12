@@ -1,79 +1,176 @@
 #include<string.h>
+#include<stdlib.h>
 #include<stdio.h>
+#include<cortos.h>
 #include"a64string.h"
-int a,b,c =0;
+int a=0,b=0;
+uint32_t volatile state; 
+char random_char(int index) {
+        char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return charset[index];
+}
+/*
+int rndm()
+{
+	//A linear congruential PRNG. Values taken from standard glibc implementations.
+
+	int32_t val = state;
+	val = ((state *1103515245) + 12345) % 2147483648;
+	state = val;
+	int result = (int) val;
+	return result;
+}
+*/
+
+int i;
 void main() {
+/*
+while(1)
 
+{
 
+	// Get initial seed use clock, get random string using rndm()
+	uint64_t t = cortos_get_clock_time();
+	state = t & (0xffffffff);                 
+	
+	int STRLEN = rndm() % 1200;
+	cortos_printf("length is %d \n", STRLEN);
+         _Alignas(8) char str[STRLEN];
+        int i, index;
 
-///string length - caluclates length of string till \0.
+        for (i = 0; i < STRLEN - 1; i++) {
+                index = rndm() % 51;
+                str[i] = random_char(index);
 
-char *s10 = "vlsivlsivlsii";
+	}
+	str[i]="\0";
+         _Alignas(8) char str0[STRLEN];
 
-cortos_printf("strlen \n");
-c = a64strlen(s10);
-cortos_printf("string length is %d \n", c);
+        for (i = 0; i < STRLEN - 1; i++) {
+                index = rndm() % 51;
+                str0[i] = random_char(index);
 
-
-///string comapre - output is 0 if same, else difference in value of the different byte
-char *s1  = "vlsivlsi";
-char *s2  = "Vlsivlsi";
-
-cortos_printf("strcmp \n");
- a =  a64strcmp(s1, s2);           //return value should be 32
- cortos_printf("value of a is %d \n",a);
-
-
-
-
-///string case comapre - output is 0 if same, else difference in value of the different byte. Bytes of different cases are treated as equal
-char *s3  = "vlsivlsi";
-char *s4  = "Vlsivlsi";
-
-
-cortos_printf("strcasecmp \n");
- b =  a64strcasecmp(s3, s4);      //return value should be 0
-
-cortos_printf("value of b is %d \n",b);
-
-
-///string copy - copy s5 into s6
-
-char * s5  = "vlsivls";
-char * s6  = "null"; 
-char * ret;
-
-cortos_printf("strcpy \n");
-cortos_printf("inital value of string %s \n", s6);
-
-a64strcpy(s6, s5);
-
-cortos_printf("value of string  after copy %s \n", s6);
-
-///string concatenate - concatenate source string to destination string
-
-char * s7  = "vlsivlsi";
-char s8[20]  = "vlsivlsi";
-
-cortos_printf("strcat \n");
-cortos_printf("initial vlaue of string %s \n", s8);                              
-
-ret = a64strcat(s8, s7);
         
-cortos_printf("value of string after concatenation  %s \n", s8);                      
+        }
+        str0[i]="\0";
+     
+*/
 
+char str[100] ="";
+//----string length-------
 
-///string copy n bhytes - copies source string into destination string for n bytes
+char *strl = "vlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsi";
+for (i=0;i<9;i++)
+{
+b= strlen(strl+i);
+a = a64strlen(strl+i);
 
-char *s9  = "vlsivlsss";
-char *s0  = "";
+cortos_printf("string length is %d \n",a);
 
-cortos_printf("strncpy \n");
-cortos_printf("inital value of string is %s \n", s9);
-
-ret = a64strncpy(s0, s9,5);
-
-cortos_printf("value of string copied for n bytes is %s \n", s0);
-
+if (a!=b)
+{
+        cortos_printf("error in strlen at i = %d \n", i);
+        break;
 
 }
+}
+//-----string concatenate-------
+char *strcon2  = "vlsivlsivlsivlsi";
+ 
+for (i=0;i<9;i++)
+{
+char strcon0[100]  = "vlsivlsivlsivlsi";
+cortos_printf("value of intial string for concatenate %s \n", strcon0);          
+//a = strcat(strcon0, (strcon2+i));      
+//cortos_printf("value of string after concatentaion %s \n", strcon0);
+         
+a = a64strcat(strcon0, (strcon2+i));
+
+cortos_printf("value of string after concatentaion %s \n", strcon0);                      
+}
+
+
+//------- string compares ----------
+
+
+char *strcomp = "vlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsi";
+char *strcomp2="vlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsivlsi";
+
+for (i=0;i<9;i++)
+
+{
+a =  a64strcmp(strcomp, (strcomp2 +i));           
+b = strcmp (strcomp,(strcomp2+i));
+if (a!=b)
+{
+        cortos_printf("error in strcmp at i = %d , a = %d and b = %d\n", i,a,b);
+        break;
+
+}
+} 
+//------string case compare----
+
+char *strcase ="vVVVVvVVVVVVVVVVVVVVVVVVVvvvvvVVvVVVvVVvvvVVVvvVVVVVVVvvvvvvvVVVVVvVvvvVVVVVVvVVVVVVvvvvv";
+char *strcase2="VvvvvvvvvvvvvvvvvvvvvvvvvvvvvVVvvvvvVvvVVVvvvVVvvvvvvVVVVVVVVvvvvvvvVVVVvvvvVvvvvvvVVVVVV";
+
+for (i=0;i<9;i++)
+{
+a =  a64strcasecmp(strcase, (strcase2+i));      
+b = strcasecmp(strcase,(strcase2+i));
+if (a!=b)
+{
+        cortos_printf("error in strcasecmp at i = %d \n",i);
+        break;
+}
+}
+// --------striing copy -------
+
+char *strcop ="vlsivlsivlsivlsivlsivlsivlsivlsivlsi";
+char *strcop2="nullnullnullnull";
+for (i=0;i<9;i++)
+{
+cortos_printf("value of intial string for copy %s \n", strcop2);
+a =a64strcpy( strcop2,(strcop+i) );
+a =strcpy( str,(strcop+i) );
+cortos_printf("value of string after  copy %s \n", strcop2);
+
+}
+
+//-----string copy n bytes-------
+
+char *strncop ="vlsivlsivlsivlsivlsivlsivlsivlsivlsi";
+char *strncop2="nullnullnullnullnullnullnullnullnull";
+for (i=0;i<9;i++)
+{
+cortos_printf("value of intial string for n byte copy %s \n", strncop2);
+
+a =a64strncpy( strncop2,(strcop+i),30);
+cortos_printf("value of string after n byte copy %s \n", strncop2);
+
+}
+
+
+/*
+
+_Alignas(8) char *s9  = "VVVvvvVVVVVVVVVVvvvvvvvvVVVvVVvvVVVVVVVVVVVVVVVVVVVVVVvv";
+
+_Alignas(8) char *s0  = "vVvVvVvVvvvvvvVVVVVVVVvVVVVvvvvvvvvvvvvvvvvvVVVVVVVVVVVV";
+
+//test aligns source 
+for (i=0;i<9;i++)
+{
+cortos_printf("string s0 is %s \n",s0);
+cortos_printf("string s9 is %s \n",(s9+i));
+//_Alignas(8) char s0[50]  = "nullnullnullnullnullnyllnyll";
+a = strcasecmp(s0,(s9+i));
+
+cortos_printf("value of a is %d \n", a);
+b = a64strcasecmp(s0,(s9+i));
+cortos_printf("test printi value of a is  = %d \n", b);
+for (j=0;j<60;j++)
+{
+cortos_printf("value of string n is %x and j is %d \n", *(s0+j),j);
+}
+cortos_printf("test print again \n");
+*/
+	}

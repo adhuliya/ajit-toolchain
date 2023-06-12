@@ -4,20 +4,30 @@
 a64strlen:
 	save %sp,-96,%sp
 	mov 0x7,%l2
-	andcc %l2,%i0,%l2
-	bne b5
+	andcc %l2,%i0,%l2			!!!check for alignements
+	mov %g0,%i1	
+	be begin64
+
+
+aligns:						!!!align the string address to a dowrd boundary
+	ldub [%i0],%l0
+	inc %i0
+	cmp %l0,0x0
+	be b8
+	andcc %i0,0x7,%l4
+	bne aligns
+	inc %i1
 
 begin64:mov 0x8, %l2
-	mov %g0,%i1	
 
-again64:ldd [%i0], %l0
+again64:ldd [%i0], %l0				!!! load stting and check for zero
 	add %l2,%i0,%i0
-	zbytedpos %l0, 0xff, %l4
+	zbytedpos %l0, 0xf, %l4
 	cmp %l4, 0x0
 	be,a again64
-	add %i1,8,%i1
+	add %i1,8,%i1				!!! if no null byte increment length counter and repeat
 		
-zcheck: srld %l0, 0x38, %l4
+zcheck: srld %l0, 0x38, %l4			!!!checks where null byte is by shifting and testing each byte
         btst 0xff, %l5
         be b8
         srld %l0, 0x30, %l4
