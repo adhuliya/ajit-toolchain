@@ -1,0 +1,52 @@
+
+A comparison of the performance of uclibc C string libraries and ajit string libraries is given below. The performance is checked at various lengths.
+
+We compare the performance for each length, where it has looped over all the alignments at that length.
+For eg-
+        at length n - source was of length n at first iteration and dword aligned. But in the next iteration length is of  n-1 and it will be byte aligned. This loop runs 9 times to cover all alignments.
+
+The table gives the number of clock cycles required by the ajit 64 bit string library compared to the 32 bit ones.
+
+
+
+			length	32bit	64bit
+			
+		strcpy			
+			1092	27576	12749
+			1724	42577	18774
+			2974	72298	30826
+
+
+			
+		strncpy			
+			1092	100203	17567
+			1724	157874	25626
+			2974	271953	41894
+
+
+			
+		strcmp			
+			1092	40115	18010
+			1724	62620	27179
+			2974	107380	45362
+
+
+		strcasecmp			
+			1092	202543	22013
+			1724	319468	33228
+			2974	550873	55579
+
+
+			
+		stract			
+			1092	46811	27099
+			1724	61793	33585
+			2974	91469	46389
+
+
+			
+		strlen			
+			1092	16952	8637
+			1724	26142	12902
+			2974	41037	21254
+
