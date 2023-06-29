@@ -116,7 +116,7 @@ from the root of the repository,
     source ./set_ajit_home;
     source $AJIT_HOME/ajit_env;
     cd $AJIT_HOME/tests; ./test.sh;
-    cd ..; cd ./tests/verfication; ./verify.sh;
+    cd ..; cd ./tests/verification; ./verify.sh;
 
 
 
@@ -166,11 +166,11 @@ from the root of the repository,
     # STEP 1: Enter the docker container.
     cd ./docker/ajit_build_dev; # go to the image utility directory
     ./run.sh;                   # starts docker container `ajit_build_dev`
-    ./attach_shell;             # gives you shell access to the container
+    ./attach_shell.sh;             # gives you shell access to the container
     ## now you are inside the container ajit_build_dev
     # STEP 2: Execute all the tests.
     cd ./tests; ./test.sh;
-    cd ..; cd ./tests/verfication; ./verify.sh;
+    cd ..; cd ./tests/verification; ./verify.sh;
 
 
 ## Docker Setup: Clean the slate
