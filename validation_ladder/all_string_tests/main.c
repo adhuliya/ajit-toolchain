@@ -61,7 +61,7 @@ while(1)
 int n,j;
 char str[3000] ="v";
 //----string length-------
-for (n=11;n<12;n++)
+for (n=3;n<11;n++)
 {
 int len = pow(2,n);
 char strl[2050] = "";
