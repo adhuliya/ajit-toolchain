@@ -50,7 +50,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <printf.h>
+#include <mp_printf.h>
 #include <ajit_access_routines.h>
 
 # define mp_printf    printf_
@@ -363,6 +363,14 @@ static inline void putchar_wrapper(char c, void* unused)
 		  break;
   }
 }
+
+#ifdef MP_PRINT_USED_BY_CORTOS2
+void uart_send_char(char c)
+{
+	putchar_wrapper(c, NULL);
+}
+#endif
+
 
 static inline output_gadget_t discarding_gadget()
 {

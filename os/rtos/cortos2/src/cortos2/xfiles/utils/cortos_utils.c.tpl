@@ -4,7 +4,10 @@
 #include <cortos_utils.h>
 #include <cortos_locks.h>
 #include "ajit_access_routines.h"
+
+#define MP_PRINTF_USED_BY_CORTOS2
 #include "core_portme.h"
+#include "mp_printf.h"
 
 #define PRINTING_LOCK_INDEX 5
 uint8_t* printingLockAddr = 0;

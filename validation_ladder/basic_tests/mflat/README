@@ -1,0 +1,4 @@
+With the -mflat flag, the compiler does not generate
+any save/restore instructions.  But the resulting code
+is a bit slower because the stack and register state
+save/restore has to be managed explicitly.

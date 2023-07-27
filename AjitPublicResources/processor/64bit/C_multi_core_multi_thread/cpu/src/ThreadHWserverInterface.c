@@ -65,8 +65,11 @@ void inform_HW_server(ThreadState* s, uint8_t message_type,  uint32_t address)
 		else if(message_type==GDB_TRAP_OCCURED) 
 			fprintf(stderr,"Info:Thread  : Trap occured thread=%d, core=%d\n", s->thread_id, s->core_id);
 		else if(message_type==DOVAL_PROC_ENTERED_ERROR_MODE) 
+		{
 			fprintf(stderr,"Info:Thread  : Thread %d entered ERROR MODE at PC=0x%x) thread=%d, core=%d\n ",
 					s->status_reg.pc, s->thread_id, s->core_id, (s->status_reg).pc);
+			printMmuStatistics   (s->mmu_state);
+		}
 		#endif
 
 		write_uint8(s->hw_server->thread_to_hwserver_id_pipe_name, message_type);

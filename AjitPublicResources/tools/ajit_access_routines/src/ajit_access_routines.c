@@ -1192,6 +1192,48 @@ void      __ajit_write_gpio_32_via_bypass__ (uint32_t w)
 }
 
 //---------------------------------------------------------------------------------------------
+//  Performance counters.
+//---------------------------------------------------------------------------------------------
+void __ajit_init_thread_performance_counters (int core_id, int thread_id, 
+					AjitPerThreadPerformanceCounters *tpc)
+{
+	tpc->executed_instruction_count = 0;
+	tpc->skipped_instruction_count = 0;
+	tpc->load_count = 0;
+	tpc->load_miss_count = 0;
+	tpc->store_count = 0;
+	tpc->store_miss_count = 0;
+	tpc->stream_mispredict_count = 0;
+	tpc->trap_count = 0;
+	tpc->icache_access_count = 0;
+	tpc->icache_miss_count = 0;
+}
+
+
+#define ___fill_performance_counter__(dw, base_addr, h) {\
+	uint32_t hw = *((uint32_t*) (base_addr + h));\
+	uint32_t lw = *((uint32_t*) (base_addr + h + 4));\
+	dw = (((uint64_t) hw) << 32) | ((uint64_t) lw); }
+	
+void __ajit_sample_thread_performance_counters (int core_id, int thread_id, 
+					AjitPerThreadPerformanceCounters *tpc)
+{
+	uint32_t tid = (core_id * 2) + thread_id;
+	uint32_t base_addr = 0xffff4000 + (256*tid);
+
+	___fill_performance_counter__ (tpc->executed_instruction_count, base_addr, 0);
+	___fill_performance_counter__ (tpc->skipped_instruction_count,  base_addr, 8);
+	___fill_performance_counter__ (tpc->load_count,                 base_addr, 16);
+	___fill_performance_counter__ (tpc->load_miss_count,            base_addr, 24);
+	___fill_performance_counter__ (tpc->store_count,                base_addr, 32);
+	___fill_performance_counter__ (tpc->store_miss_count,           base_addr, 40);
+	___fill_performance_counter__ (tpc->stream_mispredict_count,    base_addr, 48);
+	___fill_performance_counter__ (tpc->trap_count,                 base_addr, 56);
+	___fill_performance_counter__ (tpc->icache_access_count,        base_addr, 64);
+	___fill_performance_counter__ (tpc->icache_miss_count,          base_addr, 72);
+}
+
+//---------------------------------------------------------------------------------------------
 // Miscellaneous
 //---------------------------------------------------------------------------------------------
 inline void __ajit_ta_0__ ()

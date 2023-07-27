@@ -5,13 +5,13 @@
 #include "math.h" 
 
 // 2X the cache size.
-uint32_t src_array [ 64 * CHUNK ];
-uint32_t dest_array[ 64 * CHUNK ];
+uint32_t src_array [ 512 * CHUNK ];
+uint32_t dest_array[ 512 * CHUNK ];
 
 int init_src_array()
 {
 	int i;
-	for(i = 0; i < 64*CHUNK; i++)
+	for(i = 0; i < 512*CHUNK; i++)
 	{
 		src_array[i] = i;
 	}

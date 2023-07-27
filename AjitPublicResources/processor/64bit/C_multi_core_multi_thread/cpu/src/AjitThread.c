@@ -211,6 +211,8 @@ void ajit_thread(void* id_ptr)
 			//assert AJIT_to_ENV_error to halt simulation.
 			fprintf(stderr,"Thread %d entered ERROR MODE at PC=0x%x\n ",thread_state->thread_id,
 						thread_state->status_reg.pc);
+			
+			printMmuStatistics   (thread_state->mmu_state);
 			if(getBit32(thread_state->trap_vector, _TRAP_INSTRUCTION_)!=0 && thread_state->ticc_trap_type==0)
 			{
 				fprintf(stderr,"Program exited upon a ta 0\n ");

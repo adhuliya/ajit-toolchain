@@ -59,6 +59,8 @@ CORETIMETYPE barebones_clock() {
 
 /** Define Host specific (POSIX), or target specific global time variables. */
 static CORETIMETYPE start_time_val, stop_time_val;
+static AjitPerThreadPerformanceCounters perf_counters;
+static uint64_t start_cycle_count, stop_cycle_count;
 
 /* Function : start_time
 	This function will be called right before starting the timed portion of the benchmark.
@@ -67,6 +69,10 @@ static CORETIMETYPE start_time_val, stop_time_val;
 	or zeroing some system parameters - e.g. setting the cpu clocks cycles to 0.
 */
 void start_time(void) {
+#ifdef USE_PERF_COUNTERS
+	__ajit_init_thread_performance_counters (0,0, &perf_counters);
+	start_cycle_count = __ajit_get_clock_time();
+#endif
 	GETMYTIME(&start_time_val );      
 }
 /* Function : stop_time
@@ -77,6 +83,14 @@ void start_time(void) {
 */
 void stop_time(void) {
 	GETMYTIME(&stop_time_val );      
+#ifdef USE_PERF_COUNTERS
+
+	stop_cycle_count = __ajit_get_clock_time();
+	__ajit_sample_thread_performance_counters (0,0, &perf_counters);
+	
+	double ipc = ((double) perf_counters.executed_instruction_count)/(((double) stop_cycle_count)-((double) start_cycle_count));
+	ee_printf("IPC=%f\n", ipc);
+#endif
 }
 /* Function : get_time
 	Return an abstract "ticks" number that signifies time on the system.
@@ -91,6 +105,30 @@ CORE_TICKS get_time(void) {
 	CORE_TICKS elapsed=(CORE_TICKS)(MYTIMEDIFF(stop_time_val, start_time_val));
 	return elapsed;
 }
+
+#ifdef USE_PERF_COUNTERS
+void report_performance_counters ()
+{
+	uint64_t ncycles = (stop_cycle_count - start_cycle_count);
+	ee_printf("Executed Instr=0x%x,0x%x, Cycles=0x%x,0x%x\n",
+			(uint32_t) (perf_counters.executed_instruction_count >> 32),
+			(uint32_t) (perf_counters.executed_instruction_count & 0xffffffff),
+			(uint32_t) (ncycles >> 32),
+			(uint32_t) (ncycles & 0xffffffff)
+		);
+
+	ee_printf("Skipped Instr=%20.2f\n", (double) perf_counters.skipped_instruction_count);
+	ee_printf("loads=%20.2f, misses=%20.2f.\n", (double) perf_counters.load_count, 
+						(double) perf_counters.load_miss_count);
+	ee_printf("stores=%20.2f, misses=%20.2f.\n", (double) perf_counters.store_count, 
+						(double) perf_counters.store_miss_count);
+	ee_printf("mispredicts=%20.2f, traps=%20.2f.\n", (double) perf_counters.stream_mispredict_count, 
+						(double) perf_counters.trap_count);
+	ee_printf("icache-accesses=%20.2f, misses=%20.2f.\n", (double) perf_counters.icache_access_count, 
+						(double) perf_counters.icache_miss_count);
+}
+#endif
+
 /* Function : time_in_secs
 	Convert the value returned by get_time to seconds.
 

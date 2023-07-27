@@ -110,6 +110,22 @@ continue_with_valid_T:
    ! floating point state is not saved here,
    ! but should be managed in the C handler.
 
+   ! check if the interrupt is not maskable.
+   ! if it is not maskable, we will enable traps
+   ! with processor irl 15.  The handler can then
+   ! generate a trap.
+   !
+   ! This prevents an NMI interrupt handler from interrupting
+   ! the interrupt handler (will cause a trap).
+   !
+   ! tbr is read and kept in o0
+   !
+   rd %tbr, %o0
+   srl %o0, 4, %l3
+   and %l3, 0xf, %l3
+   subcc %l3, 0xf, %l3
+   bz continue_after_enabling_traps_or_nmi
+   nop
 
    !
    !   enable traps, but set proc-ilvl=15
@@ -121,6 +137,8 @@ continue_with_valid_T:
    or %l7, 0xf00, %l7      ! [11:8] = 0xf
    wr %l7, %psr            ! write to PSR
 
+continue_after_enabling_traps_or_nmi:
+
    !
    ! switch to isr stack.
    !    In this window, a minimal stack..
@@ -131,13 +149,13 @@ continue_with_valid_T:
    add %sp, %l7, %sp
    sub %sp, 64, %sp
 
+   !  Remember, tbr is in o0
    !  call the interrupt handler.. free to
    !  do whatever it wants... return should
    !  bring it home to this window..
-   rd %tbr, %o0
 
    ! This is a  C routine with one argument
-   ! namely, the TBR value.
+   ! namely, the TBR value (in o0).
    !
    ! It will run in window T-1....
    !    which may be invalid.. 

@@ -3,7 +3,7 @@ DATABASE=0x40040000
 MAIN=dot_product
 AAR=$AJIT_HOME/AjitPublicResources/tools/ajit_access_routines_mt
 PT=$AJIT_HOME/AjitPublicResources/tools/minimal_printf_timer
-DEFS=" -D AJIT -D VECTORSIZE=256 -D NITERATIONS=2 -D HAS_FLOAT  -D CLK_FREQUENCY=80000000"
+DEFS=" -D AJIT -D VECTORSIZE=16384 -D NITERATIONS=1024 -D HAS_FLOAT  -D CLK_FREQUENCY=80000000 -D NUSE_PERF_COUNTERS"
 SRCS=" -C ../src/ -C $AAR/src -C $PT/src -s $AAR/asm/trap_handlers.s -s ../src/init.s "
 INCLUDES="-I /usr/include/x86_64-linux-gnu/gnu -I ../src/ -I ../ -I $AAR/include -I $PT/include"
 # -I /usr/include " see if really needed

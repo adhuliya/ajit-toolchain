@@ -1,5 +1,8 @@
 
 #include <stdarg.h>
+
+#define MP_PRINTF_USED_BY_CORTOS2
+#include <mp_printf.h>
 #include <cortos_locks.h>
 #include <cortos_utils.h>
 

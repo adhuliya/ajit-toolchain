@@ -32,6 +32,7 @@ typedef struct ThreadChannel__ {
 
 	uint32_t id;
 	uint32_t request_id;
+	uint32_t response_id;
 	void*    fn_ptr;
 	void*    arg_ptr;
 

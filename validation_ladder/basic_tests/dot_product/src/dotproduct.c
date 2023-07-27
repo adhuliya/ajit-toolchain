@@ -3,6 +3,10 @@
 #include "ajit_access_routines.h"
 
 double elapsed_time = 0.0;
+double ipc = 0.0;
+double load_miss_fraction = 0.0;
+double store_miss_fraction = 0.0;
+
 inline void halt()
 {
 	__asm__ __volatile__("ta 0; nop; nop;");
@@ -80,6 +84,9 @@ void vectorGen();
 #include <stdio.h>
 #endif
 
+AjitPerThreadPerformanceCounters perf_counters;
+
+
 void run_test (float* S)
 {
 
@@ -92,6 +99,9 @@ void run_test (float* S)
 // NITERATIONS defined at compile time...
     uint32_t ival = 0;
 
+#ifdef USE_PERF_COUNTERS
+    __ajit_init_thread_performance_counters (0,0, &perf_counters);
+#endif
     uint64_t t0 = __ajit_get_clock_time();
 
     initSumRegs((uint32_t) &ival);
@@ -108,6 +118,12 @@ void run_test (float* S)
 
     uint64_t t1 = __ajit_get_clock_time();
     elapsed_time = ((double) (t1 - t0))/CLK_FREQUENCY;
+#ifdef USE_PERF_COUNTERS
+    __ajit_sample_thread_performance_counters (0,0, &perf_counters);
+    ipc = ((double) perf_counters.executed_instruction_count)/((double) (t1 -t0));
+    load_miss_fraction = ((double) perf_counters.load_miss_count)/((double) perf_counters.load_count);
+    store_miss_fraction = ((double) perf_counters.store_miss_count)/((double) perf_counters.store_count);
+#endif
 
 }
 
@@ -122,9 +138,7 @@ inline void store_word_mmureg(uint32_t value, uint32_t* addr)
 
 int ajit_main(void)
 {	
-	store_word_mmureg(0x100,(uint32_t*) 0x0);
 	__ajit_write_serial_control_register__ (TX_ENABLE);
-
 	ee_printf("Hello.\n");
 
 	float S = 0.0;
@@ -133,9 +147,19 @@ int ajit_main(void)
 	ee_printf("Final sum = %14f.\n", S);
 
 
-	ee_printf("Elapsed time=%14f, MFLOPS=%f\n", 
+#ifdef USE_PERF_COUNTERS
+	ee_printf("Elapsed time=%14f, MFLOPS=%f, IPC=%f, load_miss_frac=%f, store_miss_frac=%f\n", 
+				elapsed_time,
+				((double) (2 * NITERATIONS * VECTORSIZE))/(elapsed_time * 1000000),
+				ipc, 
+				load_miss_fraction, 
+				store_miss_fraction);
+#else
+	ee_printf("Elapsed time=%14f, MFLOPS=%f\n",
 				elapsed_time,
 				((double) (2 * NITERATIONS * VECTORSIZE))/(elapsed_time * 1000000));
+#endif
+				
 
 	return 0;
 }

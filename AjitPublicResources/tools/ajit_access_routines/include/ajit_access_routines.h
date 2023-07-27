@@ -143,8 +143,6 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 //
 // reads high and low clock counters to return
 // the value...   Returns the number of elapsed ticks
-// where one tick is 256 clock cycles.
-//   (Thus, if the clock is 100mhz, 1 tick is 2.56 micro-seconds).
 // 
 inline uint64_t __ajit_get_clock_time();
 //
@@ -624,6 +622,32 @@ void      __ajit_write_gpio_32_via_vmap__ (uint32_t w);
 // Trap
 //---------------------------------------------------------------------------------------------
 inline void __ajit_ta_0__ ();
+
+//---------------------------------------------------------------------------------------------
+//  Structure for performance counters.
+//---------------------------------------------------------------------------------------------
+typedef struct __AjitPerThreadPerformanceCounters {
+	uint64_t executed_instruction_count;
+	uint64_t skipped_instruction_count;
+	uint64_t load_count;
+	uint64_t load_miss_count;
+	uint64_t store_count;
+	uint64_t store_miss_count;
+	uint64_t stream_mispredict_count;
+	uint64_t trap_count;
+	uint64_t icache_access_count;
+	uint64_t icache_miss_count;
+
+} AjitPerThreadPerformanceCounters;
+
+// initialize all performnce counters to 0.
+void __ajit_init_thread_performance_counters (int core_id, int thread_id, 
+					AjitPerThreadPerformanceCounters *tpc);
+
+// samples the values of the performance counters.
+void __ajit_sample_thread_performance_counters (int core_id, int thread_id, 
+					AjitPerThreadPerformanceCounters *tpc);
+
 
 //---------------------------------------------------------------------------------------------
 // SQRT

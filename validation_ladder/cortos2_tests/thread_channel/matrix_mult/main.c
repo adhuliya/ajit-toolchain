@@ -56,6 +56,7 @@ void main_00 ()
 	t0 = __ajit_get_clock_time();
 	mmul(0,1);
 	t1 = __ajit_get_clock_time();
+	cortos_printf("Single-thread time=%f ticks\n", ((double) (t1 - t0)));
 
 	CORTOS_DEBUG("Shared run.\n");
 
@@ -81,8 +82,7 @@ void main_00 ()
 	t3 =__ajit_get_clock_time();
 
 	// print_result_matrix();
-	cortos_printf("Single-thread time=%f ticks, Two-thread time=%f ticks.\n",
-			((double) (t1 - t0)), ((double) (t3-t2)));
+	cortos_printf("Two-thread time=%f ticks.\n", ((double) (t3-t2)));
 }
 
 

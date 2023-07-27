@@ -12,6 +12,7 @@ void initChannel(ThreadChannel* tc, uint32_t id)
 {
 	tc->id = id;
 	tc->request_id = 0;	
+	tc->response_id = 0;
 	tc->fn_ptr = NULL;
 	tc->arg_ptr = NULL;
 	tc->status = CH_FREE;
@@ -43,6 +44,7 @@ uint32_t setChannelResponse (ThreadChannel* tc, void* arg_ptr)
 	if(tc->status == CH_IN_PROGRESS)
 	{
 		tc->arg_ptr = arg_ptr;
+		tc->response_id += 1;
 		tc->status  = CH_COMPLETED;
 #ifndef NO_CORTOS
 		CORTOS_DEBUG("Channel %d: status = %d.\n", tc->id, tc->status);

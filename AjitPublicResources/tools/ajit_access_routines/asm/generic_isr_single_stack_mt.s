@@ -113,21 +113,41 @@ continue_with_valid_T:
    ! for window overflow traps..
    sub %sp, 96, %sp
 
+
+   ! check if the interrupt is not maskable.
+   ! if it is not maskable, we will enable traps
+   ! with processor irl 15.  The handler can then
+   ! generate a trap.
+   !
+   ! This prevents an NMI interrupt handler from interrupting
+   ! the interrupt handler.
+   !
+   ! note: tbr is read into o0 to be passed to interrupt handler.
+   !
+   rd %tbr, %o0
+   srl %o0, 4, %l3
+   and %l3, 0xf, %l3
+   subcc %l3, 0xf, %l3
+   bz continue_after_enabling_traps_or_nmi
+   nop
+
    !
    !   enable traps, but set proc-ilvl=15
    !   so that non NMI interrupt will be blocked.
-   !   This prevents a non NMI interrupt from interrupting
-   !   the interrupt handler.
    !
    or %l0, 0x20, %l7       ! ET=1
    or %l7, 0xf00, %l7      ! [11:8] = 0xf
    wr %l7, %psr            ! write to PSR
 
+continue_after_enabling_traps_or_nmi:
+
    ! Step 6
+   !  Note that tbr is in o0 here.
    !  call the interrupt handler.. free to
    !  do whatever it wants... return should
    !  bring it home to this window..
-   rd %tbr, %o0
+   !
+
 
    ! This is a  C routine with one argument
    ! namely, the TBR value.
@@ -142,7 +162,7 @@ continue_with_valid_T:
 
    !
    ! You have come back from the actual handler..
-   ! Interrupts are still disabled... 
+   ! non NMI interrupts are still blocked.
 
 prepare_window_for_rett:
 

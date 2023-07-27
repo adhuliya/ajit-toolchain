@@ -357,6 +357,10 @@ MAIN_RETURN_TYPE ajit_main(int argc, char *argv[]) {
 	for (i=0 ; i<MULTITHREAD; i++) 
 		portable_free(results[i].memblock[0]);
 #endif
+
+#ifdef USE_PERF_COUNTERS
+		report_performance_counters();
+#endif
 	/* And last call any target specific code for finalizing */
 	portable_fini(&(results[0].port));
 

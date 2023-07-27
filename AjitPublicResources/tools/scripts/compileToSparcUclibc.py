@@ -170,8 +170,9 @@ def  compileFiles(work_area, src_files,src_dirs,include_dirs,define_strings,asse
     # do not optimize in debug mode... crazy things happen.
     if debug_mode != "-g":
        optimize_flags = " -O" + str(opt_level) + " " + SPARC_CC_OPT_FLAGS + " "
-       for c_opts in compile_options:
-          optimize_flags += " -" + c_opts + " "
+
+    for c_opts in compile_options:
+       optimize_flags += " -" + c_opts + " "
 
     for sfile in all_src_files:
         spath,sfilename = os.path.split(sfile)

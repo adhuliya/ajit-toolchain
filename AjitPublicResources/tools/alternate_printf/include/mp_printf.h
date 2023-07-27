@@ -198,4 +198,21 @@ int vfctprintf(void (*out)(char c, void* extra_arg), void* extra_arg, const char
 # undef vprintf_
 #endif
 
+#ifdef MP_PRINTF_USED_BY_CORTOS2
+
+void uart_send_char(char c);
+#define ee_printf   printf_
+#define ee_sprintf  sprintf_
+#define ee_snprintf snprintf_
+#define ee_vsprintf vsprintf_
+
+#else
+
+#define mp_printf   printf_
+#define mp_sprintf  sprintf_
+#define mp_snprintf snprintf_
+#define mp_vsprintf vsprintf_
+
+#endif
+
 #endif  // PRINTF_H_

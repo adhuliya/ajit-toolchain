@@ -20,16 +20,22 @@ int main()
 	double t;
 
 	err = run_test (CHUNK, NITERS, &t);
-	ee_printf("1K: err=%d t=%f seconds\n", err, t);
+	ee_printf("4KB: err=%d t=%f seconds\n", err, t);
 
 	err = run_test (4*CHUNK, NITERS, &t);
-	ee_printf("4K: err=%d t=%f seconds\n", err, t);
+	ee_printf("16KB: err=%d t=%f seconds\n", err, t);
 
 	err = run_test (16*CHUNK, NITERS, &t);
-	ee_printf("16K: err=%d t=%f seconds\n", err, t);
+	ee_printf("64KB: err=%d t=%f seconds\n", err, t);
 
 	err = run_test (64*CHUNK, NITERS, &t);
-	ee_printf("64K: err=%d t=%f seconds\n", err, t);
+	ee_printf("256KB: err=%d t=%f seconds\n", err, t);
+
+	err = run_test (256*CHUNK, NITERS, &t);
+	ee_printf("1024KB: err=%d t=%f seconds\n", err, t);
+
+	err = run_test (512*CHUNK, NITERS, &t);
+	ee_printf("2048KB: err=%d t=%f seconds\n", err, t);
 
 	ee_printf("Done\n");
 
