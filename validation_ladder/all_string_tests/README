@@ -1,0 +1,11 @@
+This has exhaustive tests for following functions - 
+
+	a64strcmp
+	a64strlen
+	a64strcpy
+	a64strncpy
+	a64strcasecmp
+	a64strcat
+
+
+The tests check through various alignements to test for correctness. It also checks the timings for all the tests. 
