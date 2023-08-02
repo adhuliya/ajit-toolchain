@@ -5,7 +5,6 @@
 #include <cortos_locks.h>
 #include "ajit_access_routines.h"
 
-#define MP_PRINTF_USED_BY_CORTOS2
 #include "core_portme.h"
 #include "mp_printf.h"
 
@@ -58,12 +57,12 @@ uint8_t cortos_IsNcRamAddr(void* addr) {
   return 0;
 }
 
-// defined in cortos_ee_printf.c
-int ee_vsprintf(char *buf, const char *fmt, va_list args);
+// defined in mp_printf.c
+int mp_vsprintf(char *buf, const char *fmt, va_list args);
 
 // Thread Safe.
 // Prints and returns the number of characters printed.
-// Logic taken from ee_printf() in `minimal_printf_timer/src/ee_printf.c`
+// Logic taken from mp_printf() in `minimal_printf_timer/src/ee_printf.c`
 int cortos_printf(const char *fmt, ...) {
   char buf[1024], *p;
   va_list args;
@@ -72,7 +71,7 @@ int cortos_printf(const char *fmt, ...) {
   cortos_lock_acquire_buzy(printingLockAddr);
 
   va_start(args, fmt);
-  ee_vsprintf(buf, fmt, args);
+  mp_vsprintf(buf, fmt, args);
   va_end(args);
   p=buf;
   while (*p) {

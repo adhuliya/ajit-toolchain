@@ -276,7 +276,7 @@ __ajit_swapcontext__:
 	call __ajit_set_context_return_pointer__
 	nop
 
-	! now move o1 to o0 and call
+	! now move original o1 to o0 and call
 	! setcontext
 	mov %o2, %o0
 	call __ajit_setcontext__

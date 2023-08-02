@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <cortos.h>
-#include <ajit_access_routines.h>
+#include "ajit_access_routines.h"
 #include <ajit_context.h>
 
 #define STACK_SIZE_IN_BYTES (8*1024)

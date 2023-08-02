@@ -3,6 +3,8 @@
 #include <ajit_access_routines.h>
 #include <ajit_context.h>
 #include <cortos.h>
+	
+void __update_current_window_on_stack__ (uint32_t stack_pointer);
 
 /*
 int __ajit_swapcontext__ (ajit_context_t *__restrict __oucp, const ajit_context_t *__restrict __ucp)
@@ -14,21 +16,9 @@ int __ajit_swapcontext__ (ajit_context_t *__restrict __oucp, const ajit_context_
 
 void __ajit_context_set_stack__(ajit_context_t* ctxt, uint32_t stack_base_addr, uint32_t stack_size)
 {
-	uint32_t window_id = (ctxt->mctxt.psr & 0x7);
 	uint32_t stack_pointer = ((stack_base_addr + stack_size) & 0xfffffff0) - 96;
-
-	CORTOS_DEBUG("In __ajit_context_set_stack__ window_id=%d, stack_pointer=0x%x, stack_size=0x%x.\n",
-				window_id, stack_pointer, stack_size);
-
-	// stack pointer is o6 in current window.
-	uint32_t sp_index = (window_id * 16) + 6;
-	ctxt->mctxt.r[sp_index] = stack_pointer;
-
-	// frame pointer is i6 in current window.. ie o6 in
-	// current_window + 1.
-	// uint32_t fp_index = (((window_id + 1) & 7) * 16) + 6;
-	// ctxt->mctxt.r[fp_index] = 0;
-	
+	ctxt->stack_pointer = stack_pointer;
+	ctxt->stack_size_in_bytes = stack_size;
 }
 
 void __ajit_context_set_link__ (ajit_context_t* ctxt, ajit_context_t* link)
@@ -45,23 +35,28 @@ void __ajit_makecontext__ (ajit_context_t *__ucp, void (*__func) (void*), void* 
 
 void __ajit_print_mcontext__ (ajit_context_t* t)
 {
-
-	cortos_printf("psr = 0x%x.\n", t->mctxt.psr);
-	cortos_printf("wim = 0x%x.\n", t->mctxt.wim);
-	cortos_printf("tbr = 0x%x.\n", t->mctxt.tbr);
-	cortos_printf("y   = 0x%x.\n", t->mctxt.y);
+	cortos_printf("y-register = 0x%x.\n", t->mctxt.y);
 	cortos_printf("fsr = 0x%x.\n", t->mctxt.fsr);
 
 	int I;
 	for(I = 0; I < 8; I++)
 		cortos_printf("g%d = 0x%x.\n", I, t->mctxt.g[I]);
 
-	for(I = 0; I < 16*8; I++)
-		cortos_printf("r[%d] = 0x%x.\n", I, t->mctxt.r[I]);
+	for(I = 0; I < 8; I++)
+		cortos_printf("l%d = 0x%x.\n", I, t->mctxt.locals[I]);
+
+	for(I = 0; I < 8; I++)
+		cortos_printf("i%d = 0x%x.\n", I, t->mctxt.ins[I]);
 
 	for(I = 0; I < 32; I++)
 		cortos_printf("f%d = 0x%x.\n", I, t->mctxt.f[I]);
+}
 
+void __ajit_print_context__ (ajit_context_t* t)
+{
+	cortos_printf("func = 0x%x, arg = 0x%x, link = 0x%x, stack = 0x%x\n",
+				t->func, t->func_arg, (uint32_t) t->uc_link, t->stack_pointer);
+	__ajit_print_mcontext__ (t); 
 }
 
 void __ajit_context_init__(ajit_context_t* ctxt)
@@ -70,16 +65,5 @@ void __ajit_context_init__(ajit_context_t* ctxt)
 	ctxt->uc_link = NULL;	
 	ctxt->stack_pointer = 0;
 	ctxt->stack_size_in_bytes = 0;
-}
-
-void __ajit_set_context_return_pointer__ (ajit_context_t* ctxt, uint32_t o7)
-{
-
-	uint32_t window_id = (ctxt->mctxt.psr & 0x7);
-	uint32_t ret_ptr_index = (window_id*16) + 7;
-
-	CORTOS_DEBUG("In __ajit_set_context_return_pointer__  window_id=%d, ret_ptr=0x%x.\n", window_id, o7)
-	ctxt->mctxt.r[ret_ptr_index] = o7;
-
 }
 

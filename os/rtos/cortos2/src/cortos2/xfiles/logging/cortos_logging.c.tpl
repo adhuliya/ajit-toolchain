@@ -1,7 +1,6 @@
 
 #include <stdarg.h>
 
-#define MP_PRINTF_USED_BY_CORTOS2
 #include <mp_printf.h>
 #include <cortos_locks.h>
 #include <cortos_utils.h>
@@ -48,13 +47,13 @@ int __cortos_log_printf(
   clock_time = cortos_get_clock_time();
   // time = &clock_time;
 
-  n += ee_printf(
+  n += mp_printf(
    "CoRTOS:LOG: %s: (%d,%d): %s:%d, %s() [%llu]. ",
    levelName, (asrValue & 0xFF00) >> 8, asrValue & 0xFF,
    fileName, lineNum, funcName, clock_time);
 
   va_start(args, fmt);
-  ee_vsprintf(buf, fmt, args);
+  mp_vsprintf(buf, fmt, args);
   va_end(args);
   p=buf;
   while (*p) {
@@ -63,7 +62,7 @@ int __cortos_log_printf(
     p++;
   }
 
-  n += ee_printf("\n");
+  n += mp_printf("\n");
 
   cortos_lock_release(loggingLockAddr);
 
