@@ -82,6 +82,9 @@ done_setting_stack_from_context:
 continue_after_saving_fp:
 	ld [%i0 + 68], %g1
 
+	! return 0
+	mov %g0, %i0
+
 	ret
 	restore
 
@@ -142,7 +145,7 @@ __ajit_setcontext__:
 	!
 	! update the return pointer
 	!
-	mov %g3, %i7
+	! mov %g3, %i7
 
 	! FP enabled?
 	rd   %psr, %g1
@@ -244,8 +247,15 @@ __ajit_swapcontext__:
 	! get the context. %o0 contains
 	! the source context pointer.
 	!
+	mov %i0, %o0
 	call __ajit_getcontext__
 	nop
+
+	addcc %o0, 0x0 , %g0
+
+	
+	bn,a return_from_swap_context
+	mov -1, %i0
 
 	! now move i1 to o0 and call
 	! setcontext
@@ -253,8 +263,14 @@ __ajit_swapcontext__:
 	call __ajit_setcontext__
 	nop
 
+	addcc %o0, 0x0 , %g0
+	bn,a return_from_swap_context
+	mov -1, %o0
+
+	mov %g0, %o0
 
 return_from_swap_context:
+
 	ret
 	restore
 

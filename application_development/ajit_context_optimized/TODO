@@ -1,13 +1,4 @@
-More or less OK, but the following logic
 
-	--> when getcontext is executed, 
-
-		first update the stack-pointer based
-		on the specified stack-pointer in the context
-		and then proceed with the logic.
-
-Also: 
-	for getcontext and setcontext, get a new window
-	(save) and then proceed....
-
+	Check swapcontext
+	Check return values!
 
