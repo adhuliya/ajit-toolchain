@@ -19,9 +19,11 @@ typedef struct ajit_mcontext_t__ {
 	// global registers.
 	uint32_t g[8];
 
-	// locals and ins
+	// save the window at the point of
 	uint32_t locals[8]; 
 	uint32_t ins[8]; 
+	uint32_t outs[8]; 
+	
 
 	// FP registers
 	uint32_t f[32]; 

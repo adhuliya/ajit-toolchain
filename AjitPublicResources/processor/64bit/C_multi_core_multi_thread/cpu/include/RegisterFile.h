@@ -13,7 +13,7 @@ typedef struct __Registerfile {
 void resetRegisterFile(RegisterFile* rf);
 RegisterFile*  makeRegisterFile();
 
-void writeRegister( RegisterFile *rf, uint8_t addr, uint8_t cwp, uint32_t value);
+void writeRegister(uint32_t pc, RegisterFile *rf, uint8_t addr, uint8_t cwp, uint32_t value);
 void writeFRegister(RegisterFile *rf, uint8_t addr, uint32_t value);
 
 uint32_t readRegister(RegisterFile* rf, uint8_t addr, uint8_t cwp);

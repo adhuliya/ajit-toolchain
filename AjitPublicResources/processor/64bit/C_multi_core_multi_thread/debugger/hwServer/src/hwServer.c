@@ -623,7 +623,8 @@ int execute_spi(ThreadState *ajit_state, hwServerState* hs, spi_cmd *cmd_exe)	//
 		reg_data = cmd_exe->data;
 		if ( getSlice32(cmd_exe->command, 10, 10) == 1)		{		// General purpose registers
 			uint8_t cwp = getSlice32(ajit_state->status_reg.psr, 4, 0);	// Get the current window state			
-			writeRegister(rf, (uint8_t)getSlice32(cmd_exe->command, 4, 0), cwp, reg_data);		// Write register contents
+			writeRegister(ajit_state->status_reg.pc, 
+				rf, (uint8_t)getSlice32(cmd_exe->command, 4, 0), cwp, reg_data);		// Write register contents
 		}
 		else if ( getSlice32(cmd_exe->command, 9, 9) == 1)		{		// Write PSR
 			ajit_state->status_reg.psr = reg_data;

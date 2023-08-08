@@ -1,0 +1,4 @@
+	The stack pointer in a context must be updated
+	everytime a getcontext is called, except for the
+	first time, in which case the allocated stack pointer
+	is used.

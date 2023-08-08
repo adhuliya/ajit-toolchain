@@ -861,12 +861,12 @@ void writeBackResult(RegisterFile* rf, uint8_t dest_reg, uint32_t result_h, uint
 	{
 		if(!is_double_result)
 		{
-			writeRegister(rf,  dest_reg, cwp, result_l);
+			writeRegister(pc, rf,  dest_reg, cwp, result_l);
 		}
 		else
 		{
-			writeRegister(rf,  setBit8(dest_reg, 0, 0), cwp, result_h);
-			writeRegister(rf, setBit8(dest_reg, 0, 1), cwp, result_l);
+			writeRegister(pc, rf,  setBit8(dest_reg, 0, 0), cwp, result_h);
+			writeRegister(pc, rf, setBit8(dest_reg, 0, 1), cwp, result_l);
 		}
 
 		//Information to be logged:

@@ -220,10 +220,18 @@ uint32_t executeLoad(Opcode op, uint32_t operand1, uint32_t operand2,
 		tv = setBit32(tv, _DATA_ACCESS_EXCEPTION_, 1);
 	}
 		
-	if(global_verbose_flag && is_trap)
+	if(global_verbose_flag )
 	{
-		fprintf(stderr,"EXCEPTION: at pc=0x%x, load from 0x%x, asi=0x%x.\n", 
-				status_reg->pc, address, addr_space);
+		if (is_trap)
+		{
+			fprintf(stderr,"EXCEPTION: at pc=0x%x, load from 0x%x, asi=0x%x.\n", 
+					status_reg->pc, address, addr_space);
+		}
+		else 
+		{
+			fprintf (stderr, "LOAD: at pc=0x%x from  addr=0x%x (asi=0x%x)\n",
+					status_reg->pc, address, addr_space);
+		} 
 	}
 
 	if(is_double_word_inst) 		f = setBit8(f, _DOUBLE_RESULT_, 1);
@@ -437,6 +445,11 @@ uint32_t executeStore( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t
 					fprintf(stderr,"EXCEPTION: at pc 0x%x, store to 0x%x, asi=0x%x.\n", 
 							status_reg->pc, address, addr_space);
 				}
+			}
+			else if (global_verbose_flag)
+			{
+				fprintf(stderr,"STORE: at pc 0x%x, store to 0x%x, asi=0x%x.\n", 
+							status_reg->pc, address, addr_space);
 			}
 
 			
@@ -1627,7 +1640,7 @@ void executeCall(RegisterFile* rf,  uint32_t operand1, StatusRegisters *status_r
 #endif 
 	StatusRegisters sr = *status_reg;
 	uint8_t cwp = getSlice32(sr.psr, 4, 0);
-	writeRegister(rf, 15, cwp, sr.pc);
+	writeRegister(sr.pc, rf, 15, cwp, sr.pc);
 
 	// GPR is updated.
 	suf->gpr_updated = 1;
@@ -2489,15 +2502,15 @@ void executeTrap(ThreadState* thread_state,
 	uint8_t skip_write1 = ( is_error_mode || is_annul);
 	if(!skip_write1)
 	{
-		writeRegister(rf, 17, new_cwp, pc_tmp); // %l1
-		writeRegister(rf, 18, new_cwp, npc_tmp);// %l2
+		writeRegister(thread_state->status_reg.pc, rf, 17, new_cwp, pc_tmp); // %l1
+		writeRegister(thread_state->status_reg.pc, rf, 18, new_cwp, npc_tmp);// %l2
    	}
 
 	uint8_t skip_write2 = ( is_error_mode || !is_annul);
 	if(!skip_write2)
 	{
-		writeRegister(rf, 17, new_cwp, npc_tmp); // %l1
-		writeRegister(rf, 18, new_cwp, (npc_tmp + 4)); // %l2
+		writeRegister(thread_state->status_reg.pc, rf, 17, new_cwp, npc_tmp); // %l1
+		writeRegister(thread_state->status_reg.pc, rf, 18, new_cwp, (npc_tmp + 4)); // %l2
 	}
 	if(!skip_write2) tv = setBit32(tv, _ANNUL_, 0);
 

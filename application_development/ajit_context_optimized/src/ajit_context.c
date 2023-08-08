@@ -19,6 +19,7 @@ void __ajit_context_set_stack__(ajit_context_t* ctxt, uint32_t stack_base_addr, 
 	uint32_t stack_pointer = ((stack_base_addr + stack_size) & 0xfffffff0) - 96;
 	ctxt->stack_pointer = stack_pointer;
 	ctxt->stack_size_in_bytes = stack_size;
+	ctxt->mctxt.outs[6] = stack_pointer;
 }
 
 void __ajit_context_set_link__ (ajit_context_t* ctxt, ajit_context_t* link)
@@ -47,6 +48,9 @@ void __ajit_print_mcontext__ (ajit_context_t* t)
 
 	for(I = 0; I < 8; I++)
 		cortos_printf("i%d = 0x%x.\n", I, t->mctxt.ins[I]);
+
+	for(I = 0; I < 8; I++)
+		cortos_printf("o%d = 0x%x.\n", I, t->mctxt.outs[I]);
 
 	for(I = 0; I < 32; I++)
 		cortos_printf("f%d = 0x%x.\n", I, t->mctxt.f[I]);

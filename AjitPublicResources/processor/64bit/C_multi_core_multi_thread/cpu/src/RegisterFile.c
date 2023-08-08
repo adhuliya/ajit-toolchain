@@ -11,6 +11,7 @@
 #include <inttypes.h>
 #include "SocketLib.h"
 
+extern int global_verbose_flag;
 
 
 RegisterFile* makeRegisterFile()
@@ -42,7 +43,7 @@ void resetRegisterFile(RegisterFile* rf)
 	}
 }
 
-void writeRegister(RegisterFile* rf, uint8_t addr, uint8_t cwp, uint32_t value)
+void writeRegister(uint32_t pc, RegisterFile* rf, uint8_t addr, uint8_t cwp, uint32_t value)
 {
 	assert(rf != NULL);
 
@@ -52,6 +53,12 @@ void writeRegister(RegisterFile* rf, uint8_t addr, uint8_t cwp, uint32_t value)
 
 	if (!skip_write && is_global)  rf->g[addr] = value ;
 	if (!skip_write && !is_global) rf->r[local_reg_addr] = value ;
+
+	if(global_verbose_flag && !skip_write)
+	{
+		fprintf(stderr,"RWRITE at PC= 0x%x:  CWP=0x%x, REGID= 0x%x, VALUE= 0x%x\n",
+				pc, cwp, addr, value);
+	}
 }
 
 uint32_t readRegister(RegisterFile* rf, uint8_t addr, uint8_t cwp)
