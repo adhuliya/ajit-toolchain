@@ -23,7 +23,7 @@ void foo_2 (CoroutineControl* cc_ctrl)
 
 void coroutine (CoroutineControl* cc_ctrl)
 {
-	// cortos_printf ("coroutine [a: %d]: (sp=0x%x).\n", n_calls, cc_ctrl->pcc->stack_pointer);
+	cortos_printf ("coroutine [a: %d]: (sp=0x%x).\n", n_calls, cc_ctrl->pcc->stack_pointer);
 	n_calls++;
 
 	cortos_printf ("coroutine [a: %d]: (sp=0x%x).\n", n_calls, cc_ctrl->pcc->stack_pointer);

@@ -118,6 +118,6 @@ Software:
     # Function: my_serial_interrupt_handler
      #  - Index: 13  # external interrupt index
      #    Function: my_external_interrupt_handler
-  #Traps: # by software
-    #- Index: 5
-      #Function: user_handler05
+  Traps: # by software
+    - Index: 3
+      Function: __ajit_context_save_all_windows__

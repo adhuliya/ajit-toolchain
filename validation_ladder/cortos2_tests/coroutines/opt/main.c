@@ -6,7 +6,10 @@
 #include <core_portme.h>
 #include <cortos.h>
 #include <ajit_context.h>
+#include <coroutine.h>
 #include <data_struct.h>
+
+#define STACK_SIZE_IN_BYTES 4096
 
 
 volatile ajit_context_t volatile scheduler __attribute__ ((aligned(8))) ;
@@ -15,8 +18,6 @@ volatile ajit_context_t volatile cc  __attribute__ ((aligned(8))) ;
 volatile ajit_context_t volatile *pscheduler = &scheduler;
 volatile ajit_context_t volatile *pcc        = &cc;
 
-extern uint32_t stack_0[1024];
-extern uint32_t stack_1[1024];
 
 CoroutineControl cc_ctrl;
 void coroutine (CoroutineControl* pcc_ctrl);
@@ -42,46 +43,42 @@ void setup ()
 int main () 
 {
 
-	cortos_printf("Starting (pscheduler=0x%x, pcc=0x%x)\n", 
-					(uint32_t) pscheduler,
-					(uint32_t) pcc);
-	cortos_printf ("pscheduler pointer address = 0x%x\n", (uint32_t) &pscheduler);
-
-   	__ajit_context_init__(pscheduler);
-
-   	__ajit_context_init__(pcc);
-	__ajit_getcontext__ (pcc);
-	__ajit_context_set_stack__(pcc, ((uint32_t) &stack_1), 4*1024);
-
+   	uint32_t* stack_0 = (uint32_t*) cortos_bget (STACK_SIZE_IN_BYTES);
+   	uint32_t* stack_1 = (uint32_t*) cortos_bget (STACK_SIZE_IN_BYTES);
 
 	cc_ctrl.pcc = pcc;
 	cc_ctrl.pscheduler = pscheduler;
 
+   	__ajit_context_init__(pcc);
+	__ajit_getcontext__ (pcc);
+	if(pcc->scratch[0] == 0)
+	{
+		__ajit_context_set_stack__(pcc, ((uint32_t) stack_1), STACK_SIZE_IN_BYTES);
+		__ajit_context_set_link__ (pcc, pscheduler);
+		__ajit_makecontext__ (pcc, coroutine, (void*) &cc_ctrl);
+	}
+	cortos_printf("returned from getcontext(pcc) [%d], pcc=0x%x pscheduler=0x%x\n",
+				n_calls, pcc, pscheduler);
+				
+
+
+   	__ajit_context_init__(pscheduler);
 	__ajit_getcontext__ (pscheduler);
-	__ajit_context_set_stack__(pscheduler, ((uint32_t) &stack_0), 4*1024);
-		
-	cortos_printf("scheduler: got context [%d] pscheduler = 0x%x 0x%x\n", n_calls, 
+	if(pscheduler->scratch[0] == 0)
+	{
+		//__ajit_context_set_stack__(pscheduler, ((uint32_t) stack_0), STACK_SIZE_IN_BYTES);
+		pscheduler->scratch[0] = 1;
+	}
+	cortos_printf("scheduler: got context [%d] pscheduler = 0x%x 0x%x\n", 
+									n_calls, 
 									(uint32_t) pscheduler,
 									(uint32_t) cc_ctrl.pscheduler);
-	if(n_calls == 0)
+
+	if(n_calls < LOOPS)
 	{
-		//
-		// The first time around, call the coroutine
-		//
-		cortos_printf ("call coroutine \n");
-		coroutine (&cc_ctrl);
-	}
-	else if (!done_flag)
-	{
-		// 
-		// second time onward, just setcontext to the
-		// coroutine context to continue.
-		//
-		cortos_printf("scheduler: set cc-context [%d] = 0x%x (stack=0x%x)\n", 
-						n_calls,  pcc, pcc->mctxt.outs[6]);
 		__ajit_setcontext__ (pcc);
 	}
-
+		
 	cortos_printf("Done.\n");
 	return(0);
 }
