@@ -5,24 +5,38 @@
 #include <ajit_mt_irc.h>
 #include <core_portme.h>
 #include <cortos.h>
-#include <ajit_context.h>
-#include <coroutine.h>
-#include <data_struct.h>
+#include <ajit_coroutine.h>
 
 #define STACK_SIZE_IN_BYTES 4096
 
+volatile int __counter = 0;
 
-volatile ajit_context_t volatile scheduler __attribute__ ((aligned(8))) ;
-volatile ajit_context_t volatile cc  __attribute__ ((aligned(8))) ;
-
-volatile ajit_context_t volatile *pscheduler = &scheduler;
-volatile ajit_context_t volatile *pcc        = &cc;
+void func (void* vcr)
+{
+	ajit_coroutine_t* cr = vcr;
 
 
-CoroutineControl cc_ctrl;
-void coroutine (CoroutineControl* pcc_ctrl);
+	while(__counter < 8)
+	{
+		__counter++;
 
-#define LOOPS 4
+		cortos_printf("func* %d.\n", __counter);
+		ajit_coroutine_yield(cr);
+
+		__counter++;
+		cortos_printf("func** %d.\n", __counter);
+		ajit_coroutine_yield(cr);
+
+		__counter++;
+		cortos_printf("func*** %d.\n", __counter);
+		ajit_coroutine_yield(cr);
+	}
+
+	__counter++;
+	cortos_printf("func**** %d. (returns) \n", __counter);
+	ajit_coroutine_return(cr);
+}
+
 volatile int n_calls = 0;
 volatile int done_flag = 0;
 
@@ -40,45 +54,24 @@ void setup ()
 }
 
 
+volatile ajit_coroutine_t cr  __attribute__ ((aligned(8))) ;
+
 int main () 
 {
+	ajit_coroutine_create (STACK_SIZE_IN_BYTES, (void*) func, (void*) &cr,  &cr);
+	CORTOS_DEBUG("coroutine created 0x%x, 0x%x\n", func, &cr);
 
-   	uint32_t* stack_0 = (uint32_t*) cortos_bget (STACK_SIZE_IN_BYTES);
-   	uint32_t* stack_1 = (uint32_t*) cortos_bget (STACK_SIZE_IN_BYTES);
+	ajit_coroutine_run ((&cr));
+	CORTOS_DEBUG("ajit_coroutine_run returns\n");
 
-	cc_ctrl.pcc = pcc;
-	cc_ctrl.pscheduler = pscheduler;
-
-   	__ajit_context_init__(pcc);
-	__ajit_getcontext__ (pcc);
-	if(pcc->scratch[0] == 0)
+	while(cr.state != __COMPLETED)
 	{
-		__ajit_context_set_stack__(pcc, ((uint32_t) stack_1), STACK_SIZE_IN_BYTES);
-		__ajit_context_set_link__ (pcc, pscheduler);
-		__ajit_makecontext__ (pcc, coroutine, (void*) &cc_ctrl);
-	}
-	cortos_printf("returned from getcontext(pcc) [%d], pcc=0x%x pscheduler=0x%x\n",
-				n_calls, pcc, pscheduler);
-				
+		CORTOS_DEBUG("calling ajit_coroutine_resume\n");
+		ajit_coroutine_resume ((&cr));
+		CORTOS_DEBUG("ajit_coroutine_resume returns\n");
 
-
-   	__ajit_context_init__(pscheduler);
-	__ajit_getcontext__ (pscheduler);
-	if(pscheduler->scratch[0] == 0)
-	{
-		//__ajit_context_set_stack__(pscheduler, ((uint32_t) stack_0), STACK_SIZE_IN_BYTES);
-		pscheduler->scratch[0] = 1;
 	}
-	cortos_printf("scheduler: got context [%d] pscheduler = 0x%x 0x%x\n", 
-									n_calls, 
-									(uint32_t) pscheduler,
-									(uint32_t) cc_ctrl.pscheduler);
 
-	if(n_calls < LOOPS)
-	{
-		__ajit_setcontext__ (pcc);
-	}
-		
 	cortos_printf("Done.\n");
 	return(0);
 }

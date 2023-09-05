@@ -84,3 +84,12 @@ uint32_t readFRegister(RegisterFile* rf, uint8_t addr)
 	assert (rf != NULL);
 	return rf->f[addr];
 }
+
+void dumpRegisters (RegisterFile* rf, uint8_t cwp)
+{
+	int I;
+	for(I = 0; I < 32; I++)
+	{
+		fprintf(stderr,"r%d = 0x%x\n", I, readRegister(rf, I, cwp));
+	}
+}

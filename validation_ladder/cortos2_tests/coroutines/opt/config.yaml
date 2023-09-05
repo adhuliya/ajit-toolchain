@@ -70,11 +70,11 @@ Software:
   BuildAndExecute:
     # Optional: Specify the log level. Default is NONE.
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
-    LogLevel: DEBUG
-    OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
+    LogLevel: NONE
+    OptimizationLevel: 0 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
     EnableSerial: No # Yes/No (Default: Yes)
-    Debug: No # Yes/No (Default: No)
+    Debug: Yes # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs:  -D CLK_FREQUENCY=80000000 -D USE_VMAP  -D EE_PRINTF_AVAILABLE
                 -I $AJIT_HOME/application_development/ajit_context_optimized/include 

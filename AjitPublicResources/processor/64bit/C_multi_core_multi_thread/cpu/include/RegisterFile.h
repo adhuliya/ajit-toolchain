@@ -19,5 +19,7 @@ void writeFRegister(RegisterFile *rf, uint8_t addr, uint32_t value);
 uint32_t readRegister(RegisterFile* rf, uint8_t addr, uint8_t cwp);
 uint32_t readFRegister(RegisterFile* rf, uint8_t addr);
 
+void dumpRegisters (RegisterFile* rf, uint8_t cwp);
+
 
 #endif

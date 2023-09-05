@@ -16,10 +16,16 @@ typedef struct ajit_context_t__ {
 	uint32_t  func;
 	uint32_t  func_arg;
 
-	uint32_t scratch[3];
+	uint32_t  link_context;
+	uint32_t  fp;
 
 	// global registers.
 	uint32_t g[8];
+	
+	// locals and ins of the
+	// getcontext caller, 
+	uint32_t l[8];
+	uint32_t i[8];
 	
 	// FP registers
 	uint32_t f[32]; 
@@ -35,6 +41,7 @@ void __ajit_context_init__(ajit_context_t* ctxt);
 // set the function and argument.
 //
 void __ajit_context_set_func_and_arg__ (ajit_context_t* ctxt, uint32_t fn_pointer, uint32_t arg_pointer);
+void __ajit_context_set_link_context__ (ajit_context_t* ctxt, ajit_context_t* link_context);
 
 
 /* Get user context and keep it in UCP.                  			 */
