@@ -107,8 +107,9 @@ leave_supervisor_region:
 	! now in window W-1
 	!  Window W-1 will keep stack of the
 	!  context.
-	!  get the stack pointer
-	ld [%i0 + 4], %sp
+	!  get the stack pointer, but keep
+	!  it in o0
+	ld [%i0 + 4], %o0
 
 
 
@@ -131,21 +132,25 @@ move_on:
 	
 
 	! get the locals and ins from the stack..
-	ldd [%sp],      %l0
-	ldd [%sp + 8],  %l2
-	ldd [%sp + 16], %l4
-	ldd [%sp + 24], %l6
+	ldd [%o0],      %l0
+	ldd [%o0 + 8],  %l2
+	ldd [%o0 + 16], %l4
+	ldd [%o0 + 24], %l6
 
 	! get back all input regs except for i0
 	! note that the saved i0 should be the same 
 	! as the context pointer..
-        ld  [%sp + 36],  %i1
-	ldd [%sp + 40],  %i2
-	ldd [%sp + 48],  %i4
-	ldd [%sp + 56],  %i6
+        ld  [%o0 + 36],  %i1
+	ldd [%o0 + 40],  %i2
+	ldd [%o0 + 48],  %i4
+	ldd [%o0 + 56],  %i6
 
 	! get back the frame pointer.
 	ld [%i0 + 28], %fp
+
+	! now update the stack pointer.
+	! (after the current window has its registers)
+	mov %o0, %sp
 
 	! read func
 	ld [%i0 + 16], %o0

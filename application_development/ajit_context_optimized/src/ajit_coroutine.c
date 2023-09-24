@@ -27,8 +27,6 @@ int ajit_coroutine_create (uint32_t stack_size_in_bytes,
 	cr->stack  = cortos_bget(stack_size_in_bytes);
 	cr->stack_size_in_bytes = stack_size_in_bytes;
 
-	cr->caller_stack  = cortos_bget(stack_size_in_bytes);
-	cr->caller_stack_size_in_bytes = stack_size_in_bytes;
 
 	if(cr->stack == NULL)
 	{
@@ -36,11 +34,19 @@ int ajit_coroutine_create (uint32_t stack_size_in_bytes,
 		return(-1);
 	}
 
+
 	cr->fn = f;
 	cr->arg = arg;
 
 	cr->state = __CREATED;
 
 	return(0);
+}
+
+
+int ajit_coroutine_destroy(ajit_coroutine_t* cr)
+{
+	if ((cr != NULL) && (cr->stack != NULL))
+		cortos_brel(cr->stack);
 }
 

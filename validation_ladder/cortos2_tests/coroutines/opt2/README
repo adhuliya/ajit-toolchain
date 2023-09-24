@@ -1,0 +1,3 @@
+A test case for cascading coroutines
+
+   main -> coroutine_0 -> coroutine_1
