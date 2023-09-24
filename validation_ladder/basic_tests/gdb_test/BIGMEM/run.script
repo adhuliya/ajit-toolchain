@@ -1,0 +1,7 @@
+r mode
+w rst 1
+m gdb_test.mmap
+w ipc 0x40000000
+w inpc 0x40000004
+w rst 2
+g start 8888

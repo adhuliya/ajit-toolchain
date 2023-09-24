@@ -1,0 +1,6 @@
+    number-of-instructions-executed = 162434
+    number-of-instructions-executed = 139297
+
+	for 10 iterations              43137
+
+	Per iteration 4313 ?

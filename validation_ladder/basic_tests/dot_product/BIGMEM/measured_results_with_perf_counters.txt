@@ -1,0 +1,21 @@
+Hello.
+run_test (0x40fffffc). // n=1024
+Final sum =    3651.568359.
+Elapsed time=      0.051041, MFLOPS=41.087304, IPC=0.973276, load_miss_frac=0.005161, store_miss_frac=0.049738
+Hello.
+run_test (0x40fffffc). // n=2048
+Final sum =   29262.453125.
+Elapsed time=      0.101832, MFLOPS=41.188391, IPC=0.971203, load_miss_frac=0.002588, store_miss_frac=0.052072
+Hello.
+run_test (0x40fffffc). // n=4096
+Final sum =  234252.531250.
+Elapsed time=      0.209440, MFLOPS=40.052495, IPC=0.942247, load_miss_frac=0.004102, store_miss_frac=0.103285
+Hello.
+run_test (0x40fffffc). // n=8192
+Final sum = 1873571.125000.
+Elapsed time=      0.919136, MFLOPS=18.253243, IPC=0.428918, load_miss_frac=0.125779, store_miss_frac=0.107022
+Hello.
+run_test (0x40fffffc). // n=16384
+Final sum = 14964162.000000.
+Elapsed time=      1.836640, MFLOPS=18.269462, IPC=0.429052, load_miss_frac=0.125375, store_miss_frac=0.082057
+

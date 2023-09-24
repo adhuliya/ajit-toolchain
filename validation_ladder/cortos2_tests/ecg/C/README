@@ -1,0 +1,21 @@
+./check_sw.sh
+	Run this to check the software model on 
+	the 100.data/mit/mlii.txt file.
+
+./clean.sh
+	clean up everything..
+
+./compile_config_send.sh
+	To build the driver which configures the
+	hardware over uart and then sends the beat data.
+
+./compile_receive_fits.sh
+	To configure the receiver which collects beat
+	classification over uart.
+
+./compile_sw_driver.sh
+	This builds the software model and produces the
+	executable bin/test_best_fit_sw
+
+./generate_vhdl.sh
+	for generating the VHDL

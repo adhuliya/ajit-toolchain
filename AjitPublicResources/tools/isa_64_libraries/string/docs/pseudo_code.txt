@@ -1,0 +1,20 @@
+
+    __insert__ (reg, wval, rval, mask)
+	reg <-  (rval & (~mask)) | (wval & mask)
+
+
+   src_reg_pair and dest_reg_pair are loaded from memory. 2
+   __copy_8 (src_reg_pair, dest_reg_pair, shift_left_amount)
+   {
+	mask = left_shift_128 (src_reg_pair, shift_left_amount); // 2 shifts + 1 op
+	dest_reg_pair.top = __insert__ (src_reg_pair.top, dest_reg_pair.top, mask.top);
+	dest_reg_pair.bottom = __insert__ (src_reg_pair.bottom, dest_reg_pair.bottom, mask.bottom);
+   } 3 + 3 + 3 = 9 instructions...
+
+
+
+    for(i = 0; i < 8; i++)
+	d[i] = s[i];
+
+	
+

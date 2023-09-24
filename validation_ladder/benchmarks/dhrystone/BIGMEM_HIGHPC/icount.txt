@@ -1,0 +1,8 @@
+    number-of-instructions-executed = 80999
+    number-of-instructions-executed = 79274
+--------------------------------------------------
+
+	num instr = 172.5
+	per iter. --> 1.725 us per iter.
+
+	hw: 2.47us per iter..

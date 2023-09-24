@@ -1,0 +1,50 @@
+For 10 iterations 
+
+Thread 0 entered ERROR MODE at PC=0x40002800
+ Program exited with a trap type = 0x0
+Statistics for Thread 0 (Core 0):
+    number-of-instructions-executed = 4130007
+    number-of-traps  = 5
+    number-of-cti  = 735852, mispredicts=236749
+    cycle-count estimate = 4159129
+Info: core,thread=0,0 finished.
+
+Statistics for ICACHE cpuid=0
+    number-of-accesses=4130011
+    number-of-hits=4129683
+    number-of-misses=328
+Statistics for DCACHE cpuid=0
+    number-of-accesses=729742
+    number-of-flushes=1
+    number-of-bypasses=1145
+    number-of-hits=728526
+    number-of-misses=70
+    number-of-write_hits=144053
+    number-of-write_misses=42
+    number-of-read_hits=584473
+    number-of-read_misses=28
+
+For 20 iterations
+
+Statistics for Thread 0 (Core 0):
+    number-of-instructions-executed = 8220464
+    number-of-traps  = 5
+    number-of-cti  = 1463717, mispredicts=472062
+    cycle-count estimate = 8249586
+Info: core,thread=0,0 finished.
+Total time taken by testbench: 97 secs
+Statistics for ICACHE cpuid=0
+    number-of-accesses=8220468
+    number-of-hits=8220140
+    number-of-misses=328
+Statistics for DCACHE cpuid=0
+    number-of-accesses=1453235
+    number-of-flushes=1
+    number-of-bypasses=1145
+    number-of-hits=1452019
+    number-of-misses=70
+    number-of-write_hits=286089
+    number-of-write_misses=42
+    number-of-read_hits=1165930
+    number-of-read_misses=28
+

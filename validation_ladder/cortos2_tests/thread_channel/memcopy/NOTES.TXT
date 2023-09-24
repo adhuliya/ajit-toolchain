@@ -1,0 +1,13 @@
+	total instr/load-store = 3.12
+	icache accesses = 67082
+	icache misses = 6328 (9.43%)
+
+	dcache accesses = 21763
+	dcache misses   = 18966 (87%)
+
+CPU 0
+	instructions = 31203
+
+CPU 1
+	instructions = 35879
+
