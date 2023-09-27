@@ -10,6 +10,10 @@
  * CompactPCI platform by Eric Brower, 1999.
  */
 
+/*
+ * AJIT modifications inserted by Madhav Desai
+ */
+
 #include <linux/version.h>
 #include <linux/init.h>
 
@@ -119,10 +123,6 @@ current_pc:
 
 1:
 		mov	%o7, %g3
-		!---- AJIT specific ------------------
-		!	tst	%o0
-		!	be	no_sun4u_here
-		!---- end AJIT specific --------------
 		mov	%g4, %o7		/* Previous %o7. */
 
 		mov	%o0, %l0		! stash away romvec
@@ -142,180 +142,47 @@ current_pc:
 		 */
 		set	KERNBASE, %l6
 		b	copy_prom_lvl14
-		 nop
+		nop
 
 already_mapped:
 		mov	0, %l6
 
-		/* Copy over the Prom's level 14 clock handler. */
 copy_prom_lvl14:
 		
-		!---- AJIT specific ------------------
-		!	#if 1
-		!			/* DJHR
-		!			 * preserve our linked/calculated instructions
-		!			 */
-		!			set	lvl14_save, %g1
-		!			set	t_irq14, %g3
-		!			sub	%g1, %l6, %g1		! translate to physical
-		!			sub	%g3, %l6, %g3		! translate to physical
-		!			ldd	[%g3], %g4
-		!			std	%g4, [%g1]
-		!			ldd	[%g3+8], %g4
-		!			std	%g4, [%g1+8]
-		!	#endif
-		!			rd	%tbr, %g1
-		!			andn	%g1, 0xfff, %g1		! proms trap table base
-		!			or	%g0, (0x1e<<4), %g2	! offset to lvl14 intr
-		!			or	%g1, %g2, %g2
-		!			set	t_irq14, %g3
-		!			sub	%g3, %l6, %g3
-		!			ldd	[%g2], %g4
-		!			std	%g4, [%g3]
-		!			ldd	[%g2 + 0x8], %g4
-		!			std	%g4, [%g3 + 0x8]	! Copy proms handler
+		/* nulled for AJIT */
 
-		!	/* DON'T TOUCH %l0 thru %l5 in these remapping routines,
-		!	 * we need their values afterwards!
-		!	 */
-
-		!			/* Now check whether we are already mapped, if we
-		!			 * are we can skip all this garbage coming up.
-		!			 */
-		!---- end AJIT specific --------------
 copy_prom_done:
 		cmp	%l6, 0
 		be	go_to_highmem		! this will be a nop then
-		 nop
+		nop
 
-		/* Validate that we are in fact running on an
-		 * SRMMU based cpu.
+		/* 
+		 * AJIT is an SRMMU based CPU
 		 */
-		set	0x4000, %g6
-		cmp	%g7, %g6
-		bne	not_a_sun4
-		 nop
+		bne	srmmu_ajit
+		nop
 
 halt_notsup:
 		ld	[%g7 + 0x68], %o1
 		set	notsup, %o0
 		sub	%o0, %l6, %o0
 		call	%o1
-		 nop
+		nop
 		ba	halt_me
-		 nop
+		nop
 
-not_a_sun4:
-		/* It looks like this is a machine we support.
-		 * Now find out what MMU we are dealing with
-		 * LEON - identified by the psr.impl field
-		 * Viking - identified by the psr.impl field
-		 * In all other cases a sun4m srmmu.
-		 * We check that the MMU is enabled in all cases.
+
+srmmu_ajit:
+		/* 
+		 * The machine is AJIT with an SRMMU.
+		 * We check that the MMU is enabled.
+		 *
 		 */
-
-		/* Check if this is a LEON CPU */
-		rd	%psr, %g3
-		srl	%g3, PSR_IMPL_SHIFT, %g3
-		and	%g3, PSR_IMPL_SHIFTED_MASK, %g3
-		cmp	%g3, PSR_IMPL_LEON
-		be	leon_remap		/* It is a LEON - jump */
-		 nop
-
-		/* Sanity-check, is MMU enabled */
 		lda	[%g0] ASI_M_MMUREGS, %g1
 		andcc	%g1, 1, %g0
 		be	halt_notsup
-		 nop
+		nop
 
-		/* Check for a viking (TI) module. */
-		cmp	%g3, PSR_IMPL_TI
-		bne	srmmu_not_viking
-		 nop
-
-		/* Figure out what kind of viking we are on.
-		 * We need to know if we have to play with the
-		 * AC bit and disable traps or not.
-		 */
-
-		/* I've only seen MicroSparc's on SparcClassics with this
-		 * bit set.
-		 */
-		set	0x800, %g2
-		lda	[%g0] ASI_M_MMUREGS, %g3	! peek in the control reg
-		and	%g2, %g3, %g3
-		subcc	%g3, 0x0, %g0
-		bnz	srmmu_not_viking			! is in mbus mode
-		 nop
-
-		rd	%psr, %g3			! DO NOT TOUCH %g3
-		andn	%g3, PSR_ET, %g2
-		wr	%g2, 0x0, %psr
-		WRITE_PAUSE
-
-		/* Get context table pointer, then convert to
-		 * a physical address, which is 36 bits.
-		 */
-		set	AC_M_CTPR, %g4
-		lda	[%g4] ASI_M_MMUREGS, %g4
-		sll	%g4, 0x4, %g4			! We use this below
-							! DO NOT TOUCH %g4
-
-		/* Set the AC bit in the Viking's MMU control reg. */
-		lda	[%g0] ASI_M_MMUREGS, %g5	! DO NOT TOUCH %g5
-		set	0x8000, %g6			! AC bit mask
-		or	%g5, %g6, %g6			! Or it in...
-		sta	%g6, [%g0] ASI_M_MMUREGS	! Close your eyes...
-
-		/* Grrr, why does it seem like every other load/store
-		 * on the sun4m is in some ASI space...
-		 * Fine with me, let's get the pointer to the level 1
-		 * page table directory and fetch its entry.
-		 */
-		lda	[%g4] ASI_M_BYPASS, %o1		! This is a level 1 ptr
-		srl	%o1, 0x4, %o1			! Clear low 4 bits
-		sll	%o1, 0x8, %o1			! Make physical
-
-		/* Ok, pull in the PTD. */
-		lda	[%o1] ASI_M_BYPASS, %o2		! This is the 0x0 16MB pgd
-
-		/* Calculate to KERNBASE entry. */
-		add	%o1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %o3
-
-		/* Poke the entry into the calculated address. */
-		sta	%o2, [%o3] ASI_M_BYPASS
-
-		/* I don't get it Sun, if you engineered all these
-		 * boot loaders and the PROM (thank you for the debugging
-		 * features btw) why did you not have them load kernel
-		 * images up in high address space, since this is necessary
-		 * for ABI compliance anyways?  Does this low-mapping provide
-		 * enhanced interoperability?
-		 *
-		 * "The PROM is the computer."
-		 */
-
-		/* Ok, restore the MMU control register we saved in %g5 */
-		sta	%g5, [%g0] ASI_M_MMUREGS	! POW... ouch
-
-		/* Turn traps back on.  We saved it in %g3 earlier. */
-		wr	%g3, 0x0, %psr			! tick tock, tick tock
-
-		/* Now we burn precious CPU cycles due to bad engineering. */
-		WRITE_PAUSE
-
-		/* Wow, all that just to move a 32-bit value from one
-		 * place to another...  Jump to high memory.
-		 */
-		b	go_to_highmem
-		 nop
-
-srmmu_not_viking:
-		/* This works on viking's in Mbus mode and all
-		 * other MBUS modules.  It is virtually the same as
-		 * the above madness sans turning traps off and flipping
-		 * the AC bit.
-		 */
 		set	AC_M_CTPR, %g1
 		lda	[%g1] ASI_M_MMUREGS, %g1	! get ctx table ptr
 		sll	%g1, 0x4, %g1			! make physical addr
@@ -327,37 +194,14 @@ srmmu_not_viking:
 		add	%g1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %g3
 		sta	%g2, [%g3] ASI_M_BYPASS		! place at KERNBASE entry
 		b	go_to_highmem
-		 nop					! wheee....
+		nop					! wheee....
 
-
-leon_remap:
-		/* Sanity-check, is MMU enabled */
-		lda	[%g0] ASI_LEON_MMUREGS, %g1
-		andcc	%g1, 1, %g0
-		be	halt_notsup
-		 nop
-
-		/* Same code as in the srmmu_not_viking case,
-		 * with the LEON ASI for mmuregs
-		 */
-		set	AC_M_CTPR, %g1
-		lda	[%g1] ASI_LEON_MMUREGS, %g1	! get ctx table ptr
-		sll	%g1, 0x4, %g1			! make physical addr
-		lda	[%g1] ASI_M_BYPASS, %g1		! ptr to level 1 pg_table
-		srl	%g1, 0x4, %g1
-		sll	%g1, 0x8, %g1			! make phys addr for l1 tbl
-
-		lda	[%g1] ASI_M_BYPASS, %g2		! get level1 entry for 0x0
-		add	%g1, KERNBASE >> (SRMMU_PGDIR_SHIFT - 2), %g3
-		sta	%g2, [%g3] ASI_M_BYPASS		! place at KERNBASE entry
-		b	go_to_highmem
-		 nop					! wheee....
 
 /* Now do a non-relative jump so that PC is in high-memory */
 go_to_highmem:
 		set	execute_in_high_mem, %g1
 		jmpl	%g1, %g0
-		 nop
+		nop
 
 /* The code above should be at beginning and we have to take care about
  * short jumps, as branching to .init.text section from .text is usually
@@ -376,138 +220,10 @@ execute_in_high_mem:
 		sethi	%hi(linux_dbvec), %g1
 		st	%o1, [%g1 + %lo(linux_dbvec)]
 
-		!---- AJIT specific ------------------
-		!			/* Get the machine type via the romvec
-		!			 * getprops node operation
-		!			 */
-		!			add	%g7, 0x1c, %l1
-		!			ld	[%l1], %l0
-		!			ld	[%l0], %l0
-		!			call	%l0
-		!			 or	%g0, %g0, %o0		! next_node(0) = first_node
-		!			or	%o0, %g0, %g6
-
-		!			sethi	%hi(cputypvar), %o1	! First node has cpu-arch
-		!			or	%o1, %lo(cputypvar), %o1
-		!			sethi	%hi(cputypval), %o2	! information, the string
-		!			or	%o2, %lo(cputypval), %o2
-		!			ld	[%l1], %l0		! 'compatible' tells
-		!			ld	[%l0 + 0xc], %l0	! that we want 'sun4x' where
-		!			call	%l0			! x is one of 'm', 'd' or 'e'.
-		!			 nop				! %o2 holds pointer
-		!							! to a buf where above string
-		!							! will get stored by the prom.
-
-
-		!			/* Check value of "compatible" property.
-		!			 * "value" => "model"
-		!			 * leon => sparc_leon
-		!			 * sun4m => sun4m
-		!			 * sun4s => sun4m
-		!			 * sun4d => sun4d
-		!			 * sun4e => "no_sun4e_here"
-		!			 * '*'   => "no_sun4u_here"
-		!			 * Check single letters only
-		!			 */
-
-		!			set	cputypval, %o2
-		!			/* If cputypval[0] == 'l' (lower case letter L) this is leon */
-		!			ldub	[%o2], %l1
-		!			cmp	%l1, 'l'
-		!			be	leon_init
-		!			 nop
-
-		!			/* Check cputypval[4] to find the sun model */
-		!			ldub	[%o2 + 0x4], %l1
-
-		!			cmp	%l1, 'm'
-		!			be	sun4m_init
-		!			 cmp	%l1, 's'
-		!			be	sun4m_init
-		!			 cmp	%l1, 'd'
-		!			be	sun4d_init
-		!			 cmp	%l1, 'e'
-		!			be	no_sun4e_here		! Could be a sun4e.
-		!			 nop
-		!			b	no_sun4u_here		! AIEEE, a V9 sun4u... Get our BIG BROTHER kernel :))
-		!			 nop
-
-		!	leon_init:
-		!			/* LEON CPU - set boot_cpu_id */
-		!			sethi	%hi(boot_cpu_id), %g2	! boot-cpu index
-
-		!	#ifdef CONFIG_SMP
-		!			ldub	[%g2 + %lo(boot_cpu_id)], %g1
-		!			cmp	%g1, 0xff		! unset means first CPU
-		!			bne	leon_smp_cpu_startup	! continue only with master
-		!			 nop
-		!	#endif
-		!			/* Get CPU-ID from most significant 4-bit of ASR17 */
-		!			rd     %asr17, %g1
-		!			srl    %g1, 28, %g1
-
-		!			/* Update boot_cpu_id only on boot cpu */
-		!			stub	%g1, [%g2 + %lo(boot_cpu_id)]
-		!---- end AJIT specific --------------
-
 		ba continue_boot
-		 nop
+		nop
 
-/* CPUID in bootbus can be found at PA 0xff0140000 */
-#define SUN4D_BOOTBUS_CPUID     0xf0140000
 
-sun4d_init:
-	/* Need to patch call to handler_irq */
-	set	patch_handler_irq, %g4
-	set	sun4d_handler_irq, %g5
-	sethi	%hi(0x40000000), %g3		! call
-	sub	%g5, %g4, %g5
-	srl	%g5, 2, %g5
-	or	%g5, %g3, %g5
-	st	%g5, [%g4]
-
-#ifdef CONFIG_SMP
-	/* Get our CPU id out of bootbus */
-	set     SUN4D_BOOTBUS_CPUID, %g3
-	lduba   [%g3] ASI_M_CTL, %g3
-	and     %g3, 0xf8, %g3
-	srl     %g3, 3, %g4
-	sta     %g4, [%g0] ASI_M_VIKING_TMP1
-	sethi	%hi(boot_cpu_id), %g5
-	stb	%g4, [%g5 + %lo(boot_cpu_id)]
-#endif
-
-	/* Fall through to sun4m_init */
-
-sun4m_init:
-/* Ok, the PROM could have done funny things and apple cider could still
- * be sitting in the fault status/address registers.  Read them all to
- * clear them so we don't get magic faults later on.
- */
-/* This sucks, apparently this makes Vikings call prom panic, will fix later */
-2:
-		rd	%psr, %o1
-		srl	%o1, PSR_IMPL_SHIFT, %o1	! Get a type of the CPU
-
-		subcc	%o1, PSR_IMPL_TI, %g0		! TI: Viking or MicroSPARC
-		be	continue_boot
-		 nop
-
-		set	AC_M_SFSR, %o0
-		lda	[%o0] ASI_M_MMUREGS, %g0
-		set	AC_M_SFAR, %o0
-		lda	[%o0] ASI_M_MMUREGS, %g0
-
-		/* Fujitsu MicroSPARC-II has no asynchronous flavors of FARs */
-		subcc	%o1, 0, %g0
-		be	continue_boot
-		 nop
-
-		set	AC_M_AFSR, %o0
-		lda	[%o0] ASI_M_MMUREGS, %g0
-		set	AC_M_AFAR, %o0
-		lda	[%o0] ASI_M_MMUREGS, %g0
-		 nop
 
 
 continue_boot:
@@ -529,6 +245,7 @@ continue_boot:
 		mov	0, %fp			/* And for good luck */
 
 		
+		/* AJIT kernel mmap builder will zero-out the BSS section */
 		!---- AJIT specific ------------------
 		!		/* Zero out our BSS section. */
 		!		set	__bss_start , %o0	! First address of BSS
@@ -548,7 +265,7 @@ continue_boot:
 		ldub	[%g2 + %lo(boot_cpu_id)], %g3
 		cmp	%g3, 0xff
 		bne	1f
-		 nop
+		nop
 		mov	%g0, %g3
 		stub	%g3, [%g2 + %lo(boot_cpu_id)]
 
@@ -590,7 +307,7 @@ continue_boot:
 
 		cmp	%g3, 0x7
 		bne	2f
-		 nop
+		nop
 
 		/* Adjust our window handling routines to
 		 * do things correctly on 7 window Sparcs.
@@ -680,15 +397,7 @@ continue_boot:
 
 		/* We should not get here. */
 		call	halt_me
-		 nop
-
-no_sun4e_here:
-		ld	[%g7 + 0x68], %o1
-		set	sun4e_notsup, %o0
-		call	%o1
-		 nop
-		b	halt_me
-		 nop
+		nop
 
 		__INITDATA
 
@@ -735,45 +444,7 @@ sun4u_a4:
 sun4u_r4:
 
 		__INIT
-no_sun4u_here:
-		set	sun4u_a1, %o0
-		set	current_pc, %l2
-		cmp	%l2, %g3
-		be	1f
-		 mov	%o4, %l0
-		sub	%g3, %l2, %l6
-		add	%o0, %l6, %o0
-		mov	%o0, %l4
-		mov	sun4u_r4 - sun4u_a1, %l3
-		ld	[%l4], %l5
-2:
-		add	%l4, 4, %l4
-		cmp	%l5, %l2
-		add	%l5, %l6, %l5
-		bgeu,a	3f
-		 st	%l5, [%l4 - 4]
-3:
-		subcc	%l3, 4, %l3
-		bne	2b
-		 ld	[%l4], %l5
-1:
-		call	%l0
-		 mov	%o0, %l1
 
-		ld	[%l1 + (sun4u_r1 - sun4u_a1)], %o1
-		add	%l1, (sun4u_a2 - sun4u_a1), %o0
-		call	%l0
-		 st	%o1, [%o0 + (sun4u_i2 - sun4u_a2)]
-
-		ld	[%l1 + (sun4u_1 - sun4u_a1)], %o1
-		add	%l1, (sun4u_a3 - sun4u_a1), %o0
-		call	%l0
-		st	%o1, [%o0 + (sun4u_i3 - sun4u_a3)]
-
-		call	%l0
-		 add	%l1, (sun4u_a4 - sun4u_a1), %o0
-
-		/* Not reached */
 halt_me:
 		ld	[%g7 + 0x74], %o0
 		call	%o0			! Get us out of here...

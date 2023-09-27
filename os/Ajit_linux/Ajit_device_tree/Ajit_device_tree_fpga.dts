@@ -56,6 +56,15 @@
 			#interrupt-cells	=   <1> ; //the interrupt number consists of just one number
 			interrupts		=   <12>; //serial interrupt IRQ level
 			};
+		//
+		// scratch pad keeps configuration data.
+		//
+		ajit_scratchpad{
+			compatible 		=   "Ajit";
+			device_type		=   "scratchpad";
+			// 1KB
+			reg                   	=   <0xffff2c00 0x00000400>;//<addr, size>
+			};
 
 		//The obio node information is not really used, but the
 		//kernel checks for presence of this node. So we keep it.
