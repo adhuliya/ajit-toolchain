@@ -90,7 +90,8 @@
 //Interrupt levels for interrupting sources in basic system
 #define TIMER_IRL    10
 #define SERIAL_IRL   12
-#define EXTERNAL_IRL 13
+#define IPI_IRL      13
+#define EXTERNAL_IRL 14
 
 
 //----------------------------------

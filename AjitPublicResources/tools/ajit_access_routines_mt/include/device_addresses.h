@@ -30,7 +30,14 @@
 //
 #define ADDR_INTERRUPT_CONTROLLER_MIN 			0xFFFF3000 // Base address
 #define ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER 	0xFFFF3000 
-#define ADDR_INTERRUPT_CONTROLLER_MAX 			0xFFFF301c // Base address + 28
+#define ADDR_INTERRUPT_CONTROLLER_IPI_BASE              0xFFFF3080 // IPI uses 76 bytes for now..
+								   // offset-from-base    register
+								   //   0                 ipi-intr-mask
+								   //   4                 ipi-intr-vals
+								   //   8 - 68            ipi-message-per-dest-cpu
+								   //                         8 bytes each
+								   //   76                ipi-lock
+#define ADDR_INTERRUPT_CONTROLLER_MAX 			0xFFFF30FF 
 
 
 //	Timer

@@ -7,6 +7,8 @@
 // Interrupt levels for interrupting sources in sparc
 // #define TIMER_IRL  10
 // #define SERIAL_IRL 12
+// #define IPI_IRL    13
+// #define EXTERNAL_IRL    14
 
 //time in microsends for which the output 
 //thread sleeps when there is no activity
@@ -19,6 +21,7 @@
 
 #include "InterruptController.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
@@ -45,6 +48,55 @@ pthread_t irc_mt_pthreads [MAX_NCORES][MAX_NTHREADS_PER_CORE];
 DEFINE_THREAD_WITH_ARG(IrcMt_Control, virc);
 DEFINE_THREAD_WITH_ARG(IrcMt_Output, virc);
 
+// 19 registers for IPI
+//  
+uint32_t ipi_registers[19];
+
+uint32_t insBytes (uint8_t bmask, uint32_t n, uint32_t o)
+{
+	uint32_t ret_val = o;
+	uint32_t mask = 0xff;
+
+	uint8_t i;
+	for(i = 0; i < 4; i++)
+	{
+		if(bmask & (1 << i))
+		{
+			ret_val = (n & mask) | (ret_val & (~mask));
+		}
+
+		mask = mask << 8;
+	}
+
+	return(ret_val);
+}
+uint32_t do_ipi_access(uint8_t rwbar, uint8_t bmask, uint32_t addr, uint32_t data_in)
+{
+	uint32_t dout = 0;
+	uint32_t reg_id   = ((addr & 0x3f) >> 2);
+	if(reg_id < 19)
+	{
+		dout = ipi_registers[reg_id];
+		if(!rwbar)
+		{
+			ipi_registers[reg_id] = insBytes(bmask, data_in, dout);
+#ifdef IPI_DEBUG
+			fprintf(stderr,"Info: do_ipi_access: wrote reg %d, bmask=0x%x, value=0x%x\n",
+					reg_id, bmask, ipi_registers[reg_id]);
+#endif
+		}
+		else
+		{
+#ifdef IPI_DEBUG
+			fprintf(stderr,"Info: do_ipi_access: read reg %d, value = 0x%x\n",
+					reg_id, dout);
+#endif
+		}
+	}
+	return(dout);
+}
+
+
 
 uint32_t regIdOffset (uint32_t addr)
 {
@@ -61,6 +113,8 @@ void distributorDaemon ()
 	sprintf(req_pipe_name,  "peripheral_bridge_to_irc_mt_request");
 	sprintf(resp_pipe_name, "irc_mt_to_peripheral_bridge_response");
 
+	write_uint32("IPI_INTERRUPT", 0);
+
 	while(1)
 	{
 		uint8_t rwbar, byte_mask;
@@ -68,33 +122,54 @@ void distributorDaemon ()
 		getPeripheralAccessCommand("peripheral_bridge_to_irc_mt_request",
 							&rwbar, &byte_mask, &addr, &data_in);
 
-		uint32_t offset = regIdOffset(addr);
+		if ((addr & 0xff) >= 0x80) 
+		{
+			// This is an IPI access.
+			uint32_t ipi_data_out = do_ipi_access (rwbar, byte_mask, addr, data_in);
+			write_uint32("IPI_INTERRUPT", ipi_registers[0] & ipi_registers[1]);
+			sendPeripheralResponse("irc_mt_to_peripheral_bridge_response", ipi_data_out);
+		}
+		else
+		{
+			uint32_t offset = regIdOffset(addr);
 
-		uint32_t core_id   = offset / MAX_NTHREADS_PER_CORE;
-		uint32_t thread_id = offset % MAX_NTHREADS_PER_CORE;
+			uint32_t core_id   = offset / MAX_NTHREADS_PER_CORE;
+			uint32_t thread_id = offset % MAX_NTHREADS_PER_CORE;
 
-		sendPeripheralAccessCommand (irc_mt_state[core_id][thread_id].req_pipe_name,
-							rwbar, byte_mask, addr, data_in);
-		uint32_t resp = read_uint32(irc_mt_state[core_id][thread_id].resp_pipe_name);
-		sendPeripheralResponse("irc_mt_to_peripheral_bridge_response", resp);
+			sendPeripheralAccessCommand (irc_mt_state[core_id][thread_id].req_pipe_name,
+					rwbar, byte_mask, addr, data_in);
+			uint32_t resp = read_uint32(irc_mt_state[core_id][thread_id].resp_pipe_name);
+			sendPeripheralResponse("irc_mt_to_peripheral_bridge_response", resp);
+		}
 	}
 }
 DEFINE_THREAD(distributorDaemon);
 
-			
-uint16_t generateIV()
+
+int threadId (IrcMt* irc)
+{
+	int ret_val = (2*irc->core_id) + irc->thread_id;
+	return(ret_val);
+}
+
+
+uint16_t generateIV(int thread_id)
 {
 	uint8_t TIMER_INT    = read_uint8("TIMER_to_IRC_INT");
 	uint8_t SERIAL_INT   = read_uint8("SERIAL_to_IRC_INT");
 	uint8_t EXTERNAL_INT = read_uint8("EXTERNAL_INTERRUPT");
+	uint32_t IPI_INT      = read_uint32("IPI_INTERRUPT");
+
+	uint8_t local_ipi = ((IPI_INT >> thread_id) & 0x1);
 
 	uint16_t IV =  (((uint16_t) (TIMER_INT != 0)) << 10) |
 		(((uint16_t) (SERIAL_INT != 0) ) << 12) |
-		(((uint16_t) (EXTERNAL_INT != 0)) << 13);
+		(((uint16_t) (local_ipi != 0) ) << 13) |
+		(((uint16_t) (EXTERNAL_INT != 0)) << 14);
 	return(IV);
 }
 
-			
+
 uint8_t  encodeInterrupt (uint16_t IV)
 {
 	uint8_t ret_val = 0;
@@ -144,17 +219,20 @@ void initialize_IrcMt_state(IrcMt* irc)
 //
 void register_IrcMt_pipes()
 {
-	
+
 	// signals coming from devices to the IRC
 	// 
 	register_port("TIMER_to_IRC_INT",8,1);
 	register_port("SERIAL_to_IRC_INT",8,1);
+	register_port("IPI_INTERRUPT",32,1);
 	register_port("EXTERNAL_INTERRUPT",8,1);
 
 	set_pipe_is_read_from("TIMER_to_IRC_INT");
 	set_pipe_is_read_from("SERIAL_to_IRC_INT");
 	set_pipe_is_read_from("EXTERNAL_INTERRUPT");
 	
+	set_pipe_is_read_from("IPI_INTERRUPT");
+	set_pipe_is_written_into("IPI_INTERRUPT");
 
 	//pipes between system bus and this device 
 	//to read/write IRQ device registers
@@ -208,6 +286,8 @@ void start_IrcMt_threads(int ncores, int nthreads_per_core)
 
 
 
+
+
 //IRC_Control thread
 //keeps monitoring read/write
 //requests from cpu-side
@@ -218,6 +298,7 @@ void IrcMt_Control(void* virc)
 
 	uint32_t data_out=0;
 	
+
 	while(1)
 	{
 		//wait for a request from processor-side
@@ -227,7 +308,7 @@ void IrcMt_Control(void* virc)
 
 		//lock the state variables
 		pthread_mutex_lock(&(irc->irc_lock));
-		
+
 		if(rwbar)
 		{
 			//this is a register-read.
@@ -242,10 +323,10 @@ void IrcMt_Control(void* virc)
 				//Cpu wants to update the control register
 				irc->control_register = insertUsingByteMask(irc->control_register, data_in, byte_mask);
 
-				#ifdef IRC_DEBUG
+#ifdef IRC_DEBUG
 				printf("\nINTERRUPT CONTROLLER (%d,%d): Control word 0x%x bmask 0x%x written. ",
 						irc->core_id, irc->thread_id, data_in, byte_mask);
-				#endif
+#endif
 
 				if(!(data_in & 0x1))
 				{
@@ -257,10 +338,10 @@ void IrcMt_Control(void* virc)
 					// for the moment, all interrupts are directed
 					// only to CPU-0.
 					write_uint8(irc->ilvl_signal_name, irc->irc_int_out);
-					
-					#ifdef IRC_DEBUG
+
+#ifdef IRC_DEBUG
 					printf(" State (%d,%d) = IRC_DISABLED", irc->core_id, irc->thread_id);
-					#endif
+#endif
 
 				}
 				else if (irc->state==sIRC_DISABLED && (data_in & 0x1))
@@ -272,11 +353,11 @@ void IrcMt_Control(void* virc)
 					irc->irc_int_out = 0;
 
 					write_uint8(irc->ilvl_signal_name, irc->irc_int_out);
-					
-					#ifdef IRC_DEBUG
+
+#ifdef IRC_DEBUG
 					printf(" State (%d,%d)= IRC_ENABLED", irc->core_id, irc->thread_id);
-					#endif
-	
+#endif
+
 				}
 			}
 			//send ack to cpu
@@ -286,7 +367,7 @@ void IrcMt_Control(void* virc)
 
 		//unlock state variables
 		pthread_mutex_unlock(&(irc->irc_lock));
-			
+
 	}//while(1)
 }
 
@@ -303,16 +384,16 @@ void IrcMt_Output(void* virc)
 		{
 			//Interrupts are enabled, but not interrupt 
 			//has been asserted yet.
-			
-			#ifdef IRC_DEBUG
-				//Assert that the interrupt line is low
-				if(irc->irc_int_out!=0)				
+
+#ifdef IRC_DEBUG
+			//Assert that the interrupt line is low
+			if(irc->irc_int_out!=0)				
 				printf("\nINTERRUPT CONTROLLER: WARNING! Interrupt line is high in IRC_ENABLED state");
-			#endif
+#endif
 
 
 			//examine the interrupt sources
-			uint16_t IV = generateIV();
+			uint16_t IV = generateIV(threadId(irc));
 
 			uint16_t masked_IV = (IV & (irc->control_register & 0xfffffffe));
 			irc->irc_int_out = encodeInterrupt (masked_IV);

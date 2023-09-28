@@ -69,7 +69,7 @@ int main_00 ()
 	}
 
 	cortos_printf("echo %s", buffer);
-	cortos_printf("i_counts=%d, %d.\n", i_count[0], i_count[1]);
+	cortos_printf("\ni_counts=%d, %d.\n", i_count[0], i_count[1]);
 	return(0);
 }
 

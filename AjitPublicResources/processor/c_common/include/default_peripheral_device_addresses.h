@@ -30,7 +30,14 @@
 //
 #define ADDR_INTERRUPT_CONTROLLER_MIN 			0xFFFF3000 // Base address
 #define ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER 	0xFFFF3000 
-#define ADDR_INTERRUPT_CONTROLLER_MAX 			0xFFFF301c // Base address + 28
+#define ADDR_INTERRUPT_CONTROLLER_IPI_BASE              0xFFFF3080 // IPI uses 76 bytes for now..
+								   // offset-from-base    register
+								   //   0                 ipi-intr-mask
+								   //   4                 ipi-intr-vals
+								   //   8 - 68            ipi-message-per-dest-cpu
+								   //                         8 bytes each
+								   //   76                ipi-lock
+#define ADDR_INTERRUPT_CONTROLLER_MAX 			0xFFFF30FF 
 
 
 //	Timer
@@ -112,5 +119,45 @@
 #define ADDR_I2C_MASTER_COMMAND_REGISTER		0xFFFF3604
 #define ADDR_I2C_MASTER_STATUS_REGISTER			0xFFFF3608
 #define ADDR_I2C_MASTER_MAX				0xFFFF3608
+
+// performance counters..
+//
+// We keep 256 bytes per thread, and there 
+// are 8-threads supported for now.
+// 
+// The performance counters are 64-bit values
+// which are described below.
+//
+// Thread-wise address allocation is as follows:
+// base to base + 255 is for thread 00
+// base+256 to base+511 is for thread 01
+//  etc. for threads 10 11 20 21 30 31
+//
+// Within each set of counters word addresses
+// are used to access the registers.
+// reg-addr    register
+//  0          executed-instr-count [63:32]
+//  4          executed-instr-count [31:0]
+//  8          skipped-instr-count  [63:32]
+//  12         skipped-instr-count  [31:0]
+//  16         load-count           [63:32]
+//  20         load-count           [31:0]
+//  24         load-miss-count      [63:32]
+//  28         load-miss-count      [31:0]
+//  32         store-count          [63:32]
+//  36         store-count          [31:0]
+//  40         store-miss-count     [63:32]
+//  44         store-miss-count     [31:0]
+//  48         cti-mispredict-count [63:32]
+//  52         cti-mispredict-count [31:0]
+//  56         trap-count           [63:32]
+//  60         trap-count           [31:0]
+//  64         icache-access-count  [63:32]
+//  68         icache-access-count  [31:0]
+//  72         icache-miss-count    [63:32]
+//  76         icache-miss-count    [31:0]
+//  rest up to 255 unused for now.
+#define ADDR_PERF_COUNTERS_MIN				0xFFFF4000
+#define ADDR_PERF_COUNTERS_MAX				0xFFFF47FF
 
 #endif
