@@ -220,6 +220,10 @@ execute_in_high_mem:
 		sethi	%hi(linux_dbvec), %g1
 		st	%o1, [%g1 + %lo(linux_dbvec)]
 
+		ajit_init:
+			/* LEON CPU - set boot_cpu_id */
+			sethi	%hi(boot_cpu_id), %g2	! boot-cpu index
+
 		#ifdef CONFIG_SMP
 			ldub	[%g2 + %lo(boot_cpu_id)], %g1
 			cmp	%g1, 0xff		! unset means first CPU
