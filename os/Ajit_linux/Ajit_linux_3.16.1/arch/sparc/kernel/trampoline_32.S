@@ -198,3 +198,56 @@ leon_smp_cpu_startup:
 	 nop
 
 	b,a	smp_panic
+	nop
+
+	.align	4
+        .global ajit_smp_cpu_startup, smp_penguin_ctable
+
+ajit_smp_cpu_startup:
+
+	/* Set up a sane %psr -- PIL<0xf> S<0x1> PS<0x1> CWP<0x0> */
+	set	(PSR_PIL | PSR_S | PSR_PS), %g1
+	wr	%g1, 0x0, %psr		! traps off though
+	WRITE_PAUSE
+
+	/* Our %wim is one behind CWP */
+	mov	2, %g1
+	wr	%g1, 0x0, %wim
+	WRITE_PAUSE
+
+	/* Set tbr - we use just one trap table. */
+	set	trapbase, %g1
+	wr	%g1, 0x0, %tbr
+	WRITE_PAUSE
+
+	/* Get our CPU id */
+        rd     %asr29,%g3
+	srl %g3, 8, %g3
+	and %g3, 0xf, %g3
+
+	/* Give ourselves a stack and curptr. */
+	set	current_set, %g5
+	srl	%g3, 28, %g4
+	sll	%g4, 2, %g4
+	ld	[%g5 + %g4], %g6
+
+	sethi	%hi(THREAD_SIZE - STACKFRAME_SZ), %sp
+	or	%sp, %lo(THREAD_SIZE - STACKFRAME_SZ), %sp
+	add	%g6, %sp, %sp
+
+	/* Turn on traps (PSR_ET). */
+	rd	%psr, %g1
+	wr	%g1, PSR_ET, %psr	! traps on
+	WRITE_PAUSE
+
+	/* Init our caches, etc. */
+	set	poke_srmmu, %g5
+	ld	[%g5], %g5
+	call	%g5
+	 nop
+
+	/* Start this processor. */
+	call	smp_callin
+	 nop
+
+	b,a	smp_panic

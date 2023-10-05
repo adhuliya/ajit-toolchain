@@ -294,4 +294,6 @@
 				      * implicit, little-endian
 				      */
 
+/* AJIT is consistent with ASI_M_ values. */
+
 #endif /* _SPARC_ASI_H */

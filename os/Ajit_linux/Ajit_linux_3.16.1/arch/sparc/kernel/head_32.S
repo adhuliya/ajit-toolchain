@@ -220,6 +220,21 @@ execute_in_high_mem:
 		sethi	%hi(linux_dbvec), %g1
 		st	%o1, [%g1 + %lo(linux_dbvec)]
 
+		#ifdef CONFIG_SMP
+			ldub	[%g2 + %lo(boot_cpu_id)], %g1
+			cmp	%g1, 0xff		! unset means first CPU
+			bne	ajit_smp_cpu_startup	! continue only with master
+		 	nop
+		#endif
+			/* Get CPU-ID from ASR29[11:8] */
+			rd     %asr29, %g1
+			srl    %g1, 8, %g1
+			and    %g1, 0xf, %g1
+
+			/* Update boot_cpu_id only on boot cpu */
+			stub	%g1, [%g2 + %lo(boot_cpu_id)]
+		
+
 		ba continue_boot
 		nop
 
