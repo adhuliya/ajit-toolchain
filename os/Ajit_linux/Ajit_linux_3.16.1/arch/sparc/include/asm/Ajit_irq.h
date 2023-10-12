@@ -1,10 +1,16 @@
 //Ajit_irq.h
+#ifndef __AJIT_IRQ_H___
+#define
 
 
 #include <linux/slab.h>
 
 #include <asm/timer.h>
 #include <asm/irq.h>
+
+#define  AJIT_IRQ_TICKER      10
+#define  AJIT_IRQ_IPI_DEFAULT 13
+#define  AJIT_IRQ_CROSS_CALL  15 // TODO: !!
 
 // BEGIN : ajit_mt_irc
 uint32_t readInterruptControlRegister(int core_id, int thread_id);
@@ -50,3 +56,4 @@ void  Ajit_init_IRQ(void);
 
 void Ajit_write_IRC_control_word(int value);
 
+#endif

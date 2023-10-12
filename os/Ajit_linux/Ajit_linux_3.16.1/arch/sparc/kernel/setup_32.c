@@ -197,6 +197,7 @@ struct cpuid_patch_entry {
 	unsigned int	addr;
 	unsigned int	sun4d[3];
 	unsigned int	leon[3];
+	unsigned int	ajit[3];
 };
 extern struct cpuid_patch_entry __cpuid_patch, __cpuid_patch_end;
 
@@ -211,12 +212,6 @@ static void __init per_cpu_patch(void)
 		return;
 	}
 	
-	if (sparc_cpu_model == ajit) 
-	{
-		//Do nothing. return.
-		return;
-	}
-
 	p = &__cpuid_patch;
 	while (p < &__cpuid_patch_end) {
 		unsigned long addr = p->addr;
@@ -230,6 +225,10 @@ static void __init per_cpu_patch(void)
 		case sparc_leon:
 			insns = &p->leon[0];
 			break;
+		case ajit:
+			insns = &p->ajit[0];
+			break;
+
 		default:
 			prom_printf("Unknown cpu type, halting.\n");
 			prom_halt();

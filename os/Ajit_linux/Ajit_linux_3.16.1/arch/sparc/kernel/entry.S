@@ -1359,6 +1359,10 @@ ENTRY(hard_smp_processor_id)
 	rd		%asr17, %o0
 	srl		%o0, 0x1c, %o0
 	nop
+	/* AJIT implementation */
+	rd		%asr29, %o0
+	srl		%o0, 8, %o0
+	and             %o0, 0xf, %o0
 	.previous
 	retl
 	 nop
