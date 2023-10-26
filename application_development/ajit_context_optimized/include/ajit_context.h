@@ -1,6 +1,8 @@
 #ifndef ajit_context_h__
 #define ajit_context_h__
+
 #define NWINDOWS 8
+
 
 //
 // optimized context data structure.
