@@ -1,0 +1,13 @@
+w rst 1
+t 0 1
+w rst 1
+t 0 0
+m cortos_build/main.mmap.remapped
+t 0 1
+w ipc 0x40000000
+w inpc 0x40000004
+w rst 0
+t 0 0
+w ipc 0x40000000
+w inpc 0x40000004
+w rst 0
