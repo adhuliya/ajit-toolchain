@@ -17,7 +17,6 @@ int ajit_coroutine_create (uint32_t stack_size_in_bytes,
 {
 
 	__ajit_context_init__ (&(cr->caller_context));
-
 	__ajit_context_init__ (&(cr->run_context));
 	__ajit_context_set_func_and_arg__ (&(cr->run_context), (uint32_t) f, (uint32_t) arg);
 

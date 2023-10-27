@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "ajit_context.h"
 
+#define AJIT_COROUTINE_STACK_SIZE_IN_BYTES 4096
 #define AJIT_COROUTINE_DEFAULT_FRAME_SIZE  96
 
 typedef enum {
@@ -28,6 +29,7 @@ typedef struct ajit_coroutine_t__ {
    coroutine_state_t state;
 } ajit_coroutine_t;
 
+// return  0 on success
 int ajit_coroutine_create(uint32_t stack_size_in_bytes,
 				void* f, 
 				// the argument for the function.
@@ -37,7 +39,7 @@ int ajit_coroutine_create(uint32_t stack_size_in_bytes,
 
 #define ajit_coroutine_run(pcr) {\
 	pcr->state = __RUNNING;\
- 	__ajit_getcontext__  (&(pcr->run_context), pcr->stack + STACK_SIZE_IN_BYTES - \
+ 	__ajit_getcontext__  (&(pcr->run_context), pcr->stack + AJIT_COROUTINE_STACK_SIZE_IN_BYTES - \
 					AJIT_COROUTINE_DEFAULT_FRAME_SIZE);\
          __ajit_swapcontext__ (&(pcr->caller_context), 0x0, &(pcr->run_context));}
 #define ajit_coroutine_yield(pcr) {\
