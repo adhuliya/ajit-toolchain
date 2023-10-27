@@ -8,6 +8,16 @@
 typedef struct __ajit_ctask_pool_t  ajit_ctask_pool_t;
 typedef struct __ajit_ctask_t       ajit_ctask_t;
 
+typedef struct __ajit_ctask_args_t {
+
+	uint32_t args[8];
+	ajit_ctask_t* ct;
+
+} ajit_ctask_args_t;
+
+
+
+
 struct __ajit_ctask_t {
 	ajit_coroutine_t coroutine; 
 	int index_in_pool;
@@ -65,18 +75,20 @@ typedef struct __ajit_ctask_scheduler_t {
 int ajit_init_ctask_scheduler(ajit_ctask_scheduler_t* sched);
 int ajit_run_ctask_scheduler (ajit_ctask_scheduler_t* sched);
 
-// return non-zero on success, 0 else.
-//   muxtex {
-//     check if pool has free element
-//     initialize ctask 
-//     mark ctask as invalid in pool.
-//     call 
-//     mutex  {
-//       update link in list }
+// ct : the ajit_ctask_t* which is being scheduled.
+// fn : pointer to void fn (ajit_ctask_t* ct, void* arg);
+// arg: pointer to ctask args (the ct pointer and in addtion,
+//         up to 32 bytes of arg can be passed) for use by fn.
+// stack_size_in_bytes:  size of stack allocated for ct.
+// cts: scheduler assigned to manage ct.
+//
+// return 1 on success.
 //     
 int  ajit_schedule_ctask (ajit_ctask_t* ct,
-					void *fn, void* arg, uint32_t stack_size_in_bytes,
-								ajit_ctask_scheduler_t* cts);
+					void *fn, 
+					ajit_ctask_args_t* arg, 
+					uint32_t stack_size_in_bytes,
+					ajit_ctask_scheduler_t* cts);
 
 // resume..
 int ajit_resume_ctask (ajit_ctask_t* ct, ajit_ctask_scheduler_t* cts);
@@ -84,8 +96,14 @@ int ajit_resume_ctask (ajit_ctask_t* ct, ajit_ctask_scheduler_t* cts);
 // wait on ctask.
 int ajit_join_ctask (ajit_ctask_t* ct,  ajit_ctask_scheduler_t* cts);
 
+//
+// ajit_ctask_yield (ct)..   ct is the ajit_ctask_t* which will yield.
 #define ajit_ctask_yield(ct)  ajit_coroutine_yield((&(ct->coroutine)))
+
+// ajit_ctask_resume (ct)..   ct is the ajit_ctask_t* which will be resumed.
 #define ajit_ctask_resume(ct) ajit_coroutine_resume((&(ct->coroutine)))
+
+// ajit_ctask_return (ct)..   ct is the ajit_ctask_t* which will return.
 #define ajit_ctask_return(ct) ajit_coroutine_return((&(ct->coroutine)))
 
 

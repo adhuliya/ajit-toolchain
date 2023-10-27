@@ -7,11 +7,6 @@
 #include <cortos.h>
 #include <ajit_ctask.h>
 
-typedef struct __MyArgs {
-	ajit_ctask_t* ct;
-	uint32_t index;
-} MyArgs;
-
 
 volatile int __counter = 0;
 void func (void* vcr)
@@ -19,9 +14,9 @@ void func (void* vcr)
 	uint8_t core_id, thread_id;
 	ajit_get_core_and_thread_id (&core_id, &thread_id);
 
-	MyArgs* marg = (MyArgs*) vcr;
+	ajit_ctask_args_t* marg = (ajit_ctask_args_t*) vcr;
 	
-	uint32_t counter = marg->index;
+	uint32_t counter = marg->args[0];
 	cortos_printf("1.(%d,%d): func* %d.\n", core_id, thread_id, counter);
 
 	ajit_ctask_yield(marg->ct);
@@ -49,11 +44,11 @@ void setup ()
 
 }
 
-#define COUNT 2
+#define COUNT 4
 
 volatile int sched_init_flag = 0;
 volatile ajit_ctask_scheduler_t ctask_scheduler  __attribute__ ((aligned(8)));
-volatile MyArgs g_marg[COUNT];
+volatile ajit_ctask_args_t g_marg[COUNT];
 
 
 int main_00 () 
@@ -70,8 +65,8 @@ int main_00 ()
 		if(ct == NULL)
 			return(-1);
 
-		g_marg[i].ct = ct;
-		g_marg[i].index = i;
+		// put the argument...
+		g_marg[i].args[0] = i;
 
 		ajit_schedule_ctask (ct, (void*) func, (void*) &(g_marg[i]), 
 					AJIT_COROUTINE_STACK_SIZE_IN_BYTES,

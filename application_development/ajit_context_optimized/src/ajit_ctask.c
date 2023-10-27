@@ -221,15 +221,18 @@ int ajit_run_ctask_scheduler (ajit_ctask_scheduler_t* sched)
 
 
 int  ajit_schedule_ctask (ajit_ctask_t* ct,
-				void *fn, void* arg, uint32_t stack_size_in_bytes,
-								ajit_ctask_scheduler_t* cts)
+				void *fn, 
+				ajit_ctask_args_t* arg, 
+				uint32_t stack_size_in_bytes,
+				ajit_ctask_scheduler_t* cts)
 {
 	CORTOS_DEBUG("entered ajit_schedule_ctask (ct=0x%x), index=%d\n", (uint32_t) ct, ct->index_in_pool);
 
 	if(ct == NULL)
 		return(-1);
 
-	int v = ajit_coroutine_create (stack_size_in_bytes, fn, arg, &(ct->coroutine));
+	arg->ct = ct;
+	int v = ajit_coroutine_create (stack_size_in_bytes, (void*) fn, (void*) arg, &(ct->coroutine));
 	if(v != 0)
 		return (-1);
 

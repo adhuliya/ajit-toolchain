@@ -115,8 +115,8 @@ continue_with_valid_T:
    ! with processor irl 15.  The handler can then
    ! generate a trap.
    !
-   ! This prevents an NMI interrupt handler from interrupting
-   ! the interrupt handler (will cause a trap).
+   ! If the interrupt is non-maskable (NMI), then the NMI handler
+   ! runs with interrupts disabled.   
    !
    ! tbr is read and kept in o0
    !
