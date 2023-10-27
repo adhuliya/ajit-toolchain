@@ -12,7 +12,10 @@ fi
 
 _NAME="ajit_build_dev";
 _HOST_MOUNT_DIR="$(dirname $(dirname $(pwd)))"; # i.e. the whole ajit-toolchain git repo
+echo "Mount directory on host is '$_HOST_MOUNT_DIR'"
+
 _CONT_MOUNT_POINT="/home/ajit/ajit-toolchain";
+echo "Mount directory on container is '$_CONT_MOUNT_POINT'"
 
 
 if [[ $1 != "" ]]; then _TAG="$1"; else _TAG="1.0"; fi
@@ -33,7 +36,8 @@ docker run \
   --detach \
   --ulimit nofile=100000:100000 \
   --name $_CONT_NAME \
-  --mount type=bind,source=$_HOST_MOUNT_DIR,target=$_CONT_MOUNT_POINT \
+  -v $_HOST_MOUNT_DIR \
+  -w $_CONT_MOUNT_POINT \
   $_IMG_NAME;
 
 echo -e "\nAjit: Docker container started? Status: $? (Non Zero = ERROR)";
