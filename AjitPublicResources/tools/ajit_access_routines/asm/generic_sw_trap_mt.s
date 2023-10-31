@@ -143,6 +143,7 @@ continue_with_valid_T:
    !
    ! You have come back from the actual handler..
    ! Interrupts are still disabled... 
+   ! Return value in o0.
 
    ! But traps are enabled...  
    !  make window T+1 available for RETT!

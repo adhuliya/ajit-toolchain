@@ -1,7 +1,11 @@
 #ifndef ajit_mt_sw_traps___
 #define ajit_mt_sw_traps___
 
-#define NUMBER_OF_SW_TRAPS_SUPPORTED 	16
+// 0 is reserved  for  ta 0
+// 1-15 available for assignment.  
+#define NUMBER_OF_GENERIC_SW_TRAPS_SUPPORTED 	17
+
+#define READ_ASR_SW_TRAP_ID             	16
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // The software trap  handler structure for bare-metal is set up as follows.

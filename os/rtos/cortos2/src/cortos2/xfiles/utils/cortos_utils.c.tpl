@@ -64,16 +64,31 @@ int mp_vsprintf(char *buf, const char *fmt, va_list args);
 // Prints and returns the number of characters printed.
 // Logic taken from mp_printf() in `minimal_printf_timer/src/ee_printf.c`
 int cortos_printf(const char *fmt, ...) {
-  char buf[1024], *p;
   va_list args;
+  int n=0;
+
+
+  va_start(args, fmt);
+  n = cortos_vprintf(fmt, args);
+  va_end(args);
+
+
+  return n;
+}
+
+// base routine.
+int cortos_vprintf(const char* fmt, va_list args)
+{
+  char buf[1024], *p;
+
+  // print into string.
+  mp_vsprintf(buf, fmt, args);
+
+  p=buf;
   int n=0;
 
   cortos_lock_acquire_buzy(printingLockAddr);
 
-  va_start(args, fmt);
-  mp_vsprintf(buf, fmt, args);
-  va_end(args);
-  p=buf;
   while (*p) {
     uart_send_char(*p);
     n++;
@@ -82,7 +97,8 @@ int cortos_printf(const char *fmt, ...) {
 
   cortos_lock_release(printingLockAddr);
 
-  return n;
+  return(n);
 }
+
 
 

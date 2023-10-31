@@ -5,8 +5,6 @@
 //
 // Generic system calls for user-mode programs..
 //
-
-
 void     ajit_sys_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id)
 {
 	// ajit_sys_read_asr is implemented in assembly.
@@ -37,4 +35,5 @@ void     ajit_sys_sleep(uint32_t clock_cycles)
 	}
 	return;
 }
+
 

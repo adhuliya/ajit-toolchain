@@ -5,6 +5,7 @@
 // Cortos utility functions.
 
 #include <stdint.h>
+#include <stdarg.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK START: cortos_debug_routines
@@ -22,6 +23,10 @@ void cortos_exit(uint32_t error_code);
 // __cortos_enable_serial() enables the serial device and is
 // automatically called in init.s file.
 int cortos_printf(const char *fmt, ...);
+
+// This is the base printf routine offered
+// by cortos.  
+int cortos_vprintf(const char* fmt, va_list args);
 
 ////////////////////////////////////////////////////////////////////////////////
 // BLOCK END  : cortos_debug_routines

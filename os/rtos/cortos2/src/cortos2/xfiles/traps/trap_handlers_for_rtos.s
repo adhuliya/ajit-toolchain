@@ -117,20 +117,20 @@ window_underflow_trap_handler:
 trap_table_base:
 hardware_trap_table_base:
 HW_trap_0x00: ta 0; nop; nop; nop;
-HW_trap_0x01: ta 0; nop; nop; nop;
-HW_trap_0x02: ta 0; nop; nop; nop;
-HW_trap_0x03: ta 0; nop; nop; nop;
-HW_trap_0x04: ta 0; nop; nop; nop;
+HW_trap_0x01: ta 0; nop; nop; nop; ! instruction access exception
+HW_trap_0x02: ta 0; nop; nop; nop; ! illegal instruction
+HW_trap_0x03: ta 0; nop; nop; nop; ! privileged instruction 
+HW_trap_0x04: ta 0; nop; nop; nop; ! fp unit disabled.
 HW_trap_0x05: ! window overflow trap
 	ba window_overflow_trap_handler; nop; nop; nop;
 HW_trap_0x06: ! window underflow trap
 	ba window_underflow_trap_handler; nop; nop; nop;
-HW_trap_0x07: ta 0; nop; nop; nop;
-HW_trap_0x08: ta 0; nop; nop; nop;
-HW_trap_0x09: ta 0; nop; nop; nop;
-HW_trap_0x0a: ta 0; nop; nop; nop;
-HW_trap_0x0b: ta 0; nop; nop; nop;
-HW_trap_0x0c: ta 0; nop; nop; nop;
+HW_trap_0x07: ta 0; nop; nop; nop; ! unaligned access exception
+HW_trap_0x08: ta 0; nop; nop; nop; ! floating point exception.
+HW_trap_0x09: ta 0; nop; nop; nop; ! data access exception.
+HW_trap_0x0a: ta 0; nop; nop; nop; ! tagged overflow fault.
+HW_trap_0x0b: ta 0; nop; nop; nop; 
+HW_trap_0x0c: ta 0; nop; nop; nop; 
 HW_trap_0x0d: ta 0; nop; nop; nop;
 HW_trap_0x0e: ta 0; nop; nop; nop;
 HW_trap_0x0f: ta 0; nop; nop; nop;
@@ -174,13 +174,13 @@ HW_trap_0x20: ta 0; nop; nop; nop;
 HW_trap_0x21: ta 0; nop; nop; nop;
 HW_trap_0x22: ta 0; nop; nop; nop;
 HW_trap_0x23: ta 0; nop; nop; nop;
-HW_trap_0x24: ta 0; nop; nop; nop;
+HW_trap_0x24: ta 0; nop; nop; nop; ! coprocessor disabled.
 HW_trap_0x25: ta 0; nop; nop; nop;
 HW_trap_0x26: ta 0; nop; nop; nop;
 HW_trap_0x27: ta 0; nop; nop; nop;
 HW_trap_0x28: ta 0; nop; nop; nop;
 HW_trap_0x29: ta 0; nop; nop; nop;
-HW_trap_0x2a: ta 0; nop; nop; nop;
+HW_trap_0x2a: ta 0; nop; nop; nop; ! integer divide-by-zero.
 HW_trap_0x2b: ta 0; nop; nop; nop;
 HW_trap_0x2c: ta 0; nop; nop; nop;
 HW_trap_0x2d: ta 0; nop; nop; nop;
@@ -287,9 +287,12 @@ SW_trap_0x8c: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop;
 SW_trap_0x8d: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8e: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8f: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
-# ta 16 for privilege iu register reads.
+# ta 16 for privileged iu register reads.
 SW_trap_0x90: rd %psr, %l0; rd %tbr, %l3; ba generic_read_asr; nop;
-SW_trap_0x91: ta 0; nop; nop; nop;
+# ta 17 for go to supervisor mode, continue from next instruction.
+# NOTE: no return from trap!
+SW_trap_0x91: jmp %l2; restore; nop; nop;
+###  not assigned as  yet ###################################################
 SW_trap_0x92: ta 0; nop; nop; nop;
 SW_trap_0x93: ta 0; nop; nop; nop;
 SW_trap_0x94: ta 0; nop; nop; nop;
