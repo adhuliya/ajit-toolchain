@@ -119,17 +119,20 @@ int main()
 	cortos_uprintf("chars printed = %d.\n", n);
 	
 	
-	// go to supervisor state, traps enabled.
-	__AJIT_SW_TRAP(17);
-
-	// enable traps.
-	__AJIT_GET_PSR (psr);
-	psr = (psr | 0x20);
-	__AJIT_SET_PSR (psr);
+	// ta 17 and set psr S=1, ET=1.
+	ajit_sys_go_to_supervisor_mode(1);
 	
 
 	__AJIT_GET_PSR (psr);
 	n = cortos_printf("Supervisor mode PSR = 0x%x\n", psr);
+	cortos_uprintf("chars printed = %d.\n", n);
+
+	// goto user mode.
+	__AJIT_GET_PSR (psr);
+	psr = (psr & (~(1 << 7)));
+	__AJIT_SET_PSR (psr);
+
+	n = cortos_uprintf("User mode PSR = 0x%x\n", psr);
 	cortos_uprintf("chars printed = %d.\n", n);
 
 	return(0);

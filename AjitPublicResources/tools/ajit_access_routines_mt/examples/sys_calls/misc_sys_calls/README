@@ -1,1 +1,28 @@
 An example which shows the operation of different system calls.
+This machinery is useful when the application is to be run
+in user mode.
+
+The flow:
+
+	put the processor in user mode
+
+	use a user-level printf routine
+	which invokes SW trap 14 to 
+	access the cortos_vprintf function.
+
+	read physical memory using system 
+	trap 15 invoked via a system call.
+
+	read ASR values using SW trap 16.		
+
+
+	Some more user printf's.	
+
+	Go to supervisor mode via SW trap 17.
+
+	Some more printfs (but cortos_printf's)
+
+	back to user mode
+
+	Some more user printf's
+

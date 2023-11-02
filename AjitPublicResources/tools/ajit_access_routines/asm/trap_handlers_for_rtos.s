@@ -287,11 +287,11 @@ SW_trap_0x8c: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop;
 SW_trap_0x8d: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8e: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
 SW_trap_0x8f: rd %psr, %l0; rd %tbr, %l3; ba generic_vectored_sw_trap; nop; 
-# ta 16 for privileged iu register reads.
+# ta 16 for privileged asr register reads.
 SW_trap_0x90: rd %psr, %l0; rd %tbr, %l3; ba generic_read_asr; nop;
 # ta 17 for go to supervisor mode, continue from next instruction.
 # NOTE: no return from trap!
-SW_trap_0x91: jmp %l2; restore; nop; nop;
+SW_trap_0x91: ba generic_sys_go_to_supervisor; nop; nop; nop;
 ###  not assigned as  yet ###################################################
 SW_trap_0x92: ta 0; nop; nop; nop;
 SW_trap_0x93: ta 0; nop; nop; nop;

@@ -12,5 +12,8 @@ void     ajit_sys_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id);
 uint64_t ajit_sys_get_clock_time();
 void     ajit_sys_sleep(uint32_t clock_cycles);
 
+// go to supervisor mode and set ET= specified value.
+void     ajit_sys_go_to_supervisor_mode (uint32_t enable_traps);
+
 
 #endif

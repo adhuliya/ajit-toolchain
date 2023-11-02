@@ -218,4 +218,39 @@ ajit_sys_read_asr:
 	nop
 
 !  finished sys_call:  uint32_t ajit_sys_read_asr(uint32_t asr_id);
+
+
+.align 8
+.global ajit_sys_go_to_supervisor_mode
+! register o0 contains enable-traps flag.
+ajit_sys_go_to_supervisor_mode:
+	!
+	ta 17
+	nop
+	
+	retl 
+	nop
+
+.align 8
+.global generic_sys_go_to_supervisor
+! i0 contains  enable-traps flag.
+generic_sys_go_to_supervisor:
+
+	mov %psr, %l5
+
+	! enable traps
+	sll %i0, 5, %i0
+	or  %i0, 0x80, %i0
+	or  %l5, %i0, %l5
+	mov %l5, %psr
+
+	! jump to the next instruction
+	! and continue.
+	!
+	! Note: no return from trap !
+	!
+	jmp %l2
+	restore
+
+	
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
