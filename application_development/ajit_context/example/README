@@ -1,0 +1,5 @@
+A very simple example
+that illustrates the use
+of ajit_context operations
+	getcontext
+	setcontext

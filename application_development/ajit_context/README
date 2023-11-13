@@ -5,3 +5,8 @@ An implementation of context...
 
 	Lots of interesting and twisted things
 	possible...
+
+	
+	However, this is a bit non-optimal
+	since the entire machine state is
+	saved
