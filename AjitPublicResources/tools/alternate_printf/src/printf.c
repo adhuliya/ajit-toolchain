@@ -53,10 +53,6 @@ extern "C" {
 #include <mp_printf.h>
 #include <ajit_access_routines.h>
 
-# define mp_printf    printf_
-# define mp_sprintf   sprintf_
-# define mp_snprintf  snprintf_
-
 
 // 'ntoa' conversion buffer size, this must be big enough to hold one converted
 // numeric number including padded zeros (dynamically created on stack)

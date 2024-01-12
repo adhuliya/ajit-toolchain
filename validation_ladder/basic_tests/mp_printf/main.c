@@ -6,6 +6,7 @@
 #include "mp_printf.h"
 #include <math.h>
 
+#define mp_printf printf_
 
 int main()
 {
@@ -15,7 +16,7 @@ int main()
 	for(I = -32; I < 32; I++)
 	{
 		ee_printf("ee_printf:i32: %d.\n", I);
-		printf_("mp_printf:i32: %d.\n", I);
+		mp_printf("mp_printf:i32: %d.\n", I);
 	}	
 
 	int64_t J;
@@ -25,14 +26,14 @@ int main()
 		sprintf(buf, "%lld", J);
 
 		ee_printf("ee_printf:i64: %s.\n", buf);
-		printf_("mp_printf:i64: %lld.\n", J);
+		mp_printf("mp_printf:i64: %lld.\n", J);
 	}
 
 	double X=1.0;
 	for(I = 0; I < 32; I++)
 	{
 		ee_printf("ee_printf:double: %f.\n", X);
-		printf_("mp_printf:double: %f.\n", X);
+		mp_printf("mp_printf:double: %f.\n", X);
 
 		X = X * 2.0;
 	}
@@ -41,7 +42,7 @@ int main()
 	for(I = 0; I < 32; I++)
 	{
 		ee_printf("ee_printf:double: %16.12f.\n", X);
-		printf_("mp_printf:double: %16.12f.\n", X);
+		mp_printf("mp_printf:double: %16.12f.\n", X);
 
 		X = X * 0.1;
 	}
