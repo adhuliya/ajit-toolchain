@@ -1,7 +1,7 @@
 #ifndef data_structs_h____
 #define data_structs_h____
 
-#define q	12		/* for 2^12 points */
+#define q	6		/* for 2^6 points */
 #define N	(1<<q)		/* N-point FFT, iFFT */
 
 typedef float real;

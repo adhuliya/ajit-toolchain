@@ -2,8 +2,8 @@
 main:
 _start:
 	! stack and frame pointer placed just below IO mem. aligned to 256
-	set 0xffe0f000, %sp
-	set 0xffe0f000, %fp
+	set 0x40040000, %sp
+	set 0x40040000, %fp
 	
 	! mmu control register format
 	!   [8]                    [7:1]               [0]

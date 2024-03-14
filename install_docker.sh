@@ -43,16 +43,26 @@ if isdocker; then
   exit 1;
 fi
 
-if which docker; then
-  echo "Docker already installed!!!!!";
-  sudo usermod -aG docker $USER
-else
-  echo "Install docker and run this script once more. Go to  https://docs.docker.com/  for instructions on installing docker"
+# installs docker and takes necessary steps for you.
+AND "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -" \
+  "Please review the error";
 
-fi
-# add user to the docker group (to run docker without sudo).
-#  "Probably 'docker' group is not created.";
-#sudo usermod -aG docker $USER
+_ARG="deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+AND "sudo add-apt-repository '$_ARG'" \
+  "Problem in adding to apt repository.";
+
+AND "sudo apt-get update" \
+  "Please correct the apt-get errors.";
+
+AND "sudo apt-get install -y docker-ce";
+
+AND "sudo usermod -aG docker $USER" \
+  "Probably 'docker' group is not created.";
+
+# change the group owner of this repo
+AND "chown -R $USER:docker $AJIT_HOME" \
+  "Probably 'docker' group is not created.";
+
 echo -e "\nAjit: Please logout and login again for user changes to take effect!";
 echo -e "\nAjit: To test docker after re-login run the following script:"
 echo "    ./docker/test_docker_install.sh;";
