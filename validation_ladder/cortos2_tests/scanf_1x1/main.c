@@ -34,26 +34,26 @@ int main()
 	int val;
 
 	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
-	ee_printf("?\n");
+	cortos_printf("?\n");
 
 	int N = __ajit_serial_getline__ (buf, 1023);
 	buf[N] = 0;
 
-	ee_printf("read %d characters %s\n", N, buf);
+	cortos_printf("read %d characters %s\n", N, buf);
 
 	bscanf(buf,"%d", &val);
-	ee_printf("read %d\n", val);
+	cortos_printf("read %d\n", val);
 
 	sprintf(buf, "%f %d %s\n", 1.0, 1, "check_string");
 
 	float fval;
         char str[16];
 	bscanf(buf,"%f %d %15s", &fval, &val, str);
-	ee_printf("from buf: %s read %f %d %s\n", buf, fval, val, str);
+	cortos_printf("from buf: %s read %f %d %s\n", buf, fval, val, str);
 
 	sprintf(buf, "%e %x %s\n", 1.0, 1, "check_string");
 	bscanf(buf,"%f %x %15s", &fval, &val, str);
-	ee_printf("from buf: %s read %f %x %s\n", buf, fval, val, str);
+	cortos_printf("from buf: %s read %f %x %s\n", buf, fval, val, str);
 	
 	return(0);
 }
