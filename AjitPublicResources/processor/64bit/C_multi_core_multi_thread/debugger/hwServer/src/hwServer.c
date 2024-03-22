@@ -698,7 +698,7 @@ int execute_spi(ThreadState *ajit_state, hwServerState* hs, spi_cmd *cmd_exe)	//
 		send_spi(hs, &rsp_out);
 	}
 	else if (cmd_exe->opcode == 6)	{		// Read memory content
-		readDataToDebug(ajit_state->thread_id,
+		readDataToDebug(ajit_state->core_id, ajit_state->thread_id, getThreadContext(ajit_state),
 				ajit_state->mmu_state,  ajit_state->dcache,
 				(uint8_t)getSlice32(cmd_exe->command, 7, 0), 
 				0xFF, // byte-mask..
@@ -724,7 +724,7 @@ int execute_spi(ThreadState *ajit_state, hwServerState* hs, spi_cmd *cmd_exe)	//
 		}
 
 
-		writeDataFromDebug(ajit_state->thread_id,
+		writeDataFromDebug(ajit_state->core_id, ajit_state->thread_id, getThreadContext(ajit_state),
 				ajit_state->mmu_state, ajit_state->dcache,
 				(uint8_t)getSlice32(cmd_exe->command, 7, 0), 
 				cmd_exe->address, byte_mask, cmd_exe->data, 

@@ -167,6 +167,7 @@ typedef struct _ThreadState
 
 	ThreadMode mode;
 	uint32_t trap_vector;
+
 	uint8_t interrupt_level;
 	uint8_t ticc_trap_type;
 	uint8_t store_barrier_pending;
@@ -253,6 +254,8 @@ uint32_t stack_pointer(ThreadState* s);
 uint32_t frame_pointer(ThreadState* s);
 uint32_t wim(ThreadState* s);
 
+
+uint8_t getThreadContext (ThreadState* s);
 
 void register_debug_pipes(ThreadState* s);
 

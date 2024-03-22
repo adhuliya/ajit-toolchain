@@ -26,10 +26,11 @@ void initializeTlbNew(MmuState* ms)
 
 //write a new entry into the TLB (note: context is taken from ms)
 void writeTlbNewEntry(MmuState* ms, 
+			int thread_id, 
 			uint32_t virtual_addr,
 			uint32_t va_tag, uint32_t pte, uint8_t pte_level)
 {
-	uint32_t context = ms->MmuContextRegister;
+	uint32_t context = ms->MmuContextRegister[thread_id];
 	uint32_t tag = va_tag;	 	  
 	if	(pte_level==3) 
 	{
@@ -94,13 +95,14 @@ void writeTlbNewEntry(MmuState* ms,
 //corresponding page table entry in TLB
 //else return 0.
 uint8_t isTlbNewHit(MmuState* ms, 
+			int thread_id,
 			uint32_t virtual_addr,
 			uint32_t va_tag, uint32_t* pte, uint8_t*  pte_level)
 {
 	*pte = 0;
 	*pte_level = 0;
 
-	uint32_t context = ms->MmuContextRegister;
+	uint32_t context = ms->MmuContextRegister[thread_id];
 
 	uint8_t ret_val = 0;
 	uint32_t va_tag_L3 = va_tag | (context << 20);			  //use for level 3 pte

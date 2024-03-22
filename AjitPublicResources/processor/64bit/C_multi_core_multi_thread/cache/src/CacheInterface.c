@@ -79,9 +79,9 @@ uint64_t insertBytes (uint64_t x, uint8_t byte_mask, uint64_t wval)
 }
 
 
-void writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint32_t va, uint8_t byte_mask)
+void writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint8_t context, uint32_t va, uint8_t byte_mask)
 {
-	int I = cacheLineId (c, va);
+	int I = cacheLineId (c, context, va);
 	assert(I >= 0);
 
 	int offset = cacheLineOffset (va);
@@ -98,7 +98,7 @@ uint32_t cacheSetId    (WriteThroughAllocateCache* c, uint32_t va)
 	return(set_index);	
 }
 
-int cacheLineId (WriteThroughAllocateCache* c, uint32_t va)
+int cacheLineId (WriteThroughAllocateCache* c, uint8_t context, uint32_t va)
 {
 	int ret_val = -1;
 	uint32_t set_id = cacheSetId(c, va);
@@ -107,7 +107,7 @@ int cacheLineId (WriteThroughAllocateCache* c, uint32_t va)
 	{
 		int J = (set_id * c->set_size) + I;
 		if(c->cache_lines[J].valid &&
-			(c->cache_lines[J].va_tag == vaTag(c,va)))
+			(c->cache_lines[J].va_tag == vaTag(c, context, va)))
 		{
 			ret_val = J;
 			break;
@@ -122,16 +122,16 @@ int cacheLineOffset (uint32_t va)
 	return(retval);
 }
 
-uint32_t vaTag(WriteThroughAllocateCache* c, uint32_t va)
+uint32_t vaTag(WriteThroughAllocateCache* c, uint8_t context, uint32_t va)
 {
 	uint32_t ret_val  = 
-		(va >> (LOG_BYTES_PER_CACHE_LINE + c->log_number_of_sets));
+		(va >> (LOG_BYTES_PER_CACHE_LINE + c->log_number_of_sets)) | (((uint32_t) context) << 24);
 	return(ret_val);
 }
 
-uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint32_t va)
+uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint8_t context, uint32_t va)
 {
-	int index = cacheLineId(c, va);
+	int index = cacheLineId(c, context, va);
 	assert(index >= 0);
 
 	int offset = cacheLineOffset(va);
@@ -139,13 +139,13 @@ uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint32_t va)
 	return(retval);
 }
 
-WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines, int set_size)
+WriteThroughAllocateCache* makeCache (uint32_t core_id, int is_icache, int number_of_lines, int set_size)
 {
 	assert(number_of_lines <= MAX_NUMBER_OF_LINES);
 
 	WriteThroughAllocateCache* nc = (WriteThroughAllocateCache*) 
 						malloc (sizeof(WriteThroughAllocateCache));
-	nc->cpu_id = cpu_id;
+	nc->core_id = core_id;
 	nc->is_icache = is_icache;
 
 	nc->number_of_lines = number_of_lines;
@@ -156,26 +156,30 @@ WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number
 	nc->set_size       = set_size;
 	
 	initCache(nc);	
-
+	
 	if(is_icache)
-		sprintf(nc->from_rlut_pipe_name,"RLUT_to_ICACHE_%d", cpu_id);
+		sprintf(nc->from_rlut_pipe_name,"RLUT_to_ICACHE_%d", core_id);
 	else
-		sprintf(nc->from_rlut_pipe_name,"RLUT_to_DCACHE_%d", cpu_id);
+		sprintf(nc->from_rlut_pipe_name,"RLUT_to_DCACHE_%d", core_id);
 
 	fprintf(stderr,"Info: made %s number_of_lines=%d, log_number_of_lines=%d\n",
 				(is_icache ? "icache" : "dcache"),
 				nc->number_of_lines, nc->log_number_of_lines);
 
 	// ICACHE always thinks that mmu is enabled.
+	int i;
 	if(is_icache)
 	{
-		nc->mmu_control_register = 1;
+		for(i = 0; i <= MMU_MAX_NUMBER_OF_THREADS; i++)
+			nc->mmu_control_register[i] = 1;
 	}
 	else
 	{
-		nc->mmu_control_register = 0;
+		for(i = 0; i <= MMU_MAX_NUMBER_OF_THREADS; i++)
+			nc->mmu_control_register[i] = 0;
 	}
-	nc->mmu_context_register = 0;
+	for(i = 0; i <= MMU_MAX_NUMBER_OF_THREADS; i++)
+		nc->mmu_context_register[i] = 0;
 
 	return(nc);
 }
@@ -200,7 +204,10 @@ void initCache (WriteThroughAllocateCache* c)
 		c->last_updated_offset_in_set[I] = -1;
 
 	c->lock_flag = 0;
-	c->lock_cpu_id = 0;
+	c->lock_core_id = 0;
+
+	// multi-context support?
+	c->multi_context = hasMultiContextMunit(c->core_id);
 
 	flushCache(c);	
 
@@ -232,20 +239,20 @@ void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address
 		if(global_verbose_flag)
 			fprintf(stderr,"Info: %s core-id=%d, invalidated set %d (reduced va=0x%lx).\n", 
 					(c->is_icache ? "icache" : "dcache"), 
-					c->cpu_id, 
+					c->core_id, 
 					set_id, 
 					(va_line_address << 6)); 
 	}
 }
 
 
-uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va)
+uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint8_t context, uint32_t va)
 {
 	uint32_t ret_val;
 	int invalid_found = 0;
 
 	uint32_t set_id = cacheSetId(c,va);
-	assert (cacheLineId(c,va) < 0);
+	assert (cacheLineId(c,context,va) < 0);
 
 	int I;
 	for(I = 0; I < c->set_size; I++)
@@ -278,11 +285,12 @@ uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va)
 
 
 void lookupCache (WriteThroughAllocateCache* c,
+		uint8_t context,
 		uint32_t va, uint8_t asi, 
 		uint8_t *hit,   uint8_t *acc)
 {
-	int I = cacheLineId(c, va);
-	uint32_t va_tag = vaTag (c, va);
+	int I = cacheLineId(c, context, va);
+	uint32_t va_tag = vaTag (c, context, va);
 
 	*hit = 0;
 	*acc = 0;
@@ -300,18 +308,19 @@ void lookupCache (WriteThroughAllocateCache* c,
 
 void updateCacheLine (WriteThroughAllocateCache* c,
 		uint8_t acc, 
+		uint8_t context,
 		uint32_t line_addr, 
 		uint64_t* line_data)
 {
-	int I = cacheLineId (c, line_addr);
+	int I = cacheLineId (c, context, line_addr);
 	if(I < 0)
 	{
-		I = allocateCacheLine(c,line_addr);
+		I = allocateCacheLine(c,context, line_addr);
 	}
 
 	c->cache_lines[I].valid = 1;
 	c->cache_lines[I].acc = acc;
-	c->cache_lines[I].va_tag = vaTag(c, line_addr);
+	c->cache_lines[I].va_tag = vaTag(c, context, line_addr);
 
 	int J;
 	for (J=0; J < BYTES_PER_CACHE_LINE/8; J++)
@@ -366,7 +375,7 @@ void decodeIcacheRequest (uint8_t asi,
 
 void printCacheStatistics (WriteThroughAllocateCache* c)
 {
-	fprintf(stderr,"Statistics for %s cpuid=%d\n", (c->is_icache ? "ICACHE" : "DCACHE"), c->cpu_id);
+	fprintf(stderr,"Statistics for %s core-id=%d\n", (c->is_icache ? "ICACHE" : "DCACHE"), c->core_id);
 	if(c->number_of_accesses > 0)
 		fprintf(stderr,"    number-of-accesses=%ld\n", c->number_of_accesses);
 	if(c->number_of_locked_accesses > 0)
@@ -429,14 +438,14 @@ int accessPermissionsOk (uint8_t request_type, uint8_t asi, uint8_t acc)
 	return(ret_val);
 }
 
-uint32_t probeCoherencyInvalidateRequest(int cpu_id, int icache_flag)
+uint32_t probeCoherencyInvalidateRequest(int core_id, int icache_flag)
 {
 	uint32_t ret_val  = 0;
-	ret_val = read_uint32 (getCacheInvalPipeName(cpu_id,icache_flag));
+	ret_val = read_uint32 (getCacheInvalPipeName(core_id,icache_flag));
 
 #ifdef DEBUG_PRINTF
 	if(global_verbose_flag)
-		fprintf(stderr,"Read from invalidate pipe (cpu_id=%d, icache=%d).\n", cpu_id, icache_flag);
+		fprintf(stderr,"Read from invalidate pipe (core_id=%d, icache=%d).\n", core_id, icache_flag);
 #endif
 		
 	return(ret_val);
@@ -444,10 +453,12 @@ uint32_t probeCoherencyInvalidateRequest(int cpu_id, int icache_flag)
 
 
 void updateMmuState (WriteThroughAllocateCache* c, 
+			int cpu_id,
 			uint8_t   byte_mask,
 			uint32_t  waddr,
 			uint64_t  write_dword)
 {
+	cpu_id = (cpu_id & MMU_THREAD_MASK);
 	assert(!c->is_icache);
 
 	uint32_t mask_value   = 0;	
@@ -466,12 +477,20 @@ void updateMmuState (WriteThroughAllocateCache* c,
 	switch ((waddr >> 8) & 0x7)
 	{
 		case 0:
-			ctrl_reg_value = c->mmu_control_register;
-			c->mmu_control_register = (ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
+			ctrl_reg_value = c->mmu_control_register[cpu_id];
+			if(c->multi_context)
+				c->mmu_control_register[cpu_id] = (ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
+			else 
+			{
+				// for all
+				int i;
+				for(i = 0; i <= MMU_MAX_NUMBER_OF_THREADS; i++)
+					c->mmu_context_register[i] = 0;
+			}
 			break;
 		case 2:
-			ctrl_reg_value = c->mmu_context_register;
-			c->mmu_context_register = (ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
+			ctrl_reg_value = c->mmu_context_register[cpu_id];
+			c->mmu_context_register[cpu_id] = (ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
 			break;
 		default:
 			break;
@@ -483,10 +502,22 @@ void updateMmuState (WriteThroughAllocateCache* c,
 #endif
 }
 
-int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c)
+
+int isMmuContextPointerWrite (uint8_t asi, uint32_t va)
 {
 	int ret_val = 0;
-	if((c->mmu_control_register  & 0x1) || (c->mmu_control_register & (0x1 << 8)))
+	if(ASI_MMU_ACCESS(asi))
+	{
+		if(((va >> 8) & 0x7) == 2)
+			ret_val = 1;
+	}
+	return(ret_val);
+}
+
+int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c, int cpu_id)
+{
+	int ret_val = 0;
+	if((c->mmu_control_register[cpu_id]  & 0x1) || (c->mmu_control_register[cpu_id] & (0x1 << 8)))
 		ret_val = 1;
 	return(ret_val);
 }
@@ -500,7 +531,7 @@ void dumpCpuIcacheAccessTrace
 
 	fprintf(cache_trace_file,
 			">>>>I (%d) 0x%x 0x%x 0x%x 0x%x :  0x%x 0x%llx 0x%x %s %s\n",
-			icache->cpu_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr,
+			icache->core_id, asi, addr, request_type, byte_mask, mae, instr_pair, mmu_fsr,
 						((mmu_fsr != 0) ? "fsr!" : ""),
 						(is_hit ? "hit": ""));
 	fflush(cache_trace_file);
@@ -518,7 +549,7 @@ void dumpCpuDcacheAccessTrace
 
 	fprintf(cache_trace_file,
 			">>>>D (%d) 0x%x 0x%x 0x%x 0x%x 0x%llx :  0x%x 0x%llx %s\n",
-			dcache->cpu_id, asi, addr, request_type, byte_mask, write_data, mae, read_data,
+			dcache->core_id, asi, addr, request_type, byte_mask, write_data, mae, read_data,
 					(is_hit ? "hit": ""));
 	fflush(cache_trace_file);
 

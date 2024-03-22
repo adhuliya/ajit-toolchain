@@ -18,24 +18,32 @@
 
 extern pthread_mutex_t cache_mutex;
 
-void cpuDcacheAccess (int cpu_id,
+void cpuDcacheAccess (int core_id,
+			int cpu_id,
+			uint8_t context, 
 			MmuState* ms,
 			WriteThroughAllocateCache* dcache,
 				uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint64_t write_data,
 				uint8_t* mae, uint64_t* read_data)
 {
-	// Spin until cpu_id can enter..
+	// Spin until core_id can enter..
 	while(1)
 	{
 		lock_cache(dcache);
-		if(!dcache->lock_flag || (dcache->lock_cpu_id == cpu_id))
+		if(!dcache->lock_flag || (dcache->lock_core_id == core_id))
 			break;
 		unlock_cache(dcache);
 		usleep (1000);
 	}
 	
 	uint8_t is_hit = 0;
+
+	if(!dcache->multi_context)
+	{
+		// If DCACHE is not a multi-context one, then context is ignored.
+		context = 0;
+	}
 
 	// service all the coherency related invalidates..
 	while(1)
@@ -65,7 +73,7 @@ void cpuDcacheAccess (int cpu_id,
 	{
 		dcache->number_of_locked_accesses++;	
 		dcache->lock_flag = 1;
-		dcache->lock_cpu_id = cpu_id;
+		dcache->lock_core_id = core_id;
 	}
 	else
 	{
@@ -109,7 +117,7 @@ void cpuDcacheAccess (int cpu_id,
 		// flush and forget about it.
 		flushCache(dcache);
 		#ifdef DEBUG
-		fprintf(stderr, "Info: DCACHE-%d flushed by flush-asi 0x%x\n", dcache->cpu_id, asi);
+		fprintf(stderr, "Info: DCACHE-%d flushed by flush-asi 0x%x\n", dcache->core_id, asi);
 		#endif
 	}
 	else if (!is_stbar && !is_nop)
@@ -118,7 +126,7 @@ void cpuDcacheAccess (int cpu_id,
 		{
 
 			uint8_t is_raw_hit = 0;
-			lookupCache(dcache,
+			lookupCache(dcache, context,
 					addr, asi, &is_raw_hit,  &acc);
 			int access_ok = accessPermissionsOk(request_type, asi, acc);
 
@@ -145,9 +153,16 @@ void cpuDcacheAccess (int cpu_id,
 		// induced flush.
 		{
 			dcache->number_of_flushes++;
-			flushCache(dcache);
+
+			//
+			// Note: In multi-context case,  do not flush on context-register write
+			//      
+			if(!dcache->multi_context || !isMmuContextPointerWrite(asi, addr))
+			{
+				flushCache(dcache);
+			}
 			#ifdef DEBUG
-			fprintf(stderr,"Info: DCACHE-%d flushed by ASI-MMU-ACCESS, asi 0x%x\n", dcache->cpu_id, asi);
+			fprintf(stderr,"Info: DCACHE-%d flushed by ASI-MMU-ACCESS, asi 0x%x\n", dcache->core_id, asi);
 			#endif
 		}
 		else
@@ -155,7 +170,7 @@ void cpuDcacheAccess (int cpu_id,
 			dcache->number_of_bypasses++;
 		}
 
-		int is_cacheable_based_on_mmu_status = isCacheableRequestBasedOnMmuStatus (dcache);
+		int is_cacheable_based_on_mmu_status = isCacheableRequestBasedOnMmuStatus (dcache, cpu_id);
 		
 		uint8_t do_mmu_read_dword  = 
 				(is_read && (is_mmu_access  || is_mmu_bypass || 
@@ -170,12 +185,12 @@ void cpuDcacheAccess (int cpu_id,
 
 		if(is_read && is_hit)
 		{	
-			*read_data = getDwordFromCache	(dcache,addr);
+			*read_data = getDwordFromCache	(dcache, context, addr);
 		}
 
 		if(!is_read && is_hit)
 		{
-			writeIntoLine (dcache, write_data, addr, byte_mask);
+			writeIntoLine (dcache, write_data, context, addr, byte_mask);
 		}
 
 		uint32_t synonym_invalidation_word = 0;
@@ -188,7 +203,7 @@ void cpuDcacheAccess (int cpu_id,
 					(do_mmu_read_dword ? MMU_READ_DWORD : 
 				 		(is_hit ? MMU_WRITE_DWORD_NO_RESPONSE : MMU_WRITE_DWORD)));
 
-			Mmu(ms, cpu_id, 
+			Mmu(ms, cpu_id,
 					mmu_dword_command, (request_type | lock_mask),
 					asi,  addr,  byte_mask, write_data,
 					mae, &cacheable, &acc, read_data, &mmu_fsr, &synonym_invalidation_word);
@@ -214,8 +229,8 @@ void cpuDcacheAccess (int cpu_id,
 
 			if(cacheable)
 			{
-				updateCacheLine (dcache, acc, line_addr, line_data);
-				*read_data = getDwordFromCache (dcache, addr);
+				updateCacheLine (dcache, acc, context, line_addr, line_data);
+				*read_data = getDwordFromCache (dcache, context, addr);
 			}
 			else
 			{
@@ -228,7 +243,7 @@ void cpuDcacheAccess (int cpu_id,
 	{
 		if(request_type == REQUEST_TYPE_WRITE)
 		{
-			updateMmuState(dcache, byte_mask, addr, write_data);
+			updateMmuState(dcache, cpu_id, byte_mask, addr, write_data);
 		}
 	}
 

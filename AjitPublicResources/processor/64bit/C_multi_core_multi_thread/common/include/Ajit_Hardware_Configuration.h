@@ -1,3 +1,6 @@
+#ifndef __AJIT_HW_CONFIG_H__
+#define  __AJIT_HW_CONFIG_H__
+
 // Ajit_Hardware_Configuration.h
 // Global Cofiguration settings for the Ajit processor model
 
@@ -149,3 +152,29 @@
 
 // invalidate queue size.
 #define INVALIDATE_QUEUE_SIZE	1024
+
+typedef   struct __ThreadArchDescription {
+	int fpu_not_present;
+} ThreadArchDescription;
+
+
+typedef   struct __CoreArchDescription {
+	int has_multi_context_munit;
+	int mmu_not_present;
+	ThreadArchDescription thread_descriptions[MAX_NTHREADS_PER_CORE];
+} CoreArchDescription;
+
+void initCoreArchDescriptions();
+
+// descr format
+//    <core-id>:<thread-id>:<fp/nofp>:<mmu/nommu>
+//
+//    example  0:1:fp:nommu
+//
+//    means  for core 0, thread 1, fp is enabled, mmu is disabled.
+int setArchitectureDescription(char* descr);
+
+int isMmuPresent (int core_id);
+int hasMultiContextMunit (int core_id);
+int isFpuPresent  (int core_id, int thread_id);
+#endif

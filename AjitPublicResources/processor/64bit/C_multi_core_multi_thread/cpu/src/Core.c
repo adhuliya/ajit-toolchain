@@ -62,6 +62,9 @@ void init_core(CoreState* s,
 	s->core_id = core_id;
 	s->number_of_threads =  number_of_threads;
 
+	s->has_multi_context_munit 	= hasMultiContextMunit(core_id); 
+	s->mmu_is_present       = isMmuPresent(core_id);
+
 	// make the memory subsystem.
 	s->mmu_state      =  makeMmuState (core_id);
 	s->icache         =  makeCache (core_id, 1, icache_number_of_lines, icache_associativity);

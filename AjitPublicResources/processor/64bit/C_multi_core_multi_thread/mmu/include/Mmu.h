@@ -13,6 +13,11 @@
 #endif
 #include "MmuCommands.h"
 
+// Two threads can use an MMU for now.
+// should be a power of two.
+#define MMU_MAX_NUMBER_OF_THREADS  2
+
+#define MMU_THREAD_MASK  (MMU_MAX_NUMBER_OF_THREADS-1)
 //each entry in the TLB has the following fields:
 typedef struct __TlbEntry
 {
@@ -42,22 +47,25 @@ typedef struct _MmuState {
 
 	char to_rlut_pipe[256];
 
-	//Mmu Registers
-	uint32_t MmuControlRegister;
-	uint32_t MmuContextTablePointerRegister;
-	uint32_t MmuContextRegister;
-	uint32_t MmuFaultStatusRegister;
-	uint32_t MmuFaultAddressRegister;
-	uint8_t  Mmu_FSR_FAULT_CLASS; //The type of the last FSR fault (NONE/IACCESS_FAULT/DACCESS_FAULT)
+
+
+	// Mmu Registers, maintained on a per-thread basis.
+	uint32_t MmuControlRegister[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t MmuContextTablePointerRegister[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t MmuContextRegister[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t MmuFaultStatusRegister[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t MmuFaultAddressRegister[MMU_MAX_NUMBER_OF_THREADS];
+
+	uint8_t  Mmu_FSR_FAULT_CLASS[MMU_MAX_NUMBER_OF_THREADS]; //The type of the last FSR fault (NONE/IACCESS_FAULT/DACCESS_FAULT)
 
 	//Variables for keep count of Mmu events
-	uint32_t Num_Mmu_bypass_accesses;
-	uint32_t Num_Mmu_probe_requests;
-	uint32_t Num_Mmu_flush_requests;
-	uint32_t Num_Mmu_register_reads;
-	uint32_t Num_Mmu_register_writes;
-	uint32_t Num_Mmu_translated_accesses;
-	uint32_t Num_Mmu_TLB_hits;
+	uint32_t Num_Mmu_bypass_accesses[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_probe_requests[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_flush_requests[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_register_reads[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_register_writes[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_translated_accesses[MMU_MAX_NUMBER_OF_THREADS];
+	uint32_t Num_Mmu_TLB_hits[MMU_MAX_NUMBER_OF_THREADS];
 
 
 #ifdef USE_NEW_TLB
@@ -72,6 +80,9 @@ typedef struct _MmuState {
 #endif
 
 	uint32_t counter;
+
+	uint8_t mmu_is_present;
+	uint8_t multi_context;
 
 	uint8_t lock_flag;
 	uint8_t lock_cpu_id;

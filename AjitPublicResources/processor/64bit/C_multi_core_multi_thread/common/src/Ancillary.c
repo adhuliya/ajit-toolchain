@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include <math.h>
+#include <string.h>
 #ifdef SW 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,7 @@
 #include <pthread.h>
 #include "pthreadUtils.h"
 #include "Ancillary.h"
+#include "Ajit_Hardware_Configuration.h"
 
 MUTEX_DECL(log_mutex__);
 
@@ -174,7 +176,8 @@ uint32_t signExtend(uint32_t val, uint8_t highest_bit)
 
 uint32_t zeroExtend(uint32_t val, uint8_t highest_bit)
 {
-	uint32_t result;
+	uint32_t result=val;
+
 	//copy 0 to the most significant bits
 	if(highest_bit < 31)
 		result = setSlice32(val, 31, highest_bit, 0);
@@ -293,3 +296,125 @@ uint8_t rem8(uint8_t Q, uint8_t D)
     return(Q);
 }
 
+
+ThreadArchDescription thread_description[MAX_NCORES][MAX_NTHREADS_PER_CORE];
+CoreArchDescription core_descriptions[MAX_NCORES];
+
+void initCoreArchDescriptions()
+{
+	int I, J;
+	for(I = 0; I < MAX_NCORES; I++)
+	{	
+		core_descriptions[I].mmu_not_present  = 0;
+		for (J = 0; J < MAX_NTHREADS_PER_CORE; J++)
+		{
+			core_descriptions[I].thread_descriptions[J].fpu_not_present = 0;
+		}
+	}
+}
+
+				
+// descr format
+//    <core-id>:<thread-id>:<mmu/nommu>:<fpu/nofpu>
+//
+//    example  0:1:nommu:fpu
+//
+//    means  for core 0 mmu is present and for
+//             core 0, thread 1, fpu is present
+//
+//    example   *:1:nommu:fpu
+//    means for all cores, mmu is absent and for all threads *:1 fpu is present.
+int setArchitectureDescription(char* descr)
+{
+	int err = 0;
+	char* cids = strtok(descr,":");
+	char* tids = strtok(NULL, ":");
+	char* munit  = strtok(NULL, ":");
+	char* mmu  = strtok(NULL, ":");
+	char* fp   = strtok(NULL, ":");
+
+	if(
+		(cids == NULL) || 
+		(tids == NULL) ||
+		(fp == NULL) ||
+		(munit == NULL) ||
+		(mmu == NULL) )
+	{
+		err = 1;
+	}
+	else if((strcmp (fp, "fpu") != 0) && (strcmp(fp,"nofpu") != 0))
+	{
+		fprintf(stderr,"Info: in architecture description, FPU status must be either fpu or nofpu\n");
+		err = 1;
+	}
+	else if((strcmp (mmu, "mmu") != 0) && (strcmp(mmu,"nommu") != 0))
+	{
+		err = 1;
+		fprintf(stderr,"Info: in architecture description, MMU status must be either mmu or nommu\n");
+	}
+	else if((strcmp (munit, "mcmunit") != 0) && (strcmp(munit,"scmunit") != 0))
+	{
+		err = 1;
+		fprintf(stderr,"Info: in architecture description, MUNIT status %s must be either mcmunit or scmunit\n", munit);
+	}
+	else
+	{
+		int cid_min = 0;
+		int cid_max = MAX_NCORES-1;
+
+		if(cids[0] != '*') {
+			cid_min = atoi(cids) % MAX_NCORES;
+			cid_max = cid_min;
+		}
+		int cid;
+		for(cid = cid_min; cid <= cid_max; cid++)
+		{
+			core_descriptions[cid].mmu_not_present = (strcmp (mmu,"nommu") == 0);
+			core_descriptions[cid].has_multi_context_munit = (strcmp (munit,"mcmunit") == 0);
+			if (core_descriptions[cid].mmu_not_present)
+			{
+				fprintf(stderr,"Info: core %d configured without MMU\n", cid);
+			}
+			if (core_descriptions[cid].has_multi_context_munit)
+			{
+				fprintf(stderr,"Info: core %d configured with multi-context MUNIT\n", cid);
+			}
+
+			int tid_min = 0;
+			int tid_max = MAX_NTHREADS_PER_CORE - 1;
+			if(tids[0] != '*') 
+			{
+
+				tid_min = atoi(tids) % MAX_NTHREADS_PER_CORE;
+				tid_max = tid_min;
+			}
+
+			int tid;
+			for(tid = tid_min; tid <= tid_max; tid++)
+			{
+				core_descriptions[cid].thread_descriptions[tid].fpu_not_present = (strcmp (fp,"nofpu") == 0);
+
+				if(core_descriptions[cid].thread_descriptions[tid].fpu_not_present)
+				{
+					fprintf(stderr,"Info: core %d, thread %d configured without FPU.\n", cid, tid);
+				}
+			}
+		}
+	}
+	return(err);
+}
+
+int isMmuPresent (int core_id)
+{
+	return(!core_descriptions[core_id % MAX_NCORES].mmu_not_present);
+}
+
+int hasMultiContextMunit (int core_id)
+{
+	return(core_descriptions[core_id % MAX_NCORES].has_multi_context_munit);
+}
+
+int isFpuPresent  (int core_id, int thread_id)
+{
+	return(!core_descriptions[core_id % MAX_NCORES].thread_descriptions[thread_id % MAX_NTHREADS_PER_CORE].fpu_not_present);
+}

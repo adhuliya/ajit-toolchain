@@ -52,6 +52,7 @@
 #include "bridge.h"
 
 
+
 pthread_t   error_threads[MAX_NCORES*MAX_NTHREADS_PER_CORE];
 	
 	//register_port ("ENV_to_AJIT_reset_3",8,1);
@@ -119,6 +120,13 @@ void print_usage(char* app_name)
 	fprintf(stderr, "                 : default is 1, maximum is 4.\n");
 	fprintf(stderr, "   -t <number-of-threads-per-core>     : specifies number-of-threads-per-core in the processor for this test.\n");
 	fprintf(stderr, "                 : default is 1, maximum is 2.\n");
+	// architecture
+	fprintf(stderr, "   -a arch-string (optional)\n");
+	fprintf(stderr, "                 : arch-string is <core-id>:<thread-id>:mcmunit/scmunit:mmu/nommu:fp/nofp\n");
+	fprintf(stderr, "                 : example:  0:1:scmunit:mmu:fpu indicates that core-0 has a single-context mem-unit and  mmu, and thread (0,1) has fp-unit\n");
+	fprintf(stderr, "                 : example:  *:1:mcmunit:mmu:nofpu indicates that cores 0,1 have multi-context munits,  mmu's and threads (0,1), (1,1) have no fp-unit\n");
+	fprintf(stderr, "                 this option can be used multiple times.\n");
+	fprintf(stderr, "            if omitted, the default is that all cores have single-context memory units with MMUs and all threads have FPUs.\n");
 	fprintf(stderr, "   -u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]\n");
 	fprintf(stderr, "   -m <mmap-file>     : required, specifies memory-map of processor for this test.\n");
 	// branch predictor table size.
@@ -220,6 +228,8 @@ int main(int argc, char **argv)
 	signal(SIGINT,  Handle_Ctrl_C);
 	signal(SIGTERM, Handle_Segfault);
 
+	initCoreArchDescriptions();
+
 	int dcache_associativity = 1;
 	int icache_associativity = 1;
 
@@ -269,7 +279,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:")) != -1) {
+	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -284,6 +294,10 @@ int main(int argc, char **argv)
 			case 'A':
 				dcache_associativity = atoi(optarg);
 				fprintf(stderr,"Info: dcache associativity=%d.\n", dcache_associativity);
+				break;
+			case 'a':
+				fprintf(stderr, "Info: architecture configuration string = %s\n", optarg);
+				setArchitectureDescription(strdup(optarg));
 				break;
 			case 'y':
 				fprintf(stderr,"Info: use instruction buffer=true\n");

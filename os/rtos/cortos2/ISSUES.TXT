@@ -18,7 +18,7 @@
 
 7.      gc sections option.
 
-6.      user-mode versus supervisor mode in application..
+8.      user-mode versus supervisor mode in application..
 		Note: only the asr reads need to be in supervisor
 			mode, and we have a way to trap to
 			supervisor to read the asr...

@@ -13,6 +13,7 @@
 #include "Traps.h"
 #include "Flags.h"
 #include "Ancillary.h"
+#include "Ajit_Hardware_Configuration.h"
 #include "RegisterFile.h"
 #include "ThreadInterface.h"
 #include "Decode.h"
@@ -350,7 +351,9 @@ void ajit_thread(void* id_ptr)
 			// This is done separately to match the behaviour of
 			// the instruction pipeline.
 			if(thread_state->mmu_fsr != 0)
-				updateMmuFsrFar(thread_state->thread_id,
+				updateMmuFsrFar(thread_state->core_id, 
+							thread_state->thread_id,
+							getThreadContext(thread_state),
 							thread_state->mmu_state, 
 							thread_state->dcache,
 							thread_state->mmu_fsr, thread_state->status_reg.pc);
@@ -600,7 +603,7 @@ void init_ajit_thread (ThreadState *s, uint32_t core_id,
 
 	//input signals to the cpu hardwired to 
 	//a certain value in the Ajit processor:
-	s->bp_fpu_present = 1;
+	s->bp_fpu_present = isFpuPresent(s->core_id, s->thread_id);
 	s->bp_fpu_exception = 0;
 	s->bp_fpu_cc=0;
 	s->bp_cp_present = 0;
@@ -809,7 +812,10 @@ uint8_t fetchInstruction(ThreadState* s,
 	if(!is_buffer_hit)
 	{
 
-		readInstructionPair(s->thread_id, 
+		readInstructionPair(
+				s->core_id, 
+				s->thread_id, 
+				getThreadContext(s),
 				s->mmu_state, 
 				s->icache,  
 				addr_space, 
@@ -1222,4 +1228,11 @@ uint32_t numberOfBranches(BranchPredictorState* bps)
 {
 	return(bps->branch_count);
 }
+
+
+uint8_t getThreadContext (ThreadState* s)
+{
+	return(s->mmu_state->MmuContextRegister[s->thread_id]);
+}
+
 

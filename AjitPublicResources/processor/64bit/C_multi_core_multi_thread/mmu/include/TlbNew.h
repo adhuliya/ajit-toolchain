@@ -11,9 +11,11 @@
 
 void initializeTlbNew(MmuState* ms);
 void writeTlbNewEntry(MmuState* ms, 
+			int thread_id,
 			uint32_t virtual_addr,
 			uint32_t va_tag, uint32_t pte, uint8_t pte_level);
 uint8_t isTlbNewHit(MmuState* ms, 
+			int thread_id,
 			uint32_t virtual_addr,
 			uint32_t va_tag, uint32_t* pte, uint8_t*  pte_level);
 

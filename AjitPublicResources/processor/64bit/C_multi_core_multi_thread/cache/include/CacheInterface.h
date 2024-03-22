@@ -45,7 +45,7 @@ typedef struct _CacheLine {
 	
 typedef struct _WriteThroughAllocateCache {
 
-	uint32_t cpu_id;
+	uint32_t core_id;
 
 	uint64_t number_of_accesses;
 	uint64_t number_of_flushes;
@@ -83,32 +83,36 @@ typedef struct _WriteThroughAllocateCache {
 	//   (for example, on a miss, do
 	//        not fetch the line, but
 	//        just fetch the word.)
-	uint32_t mmu_control_register;
-	uint8_t  mmu_context_register;
+	uint32_t mmu_control_register[MMU_MAX_NUMBER_OF_THREADS];
+	uint8_t  mmu_context_register[MMU_MAX_NUMBER_OF_THREADS];
 
 	uint8_t  lock_flag;
-	uint8_t  lock_cpu_id;
+	uint8_t  lock_core_id;
+
+	uint8_t multi_context;
 
 	pthread_mutex_t cache_mutex;
 	
 } WriteThroughAllocateCache;
 
 
-uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint32_t va);
+uint32_t allocateCacheLine (WriteThroughAllocateCache* c, uint8_t context, uint32_t va);
 uint32_t cacheSetId	  (WriteThroughAllocateCache* c, uint32_t va);
 
-int cacheLineId (WriteThroughAllocateCache* c, uint32_t va);
+int cacheLineId (WriteThroughAllocateCache* c, uint8_t context, uint32_t va);
 int cacheLineOffset (uint32_t va);
-uint32_t vaTag(WriteThroughAllocateCache* c, uint32_t va);
+uint32_t vaTag(WriteThroughAllocateCache* c, uint8_t context, uint32_t va);
 
 
-WriteThroughAllocateCache* makeCache (uint32_t cpu_id, int is_icache, int number_of_lines, int set_size);
+WriteThroughAllocateCache* makeCache (uint32_t core_id, int is_icache, int number_of_lines, int set_size);
 void initCache (WriteThroughAllocateCache* c);
 void lookupCache (WriteThroughAllocateCache* c,
+			uint8_t context,
 			uint32_t va, uint8_t asi, 
 			uint8_t *hit,  uint8_t *acc);
 void updateCacheLine (WriteThroughAllocateCache* c,
 			uint8_t acc, 
+			uint8_t context,
 			uint32_t line_addr, uint64_t* line_data);
 void invalidateCacheLine (WriteThroughAllocateCache* c, uint32_t va_line_address);
 void flushCache (WriteThroughAllocateCache* c);
@@ -127,10 +131,12 @@ void decodeIcacheRequest (uint8_t asi,
 				uint8_t *is_flush,
 				uint8_t *is_ifetch);
 
-uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint32_t va);
-void     writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint32_t va, uint8_t byte_mask);
+uint64_t getDwordFromCache (WriteThroughAllocateCache* c, uint8_t context, uint32_t va);
+void     writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint8_t context, uint32_t va, uint8_t byte_mask);
 
-void cpuIcacheAccess (int cpu_id, 
+void cpuIcacheAccess (int core_id, 
+			int cpu_id, 
+			uint8_t context,
 			MmuState* ms, 
 			WriteThroughAllocateCache* icache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
@@ -140,7 +146,9 @@ void dumpCpuIcacheAccessTrace
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t mae, uint64_t instr_pair, uint32_t mmu_fsr, uint8_t is_hit);
  
-void cpuDcacheAccess (int cpu_id, 
+void cpuDcacheAccess (int core_id, 
+			int cpu_id, 
+			uint8_t context, 
 			MmuState* ms, 
 			WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
@@ -159,13 +167,15 @@ void lock_cache (WriteThroughAllocateCache* c);
 void unlock_cache (WriteThroughAllocateCache* c);
 
 int accessPermissionsOk (uint8_t request_type, uint8_t asi, uint8_t acc);
-uint32_t probeCoherencyInvalidateRequest(int cpu_id, int icache_flag);
+uint32_t probeCoherencyInvalidateRequest(int core_id, int icache_flag);
 				
 void updateMmuState (WriteThroughAllocateCache* c, 
+			int cpu_id, 
 			uint8_t   byte_mask,
 			uint32_t  waddr,
 			uint64_t  write_dword);
-int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c);
+int isCacheableRequestBasedOnMmuStatus (WriteThroughAllocateCache* c, int cpu_id);
+int isMmuContextPointerWrite (uint8_t asi, uint32_t va);
 
 void setCacheTraceFile(FILE* fp);
 FILE* getCacheTraceFile();

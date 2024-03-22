@@ -145,8 +145,10 @@ void initRlut(Rlut* r, int cpu_id, int is_icache, int cache_size_in_lines, int c
 	r->data_width = 
 		((myLog2(cache_size_in_lines) + LOG_CACHE_LINE_SIZE - (myLog2(r->cache_set_size)-1)) - LOG_BASE_PAGE_SIZE);
 
-	// no trivial caches for now..!
-	assert(r->data_width > 0);
+	// r->data_width == 0 implies trivial translation.
+	if(r->data_width < 0)
+		r->data_width = 0;
+
 
 	r->pa_tlb      = findOrAllocateSetAssociativeMemory((cpu_id*1000) + (is_icache ? 9 : 10),
 									tag_width, 

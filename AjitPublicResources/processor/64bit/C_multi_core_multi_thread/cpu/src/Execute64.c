@@ -51,7 +51,7 @@ void execute64BitLogical( Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 			operand2_0, 
 			operand2_1);
 #endif 
-	uint64_t res;
+	uint64_t res = 0;
 	uint64_t operand1 = splice_words (operand1_0, operand1_1);
 	uint64_t operand2 = splice_words (operand2_0, operand2_1);
 
@@ -63,6 +63,7 @@ void execute64BitLogical( Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 	 else if ((op == _ORDN_) || (op == _ORDNcc_)) 	res = (operand1 | ~operand2)	;
 	 else if ((op == _XORD_) || (op == _XORDcc_)) 	res = (operand1 ^ operand2) 	;
 	 else if ((op == _XNORD_) || (op == _XNORDcc_)) 	res = (operand1 ^ ~operand2)	;
+	 else assert(0);
 
 	uint8_t modify_icc =  ((op == _ANDDcc_) || (op == _ANDDNcc_) 
 					|| (op == _ORDcc_) || (op == _ORDNcc_) || (op == _XORDcc_) 

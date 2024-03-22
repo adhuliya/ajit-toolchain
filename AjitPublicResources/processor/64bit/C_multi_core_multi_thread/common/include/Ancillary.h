@@ -6,7 +6,7 @@
 #define __ANCILLARY_H__
 
 
-#define _BITCAST_(Type,val) *((Type*)&val)
+#define _BITCAST_(Type,val) ((Type) (*((Type*)&val)))
 
 void logMessageToStderr(char* msg);
 

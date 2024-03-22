@@ -21,6 +21,9 @@ typedef struct _CoreState
 	// words
 	uint32_t page_access_status[32*1024];
 
+	uint8_t has_multi_context_munit;  // default 0
+	uint8_t mmu_is_present;		  // default 1
+
 } CoreState;
 
 void init_core(CoreState* s, 

@@ -11,17 +11,20 @@
 #include "AjitThread.h"
 
 //read an Instruction by accessing the instruction fetch interface
-void readInstruction(int cpu_id,
+void readInstruction(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms,  WriteThroughAllocateCache* icache, 
 			uint8_t asi, uint32_t addr, uint8_t* mae, uint32_t *inst, uint32_t* mmu_fsr);
-void readInstructionPair(int cpu_id,
+void readInstructionPair(int core_id, int cpu_id,
+				uint8_t context,
 				MmuState* ms,  WriteThroughAllocateCache* icache, 
 				uint8_t asi, uint32_t addr, uint8_t* mae, uint64_t *ipair, 
 				uint32_t* mmu_fsr);
 
 //Request ICACHE to flush line containing a given doubleword.
 //returns mae=0 after flush is complete
-void flushIcacheLine(int cpu_id,
+void flushIcacheLine(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms,  WriteThroughAllocateCache* icache, 
 			uint8_t asi, uint32_t addr, uint8_t* mae);
 
@@ -30,50 +33,59 @@ void flushIcacheLine(int cpu_id,
 //  This routine fetches an aligned  doubleword, 
 //  and returns one word from the double-word
 //  to the cpu.
-void readData(int cpu_id,
+void readData(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
 // starts the read and locks the bus.
-void lockAndReadData(int cpu_id,
+void lockAndReadData(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
-void readData64(int cpu_id,
+void readData64(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint64_t *data);
-void lockAndReadData64(int cpu_id,
+void lockAndReadData64(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			uint8_t asi,  uint8_t byte_mask,  uint32_t addr, uint8_t* mae, uint64_t *data);
 // same as above, but to Debug.  Ignores trap information in caches.
-void readDataToDebug(int cpu_id,
+void readDataToDebug(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint8_t byte_mask, uint32_t addr, uint8_t* mae, uint32_t *data);
 
 
 // write MMU FSR, FAR through DCACHE.
-void updateMmuFsrFar(int cpu_id,
+void updateMmuFsrFar(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			uint32_t mmu_fsr, uint32_t mmu_far);
 
 
 //write a word (with a byte mask) to DCACHE.
-void writeData(int cpu_id,
+void writeData(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint32_t addr, uint8_t byte_mask, uint32_t data, uint8_t* mae);
 
 //write a double word (with a byte mask) to DCACHE.
-void writeData64(int cpu_id,
+void writeData64(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint32_t addr, uint8_t byte_mask, uint64_t data, uint8_t* mae);
 
 // same as above but from Debug.  Ignores trap information in caches.
-void writeDataFromDebug(int cpu_id,
+void writeDataFromDebug(int core_id, int cpu_id,
+			uint8_t context,
 			MmuState* ms, WriteThroughAllocateCache* dcache,
 			 uint8_t asi, uint32_t addr, uint8_t byte_mask, uint32_t data, uint8_t* mae);
 
 //send an STBAR request to the Dcache
-void sendSTBAR(int cpu_id, MmuState* ms, WriteThroughAllocateCache* dcache);
+void sendSTBAR(int core_id, int cpu_id, uint8_t context, MmuState* ms, WriteThroughAllocateCache* dcache);
 
 
 //functions to read interface pipes and set internal flags:

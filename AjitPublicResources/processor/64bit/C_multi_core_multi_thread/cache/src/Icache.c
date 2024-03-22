@@ -22,7 +22,7 @@ int icache_forward_to_mmu(int asi)
 }
 
 
-void cpuIcacheAccess (int cpu_id, MmuState* ms,
+void cpuIcacheAccess (int core_id, int cpu_id, uint8_t context, MmuState* ms,
 				WriteThroughAllocateCache* icache,
 				uint8_t asi, uint32_t addr, uint8_t request_type, uint8_t byte_mask,
 				uint8_t* mae, uint64_t* instr_pair, uint32_t* mmu_fsr)
@@ -47,6 +47,11 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 	fprintf(stderr,"\n\nICACHE :  read CPU request asi=0x%x, addr=0x%x, req_type=0x%x, byte_mask=0x%x\n",asi,addr,request_type,byte_mask);
 #endif
 	
+	if(!icache->multi_context)
+	{
+		// If DCACHE is not a multi-context one, then context is ignored.
+		context = 0;
+	}
 
 	*mae=0;
 	*mmu_fsr = 0;
@@ -74,7 +79,7 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 	else if (is_ifetch)
 	{
 		uint8_t is_raw_hit = 0;
-		lookupCache(icache,
+		lookupCache(icache, context,
 				addr, asi, &is_raw_hit,  &acc);
 		int access_ok = accessPermissionsOk(request_type, asi, acc);
 		is_hit = is_raw_hit && access_ok;
@@ -82,7 +87,7 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 		if(is_hit)
 		{	
 			icache->number_of_hits++;
-			*instr_pair = getDwordFromCache	(icache,addr);
+			*instr_pair = getDwordFromCache	(icache, context, addr);
 			*mae = (1 << 7) | (acc << 4);
 		}
 		else
@@ -112,8 +117,8 @@ void cpuIcacheAccess (int cpu_id, MmuState* ms,
 
 			if(cacheable)
 			{
-				updateCacheLine (icache, acc, line_addr, line_data);
-				*instr_pair = getDwordFromCache (icache, addr);
+				updateCacheLine (icache, acc, context, line_addr, line_data);
+				*instr_pair = getDwordFromCache (icache, context, addr);
 			}
 			else
 			{
