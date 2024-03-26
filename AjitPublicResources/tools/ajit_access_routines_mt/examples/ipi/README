@@ -1,0 +1,5 @@
+An example of a 1x2 machine, in which thread (0,0) generates
+ipi interrupts for thread (0,1).  
+
+Thread (0,1) responds to the ipi interrupt by incrementing
+a shared variable in the ipi controller.

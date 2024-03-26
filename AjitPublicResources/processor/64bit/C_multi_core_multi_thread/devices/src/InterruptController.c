@@ -46,10 +46,8 @@
 #include "InterruptController.h"
 #include <stdlib.h>
 #include <stdint.h>
-#ifdef SW
 #include <stdio.h>
 #include <unistd.h>
-#endif
 #include <pthread.h>
 #include "pthreadUtils.h"
 #include "Pipes.h"

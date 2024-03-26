@@ -8,9 +8,9 @@
 #include "pthreadUtils.h"
 
 typedef enum __IrcState {
-	sIRC_DISABLED,
-	sIRC_ENABLED,
-	sIRC_INTERRUPTING
+	sIRC_DISABLED,     // control_register[0] = 0
+	sIRC_ENABLED,      // control_register[0] = 1, and control_register[31]=0
+	sIRC_INTERRUPTING  // control_register[0] = 1, and control_register[31]=1
 } IrcState;
 
 typedef struct __IrcMt {

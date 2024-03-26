@@ -14,6 +14,9 @@
 //thread sleeps when there is no activity
 #define IRC_DELTA_TIME 100 
 
+#define DEBUG_IPI  0
+#define IRC_DEBUG  0
+
 
 
 #include "default_peripheral_device_addresses.h"
@@ -80,16 +83,16 @@ uint32_t do_ipi_access(uint8_t rwbar, uint8_t bmask, uint32_t addr, uint32_t dat
 		if(!rwbar)
 		{
 			ipi_registers[reg_id] = insBytes(bmask, data_in, dout);
-#ifdef IPI_DEBUG
-			fprintf(stderr,"Info: do_ipi_access: wrote reg %d, bmask=0x%x, value=0x%x\n",
-					reg_id, bmask, ipi_registers[reg_id]);
+#if DEBUG_IPI
+			fprintf(stderr,"Info: do_ipi_access: wrote reg %d (addr=0x%x), bmask=0x%x, value=0x%x\n",
+					reg_id, addr, bmask, ipi_registers[reg_id]);
 #endif
 		}
 		else
 		{
-#ifdef IPI_DEBUG
-			fprintf(stderr,"Info: do_ipi_access: read reg %d, value = 0x%x\n",
-					reg_id, dout);
+#if DEBUG_IPI
+			fprintf(stderr,"Info: do_ipi_access: read reg %d (addr=0x%x), value = 0x%x\n",
+					reg_id, addr, dout);
 #endif
 		}
 	}
@@ -126,7 +129,17 @@ void distributorDaemon ()
 		{
 			// This is an IPI access.
 			uint32_t ipi_data_out = do_ipi_access (rwbar, byte_mask, addr, data_in);
-			write_uint32("IPI_INTERRUPT", ipi_registers[0] & ipi_registers[1]);
+
+			uint32_t ipi_val = ipi_registers[0] & ipi_registers[1];
+
+#if DEBUG_IPI
+			if(ipi_val != 0)
+			{
+				fprintf(stderr,"Info: setting ipi_val=0x%x\n", ipi_val);
+			}
+#endif
+
+			write_uint32("IPI_INTERRUPT", ipi_val);
 			sendPeripheralResponse("irc_mt_to_peripheral_bridge_response", ipi_data_out);
 		}
 		else
@@ -155,17 +168,24 @@ int threadId (IrcMt* irc)
 
 uint16_t generateIV(int thread_id)
 {
-	uint8_t TIMER_INT    = read_uint8("TIMER_to_IRC_INT");
-	uint8_t SERIAL_INT   = read_uint8("SERIAL_to_IRC_INT");
-	uint8_t EXTERNAL_INT = read_uint8("EXTERNAL_INTERRUPT");
+	uint8_t  TIMER_INT    = read_uint8("TIMER_to_IRC_INT");
+	uint8_t  SERIAL_INT   = read_uint8("SERIAL_to_IRC_INT");
+	uint8_t  EXTERNAL_INT = read_uint8("EXTERNAL_INTERRUPT");
 	uint32_t IPI_INT      = read_uint32("IPI_INTERRUPT");
 
 	uint8_t local_ipi = ((IPI_INT >> thread_id) & 0x1);
+#if DEBUG_IPI
+	if(IPI_INT != 0)
+	{
+		fprintf(stderr,"IPI_INT=0x%x, local_ipi (thread=%d) = %d\n",
+				IPI_INT, thread_id, local_ipi);
+	}
+#endif
 
-	uint16_t IV =  (((uint16_t) (TIMER_INT != 0)) << 10) |
-		(((uint16_t) (SERIAL_INT != 0) ) << 12) |
-		(((uint16_t) (local_ipi != 0) ) << 13) |
-		(((uint16_t) (EXTERNAL_INT != 0)) << 14);
+	uint16_t IV =  (((uint16_t) (TIMER_INT != 0)) << TIMER_IRL) |
+		(((uint16_t) (SERIAL_INT != 0) ) << SERIAL_IRL) |
+		(((uint16_t) (EXTERNAL_INT != 0)) << EXTERNAL_IRL) |
+		(((uint16_t) (local_ipi != 0) ) << IPI_IRL);
 	return(IV);
 }
 
@@ -184,6 +204,24 @@ uint8_t  encodeInterrupt (uint16_t IV)
 	}
 	return(ret_val);
 }
+
+uint16_t encodeInterruptsIntoVector(int thread_id)
+{
+	uint32_t  TIMER_INT    = read_uint8("TIMER_to_IRC_INT");
+	uint32_t  SERIAL_INT   = read_uint8("SERIAL_to_IRC_INT");
+	uint32_t  EXTERNAL_INT = read_uint8("EXTERNAL_INTERRUPT");
+	uint32_t  IPI_INT      = read_uint32("IPI_INTERRUPT");
+
+	uint32_t local_ipi = ((IPI_INT >> thread_id) & 0x1);
+	uint16_t iv = (EXTERNAL_INT << (EXTERNAL_IRL - 1)) | 
+				(local_ipi << (IPI_IRL - 1)) |
+				(SERIAL_INT << (SERIAL_IRL-1)) | 
+				(TIMER_INT << (TIMER_IRL-1)); 
+
+	return(iv);
+	
+}
+
 
 void initialize_IrcMt_state(IrcMt* irc)
 {
@@ -277,6 +315,8 @@ void start_IrcMt_threads(int ncores, int nthreads_per_core)
 
 			PTHREAD_CREATE_WITH_ARG(IrcMt_Control, ((void*) &(irc_mt_state[I][J])));
 			PTHREAD_CREATE_WITH_ARG(IrcMt_Output, ((void*) &(irc_mt_state[I][J])));
+			fprintf(stderr,"Info: started IrcMt threads for thread=(%d,%d)\n",
+					I, J);
 		}
 	}
 
@@ -297,6 +337,7 @@ void IrcMt_Control(void* virc)
 	uint32_t reg_id_offset = ((irc->core_id * MAX_NTHREADS_PER_CORE) + irc->thread_id);
 
 	uint32_t data_out=0;
+	fprintf(stderr,"Info: started IrcMt_Control (%d,%d)\n", irc->core_id, irc->thread_id);
 	
 
 	while(1)
@@ -311,9 +352,14 @@ void IrcMt_Control(void* virc)
 
 		if(rwbar)
 		{
+			// top-15 bits of the register encode the
+			// active interrupts.
+
 			//this is a register-read.
 			//send response to cpu
-			data_out = irc->control_register;
+			data_out = (irc->control_register & 0xffff) |
+					((irc->state == sIRC_INTERRUPTING) << 31) |
+					(encodeInterruptsIntoVector(irc->thread_id) << 16);
 		}
 		else 
 		{
@@ -323,12 +369,12 @@ void IrcMt_Control(void* virc)
 				//Cpu wants to update the control register
 				irc->control_register = insertUsingByteMask(irc->control_register, data_in, byte_mask);
 
-#ifdef IRC_DEBUG
+#if IRC_DEBUG
 				printf("\nINTERRUPT CONTROLLER (%d,%d): Control word 0x%x bmask 0x%x written. ",
 						irc->core_id, irc->thread_id, data_in, byte_mask);
 #endif
 
-				if(!(data_in & 0x1))
+				if(!(irc->control_register & 0x1))
 				{
 					//Disable IRC
 					irc->state = sIRC_DISABLED;
@@ -339,8 +385,8 @@ void IrcMt_Control(void* virc)
 					// only to CPU-0.
 					write_uint8(irc->ilvl_signal_name, irc->irc_int_out);
 
-#ifdef IRC_DEBUG
-					printf(" State (%d,%d) = IRC_DISABLED", irc->core_id, irc->thread_id);
+#if IRC_DEBUG
+					printf(" State (%d,%d) = IRC_DISABLED\n", irc->core_id, irc->thread_id);
 #endif
 
 				}
@@ -354,8 +400,8 @@ void IrcMt_Control(void* virc)
 
 					write_uint8(irc->ilvl_signal_name, irc->irc_int_out);
 
-#ifdef IRC_DEBUG
-					printf(" State (%d,%d)= IRC_ENABLED", irc->core_id, irc->thread_id);
+#if IRC_DEBUG
+					printf(" State (%d,%d)= IRC_ENABLED\n", irc->core_id, irc->thread_id);
 #endif
 
 				}
@@ -375,6 +421,7 @@ void IrcMt_Control(void* virc)
 void IrcMt_Output(void* virc)
 {
 	IrcMt* irc = (IrcMt*) virc;
+	fprintf(stderr,"Info: started IrcMt_Output (%d,%d)\n", irc->core_id, irc->thread_id);
 
 	while(1)
 	{
@@ -385,18 +432,28 @@ void IrcMt_Output(void* virc)
 			//Interrupts are enabled, but not interrupt 
 			//has been asserted yet.
 
-#ifdef IRC_DEBUG
+#if IRC_DEBUG
 			//Assert that the interrupt line is low
 			if(irc->irc_int_out!=0)				
-				printf("\nINTERRUPT CONTROLLER: WARNING! Interrupt line is high in IRC_ENABLED state");
+				printf("\nINTERRUPT CONTROLLER: WARNING! Interrupt line is high in IRC_ENABLED state\n");
 #endif
 
 
 			//examine the interrupt sources
 			uint16_t IV = generateIV(threadId(irc));
-
 			uint16_t masked_IV = (IV & (irc->control_register & 0xfffffffe));
 			irc->irc_int_out = encodeInterrupt (masked_IV);
+
+#if DEBUG_IPI
+			if (IV != 0)
+			{
+				fprintf(stderr,"Info: IV=0x%x maskedIV=0x%x, ilvl=%d (thread=%d)\n", 
+						IV, masked_IV, 
+						irc->irc_int_out,
+						threadId(irc));
+			}
+#endif
+
 
 
 			if(irc->irc_int_out!=0)
@@ -410,7 +467,7 @@ void IrcMt_Output(void* virc)
 				irc->state  = sIRC_INTERRUPTING;
 				write_uint8(irc->ilvl_signal_name, irc->irc_int_out);
 
-#ifdef IRC_DEBUG
+#if IRC_DEBUG
 				printf("\nINTERRUPT CONTROLLER: Generated interrupt to thread (%d,%d). INT = %d\n",  
 						irc->core_id, irc->thread_id,
 						irc->irc_int_out);
