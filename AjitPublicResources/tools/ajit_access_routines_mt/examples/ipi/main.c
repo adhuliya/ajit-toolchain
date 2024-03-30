@@ -31,7 +31,11 @@ void my_ipi_interrupt_handler()
 	*((uint32_t*) mesg->pointer) = (v + 1);
 
 	ipi_interrupt_counter++;
+
+	// under the lock!
+	__ajit_acquire_ipi_lock__ (ipi_base_address);
 	__ajit_clear_ipi_interrupt__(ipi_base_address, 0,1);
+	__ajit_release_ipi_lock__ (ipi_base_address);
 }
 
 void setup ()
@@ -56,6 +60,10 @@ void setup ()
 	cortos_printf ("initialized ipi\n");
 
 	// enable ipi interrupt for thread (0,1);
+
+
+	// No need to lock, nobody else is active during
+	// the setup.
 	__ajit_enable_ipi_interrupt__(ipi_base_address, 0, 1);
 	cortos_printf ("enabled ipi to 0,1 (mask=0x%x, val=0x%x)\n",
 				*((uint32_t*) ipi_base_address),
@@ -84,7 +92,11 @@ int main_00 ()
 	while(counter < MAX_COUNT)
 	{
 		while(1) {	
+
+			__ajit_acquire_ipi_lock__ (ipi_base_address);
 			int status = __ajit_set_ipi_interrupt__ (ipi_base_address, 0,0,0,1, (void*) &counter); 
+			__ajit_release_ipi_lock__ (ipi_base_address);
+
 			if(status == 0)
 			{
 				cortos_printf ("main_00: set ipi interrupt to 0,1 (mask=0x%x, val=0x%x)\n",

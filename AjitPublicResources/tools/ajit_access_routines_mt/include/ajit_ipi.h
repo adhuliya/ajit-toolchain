@@ -3,6 +3,17 @@
 
 #define __AJIT_IPI_LOCK_ADDRESS(x) (x+72)
 
+//
+// The interrupting thread is expected to fill
+// this data structure and pass it to the 
+// interrupted thread.
+//
+// Software can have another mechanism independent
+// of the ipi registers to exchange information between
+// the interrupter and the interrupted...  however 
+// the ipi implementation gives a default through the
+// device itself.
+//
 typedef struct __IpiMessage {
 	uint8_t source_core_id;
 	uint8_t source_thread_id;
@@ -20,6 +31,9 @@ typedef struct __IpiMessage {
 // returns 0 on success, non-zero on failure.  
 //    note: failure means that there is already an ipi interrupt set for
 //          the destination thread.
+//
+// Note: locking etc is the responsibility of Software.
+//
 int __ajit_set_ipi_interrupt__ (uint32_t ipi_base_address,
 					uint8_t source_core_id, uint8_t source_thread_id,
 					uint8_t dest_core_id, uint8_t dest_thread_id,
@@ -45,10 +59,16 @@ void __ajit_read_ipi_info__ (uint32_t ipi_base_address,
 				);
 
 // return 0 if interrupt enabled in this call, 1 if already enabled earlier.
+//
+// Note: locking etc is the responsibility of Software.
+//
 int __ajit_enable_ipi_interrupt__ (uint32_t ipi_base_address,
 					uint8_t dest_core_id, uint8_t dest_thread_id);
 
 // return 0 if interrupt disabled in this call, 1 if already disabled earlier.
+//
+// Note: locking etc is the responsibility of Software.
+//
 int __ajit_disable_ipi_interrupt__ (uint32_t ipi_base_address,
 					uint8_t dest_core_id, uint8_t dest_thread_id);
 
@@ -65,6 +85,10 @@ IpiMessage* __ajit_get_ipi_message_pointer__ (uint32_t ipi_base_address,
 
 	
 // acquire release lock using swap.
+//
+// Default locking provided by the ipi device.  Software can use this
+// or do its own thing.
+//
 void  __ajit_acquire_ipi_lock__ (uint32_t ipi_base_address);
 void  __ajit_release_ipi_lock__ (uint32_t ipi_base_address);
 

@@ -2,12 +2,14 @@
 #include <stdint.h>
 #include <ajit_ipi.h>
 #include <device_addresses.h>
-#include <cortos.h>
-
 #define DEBUG_IPI   0
+#if DEBUG_IPI
+#include <cortos.h>
+#endif
+
 
 IpiMessage* __ajit_get_ipi_message_pointer__ (uint32_t ipi_base_address,
-							uint8_t dest_core_id, uint8_t dest_thread_id)
+		uint8_t dest_core_id, uint8_t dest_thread_id)
 {
 	uint32_t base_addr = ipi_base_address;
 	uint32_t dest_tid = ((dest_core_id*2) + dest_thread_id);
@@ -18,18 +20,23 @@ IpiMessage* __ajit_get_ipi_message_pointer__ (uint32_t ipi_base_address,
 
 // returns 0 on success.
 //     If the interrupt mask & val are both already set, then return 1
+//
+// This routine should be called only after the caller has acquired the ipi lock.
+// The lock should be released by the caller after return.
 //     
 int __ajit_set_ipi_interrupt__ (uint32_t ipi_base_address,
-					uint8_t source_core_id, uint8_t source_thread_id,
-					uint8_t dest_core_id, uint8_t dest_thread_id,
-						void* ptr)
-					
+		uint8_t source_core_id, uint8_t source_thread_id,
+		uint8_t dest_core_id, uint8_t dest_thread_id,
+		void* ptr)
+
 {
-	#if DEBUG_IPI
-		cortos_printf("__ajit_set_ipi_interrupt__ (0x%x, %d, %d, %d, %d, 0x%x)\n",
-					ipi_base_address, source_core_id, source_thread_id,
-					dest_core_id, dest_thread_id, (uint32_t) ptr);
-	#endif
+	int ret_val = 0;
+
+#if DEBUG_IPI
+	cortos_printf("__ajit_set_ipi_interrupt__ (0x%x, %d, %d, %d, %d, 0x%x)\n",
+			ipi_base_address, source_core_id, source_thread_id,
+			dest_core_id, dest_thread_id, (uint32_t) ptr);
+#endif
 
 	uint32_t base_addr = ipi_base_address;
 	uint32_t dest_tid = ((dest_core_id*2) + dest_thread_id);
@@ -39,7 +46,6 @@ int __ajit_set_ipi_interrupt__ (uint32_t ipi_base_address,
 	// active ipi mask.
 	uint32_t active_ipi_mask = (1 << dest_tid);
 
-	__ajit_acquire_ipi_lock__ (base_addr);
 
 	uint32_t ipi_vals = *((uint32_t*) (base_addr + 4));
 	uint32_t current_ipi_mask = *((uint32_t*) base_addr);
@@ -51,7 +57,6 @@ int __ajit_set_ipi_interrupt__ (uint32_t ipi_base_address,
 	imesg->dest_thread_id    = dest_thread_id;
 	imesg->pointer = ptr;
 
-	__ajit_release_ipi_lock__ (base_addr);
 
 	// if already set, return failure.
 	if(ipi_vals & active_ipi_mask & current_ipi_mask)
@@ -59,40 +64,48 @@ int __ajit_set_ipi_interrupt__ (uint32_t ipi_base_address,
 #if DEBUG_IPI
 		cortos_printf("__ajit_set_ipi_interrupt__ already set\n");
 #endif
-		return (1);
+		ret_val = 1;
 	}
-
-	ipi_vals = (ipi_vals & (~active_ipi_mask)) | active_ipi_mask;
-	*((uint32_t*) (base_addr + 4)) = ipi_vals;
+	else
+	{
+		ipi_vals = (ipi_vals & (~active_ipi_mask)) | active_ipi_mask;
+		*((uint32_t*) (base_addr + 4)) = ipi_vals;
 
 #if DEBUG_IPI
 		cortos_printf("__ajit_set_ipi_interrupt__ freshly set (mask=0x%x, val=0x%x)\n",
-					*((uint32_t*) base_addr),
-					*((uint32_t*) (base_addr + 4))
-			);
+				*((uint32_t*) base_addr),
+				*((uint32_t*) (base_addr + 4))
+			     );
 #endif
+	}
 
-	return(0);
+	return(ret_val);
 }
 
+// This routine should be called only after the caller has acquired the ipi lock.
+// The lock should be released by the caller after return.
 int __ajit_enable_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core_id, uint8_t dest_thread_id)
 {
 	int bit_index = ((2*dest_core_id) + dest_thread_id);
 	uint32_t m = (1 << bit_index);
-	
+
 	uint32_t curr_mask = *((uint32_t*) ipi_base_address);
 	if(curr_mask & m)
 		return(1);
 
 	curr_mask = curr_mask | m;
 	*((uint32_t*) ipi_base_address) = curr_mask;
+
+	return(0);
 }
 
+// This routine should be called only after the caller has acquired the ipi lock.
+// The lock should be released by the caller after return.
 int __ajit_disable_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core_id, uint8_t dest_thread_id)
 {
 	int bit_index = ((2*dest_core_id) + dest_thread_id);
 	uint32_t m = (1 << bit_index);
-	
+
 	uint32_t curr_mask = *((uint32_t*) ipi_base_address);
 	if((curr_mask & m) == 0)
 		return(1);
@@ -103,6 +116,8 @@ int __ajit_disable_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core
 	return(0);
 }
 
+// This routine should be called only after the caller has acquired the ipi lock.
+// The lock should be released by the caller after return.
 int __ajit_clear_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core_id, uint8_t dest_thread_id)
 {
 	uint32_t base_addr = ipi_base_address;
@@ -110,13 +125,11 @@ int __ajit_clear_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core_i
 
 	uint32_t ipi_mask = (1 << dest_tid);
 
-	__ajit_acquire_ipi_lock__ (base_addr);
 
 	uint32_t ipi_vals = *((uint32_t*) (base_addr + 4));
 	ipi_vals = (ipi_vals & (~ipi_mask));
 	*((uint32_t*) (base_addr + 4)) = ipi_vals;
 
-	__ajit_release_ipi_lock__ (base_addr);
 
 	return(0);
 }
@@ -145,10 +158,10 @@ uint32_t __ajit_get_ipi_value_register__ (uint32_t ipi_base_address)
 	return (*((uint32_t*) (base_addr + 4)));
 }
 
-			
+
 void __ajit_read_ipi_info__ (uint32_t ipi_base_address,
-					uint8_t dest_core_id, uint8_t dest_thread_id, uint32_t* mask, uint32_t* val,
-					IpiMessage** mesg_ptr)
+		uint8_t dest_core_id, uint8_t dest_thread_id, uint32_t* mask, uint32_t* val,
+		IpiMessage** mesg_ptr)
 {
 	uint32_t base_addr = ipi_base_address;
 	uint32_t dest_tid = ((dest_core_id*2) + dest_thread_id);
