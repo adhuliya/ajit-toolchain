@@ -12,13 +12,16 @@ _LINKER_SCRIPT="$_CORTOS_SRC_DIR/LinkerScript.txt";
 _PT="$AJIT_MINIMAL_PRINTF_TIMER";
 _AAR_MT="$AJIT_ACCESS_ROUTINES_MT";
 _AAR="$AJIT_ACCESS_ROUTINES";
+_IEEE_SOFT_FLOAT_LIB="$AJIT_HOME/application_development/soft_float/ieeelib/"
 # {{ confObj.software.build.debug }}
 compileToSparcUclibc.py \
 % if confObj.software.build.debug:
   -g \
 % end
   -o {{ confObj.software.build.optLevel }} \
+% if confObj.hardware.cpu.mmu:
   -V ${_CORTOS_VMAP} \
+% end
   -I ${AJIT_UCLIBC_HEADERS_DIR} \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \
   -I . \

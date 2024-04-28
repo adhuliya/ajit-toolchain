@@ -51,5 +51,6 @@ int pcore(int core_id, int thread_id)
 int main()
 {
 	pcore(0,0);
+	cortos_printf("Done.\n");
 }
 

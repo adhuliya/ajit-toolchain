@@ -103,10 +103,14 @@ class Processor:
       coreCount: int = 1,
       threadsPerCoreCount: int = 1,
       isa: int = 32, # 32 or 64
+      mmu: bool = True,
+      fpu: bool = True
   ) -> None:
     self.coreCount = coreCount
     self.threadsPerCoreCount = threadsPerCoreCount
     self.isa = isa
+    self.mmu = mmu
+    self.fpu = fpu
 
     self.cores: List[Core] = []
     for cid in range(self.coreCount):
@@ -209,6 +213,22 @@ class Processor:
       fail=True,
     )
 
-    cpu = Processor(coreCount, threadsPerCoreCount, isa)
+    mmu: bool = util.getConfigurationParameter(
+      data = config,
+      keySeq = ["MMU"],
+      default = True,
+      prevKeySeq=prevKeySeq,
+      fail=True,
+    )
+
+    fpu: bool = util.getConfigurationParameter(
+      data = config,
+      keySeq = ["FPU"],
+      default = True,
+      prevKeySeq=prevKeySeq,
+      fail=True,
+    )
+
+    cpu = Processor(coreCount, threadsPerCoreCount, isa, mmu, fpu)
     return cpu
 

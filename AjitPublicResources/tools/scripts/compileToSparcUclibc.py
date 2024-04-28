@@ -403,6 +403,21 @@ def main():
            return 1
         else:
            assembly_files.append(op_file)
+    else:
+        # dummy genvmap file.. to provide set-page-table etc.
+        op_file_name  = work_area + "/__genvmap_setup_page_tables.s"
+        op_file_f     = open(op_file_name,"w")
+        op_file_f.write (".section .text.pagetablesetup\n")
+        op_file_f.write (".global page_table_setup\n")
+        op_file_f.write ("page_table_setup:\n")
+        op_file_f.write ("  retl\n")
+        op_file_f.write ("  nop\n")
+        op_file_f.write (".global set_context_table_pointer\n")
+        op_file_f.write ("set_context_table_pointer:\n")
+        op_file_f.write ("  retl\n")
+        op_file_f.write ("  nop\n")
+        op_file_f.close ()
+        assembly_files.append(op_file_name)
 
     obj_files =  compileFiles(work_area, src_files, src_dirs, include_dirs, define_strings, assembly_files, assembly_dirs, debug_mode, opt_level, compiler_options)
     if(len(obj_files)==0):
