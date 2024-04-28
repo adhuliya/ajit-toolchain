@@ -340,22 +340,24 @@ int setArchitectureDescription(char* descr)
 		(munit == NULL) ||
 		(mmu == NULL) )
 	{
+		fprintf(stderr,"Error: in architecture description (-a), " 
+				"must specify each of coreid:threadid:mmu/nommu:fpu/nofpu\n");
 		err = 1;
 	}
 	else if((strcmp (fp, "fpu") != 0) && (strcmp(fp,"nofpu") != 0))
 	{
-		fprintf(stderr,"Info: in architecture description, FPU status must be either fpu or nofpu\n");
+		fprintf(stderr,"Error: in architecture description, FPU status must be either fpu or nofpu\n");
 		err = 1;
 	}
 	else if((strcmp (mmu, "mmu") != 0) && (strcmp(mmu,"nommu") != 0))
 	{
 		err = 1;
-		fprintf(stderr,"Info: in architecture description, MMU status must be either mmu or nommu\n");
+		fprintf(stderr,"Error: in architecture description, MMU status must be either mmu or nommu\n");
 	}
 	else if((strcmp (munit, "mcmunit") != 0) && (strcmp(munit,"scmunit") != 0))
 	{
 		err = 1;
-		fprintf(stderr,"Info: in architecture description, MUNIT status %s must be either mcmunit or scmunit\n", munit);
+		fprintf(stderr,"Error: in architecture description, MUNIT status %s must be either mcmunit or scmunit\n", munit);
 	}
 	else
 	{

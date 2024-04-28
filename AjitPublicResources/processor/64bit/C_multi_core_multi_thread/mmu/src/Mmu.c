@@ -1118,26 +1118,40 @@ void printMmuStatistics(MmuState* ms)
 	int i;
 
 	fprintf(stderr,"\nMmu configuration for core=%d:\n", ms->core_id);
-	fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)\n",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
-	for(i = 0; i < MMU_MAX_NUMBER_OF_THREADS; i++)
+	if(ms->mmu_is_present)
 	{
-		fprintf(stderr,"\nMmu statistics for core=%d, thread=%d: MMU ENABLED = %d", ms->core_id, MmuEnabled(ms,i) );
-		fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
-		fprintf(stderr,"\n	Accesses with Mmu bypassed or disabled 	= %d",    ms->Num_Mmu_bypass_accesses[i]);
-		fprintf(stderr,"\n	Mmu_probe_requests  	= %d",     ms->Num_Mmu_probe_requests[i]);
-		fprintf(stderr,"\n	Mmu_flush_requests  	= %d",     ms->Num_Mmu_flush_requests[i]);
-		fprintf(stderr,"\n	Mmu_register_reads   	= %d",     ms->Num_Mmu_register_reads[i]);
-		fprintf(stderr,"\n	Mmu_register_writes 	= %d",    ms->Num_Mmu_register_writes[i]);
-		fprintf(stderr,"\n	Mmu_translated_accesses = %d",    ms->Num_Mmu_translated_accesses[i]);
-		fprintf(stderr,"\n	Mmu_TLB_hits            = %d",    ms->Num_Mmu_TLB_hits[i]);
-		fprintf(stderr,"\n");
-		fprintf(stderr,"\nMmu Register values :");
-		fprintf(stderr,"\n	Control register 	= 0x%x",    ms->MmuControlRegister[i]);
-		fprintf(stderr,"\n	Context table ptr 	= 0x%x",    ms->MmuContextTablePointerRegister[i]);
-		fprintf(stderr,"\n	Context register   	= 0x%x",    ms->MmuContextRegister[i]);
-		fprintf(stderr,"\n	FSR		   	= 0x%x",    ms->MmuFaultStatusRegister[i]);
-		fprintf(stderr,"\n	FAR		 	= 0x%x",    ms->MmuFaultAddressRegister[i]);
-		fprintf(stderr,"\n");
+		fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)\n",
+					TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
+	}
+	else
+	{
+		fprintf(stderr,"\n      MMU is absent.\n");
+	}
+
+
+	if(ms->mmu_is_present)
+	{
+		for(i = 0; i < MMU_MAX_NUMBER_OF_THREADS; i++)
+		{
+			fprintf(stderr,"\nMmu statistics for core=%d, thread=%d: MMU ENABLED = %d", 
+					ms->core_id, i, MmuEnabled(ms,i));
+			fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)",TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
+			fprintf(stderr,"\n	Accesses with Mmu bypassed or disabled 	= %d",    ms->Num_Mmu_bypass_accesses[i]);
+			fprintf(stderr,"\n	Mmu_probe_requests  	= %d",     ms->Num_Mmu_probe_requests[i]);
+			fprintf(stderr,"\n	Mmu_flush_requests  	= %d",     ms->Num_Mmu_flush_requests[i]);
+			fprintf(stderr,"\n	Mmu_register_reads   	= %d",     ms->Num_Mmu_register_reads[i]);
+			fprintf(stderr,"\n	Mmu_register_writes 	= %d",    ms->Num_Mmu_register_writes[i]);
+			fprintf(stderr,"\n	Mmu_translated_accesses = %d",    ms->Num_Mmu_translated_accesses[i]);
+			fprintf(stderr,"\n	Mmu_TLB_hits            = %d",    ms->Num_Mmu_TLB_hits[i]);
+			fprintf(stderr,"\n");
+			fprintf(stderr,"\nMmu Register values :");
+			fprintf(stderr,"\n	Control register 	= 0x%x",    ms->MmuControlRegister[i]);
+			fprintf(stderr,"\n	Context table ptr 	= 0x%x",    ms->MmuContextTablePointerRegister[i]);
+			fprintf(stderr,"\n	Context register   	= 0x%x",    ms->MmuContextRegister[i]);
+			fprintf(stderr,"\n	FSR		   	= 0x%x",    ms->MmuFaultStatusRegister[i]);
+			fprintf(stderr,"\n	FAR		 	= 0x%x",    ms->MmuFaultAddressRegister[i]);
+			fprintf(stderr,"\n");
+		}
 	}
 
 

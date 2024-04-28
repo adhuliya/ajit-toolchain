@@ -122,7 +122,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "                 : default is 1, maximum is 2.\n");
 	// architecture
 	fprintf(stderr, "   -a arch-string (optional)\n");
-	fprintf(stderr, "                 : arch-string is <core-id>:<thread-id>:mcmunit/scmunit:mmu/nommu:fp/nofp\n");
+	fprintf(stderr, "                 : arch-string is <core-id>:<thread-id>:mcmunit/scmunit:mmu/nommu:fpu/nofpu\n");
 	fprintf(stderr, "                 : example:  0:1:scmunit:mmu:fpu indicates that core-0 has a single-context mem-unit and  mmu, and thread (0,1) has fp-unit\n");
 	fprintf(stderr, "                 : example:  *:1:mcmunit:mmu:nofpu indicates that cores 0,1 have multi-context munits,  mmu's and threads (0,1), (1,1) have no fp-unit\n");
 	fprintf(stderr, "                 this option can be used multiple times.\n");
