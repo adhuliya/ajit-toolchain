@@ -10,6 +10,8 @@ Hardware:
     Cores: 1
     ThreadsPerCore: 1
     ISA: 32 # 32/64 bit (Default: 32)
+    MMU: Yes
+    FPU: No
 
   Memory:
     MaxPhysicalAddrBitWidth: 36
