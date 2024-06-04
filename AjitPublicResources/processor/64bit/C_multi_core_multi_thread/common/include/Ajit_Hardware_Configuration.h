@@ -155,6 +155,7 @@
 
 typedef   struct __ThreadArchDescription {
 	int fpu_not_present;
+	int div_not_present;
 } ThreadArchDescription;
 
 
@@ -176,5 +177,7 @@ int setArchitectureDescription(char* descr);
 
 int isMmuPresent (int core_id);
 int hasMultiContextMunit (int core_id);
-int isFpuPresent  (int core_id, int thread_id);
-#endif
+int isFpuPresent  (int core_id, int thread_id); 
+int isDivPresent  (int core_id, int thread_id);
+
+ #endif

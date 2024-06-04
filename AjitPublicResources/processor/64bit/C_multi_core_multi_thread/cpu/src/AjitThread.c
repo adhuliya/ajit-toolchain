@@ -604,6 +604,7 @@ void init_ajit_thread (ThreadState *s, uint32_t core_id,
 	//input signals to the cpu hardwired to 
 	//a certain value in the Ajit processor:
 	s->bp_fpu_present = isFpuPresent(s->core_id, s->thread_id);
+	s->bp_div_present = isDivPresent(s->core_id, s->thread_id);
 	s->bp_fpu_exception = 0;
 	s->bp_fpu_cc=0;
 	s->bp_cp_present = 0;

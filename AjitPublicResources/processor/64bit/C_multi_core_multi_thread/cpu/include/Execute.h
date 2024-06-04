@@ -71,7 +71,7 @@ void executeMul( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *resu
 
 uint32_t executeDiv   (Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *result, 
 				StatusRegisters *status_reg, StateUpdateFlags* reg_update_flags,
-				uint32_t trap_vector, uint8_t *flags);
+				uint32_t trap_vector, uint8_t *flags, ThreadState* state);
 
 uint32_t executeSave( uint32_t operand1, uint32_t operand2, uint32_t *result, 
 			StatusRegisters *status_reg,StateUpdateFlags* reg_update_flags, 
@@ -149,7 +149,8 @@ uint32_t execute64BitDiv   (Opcode op, uint32_t operand1_0, uint32_t operand1_1,
 				uint32_t operand2_0, uint32_t operand2_1, 
 				uint32_t *result_h,  uint32_t *result_l,
 				StatusRegisters *status_reg, StateUpdateFlags* reg_update_flags,
-				uint32_t trap_vector, uint8_t *flags);
+				uint32_t trap_vector, uint8_t *flags,
+				ThreadState* state);
 void execute64BitReduce8  (Opcode op, 
 					uint32_t operand1_0, uint32_t operand1_1, 
 					uint32_t operand2, 

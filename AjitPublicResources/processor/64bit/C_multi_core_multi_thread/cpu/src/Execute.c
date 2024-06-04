@@ -1292,7 +1292,7 @@ void executeMulStep( uint32_t operand1, uint32_t operand2, uint32_t *result, Sta
 }
 
 uint32_t executeDiv( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *result, StatusRegisters *status_reg, StateUpdateFlags* reg_update_flags,
-		uint32_t trap_vector, uint8_t *flags)
+		uint32_t trap_vector, uint8_t *flags, ThreadState* s)
 {
 #ifdef DEBUG
 	fprintf(stderr,"\tInfo : DIV  op-code=%x operand1=%x operand2=%x\n",  op, operand1, operand2);
@@ -1301,12 +1301,20 @@ uint32_t executeDiv( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *
 	uint8_t f = *flags;
 
 	uint8_t div_by_zero_trap = 0;
+	uint8_t illegal_instr_trap = 0;
 
 	if(operand2 == 0)
 	{
 		tv = setBit32(tv, _TRAP_, 1);
 		tv = setBit32(tv, _DIVISION_BY_ZERO_, 1) ;
 		div_by_zero_trap = 1;
+	}
+	else if (!s->bp_div_present)
+	{
+		
+		tv = setBit32(tv, _TRAP_, 1);
+		tv = setBit32(tv, _ILLEGAL_INSTRUCTION_, 1) ;
+		illegal_instr_trap = 1;	
 	}
 
 	uint64_t oprnd1 = operand1;
@@ -1353,7 +1361,8 @@ uint32_t executeDiv( Opcode op, uint32_t operand1, uint32_t operand2, uint32_t *
 		}
 	}
 
-	uint8_t modify_icc =  !div_by_zero_trap && ((op == _UDIVcc_) || (op == _SDIVcc_));
+	uint8_t modify_icc =  !div_by_zero_trap && !illegal_instr_trap && 
+					((op == _UDIVcc_) || (op == _SDIVcc_));
 
 	uint8_t n = getBit32(res, 31);
 	uint8_t z = ((res == 0) ? 1 : 0);
@@ -2236,15 +2245,19 @@ uint32_t executeInstruction(
 	else if(is_mul_step)	       executeMulStep(operand1, operand2, result_l, status_reg, &(s->reg_update_flags),flags);
 	else if(is_divide)	
 	{
-		tv = 	executeDiv(opcode, operand1, operand2, result_l, status_reg, &(s->reg_update_flags),trap_vector, flags);
+		tv = 	
+			executeDiv(opcode, operand1, operand2, result_l, 
+				status_reg, &(s->reg_update_flags),trap_vector, flags, s);
 		s->num_iu_divs_executed++;
 	}
 	else if(is_divide_64)
+	{
 		tv = 	execute64BitDiv(opcode, operand1_0, operand1_1, 
 						operand2_0, operand2_1, 
 						result_h, result_l, 
 						status_reg, &(s->reg_update_flags),
-						trap_vector, flags);
+						trap_vector, flags, s);
+	}
 	else if(is_save)	tv = 	executeSave(operand1, operand2, result_l, status_reg, &(s->reg_update_flags),trap_vector, flags);
 	else if(is_restore)	tv = 	executeRestore(operand1, operand2, result_l, status_reg, &(s->reg_update_flags),trap_vector, flags);
 	else if(is_bicc)	tv = 	executeBicc(opcode, operand1, status_reg, trap_vector, *flags);

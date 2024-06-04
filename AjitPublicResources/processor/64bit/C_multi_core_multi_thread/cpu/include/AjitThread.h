@@ -224,6 +224,7 @@ typedef struct _ThreadState
 	//input signals to the cpu hardwired to 
 	//a certain value in the Ajit processor:
 	uint8_t bp_fpu_present;
+	uint8_t bp_div_present;
 	uint8_t bp_fpu_exception;
 	uint8_t bp_fpu_cc;
 	uint8_t bp_cp_present;

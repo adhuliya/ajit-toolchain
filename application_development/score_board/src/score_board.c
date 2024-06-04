@@ -188,7 +188,7 @@ uint32_t selectScoreboardWorker (ThreadScoreboard* sb,
 	return(ret_val);
 }
 
-//
+// return 0 on success.
 uint32_t selectScoreboardJob 
 	(ThreadScoreboard* sb, uint32_t job_core, uint32_t job_thread, ThreadChannel** tc)
 {

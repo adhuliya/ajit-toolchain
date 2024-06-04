@@ -54,7 +54,7 @@ int __ajit_getcontext__ (ajit_context_t *__ucp, uint32_t stack_pointer);
 
 /* Set user context from information of variable pointed to by UCP.  */
 /*  recover active user window registers from stack		     */
-/*  recover globals from __ucp->mctxt                                */
+/*  recover globals from __ucp                                       */
 /*  setcontext will execute a ret after registers are restored.      */
 /*  and continue from where __ucp had its return pointer             */
 int __ajit_setcontext__ (ajit_context_t *__ucp);

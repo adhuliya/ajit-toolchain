@@ -309,6 +309,7 @@ void initCoreArchDescriptions()
 		for (J = 0; J < MAX_NTHREADS_PER_CORE; J++)
 		{
 			core_descriptions[I].thread_descriptions[J].fpu_not_present = 0;
+			core_descriptions[I].thread_descriptions[J].div_not_present = 0;
 		}
 	}
 }
@@ -332,16 +333,19 @@ int setArchitectureDescription(char* descr)
 	char* munit  = strtok(NULL, ":");
 	char* mmu  = strtok(NULL, ":");
 	char* fp   = strtok(NULL, ":");
+	char* div   = strtok(NULL, ":");
 
 	if(
 		(cids == NULL) || 
 		(tids == NULL) ||
 		(fp == NULL) ||
 		(munit == NULL) ||
-		(mmu == NULL) )
+		(mmu == NULL)  ||
+		(div == NULL)
+	)
 	{
 		fprintf(stderr,"Error: in architecture description (-a), " 
-				"must specify each of coreid:threadid:mmu/nommu:fpu/nofpu\n");
+				"must specify each of coreid:threadid:mmu/nommu:fpu/nofpu:div/nodiv\n");
 		err = 1;
 	}
 	else if((strcmp (fp, "fpu") != 0) && (strcmp(fp,"nofpu") != 0))
@@ -358,6 +362,12 @@ int setArchitectureDescription(char* descr)
 	{
 		err = 1;
 		fprintf(stderr,"Error: in architecture description, MUNIT status %s must be either mcmunit or scmunit\n", munit);
+	}
+	else if((strcmp (div, "div") != 0) && (strcmp(div,"nodiv") != 0))
+	{
+		err = 1;
+		fprintf(stderr,"Error: in architecture description, DIV status %s must be either div or nodiv\n", 
+					div);
 	}
 	else
 	{
@@ -395,10 +405,17 @@ int setArchitectureDescription(char* descr)
 			for(tid = tid_min; tid <= tid_max; tid++)
 			{
 				core_descriptions[cid].thread_descriptions[tid].fpu_not_present = (strcmp (fp,"nofpu") == 0);
+				core_descriptions[cid].thread_descriptions[tid].div_not_present = 
+								(strcmp (div,"nodiv") == 0);
 
 				if(core_descriptions[cid].thread_descriptions[tid].fpu_not_present)
 				{
 					fprintf(stderr,"Info: core %d, thread %d configured without FPU.\n", cid, tid);
+				}
+				if(core_descriptions[cid].thread_descriptions[tid].div_not_present)
+				{
+					fprintf(stderr,"Info: core %d, thread %d configured without divider.\n", 
+										cid, tid);
 				}
 			}
 		}
@@ -419,4 +436,9 @@ int hasMultiContextMunit (int core_id)
 int isFpuPresent  (int core_id, int thread_id)
 {
 	return(!core_descriptions[core_id % MAX_NCORES].thread_descriptions[thread_id % MAX_NTHREADS_PER_CORE].fpu_not_present);
+}
+
+int isDivPresent  (int core_id, int thread_id)
+{
+	return(!core_descriptions[core_id % MAX_NCORES].thread_descriptions[thread_id % MAX_NTHREADS_PER_CORE].div_not_present);
 }
