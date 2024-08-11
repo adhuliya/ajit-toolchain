@@ -122,9 +122,9 @@ void print_usage(char* app_name)
 	fprintf(stderr, "                 : default is 1, maximum is 2.\n");
 	// architecture
 	fprintf(stderr, "   -a arch-string (optional)\n");
-	fprintf(stderr, "                 : arch-string is <core-id>:<thread-id>:mcmunit/scmunit:mmu/nommu:fpu/nofpu\n");
-	fprintf(stderr, "                 : example:  0:1:scmunit:mmu:fpu indicates that core-0 has a single-context mem-unit and  mmu, and thread (0,1) has fp-unit\n");
-	fprintf(stderr, "                 : example:  *:1:mcmunit:mmu:nofpu indicates that cores 0,1 have multi-context munits,  mmu's and threads (0,1), (1,1) have no fp-unit\n");
+	fprintf(stderr, "                 : arch-string is <core-id>:<thread-id>:mcmunit/scmunit:mmu/nommu:fpu/nofpu:div/nodiv\n");
+	fprintf(stderr, "                 : example:  0:1:scmunit:mmu:fpu:div indicates that core-0 has a single-context mem-unit and  mmu, and thread (0,1) has fp-unit, as well as an integer divide unit\n");
+	fprintf(stderr, "                 : example:  *:1:mcmunit:mmu:nofpu:nodiv indicates that cores 0,1 have multi-context munits,  mmu's and threads (0,1), (1,1) have no fp-unit and no integer divide unit.\n");
 	fprintf(stderr, "                 this option can be used multiple times.\n");
 	fprintf(stderr, "            if omitted, the default is that all cores have single-context memory units with MMUs and all threads have FPUs.\n");
 	fprintf(stderr, "   -u <32/64>:  use -u 64 to run model in 64-bit mode [default is 32]\n");

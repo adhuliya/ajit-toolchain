@@ -54,3 +54,6 @@ MONITOR_LLIBS = ' Tlbs Console rt PipeHandlerDebugPthreads Common uarch_debug_ut
 MONITOR_LIBPATHS = ' /usr/lib/ /usr/local/lib/ ' +  C_64_HOME + '/common/lib ' +  C_64_HOME + '/debugger/gpb/lib ' + C_64_HOME + '/debugger/spi_common/lib ' +  AHIR_LIBPATH + ' ' + FUNCTIONLIB_PATH + ' ' + DEBUG_UTILS_LIB + ' ' + DOVAL_HOME  + ' ' + ANTLR_PATH + ' ' +  ' ' +   DEBUG_UTILS_LIB + ' '  +   UART_LIB  + ' '  + DEBUGSERVER_LIB + ' ' + C_64_HOME  + '/tlbs/lib '  + ' ' + CONSOLE_LIB + ' ' + CHARSERVER_LIB
 
 env.Program('./bin/ajit_debug_monitor_mt', Split('src/ajit_debug_monitor.c src/timerRoutines.c'), CCFLAGS=' -pthread -g -DUSE_PIPE_HANDLER -DMULTICORE ' ,LINKFLAGS='-g  ', LIBS=Split(MONITOR_LLIBS), LIBPATH=Split(MONITOR_LIBPATHS))
+
+VariantDir('objUltraLite','src',duplicate=0)
+env.Program('./bin/ajit_debug_monitor_ultra_lite', Split('objUltraLite/ajit_debug_monitor_ultra_lite.c objUltraLite/timerRoutines.c'), CCFLAGS=' -pthread -g -DUSE_PIPE_HANDLER -DMULTICORE ' ,LINKFLAGS='-g  ', LIBS=Split(MONITOR_LLIBS), LIBPATH=Split(MONITOR_LIBPATHS))

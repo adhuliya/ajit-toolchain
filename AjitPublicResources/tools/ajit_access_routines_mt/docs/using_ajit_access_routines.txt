@@ -98,7 +98,7 @@
 		register so that the DCACHE and MMU are not involved
 		in the transfer.  This uses an ASI between 0x20 and 0x2f.
 	  	Eg.	
-			inline void __ajit_write_serial_control_register__(uint32_t val);
+			inline void __ajit_write_serial_control_register_via_bypass__(uint32_t val);
 
 	3.b Using a non-bypass access (goes through the MMU).
 		We access the peripheral just by a load/store.  But the
@@ -112,6 +112,13 @@
 		Access functions of the type *_via_vmap__(..) use memory mapped 
 		peripheral accesses via/load stores and assume that virtual-physical
 		map has been set up appropriately.
+
+	For compilation, if you define the macro USE_VMAP, then you can just call
+		
+		inline void __ajit_write_serial_control_register__(uint32_t val);
+
+	If USE_VMAP is defined, then the second version (3.b) is called, else the first (3.a).
+	
 
 
 4. Using the ajit_access_routines in your application

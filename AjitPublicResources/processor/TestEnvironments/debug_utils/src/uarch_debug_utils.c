@@ -556,3 +556,4 @@ uint32_t dbg_read_mode()
 	return(ret_val);
 	return(0);
 }
+
