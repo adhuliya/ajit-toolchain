@@ -16,7 +16,7 @@ int calibrateUart();
 //
 // return baudrate.
 //
-int getBaudRate();
+unsigned long getBaudRate();
 
 //return 1 on error.
 int setBaudRate(int b);
@@ -36,6 +36,8 @@ int sendByteArrayBase(uint8_t *buf, int count, int downto_flag);
 int sendByte(uint8_t b);
 int sendByteToSpecifiedUart (int fd, uint8_t b);
 
+int sendBytesOverUartInBurstMode(uint8_t *buf, int count);
+
 
 int perThreadSendBytesOverUart(int CORE_ID, int THREAD_ID, uint8_t *buf, int count);
 
@@ -48,6 +50,8 @@ int perThreadSendBytesOverUart(int CORE_ID, int THREAD_ID, uint8_t *buf, int cou
 // returned bytes are kept in *buf.
 //   buf is received in the following order  count-1, count-2 ... ,0 
 int recvBytesOverUart(uint8_t* buf,  int count, int noblock_flag);
+int recvBytesOverUartInBurstMode(uint8_t* buf,  int count, int noblock_flag);
+
 int recvBytesOverUartBase(uint8_t* buf,  int count, int noblock_flag, int downto_flag);
 uint8_t recvByte();
 uint8_t recvByteFromSpecifiedUart(int fd);

@@ -43,7 +43,7 @@ int uart_blocking_flag = 1;
 
 //#define BAUDRATE B9600
 #define BAUDRATE B115200
-int uart_baud_rate=B115200;
+unsigned long uart_baud_rate=B115200;
 
 /*
 https://en.wikibooks.org/wiki/Serial_Programming/termios
@@ -54,7 +54,7 @@ void setUartBlockingFlag(int x)
 	uart_blocking_flag = x;
 }
 
-int getBaudRate() 
+unsigned long getBaudRate() 
 {
 	return(uart_baud_rate);
 }
@@ -142,10 +142,10 @@ void initComPort(int* sfd, char* device)
 
 	int ss = cfsetospeed(&options, uart_baud_rate);           
 	if(ss != 0)
-		fprintf(stderr,"Error: invalid UART ospeed %d.\n", uart_baud_rate);
+		fprintf(stderr,"Error: invalid UART ospeed %d.\n", (int) uart_baud_rate);
 	ss = cfsetispeed(&options, uart_baud_rate);
 	if(ss != 0)
-		fprintf(stderr,"Error: invalid UART ispeed %d.\n", uart_baud_rate);
+		fprintf(stderr,"Error: invalid UART ispeed %d.\n", (int) uart_baud_rate);
 
 	if (*sfd < 0)
 	{
@@ -162,6 +162,25 @@ int sendBytesOverUart(uint8_t* buf, int count)
 {
 	return(sendByteArrayBase(buf,count,1));
 }
+
+int sendBytesOverUartInBurstMode(uint8_t* buf, int count)
+{
+	uint8_t tbuf[1024];
+	int I;
+
+	for(I = 0; I < count; I++)
+	{
+		tbuf[I] = buf[(count-1)-I];
+	}
+	
+	pthread_mutex_lock(&serial_device_mutex);
+
+	int ret_val = write(serial_device_fd, tbuf, count);
+
+	pthread_mutex_unlock(&serial_device_mutex);
+	return(ret_val);
+}
+
 
 int sendByteArrayBase(uint8_t *buf, int count, int downto_flag)
 {
@@ -282,6 +301,22 @@ int recvBytesOverUart(uint8_t* buf, int count, int noblock_flag)
 	return(recvBytesOverUartBase(buf,count,noblock_flag,1));
 }
 
+int recvBytesOverUartInBurstMode(uint8_t* buf, int count, int noblock_flag)
+{
+	uint8_t tbuf[1024];
+	pthread_mutex_lock(&serial_device_mutex);
+	int n = read(serial_device_fd, tbuf, count);
+	pthread_mutex_unlock(&serial_device_mutex);
+
+	int I;
+	for(I = 0; I < count; I++)
+	{
+		buf[(count-1)-I] = tbuf[I];
+	}
+
+	return(n);
+}
+
 int recvBytesOverUartBase(uint8_t* buf,  int count, int noblock_flag, int downto_flag)
 {
 	int ret_val = 0;
@@ -311,6 +346,10 @@ int recvBytesOverUartBase(uint8_t* buf,  int count, int noblock_flag, int downto
 							fprintf(stderr,"Info: uart: received 0x%x\n", buf[I]);
 						}
 						break;
+					}
+					else
+					{
+						usleep(10);
 					}
 				}
 			}

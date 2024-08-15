@@ -12,6 +12,9 @@ extern uint32_t global_verbose_flag;
 int dbg_load_mmap_ultra_lite(char* memoryMapFile)
 {
 	FILE * file;
+
+	FILE* log_file = fopen ("load_mmap.txt", "w");
+
 	file= fopen(memoryMapFile, "r");
 	if(!file)
 	{
@@ -64,6 +67,8 @@ int dbg_load_mmap_ultra_lite(char* memoryMapFile)
 				uint32_t read_back = dbg_read_mem_ultra_lite(current_word_address);
 				fprintf(stderr,"Info: initialized mem[0x%x] = 0x%x.\n",  current_word_address,
 										current_read_word);
+				fprintf(log_file,"mem[0x%x] = 0x%x.\n", current_word_address,
+										current_read_word);
 				if(read_back != current_read_word)
 					fprintf(stderr,"Error: read-back mem[0x%x] = 0x%x, expected 0x%x.\n",  
 										current_word_address, 
@@ -77,7 +82,7 @@ int dbg_load_mmap_ultra_lite(char* memoryMapFile)
 
 			written_word_count++;
 
-			if((written_word_count % 1024) == 0)
+			if((written_word_count % 256) == 0)
 			{
 				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
 			}
@@ -97,6 +102,7 @@ int dbg_load_mmap_ultra_lite(char* memoryMapFile)
 			\nLast address written = %x.\n",memoryMapFile, addr);
 
 	fclose(file);
+	fclose(log_file);
 	return 0;
 }
 
@@ -113,6 +119,16 @@ uint32_t dbg_go_ultra_lite()
 {
 	uint32_t cmd_val = (UL_RUN_OP << 24);
 	dbg_send_debug_command_ultra_lite( cmd_val);
+
+	// No response for "go" command.
+	return(0);
+
+}
+
+uint32_t dbg_toggle_ultra_lite()
+{
+	uint32_t cmd_val = (UL_TOGGLE_OP << 24);
+	dbg_send_debug_command_ultra_lite( cmd_val);
 	uint32_t resp = dbg_get_debug_response_ultra_lite();
 
 	return(resp);
@@ -122,7 +138,7 @@ uint32_t dbg_go_ultra_lite()
 uint32_t dbg_read_mem_ultra_lite(uint32_t addr)
 {
 	uint32_t cmd_val = (UL_READ_OP << 24);
-	cmd_val =  (cmd_val | (addr & 0x3fff)); // 18-bit address
+	cmd_val =  (cmd_val | (addr & 0x3ffff)); // 18-bit address
 
 	dbg_send_debug_command_ultra_lite( cmd_val);
 	uint32_t ret_val = dbg_get_debug_response_ultra_lite();
@@ -132,33 +148,27 @@ uint32_t dbg_read_mem_ultra_lite(uint32_t addr)
 uint32_t dbg_write_mem_ultra_lite(uint32_t addr, uint32_t data)
 {
 	uint32_t cmd_val = (UL_WRITE_OP << 24);
-	cmd_val = (cmd_val | (addr & 0x3fff));
+	cmd_val = (cmd_val | (addr & 0x3ffff));
 	dbg_send_debug_command_ultra_lite( cmd_val);
 	dbg_send_debug_command_ultra_lite( data );
-	uint32_t ret_val = dbg_get_debug_response_ultra_lite();
-	return(ret_val);
+	// uint32_t ret_val = dbg_get_debug_response_ultra_lite();
+	// return(ret_val);
+
+	// no return on writes...
+	return(0);
 }
 void dbg_send_debug_command_ultra_lite(uint32_t cmd_val)
 {
-	// UART ..
-	int n = sendBytesOverUart ((uint8_t*) &cmd_val, 4);
-	if(n != 4)
-	{
-		fprintf(stderr,"Error: dbg_send_debug_command_ultra_lite returns %d, expected 4\n", n);
-	}
+	//write_uint32("UL_DEBUG_COMMAND_TO_PROCESSOR", cmd_val);
+	sendBytesOverUartInBurstMode ((uint8_t*) &cmd_val, 4);		
+	//sendBytesOverUart ((uint8_t*) &cmd_val, 4);		
 }
 
 uint32_t dbg_get_debug_response_ultra_lite()
 {
-
-	// UART ..
-	uint32_t ret_val = 0;
-	int n = recvBytesOverUart((uint8_t*) &ret_val, 4, 0);
-
-	if(n != 4)
-	{
-		fprintf(stderr,"Error: dbg_get_debug_response_ultra_lite returns %d, expected 4\n", n);
-	}
-
+	uint32_t ret_val;
+	//ret_val = read_uint32("UL_DEBUG_RESPONSE_FROM_PROCESSOR");
+	 recvBytesOverUartInBurstMode ((uint8_t*) &ret_val, 4, 0);
+	//recvBytesOverUart ((uint8_t*) &ret_val, 4, 0);
 	return(ret_val);
 }

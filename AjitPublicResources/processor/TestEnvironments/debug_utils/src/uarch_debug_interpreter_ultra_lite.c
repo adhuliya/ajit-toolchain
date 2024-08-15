@@ -28,6 +28,7 @@ void printHelpMessageUltraLite()
 				"w rst 1		             : put cpu into reset \n"\
 				"w mem <addr> <wdata>                : mem[addr] = wdata\n"\
 				"r mem <addr>                        : ret-val=mem[addr]\n"\
+				"toggle                              : toggle led. \n"\
 				"go                                  : take processor out of reset and run\n"\
 		);
 }
@@ -132,6 +133,11 @@ int parseCommandLineUltraLite(char* lb, InterpreterCommandUltraLite* opcode,
 	{
 		*opcode = GO;
 	}
+	else if(kw[0] == 't')
+	{
+		*opcode = TOGGLE;
+	}
+
 
 	int arg_count = 1;
 
@@ -253,6 +259,10 @@ int  executeInterpreterCommandUltraLite(int nargs, InterpreterCommandUltraLite o
 		case GO:
 			fprintf(stdout,"Bringing the processor out of reset... uart will be shared by CPU!\n");
 			rval = dbg_go_ultra_lite();
+			break;
+		case TOGGLE:
+			fprintf(stdout,"Toggling the led.\n");
+			rval = dbg_toggle_ultra_lite();
 			break;
 		default:
 			fprintf(stderr,"Error: unknown opcode\n");

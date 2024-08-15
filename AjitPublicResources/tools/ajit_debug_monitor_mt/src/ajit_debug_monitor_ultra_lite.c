@@ -9,6 +9,9 @@
 #include <time.h>
 #include <pthread.h>
 #include <string.h>
+#include "pipeHandler.h"
+#include "Pipes.h"
+#include "pthreadUtils.h"
 #include "uart_interface.h"
 #include "uarch_debug_interpreter_ultra_lite.h"
 #include "uarch_debug_utils_ultra_lite.h"
@@ -52,8 +55,38 @@ void print_usage(char* app_name)
 
 int opt;
 
+void txDaemon ()
+{
+	while(1)
+	{
+		uint32_t v = read_uint32("UL_DEBUG_COMMAND_TO_PROCESSOR");
+		sendBytesOverUart ((uint8_t*) &v, 4);		
+
+		//usleep (100);
+	}
+}
+DEFINE_THREAD(txDaemon)
+
+void rxDaemon ()
+{
+	while(1)
+	{
+		uint32_t v;
+		recvBytesOverUart ((uint8_t*) &v, 4, 0);
+		write_uint32("UL_DEBUG_RESPONSE_FROM_PROCESSOR", v);
+
+		//usleep (100);
+	}
+}
+DEFINE_THREAD(rxDaemon)
+
+
 int main(int argc, char **argv)
 {
+
+	init_pipe_handler ();
+	register_pipe ("UL_DEBUG_COMMAND_TO_PROCESSOR", 4, 32, PIPE_FIFO_MODE);	
+	register_pipe ("UL_DEBUG_RESPONSE_FROM_PROCESSOR", 4, 32, PIPE_FIFO_MODE);	
 
 	int baud_rate = 115200;
 	time_t start_t, end_t, total_t;
@@ -61,13 +94,15 @@ int main(int argc, char **argv)
 	signal(SIGINT,  Handle_Ctrl_C);
 	signal(SIGTERM, Handle_Segfault);
 
-	uart_blocking_flag = 0;
+	// use the UART in blocking mode.. faster.
+	uart_blocking_flag = 1;
+
 	char* uart_device_name = NULL;
 	uart_verbose_flag = 0;
 
 	int uart_flag = 0;
 	int mode_specified = 0;
-	while ((opt = getopt(argc, argv, "hvu:bB:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvu:B:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -77,9 +112,12 @@ int main(int argc, char **argv)
 				global_verbose_flag = 1;
 				uart_verbose_flag = 1;
 				break;
+			/*
+			 * Always use blocking mode...
 			case 'b':
 				uart_blocking_flag = 1;
 				break;
+			*/
 			case 'u':
 				mode_specified = 1;
 				uart_flag = 1;
@@ -116,8 +154,17 @@ int main(int argc, char **argv)
 		}
 	}
 
+	PTHREAD_DECL(txDaemon);
+	//PTHREAD_CREATE(txDaemon);
+
+	PTHREAD_DECL(rxDaemon);
+	//PTHREAD_CREATE(rxDaemon);
+
 	startDebugInterpreterUltraLite();
 
 	return (0);
 }
+
+
+
 
