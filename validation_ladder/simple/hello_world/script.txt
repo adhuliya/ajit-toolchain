@@ -1,0 +1,3 @@
+w rst 1
+m hello_world.mmap
+w rst 0

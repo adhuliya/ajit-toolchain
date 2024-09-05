@@ -1,0 +1,3 @@
+w rst 1
+m add2.mmap
+w rst 0

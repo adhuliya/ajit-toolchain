@@ -160,15 +160,19 @@ uint32_t dbg_write_mem_ultra_lite(uint32_t addr, uint32_t data)
 void dbg_send_debug_command_ultra_lite(uint32_t cmd_val)
 {
 	//write_uint32("UL_DEBUG_COMMAND_TO_PROCESSOR", cmd_val);
-	sendBytesOverUartInBurstMode ((uint8_t*) &cmd_val, 4);		
-	//sendBytesOverUart ((uint8_t*) &cmd_val, 4);		
+	if(global_verbose_flag)
+		sendBytesOverUart ((uint8_t*) &cmd_val, 4);		
+	else
+		sendBytesOverUartInBurstMode ((uint8_t*) &cmd_val, 4);		
 }
 
 uint32_t dbg_get_debug_response_ultra_lite()
 {
 	uint32_t ret_val;
 	//ret_val = read_uint32("UL_DEBUG_RESPONSE_FROM_PROCESSOR");
-	 recvBytesOverUartInBurstMode ((uint8_t*) &ret_val, 4, 0);
-	//recvBytesOverUart ((uint8_t*) &ret_val, 4, 0);
+	if(global_verbose_flag)
+		recvBytesOverUart ((uint8_t*) &ret_val, 4, 0);
+	else
+		recvBytesOverUartInBurstMode ((uint8_t*) &ret_val, 4, 0);
 	return(ret_val);
 }

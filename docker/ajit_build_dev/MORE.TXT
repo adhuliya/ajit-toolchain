@@ -1,0 +1,16 @@
+run.sh
+	run container original script.. will start
+	container for user.
+
+run_u.sh
+	start container with forced user id.
+
+run_with_mounts_and_uarts.sh
+	start container with mounted directories and
+	exposed uarts.
+
+run_with_mount.sh
+	start container with mounts.
+
+run_with_uarts.sh
+	start container with uarts.

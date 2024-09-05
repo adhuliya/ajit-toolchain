@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 
 	int uart_flag = 0;
 	int mode_specified = 0;
-	while ((opt = getopt(argc, argv, "hvu:B:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvu:B:b")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -112,12 +112,9 @@ int main(int argc, char **argv)
 				global_verbose_flag = 1;
 				uart_verbose_flag = 1;
 				break;
-			/*
-			 * Always use blocking mode...
 			case 'b':
-				uart_blocking_flag = 1;
+				uart_blocking_flag = 0;
 				break;
-			*/
 			case 'u':
 				mode_specified = 1;
 				uart_flag = 1;
