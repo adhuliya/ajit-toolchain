@@ -4,6 +4,8 @@
 void ajit_init () 
 {
 	__ajit_serial_configure__ (1,0,0);
+	__ajit_serial_set_baudrate__ (115200, CLK_FREQUENCY);
+	__ajit_serial_set_uart_reset__ (0);
 	__ajit_serial_puts__ ("\nHiFromAjit\n\n", 13);
 }
 

@@ -16,6 +16,7 @@
 #include "pthreadUtils.h"
 #include "Pipes.h"
 #include "pipeHandler.h"
+#include "Ancillary.h"
 #include "Ajit_Hardware_Configuration.h"
 #include "RequestTypeValues.h"
 #include "CacheInterface.h"
@@ -29,18 +30,6 @@ MUTEX_DECL(__trace_mutex__);
 FILE* cache_trace_file = NULL;
 FILE* getCacheTraceFile(FILE* fp) {return(cache_trace_file);}
 
-
-
-int calculate_log2(int number_of_lines)
-{
-	int ret_val = 0;
-	while(number_of_lines > 1)
-	{
-		ret_val++;
-		number_of_lines = number_of_lines/2;
-	}
-	return(ret_val);
-}
 
 void lock_cache (WriteThroughAllocateCache* c)
 {
@@ -58,25 +47,6 @@ void unlock_cache (WriteThroughAllocateCache* c)
 //send a request at a time
 pthread_mutex_t mutex_mmu_request_lock = PTHREAD_MUTEX_INITIALIZER;
 
-uint64_t insertBytes (uint64_t x, uint8_t byte_mask, uint64_t wval)
-{
-	int I;
-	uint64_t bmask = 0xff;
-	uint64_t ret_val = 0;
-	for (I=0; I < 8; I++)
-	{
-		if ((byte_mask >> I) & 0x1) 
-		{
-			ret_val = ret_val | (bmask & wval);
-		}
-		else
-		{
-			ret_val = ret_val | (bmask & x);
-		}
-		bmask = bmask << 8;
-	}
-	return(ret_val);
-}
 
 
 void writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint8_t context, uint32_t va, uint8_t byte_mask)
@@ -87,7 +57,7 @@ void writeIntoLine(WriteThroughAllocateCache* c, uint64_t write_data, uint8_t co
 	int offset = cacheLineOffset (va);
 
 	uint64_t vwal = c->cache_lines[I].cache_line[offset];
-	vwal = insertBytes (vwal,byte_mask, write_data);
+	vwal = insert_bytes_into_dword  (vwal,byte_mask, write_data);
 	c->cache_lines[I].cache_line[offset] = vwal;
 }
 

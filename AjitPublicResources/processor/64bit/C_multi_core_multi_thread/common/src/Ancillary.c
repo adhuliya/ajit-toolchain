@@ -9,11 +9,9 @@
 #include <stdint.h>
 #include <math.h>
 #include <string.h>
-#ifdef SW 
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#endif
 #include <pthread.h>
 #include "pthreadUtils.h"
 #include "Ancillary.h"
@@ -442,3 +440,35 @@ int isDivPresent  (int core_id, int thread_id)
 {
 	return(!core_descriptions[core_id % MAX_NCORES].thread_descriptions[thread_id % MAX_NTHREADS_PER_CORE].div_not_present);
 }
+
+int calculate_log2(int number_of_lines)
+{
+	int ret_val = 0;
+	while(number_of_lines > 1)
+	{
+		ret_val++;
+		number_of_lines = number_of_lines/2;
+	}
+	return(ret_val);
+}
+
+uint64_t insert_bytes_into_dword (uint64_t x, uint8_t byte_mask, uint64_t wval)
+{
+	int I;
+	uint64_t bmask = 0xff;
+	uint64_t ret_val = 0;
+	for (I=0; I < 8; I++)
+	{
+		if ((byte_mask >> I) & 0x1) 
+		{
+			ret_val = ret_val | (bmask & wval);
+		}
+		else
+		{
+			ret_val = ret_val | (bmask & x);
+		}
+		bmask = bmask << 8;
+	}
+	return(ret_val);
+}
+

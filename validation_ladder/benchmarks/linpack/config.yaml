@@ -79,13 +79,16 @@ Software:
     # ALL < TRACE < DEBUG < INFO < ERROR < CRITICAL < NONE
     LogLevel: DEBUG
     OptimizationLevel: 3 # i.e. O2 (Accepted values: 0, 1, 2)
+    EnableSerial: No
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888  # default: 8888
     BuildArgs: -D CORTOS_ENV
                -D OTHER_ENV
                -D ANOTHER_ENV
                -F ffunction-sections
+               -D CLK_FREQUENCY=80000000
                #
+
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:

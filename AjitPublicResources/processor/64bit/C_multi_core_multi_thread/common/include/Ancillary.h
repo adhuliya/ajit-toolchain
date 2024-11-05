@@ -99,5 +99,7 @@ double doubleSqrt(double a);
 // remainder
 uint8_t rem8(uint8_t Q, uint8_t D);
 
+int calculate_log2(int number_of_lines);
+uint64_t insert_bytes_into_dword (uint64_t oval, uint8_t bmask, uint64_t wval);
 
 #endif

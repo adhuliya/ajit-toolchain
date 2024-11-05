@@ -9,4 +9,4 @@ INCLUDES="-I /usr/include/x86_64-linux-gnu/gnu -I ../src/ -I ../ -I $AAR/include
 # -I /usr/include " see if really needed
 OPTS=" -F fschedule-insns -F fschedule-insns2 -F frename-registers "
 makeLinkerScript.py -t $TEXTBASE -d $DATABASE -o customLinkerScript.lnk
-compileToSparcUclibc.py -o 3 -U $SRCS $INCLUDES -N ${MAIN} $OPTS -L customLinkerScript.lnk $DEFS
+compileToSparcUclibc.py -o 3 -U $SRCS $INCLUDES -N ${MAIN} $OPTS -L customLinkerScript.lnk $DEFS -F "D CLK_FREQUENCY=80000000"

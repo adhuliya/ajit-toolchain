@@ -135,6 +135,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -N <icache-size-in-lines>, optional  (default=512)\n");
 	fprintf(stderr, "   -A <dcache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -Q <icache-associativity-in-lines>, optional  (default=1)\n");
+	fprintf(stderr, "   -L <l2-cache-size-in-lines>, optional  (default=0, 8-way set associative)\n");
 	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	// if you are simulating with limited memory, you can use the -q option to specify memory size.
@@ -216,7 +217,7 @@ int   logger_server_port_number;
 int   global_verbose_flag = 0;
 char* bridge_targets_file = NULL;
 int   use_instruction_buffer = 0;
-
+int   l2_cache_size_in_lines = 0;
 
 
 int main(int argc, char **argv)
@@ -279,7 +280,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:")) != -1) {
+	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -309,6 +310,10 @@ int main(int argc, char **argv)
 			case 'Q':
 				icache_associativity = atoi(optarg);
 				fprintf(stderr,"Info: icache associativity=%d.\n", icache_associativity);
+				break;
+			case 'L':
+				l2_cache_size_in_lines = atoi(optarg);
+				fprintf(stderr,"Info: L2 cache size in lines=%d.\n", l2_cache_size_in_lines);
 				break;
 			case 'e':
 				cache_trace_file_name = strdup(optarg);
@@ -458,6 +463,13 @@ int main(int argc, char **argv)
 	fprintf(stderr,"Info: branch-predictor table size=%d.\n", bp_table_size);
 	fprintf(stderr,"Info: dcache-number-of-lines=0x%x.\n", dcache_number_of_lines);
 	fprintf(stderr,"Info: icache-number-of-lines=0x%x.\n", icache_number_of_lines);
+
+	// l2 cache.
+	if(l2_cache_size_in_lines > 0)
+	{
+		bridgeMakeL2Cache (l2_cache_size_in_lines, 8);
+		fprintf(stderr,"Info: l2_cache-number-of-lines=0x%x, associativity 8.\n", l2_cache_size_in_lines);
+	}
 
 	// initialize the bridge targets: that is, tell the bridge how to route
 	// the memory accesses.
@@ -741,6 +753,8 @@ int main(int argc, char **argv)
 		printCacheStatistics (core_state_vector[COREID]->dcache);
 	}
 	printRlutStatisticsInManager ();
+	bridgePrintL2Stats ();
+
 	return (main_ret_val);
 }
 

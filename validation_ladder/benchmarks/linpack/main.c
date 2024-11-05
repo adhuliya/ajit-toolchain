@@ -42,8 +42,12 @@ int main ( )
     N is the problem size.
 */
 {
-# define N  256
+# define N  64
 # define LDA ( N + 1 )
+
+	__ajit_serial_configure__(1,0,0);
+	__ajit_serial_set_baudrate__ (115200, CLK_FREQUENCY);
+	__ajit_serial_set_uart_reset__ (0);
 
   double *a;
   double a_max;

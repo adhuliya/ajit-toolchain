@@ -77,6 +77,8 @@ void bridge_cpu_core (int cpu_id,
 void register_bridge_pipes (int number_of_cpus);
 void start_bridge_daemons (int number_of_cpus);
 
+void bridgeMakeL2Cache (int cache_size_in_lines, int associativity);
+void bridgePrintL2Stats ();
 
 
 #endif

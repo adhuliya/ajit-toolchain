@@ -19,6 +19,7 @@
 #include "memory.h"
 #include "tlbs.h"
 #include "rlut.h"
+#include "L2CacheInterface.h"
 				
 
 
@@ -40,6 +41,19 @@ int global_lock_owner_thread = 0;
 extern int global_verbose_flag;
 
 setAssociativeMemory** snoop_filters = NULL;
+WriteBackCache* l2_cache = NULL;
+
+void bridgeMakeL2Cache (int cache_size_in_lines, int associativity)
+{
+	l2_cache = makeWriteBackCache (0, cache_size_in_lines, associativity);
+}
+
+void bridgePrintL2Stats ()
+{
+	if(l2_cache != NULL)
+		printWriteBackCacheStatistics (l2_cache);
+}
+
 
 
 void bridgeSetNcores(uint32_t ncores)
@@ -194,7 +208,10 @@ int sysMemBusRequest (int core_id,
 				updateAndLookupSnoopFilterCache(core_id, 1,0,0, line_addr);
 			}
 
-			*rdata = getDoubleWordInMemory(addr);
+			if(l2_cache == NULL)
+				*rdata = getDoubleWordInMemory(addr);
+			else
+				*rdata = doWriteBackCacheAccess (l2_cache, 1, 0xff, addr, 0x0);
 
 			if(global_verbose_flag) {
 				fprintf(stderr,"0x%" PRIx64 " = MEM[0x%x] CPU=(%d,%d) lock-flag=%d, lock-state=%d lock-holder=%d\n", *rdata, addr, core_id, thread_id, set_mem_access_lock, global_lock_flag, global_lock_owner_core);
@@ -203,12 +220,20 @@ int sysMemBusRequest (int core_id,
 		}
 		else if(request_type == REQUEST_TYPE_WRITE)
 		{
-			setDoubleWordInMemory(addr, data64, byte_mask);
+			if(l2_cache == NULL)
+			{
+				setDoubleWordInMemory(addr, data64, byte_mask);
 
-			//send back the written doubleword so that
-			//a copy can be maintained in 
-			//our write-allocate cache if necessary
-			*rdata = getDoubleWordInMemory(addr);
+				//send back the written doubleword so that
+				//a copy can be maintained in 
+				//our write-allocate cache if necessary
+				*rdata = getDoubleWordInMemory(addr);
+			}
+			else 
+			{
+				*rdata = doWriteBackCacheAccess (l2_cache, 0, byte_mask, addr, data64);
+			}
+
 
 			if(global_verbose_flag) {
 				fprintf(stderr,"MEM[0x%x] = 0x%" PRIx64 " bmask=0x%x CPU=(%d,%d) lock-flag=%d lock-state==%d lock-holder=%d\n", addr,data64,byte_mask, core_id, thread_id, set_mem_access_lock, global_lock_flag, global_lock_owner_core);

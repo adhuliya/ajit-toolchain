@@ -12,6 +12,7 @@ env.Append(CPPPATH = AJIT_C_REF_MODEL + "/memory/include:")
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/devices/include:")
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/tlbs/include:")
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/rlut/include:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/l2_cache/include:")
 
 #AHIR-related
 PIPE_HANDLER_INCLUDE=AHIR_RELEASE + "/include"
