@@ -56,3 +56,6 @@ void    setDoubleWordInMemory(uint32_t address, uint64_t double_word, uint8_t by
 void accessMemU64 (uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata, uint64_t* rdata);
 void setMemoryTraceFile(FILE* fp);
 
+// for use in encryption...
+void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l);
+void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l);

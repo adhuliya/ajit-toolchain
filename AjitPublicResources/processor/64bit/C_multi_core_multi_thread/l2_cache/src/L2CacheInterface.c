@@ -14,6 +14,8 @@
 #include "memory.h"
 
 extern int global_verbose_flag;
+extern int use_encrypted_memory;
+
 FILE* l2_cache_trace_file = NULL;
 
 void lockWriteBackCache (WriteBackCache* c)
@@ -107,9 +109,38 @@ void writeCacheLineBackToMemory (WriteBackCache* c, uint64_t pa)
 	{
 		if(c->cache_lines[line_index].dirty_dword_bits[W]) 
 		{
-			// write to memory.
-			setDoubleWordInMemory(pa_base + (W << 3), c->cache_lines[line_index].cache_line[W], 0xff);
-			c->number_of_memory_writes++;
+			if(use_encrypted_memory)
+			{
+				int write_quad_word = 0;
+				if(W & 0x1)
+				{
+					// even dword was not dirty, but odd dword is...
+					if(!c->cache_lines[line_index].dirty_dword_bits[W-1])
+					{
+						// encrypt and write pair W-1,W
+						setQuadWordInMemory 
+							(pa_base + ((W-1) << 3),
+								c->cache_lines[line_index].cache_line[W-1],
+								c->cache_lines[line_index].cache_line[W]);
+							
+					}
+				}
+				else
+				{
+					// even dword was dirty
+					// encrypt and write pair W,W+1
+					setQuadWordInMemory 
+						(pa_base + (W << 3),
+						 c->cache_lines[line_index].cache_line[W],
+						 c->cache_lines[line_index].cache_line[W+1]);
+				}
+			}
+			else
+			{
+				// write to memory.
+				setDoubleWordInMemory(pa_base + (W << 3), c->cache_lines[line_index].cache_line[W], 0xff);
+				c->number_of_memory_writes++;
+			}
 		}
 	}
 }
@@ -128,10 +159,27 @@ void readWriteBackCacheLineFromMemory    (WriteBackCache* c, uint64_t pa)
 	int W;
 	for (W = 0; W < L2_DWORDS_PER_CACHE_LINE; W++)
 	{
-		uint64_t dw = getDoubleWordInMemory(pa_base + (W << 3));
-		c->cache_lines[line_index].cache_line[W] = dw;
-		c->cache_lines[line_index].dirty_dword_bits[W] = 0;
-		c->number_of_memory_reads++;
+		if(use_encrypted_memory)
+		{
+			if((W & 0x1) == 0)
+			{
+				// If it is an even dword...
+
+				uint64_t dw0, dw1;
+				getQuadWordInMemory (pa_base + (W  << 3), &dw0, &dw1);
+				c->cache_lines[line_index].cache_line[W] = dw0;
+				c->cache_lines[line_index].cache_line[W+1] = dw1;
+				c->cache_lines[line_index].dirty_dword_bits[W] = 0;
+				c->cache_lines[line_index].dirty_dword_bits[W+1] = 0;
+			}
+		}
+		else
+		{
+			uint64_t dw = getDoubleWordInMemory(pa_base + (W << 3));
+			c->cache_lines[line_index].cache_line[W] = dw;
+			c->cache_lines[line_index].dirty_dword_bits[W] = 0;
+			c->number_of_memory_reads++;
+		}
 	}
 }
 

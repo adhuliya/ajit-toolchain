@@ -12,10 +12,10 @@
 #include <pthread.h>
 #include "pthreadUtils.h"
 
-#ifdef SW
-	#include <stdio.h>
-#endif
+#include <stdio.h>
+#include "aes_block.h"
 
+extern EncryptDecryptBlock* aes_ed_block;
 
 
 #define LOG_PAGE_SIZE 14
@@ -367,4 +367,54 @@ void     vGetDoubleWordInMemory(uint32_t address, uint64_t* rd)
 {
 	*rd = getDoubleWordInMemory(address);
 }
+
+void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
+{
+	address = (address & (~0xf));
+
+	uint64_t d0 = getDoubleWordInMemory (address);
+	uint64_t d1 = getDoubleWordInMemory (address + 8);
+	if(aes_ed_block != NULL)
+	{
+		// Note: decrypt if aes block is enabled..
+		decryptBlock(aes_ed_block,
+				d0, d1, 
+				address, 
+				data_h, 
+				data_l);
+	}
+	else
+	{
+		*data_h = d0;
+		*data_l = d1;
+	}
+}
+
+void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
+{
+	// TODO: write 128-bits into memory.
+	address = (address & (~0xf));
+	if(aes_ed_block != NULL)
+	{
+		//       Note: aes will be used to encrypt if enabled.
+
+		uint64_t e_data_h;
+		uint64_t e_data_l;
+
+		encryptBlock (aes_ed_block, 
+				data_h, data_l,
+				address,
+				&e_data_h,
+				&e_data_l);
+
+		setDoubleWordInMemory (address, e_data_h, 0xff);
+		setDoubleWordInMemory (address + 8, e_data_l, 0xff);
+	}
+	else
+	{
+		setDoubleWordInMemory (address, data_h, 0xff);
+		setDoubleWordInMemory (address + 8, data_l, 0xff);
+	}
+}
+
 

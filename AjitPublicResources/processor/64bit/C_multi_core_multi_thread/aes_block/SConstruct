@@ -1,7 +1,7 @@
 import os
 
 env = Environment(ENV = {'PATH' : os.environ['PATH']})
-COMPILATION_FLAGS = ' -g -DNDEBUG_PRINT -DENCRYPT'
+COMPILATION_FLAGS = ' -g -DDEBUG_PRINT'
 
 AHIR_RELEASE=os.environ['AHIR_RELEASE']
 AJIT_HOME=os.environ['AJIT_PROJECT_HOME']
@@ -11,7 +11,6 @@ env.Append(CPPPATH = "include/:./:" + AJIT_C_REF_MODEL + "/common/include:" + AJ
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/rlut/include:")
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/tlbs/include:")
 env.Append(CPPPATH = AJIT_C_REF_MODEL + "/cache/include:")
-env.Append(CPPPATH = AJIT_C_REF_MODEL + "/aes_block/include:")
 
 
 
@@ -24,9 +23,4 @@ env.Append(CPPPATH = PIPE_HANDLER_INCLUDE + ":" + PTHREAD_UTILS + ":"  + "./incl
 
 
 # create a library for the cache :
-env.Library('./lib/libl2Cache', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
-
-LIBS=['l2Cache', 'pthread',  'Common', 'Memory', 'aes_block', 'm']
-LIBPATH=Split( ' ./lib ../common/lib ../memory/lib ../aes_block/lib ')
-env.Append(CPPPATH = AJIT_C_REF_MODEL + "/aes_block/include:")
-env.Program('./bin/tb', Glob('utils/*.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);
+env.Library('./lib/libaes_block', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)

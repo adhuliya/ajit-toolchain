@@ -29,6 +29,7 @@ typedef struct __WriteBackCache__ {
 
 	uint32_t id;
 
+
 	// statistics!
 	uint64_t number_of_accesses;
 
@@ -63,6 +64,10 @@ typedef struct __WriteBackCache__ {
 WriteBackCache* makeWriteBackCache (uint32_t id, int number_of_lines, int set_size);
 void initWriteBackCache (WriteBackCache* c);
 void clearWriteBackCache (WriteBackCache* c);
+
+void setupAndEnableAES (FILE* fp, WriteBackCache* c);
+			
+			
 
 // Write the specified line back to memory... if it is valid..
 // Note: only dirty dwords are written back...  Note that the

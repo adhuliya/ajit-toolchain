@@ -11,9 +11,17 @@
 #include "L2CacheInterface.h"
 #include "Ancillary.h"
 #include "ASI_values.h"
+#include "aes_block.h"
 #include "memory.h"
 
 int global_verbose_flag = 1;
+
+#ifdef ENCRYPT
+int use_encrypted_memory = 1;
+extern EncryptDecryptBlock* aes_ed_block;
+#else
+int use_encrypted_memory = 0;
+#endif
 
 // random addresses for march.
 uint64_t r_history [1024];
@@ -107,6 +115,23 @@ int main(int argc, char* argv [])
 	allocateMemory (24);
 	WriteBackCache* c = makeWriteBackCache (0, 256, 8);
 
+#ifdef ENCRYPT
+	FILE* e_fp;
+	e_fp = fopen ("aes_keys.txt", "r");
+	if(e_fp == NULL)
+	{
+		fprintf(stderr,"Error: could not open aes_keys.txt\n");
+		return(1);
+	}
+	int status = makeEncryptDecryptBlock(e_fp);
+	fclose (e_fp);
+	if(status)
+	{
+		fprintf(stderr,"Error: could not make encrypt block.\n");
+		use_encrypted_memory = 0;
+		return(1);
+	}
+#endif
 
 	uint64_t addr, rdata;
 	write_march(c, n_dwords);

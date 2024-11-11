@@ -1,3 +1,4 @@
+.section .text.ajitstart
 .global main
 main:
 _start:

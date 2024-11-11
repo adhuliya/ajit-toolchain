@@ -136,6 +136,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -A <dcache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -Q <icache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -L <l2-cache-size-in-lines>, optional  (default=0, 8-way set associative)\n");
+	fprintf(stderr, "   -E <key-file>, optional  (key-file consists of 16 bytes 0x.. 0x.. \n");
 	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	// if you are simulating with limited memory, you can use the -q option to specify memory size.
@@ -216,8 +217,11 @@ char* logger_server_ip_address;
 int   logger_server_port_number;
 int   global_verbose_flag = 0;
 char* bridge_targets_file = NULL;
+char* key_file_name = NULL;
+FILE* key_file  = NULL;
 int   use_instruction_buffer = 0;
 int   l2_cache_size_in_lines = 0;
+int use_encrypted_memory  = 0;
 
 
 int main(int argc, char **argv)
@@ -280,7 +284,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:")) != -1) {
+	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:E:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -314,6 +318,11 @@ int main(int argc, char **argv)
 			case 'L':
 				l2_cache_size_in_lines = atoi(optarg);
 				fprintf(stderr,"Info: L2 cache size in lines=%d.\n", l2_cache_size_in_lines);
+				break;
+			case 'E':
+				key_file_name = strdup(optarg);
+				use_encrypted_memory = 1;
+				fprintf(stderr,"Info: Encrypted memory with key-file=%s.\n", key_file_name);
 				break;
 			case 'e':
 				cache_trace_file_name = strdup(optarg);
@@ -418,6 +427,34 @@ int main(int argc, char **argv)
 			default: 
 				fprintf(stderr,"Error: unknown option %c\n", opt);
 				break;
+		}
+	}
+
+	if(use_encrypted_memory)
+	// for secure processor.
+	{
+		if(l2_cache_size_in_lines > 0) 
+		{
+			key_file = fopen (key_file_name, "r");	
+			if(key_file != NULL)
+			{
+				int not_ok  = makeEncryptDecryptBlock (key_file);
+				if(not_ok)
+				{
+					fprintf(stderr,"Error: could not make encrypt-decrypt block with key-file %s.\n", key_file_name);
+					return(1);
+				}	
+			}
+			else
+			{
+				fprintf(stderr,"Error: could not open key file (-E option) %s\n", key_file_name);
+				return(1);
+			}
+		}
+		else
+		{
+			fprintf(stderr,"Error: encryption block can be enabled only l2 cache is present.\n");
+			return(1);
 		}
 	}
 
