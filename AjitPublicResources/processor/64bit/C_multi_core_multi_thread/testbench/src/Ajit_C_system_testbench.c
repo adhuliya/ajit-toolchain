@@ -35,6 +35,7 @@
 #include "CacheInterface.h"
 #include "Mmu.h"
 #include "memory.h"
+#include "aes_block.h"
 #include "Timer.h"
 #include "InterruptControllerMT.h"
 #include "Serial.h"
@@ -136,7 +137,8 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -A <dcache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -Q <icache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -L <l2-cache-size-in-lines>, optional  (default=0, 8-way set associative)\n");
-	fprintf(stderr, "   -E <key-file>, optional  (key-file consists of 16 bytes 0x.. 0x.. \n");
+	fprintf(stderr, "   -E <key-file>, optional  (key-file consists of 16 bytes 0x.. 0x.. for AES key \n");
+	fprintf(stderr, "               and 4 more bytes for address mask). \n");
 	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	// if you are simulating with limited memory, you can use the -q option to specify memory size.

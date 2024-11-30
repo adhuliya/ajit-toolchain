@@ -48,6 +48,8 @@ void setupEncryptDecryptBlock (EncryptDecryptBlock *ed,
 	ed->aes_key_h = aes_key_h;
 	ed->aes_key_l = aes_key_l;
 	ed->address_mask - address_mask;
+
+	// TODO: generate the 10 round keys.
 }
 
 					

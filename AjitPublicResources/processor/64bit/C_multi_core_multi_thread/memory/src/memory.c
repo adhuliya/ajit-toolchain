@@ -392,7 +392,6 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 
 void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
 {
-	// TODO: write 128-bits into memory.
 	address = (address & (~0xf));
 	if(aes_ed_block != NULL)
 	{
