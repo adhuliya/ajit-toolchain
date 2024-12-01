@@ -372,6 +372,11 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 {
 	address = (address & (~0xf));
 
+	//
+	// Call the swizzler here, so that 
+	// The swizzler should return d0, d1.
+	// (the two reads happen inside the swizzler)
+	//
 	uint64_t d0 = getDoubleWordInMemory (address);
 	uint64_t d1 = getDoubleWordInMemory (address + 8);
 	if(aes_ed_block != NULL)
@@ -379,7 +384,7 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 		// Note: decrypt if aes block is enabled..
 		decryptBlock(aes_ed_block,
 				d0, d1, 
-				address, 
+				address,  // root address, not swizzled address!!
 				data_h, 
 				data_l);
 	}
@@ -405,6 +410,11 @@ void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
 				address,
 				&e_data_h,
 				&e_data_l);
+
+		//
+		// call the swizzler here, it will rearrange the
+		// addresses.
+		//
 
 		setDoubleWordInMemory (address, e_data_h, 0xff);
 		setDoubleWordInMemory (address + 8, e_data_l, 0xff);
