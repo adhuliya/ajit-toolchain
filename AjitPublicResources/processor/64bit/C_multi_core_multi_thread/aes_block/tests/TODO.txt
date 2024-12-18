@@ -1,0 +1,4 @@
+Build a test application of the AES functionality
+and check the benchmarks.
+
+Add the compile script

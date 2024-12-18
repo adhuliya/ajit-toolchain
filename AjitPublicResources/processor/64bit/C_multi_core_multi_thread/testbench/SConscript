@@ -21,6 +21,7 @@ env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/rlut/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/tlbs/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/l2_cache/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/aes_block/include:")
+env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/swizzler/include:")
 env.Append(CPPPATH = AHIR_INCLUDE + ":")
 
 #AHIR-related

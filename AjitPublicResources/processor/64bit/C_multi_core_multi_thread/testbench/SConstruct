@@ -21,6 +21,7 @@ env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/rlut/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/tlbs/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/l2_cache/include:")
 env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/aes_block/include:")
+env.Append(CPPPATH =  AJIT_64_C_REF_MODEL + "/swizzler/include:")
 env.Append(CPPPATH = AHIR_INCLUDE + ":")
 
 #AHIR-related
@@ -60,8 +61,8 @@ env.Append(CPPPATH = C_COMMON_INCLUDE + ":")
 
 
 #ajit_C_system_model executable
-LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'l2Cache', 'aes_block', 'Rlut', 'Mmu', 'Tlbs', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'l2Cache', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors']
+LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'l2Cache', 'aes_block', 'swizzler',  'Rlut', 'Mmu', 'Tlbs', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'l2Cache', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors', 'swizzler' ]
 
-LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../aes_block/lib  ../l2_cache/lib ../rlut/lib ../mmu/lib ../tlbs/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH +  ' ' +  PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH + " " + HALFPREC_AA_LIBPATH)
+LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../aes_block/lib ../swizzler/lib  ../l2_cache/lib ../rlut/lib ../mmu/lib ../tlbs/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH +  ' ' +  PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH + " " + HALFPREC_AA_LIBPATH)
 
 env.Program('./bin/ajit_C_system_model', './src/Ajit_C_system_testbench.c', CCFLAGS=COMPILATION_FLAGS, LINKFLAGS='-g  ', LIBS=LIBS, LIBPATH=LIBPATH)

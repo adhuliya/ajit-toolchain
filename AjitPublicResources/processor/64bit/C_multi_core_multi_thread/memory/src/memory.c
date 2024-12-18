@@ -14,8 +14,10 @@
 
 #include <stdio.h>
 #include "aes_block.h"
+#include "swizzler.h" 
 
 extern EncryptDecryptBlock* aes_ed_block;
+extern SwizzlerRecord* Sr; 
 
 
 #define LOG_PAGE_SIZE 14
@@ -372,13 +374,21 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 {
 	address = (address & (~0xf));
 
+	uint64_t d0, d1;
 	//
-	// Call the swizzler here, so that 
-	// The swizzler should return d0, d1.
-	// (the two reads happen inside the swizzler)
+	// Swizzle first, then decrypt
 	//
-	uint64_t d0 = getDoubleWordInMemory (address);
-	uint64_t d1 = getDoubleWordInMemory (address + 8);
+	if(Sr != NULL)
+	{
+		// data_h and data_l will be modified in place.
+		processAddress (Sr, 1, (uint64_t)address, &d0, &d1);	
+	}
+	else
+	{
+		d0 = getDoubleWordInMemory (address);
+		d1 = getDoubleWordInMemory (address + 8);
+	}
+
 	if(aes_ed_block != NULL)
 	{
 		// Note: decrypt if aes block is enabled..
@@ -398,6 +408,10 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
 {
 	address = (address & (~0xf));
+
+	//////////////////////////////////////////////
+	// First encrypt, then swizzle.
+	//////////////////////////////////////////////
 	if(aes_ed_block != NULL)
 	{
 		//       Note: aes will be used to encrypt if enabled.
@@ -415,14 +429,27 @@ void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
 		// call the swizzler here, it will rearrange the
 		// addresses.
 		//
-
-		setDoubleWordInMemory (address, e_data_h, 0xff);
-		setDoubleWordInMemory (address + 8, e_data_l, 0xff);
+		if(Sr != NULL)
+		{
+			processAddress (Sr, 0, (uint64_t)address, &e_data_h, &e_data_l);
+		}
+		else
+		{
+			setDoubleWordInMemory (address, e_data_h, 0xff);
+			setDoubleWordInMemory (address + 8, e_data_l, 0xff);
+		}
 	}
 	else
 	{
-		setDoubleWordInMemory (address, data_h, 0xff);
-		setDoubleWordInMemory (address + 8, data_l, 0xff);
+		if(Sr != NULL)
+		{
+			processAddress (Sr, 0, (uint64_t)address, &data_h, &data_l);
+		}
+		else
+		{
+			setDoubleWordInMemory (address, data_h, 0xff);
+			setDoubleWordInMemory (address + 8, data_l, 0xff);
+		}
 	}
 }
 

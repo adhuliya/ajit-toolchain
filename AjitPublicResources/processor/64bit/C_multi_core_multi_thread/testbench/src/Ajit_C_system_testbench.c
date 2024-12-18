@@ -36,6 +36,7 @@
 #include "Mmu.h"
 #include "memory.h"
 #include "aes_block.h"
+#include "swizzler.h"
 #include "Timer.h"
 #include "InterruptControllerMT.h"
 #include "Serial.h"
@@ -138,7 +139,8 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -Q <icache-associativity-in-lines>, optional  (default=1)\n");
 	fprintf(stderr, "   -L <l2-cache-size-in-lines>, optional  (default=0, 8-way set associative)\n");
 	fprintf(stderr, "   -E <key-file>, optional  (key-file consists of 16 bytes 0x.. 0x.. for AES key \n");
-	fprintf(stderr, "               and 4 more bytes for address mask). \n");
+	fprintf(stderr, "               and 4 more bytes for the address hashing seed). \n");
+	fprintf(stderr, "   -W <swizzler-config-file> \n");
 	// describe the memory and peripheral address ranges etc...
 	fprintf(stderr, "   -B <bridge-target-configuration optional, sets up memory map at bridge\n");
 	// if you are simulating with limited memory, you can use the -q option to specify memory size.
@@ -224,7 +226,9 @@ FILE* key_file  = NULL;
 int   use_instruction_buffer = 0;
 int   l2_cache_size_in_lines = 0;
 int use_encrypted_memory  = 0;
-
+char* swizzler_config_file_name = NULL;
+int use_swizzler  = 0;
+SwizzlerRecord* Sr = NULL;
 
 int main(int argc, char **argv)
 {
@@ -325,6 +329,12 @@ int main(int argc, char **argv)
 				key_file_name = strdup(optarg);
 				use_encrypted_memory = 1;
 				fprintf(stderr,"Info: Encrypted memory with key-file=%s.\n", key_file_name);
+				break;
+			case 'W':
+				swizzler_config_file_name = strdup (optarg);
+				use_swizzler = 1;
+				fprintf(stderr,"Info: Enabled swizzler with config file=%s.\n", 
+							swizzler_config_file_name);
 				break;
 			case 'e':
 				cache_trace_file_name = strdup(optarg);
@@ -458,6 +468,14 @@ int main(int argc, char **argv)
 			fprintf(stderr,"Error: encryption block can be enabled only l2 cache is present.\n");
 			return(1);
 		}
+	}
+
+	if(use_swizzler)
+	{
+		Sr = (SwizzlerRecord*) malloc (sizeof(SwizzlerRecord));
+
+		// TODO: add config file!
+		initSwizzler(Sr);
 	}
 
 	if(cache_trace_file_name != NULL)
