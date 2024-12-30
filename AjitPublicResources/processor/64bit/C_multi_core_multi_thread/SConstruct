@@ -36,5 +36,6 @@ SConscript(['half_precision_float/SConscript'])
 SConscript(['tlbs/SConscript'])
 SConscript(['l2_cache/SConscript'])
 SConscript(['aes_block/SConscript'])
+SConscript(['swizzler/SConscript'])
 SConscript(['testbench/SConscript'])
 
