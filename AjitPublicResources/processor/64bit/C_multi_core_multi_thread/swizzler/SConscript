@@ -12,5 +12,5 @@ LIBS=['swizzler', 'Memory', 'aes_block', 'm']
 LIBPATH=['./lib', AJIT_C_REF_MODEL + '/memory/lib', AJIT_C_REF_MODEL + '/aes_block/lib' ]
 
 # create a library for the cache :
-env.Library('./lib/libswizzler', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
-env.Program ('./bin/tb', Glob('utils/tb.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);
+env.Library('./lib/libswizzler', Glob('src/swizzler.c'), CCFLAGS=COMPILATION_FLAGS)
+#env.Program ('./bin/tb', Glob('utils/tb.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);
