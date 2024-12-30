@@ -1,0 +1,16 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS = ' -g -DDEBUG_PRINT'
+AJIT_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
+
+
+env.Append(CPPPATH = "include/:./:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/memory/include/:")
+
+LIBS=['swizzler', 'Memory', 'aes_block', 'm']
+LIBPATH=['./lib', AJIT_C_REF_MODEL + '/memory/lib', AJIT_C_REF_MODEL + '/aes_block/lib' ]
+
+# create a library for the cache :
+env.Library('./lib/libswizzler', Glob('src/*.c'), CCFLAGS=COMPILATION_FLAGS)
+env.Program ('./bin/tb', Glob('utils/tb.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);
