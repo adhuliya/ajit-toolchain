@@ -1,0 +1,59 @@
+		Specification
+		
+		mmap_encrypt
+
+
+1. Synopsys
+
+	mmap_encrypt -s <hash-seed> -k <64-bit-top-half-of-key>  -k <64-bit-bottom-half-of-key> [-d/-e]   
+				-i <input-mmap> -o <output-mmap> [-n <max-number-of-bytes>]
+	Given a set of encryption keys (AES), encrypt a memory	
+	map file and produce an encrypted memory file, or decrypt.
+
+
+2. Implementation
+
+	int main(...)
+	{
+		get-the-parameters
+		set-up the aes_block (using libaes_block)
+
+		uint8_t mmap[MAX_NUMBER_OF_BYTES];
+
+		int n_128_b_blocks, start_address =  read_mmap_file(fp, mmap);
+
+		// start address is a multiple of 16.
+		uint32_t addr = start_address;
+		while(1)
+		{
+			uint64_t d0 = *((uint64_t*) addr);
+			uint64_t d1 = *((uint64_t*) (addr  + 8));
+
+			uint64_t ed0, ed1;
+
+			if (encrypt_flag)
+			{
+				encrypt (aes_block, d0, d1, &ed0, ed1)
+				print_values (addr, e0, e1);
+			}
+			else
+			{
+				decrypt (aes_block, d0, d1, &ed0, ed1)
+			}
+			print_values (addr, e0, e1);
+
+			addr = (addr + 16);
+
+			if(byte_count > max_byte_count)
+				break;
+		}
+
+		// close files etc...
+	}
+
+
+		
+
+
+
+	
