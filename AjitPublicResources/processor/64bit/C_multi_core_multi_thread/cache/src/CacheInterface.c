@@ -24,6 +24,7 @@
 #include "ASI_values.h"
 
 extern int global_verbose_flag;
+extern int global_enable_statistic_collection;
 
 MUTEX_DECL(__trace_mutex__);
 

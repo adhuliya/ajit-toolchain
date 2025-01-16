@@ -24,6 +24,7 @@
 #include "CacheInterface.h"
 
 extern int global_verbose_flag;
+extern int   global_enable_statistic_collection;
 
 //
 //
@@ -2248,7 +2249,10 @@ uint32_t executeInstruction(
 		tv = 	
 			executeDiv(opcode, operand1, operand2, result_l, 
 				status_reg, &(s->reg_update_flags),trap_vector, flags, s);
-		s->num_iu_divs_executed++;
+	
+		if(global_enable_statistic_collection)
+			s->num_iu_divs_executed++;
+
 	}
 	else if(is_divide_64)
 	{
@@ -3020,19 +3024,26 @@ uint32_t executeFPInstruction( ThreadState* s, Opcode opcode,
 	uint8_t is_fmov = ((opcode >= _FMOVs_) && (opcode <= _FABSs_));
 
 	uint8_t is_fsqrt = ((opcode >= _FSQRTs_) && (opcode <= _FSQRTq_));
-	if(is_fsqrt && (opcode == _FSQRTs_))
-		s->num_fp_sp_sqroots_executed++;
-	if(is_fsqrt && (opcode == _FSQRTd_))
-		s->num_fp_dp_sqroots_executed++;
+
+	if(global_enable_statistic_collection)
+	{
+		if(is_fsqrt && (opcode == _FSQRTs_))
+			s->num_fp_sp_sqroots_executed++;
+		if(is_fsqrt && (opcode == _FSQRTd_))
+			s->num_fp_dp_sqroots_executed++;
+	}
 
 	uint8_t is_faddsub = ((opcode >= _FADDs_) && (opcode <= _FSUBq_));
 
 	uint8_t is_fmuldiv = ((opcode >= _FMULs_) && (opcode <= _FDIVq_));
-	if(opcode == _FDIVs_)
-		s->num_fp_sp_divs_executed++;
-	if(opcode == _FDIVd_)
-		s->num_fp_dp_divs_executed++;
-		
+	if(global_enable_statistic_collection)
+	{
+		if(opcode == _FDIVs_)
+			s->num_fp_sp_divs_executed++;
+		if(opcode == _FDIVd_)
+			s->num_fp_dp_divs_executed++;
+	}
+
 	uint8_t is_fcmp = ((opcode >= _FCMPs_) && (opcode <= _FCMPEq_));
 
 	uint8_t is_vf = ((opcode >= _VFADD32_) && (opcode <= _VFHTOI16_));

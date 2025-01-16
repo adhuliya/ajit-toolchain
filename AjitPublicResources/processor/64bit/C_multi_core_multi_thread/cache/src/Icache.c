@@ -9,6 +9,7 @@
 #include "RequestTypeValues.h"
 
 extern pthread_mutex_t cache_mutex;
+extern int global_enable_statistic_collection;
 
 int icache_forward_to_mmu(int asi)
 {
@@ -70,10 +71,12 @@ void cpuIcacheAccess (int core_id, int cpu_id, uint8_t context, MmuState* ms,
 	uint8_t is_hit  = 0;
 
 	decodeIcacheRequest (asi, request_type, &is_nop, &is_flush, &is_ifetch);
-	icache->number_of_accesses++;
+	if(global_enable_statistic_collection)
+		icache->number_of_accesses++;
 	if(is_flush)
 	{
-		icache->number_of_flushes++;
+		if(global_enable_statistic_collection)
+			icache->number_of_flushes++;
 		flushCache(icache);
 	}
 	else if (is_ifetch)
@@ -86,7 +89,9 @@ void cpuIcacheAccess (int core_id, int cpu_id, uint8_t context, MmuState* ms,
 
 		if(is_hit)
 		{	
-			icache->number_of_hits++;
+			if(global_enable_statistic_collection)
+				icache->number_of_hits++;
+
 			*instr_pair = getDwordFromCache	(icache, context, addr);
 			*mae = (1 << 7) | (acc << 4);
 		}

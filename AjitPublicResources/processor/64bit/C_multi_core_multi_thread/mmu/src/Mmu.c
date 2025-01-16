@@ -32,6 +32,7 @@
 
 //#define MMU_DEBUG
 
+extern int   global_enable_statistic_collection;
 
 
 
@@ -53,24 +54,24 @@ void      updateFsrFar(MmuState* ms, int thread_id, uint32_t Fsr_val, uint32_t F
 uint32_t  readMmuRegister(MmuState* ms,  int thread_id, uint32_t addr);
 void 	  writeMmuRegister(MmuState* ms, int thread_id, uint32_t addr, uint8_t byte_mask, uint64_t data64);
 uint8_t   translateToPhysicalAddress(MmuState* ms, 
-					int thread_id,
-					uint8_t asi, uint32_t virt_addr, 
-					uint8_t request_type, uint64_t* physical_addr, 
-					uint8_t*  cacheable, uint8_t* acc, uint32_t* mmu_fsr_to_be_returned);
+		int thread_id,
+		uint8_t asi, uint32_t virt_addr, 
+		uint8_t request_type, uint64_t* physical_addr, 
+		uint8_t*  cacheable, uint8_t* acc, uint32_t* mmu_fsr_to_be_returned);
 uint32_t  readPageTableEntryFromMemory(MmuState* ms, int thread_id, uint64_t physical_addr);
 void      writePageTableEntryToMemory(MmuState* ms, int thread_id, uint32_t pte, uint64_t physical_addr);
 uint8_t   walkPageTables(MmuState* ms, int thread_id,
-				uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, 
-				uint64_t* phy_addr_of_pte);
+		uint32_t virt_addr, uint32_t* pte, uint8_t* pte_level, 
+		uint64_t* phy_addr_of_pte);
 uint8_t   checkPageFaults(MmuState* ms,
-			int thread_id,
-			uint8_t pte_found, uint32_t pte, uint8_t pte_level, 
-			uint8_t asi, uint32_t virt_addr, uint8_t request_type, 
-			uint32_t* mmu_fsr_to_be_returned);
+		int thread_id,
+		uint8_t pte_found, uint32_t pte, uint8_t pte_level, 
+		uint8_t asi, uint32_t virt_addr, uint8_t request_type, 
+		uint32_t* mmu_fsr_to_be_returned);
 uint64_t  constructPhysicalAddr(uint32_t pte, uint8_t pte_level, uint32_t virt_addr);
 uint8_t   isCacheable(uint32_t pte);
 uint8_t   performMmuProbe(MmuState* ms,  int thread_id,
-			uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE);
+		uint32_t virt_addr, uint8_t asi, uint8_t request_type, uint32_t* PTE);
 
 
 
@@ -87,16 +88,16 @@ uint8_t   performMmuProbe(MmuState* ms,  int thread_id,
 //  to the MMU, until it releases the lock.
 //
 void Mmu(MmuState* ms,  int thread_id,
-			uint8_t mmu_command,
-			uint8_t request_type,
-			uint8_t asi, uint32_t addr,	
-			uint8_t byte_mask, uint64_t write_data,
-			uint8_t* mae, 
-			uint8_t* cacheable, 
-			uint8_t* acc,
-			uint64_t* read_data,
-			uint32_t* mmu_fsr,
-			uint32_t* synonym_invalidate_word)
+		uint8_t mmu_command,
+		uint8_t request_type,
+		uint8_t asi, uint32_t addr,	
+		uint8_t byte_mask, uint64_t write_data,
+		uint8_t* mae, 
+		uint8_t* cacheable, 
+		uint8_t* acc,
+		uint64_t* read_data,
+		uint32_t* mmu_fsr,
+		uint32_t* synonym_invalidate_word)
 {
 	// FSR value will be returned by 
 	// the MMU when there is a fault.
@@ -107,10 +108,10 @@ void Mmu(MmuState* ms,  int thread_id,
 	*synonym_invalidate_word = 0;
 
 
-	#ifdef MMU_DEBUG
+#ifdef MMU_DEBUG
 	printf("\nMMU: Received MMU request from Cache : asi=0x%x, addr=0x%x, mmu-command=0x%x, byte_mask=0x%x, data=0x%lx",asi,addr, mmu_command, byte_mask,data);
-	#endif
-				
+#endif
+
 	// bit with index 6.
 	uint8_t lock_mask = (request_type & 0x40);
 
@@ -130,13 +131,13 @@ void Mmu(MmuState* ms,  int thread_id,
 				ms->lock_flag = 1;
 				ms->lock_cpu_id = thread_id;
 
-				#ifdef MMU_DEBUG
+#ifdef MMU_DEBUG
 				fprintf(stderr,"%d. MMU %d locked by thread %d.\n", ms->counter,
-										 ms->core_id, thread_id);
-				#endif
+						ms->core_id, thread_id);
+#endif
 
 			}
-			
+
 		}
 
 		MUTEX_UNLOCK(ms-> mmu_mutex);
@@ -249,7 +250,8 @@ void Mmu(MmuState* ms,  int thread_id,
 		//that created this request
 		*mae=0;
 		*cacheable  = __CACHEABLE__(ms, thread_id)  && !ASI_MMU_PASS_THROUGH(asi);
-		ms->Num_Mmu_bypass_accesses[thread_id] +=1;
+		if(global_enable_statistic_collection)
+			ms->Num_Mmu_bypass_accesses[thread_id] +=1;
 
 		if(lock_mask == 0)
 		{
@@ -293,7 +295,8 @@ void Mmu(MmuState* ms,  int thread_id,
 				uint8_t probe_success=0;
 				uint32_t pte=0;
 				probe_success = performMmuProbe(ms, thread_id, addr, asi, request_type, &pte);
-				ms->Num_Mmu_probe_requests[thread_id] +=1;
+				if(global_enable_statistic_collection)
+					ms->Num_Mmu_probe_requests[thread_id] +=1;
 
 				if(probe_success)
 				{
@@ -338,7 +341,8 @@ void Mmu(MmuState* ms,  int thread_id,
 
 				//send response to cpu
 				*read_data=0;	*cacheable=0;
-				ms->Num_Mmu_flush_requests[thread_id] +=1;
+				if(global_enable_statistic_collection)
+					ms->Num_Mmu_flush_requests[thread_id] +=1;
 
 				MUTEX_UNLOCK(ms->mmu_mutex);
 				return;
@@ -354,10 +358,10 @@ void Mmu(MmuState* ms,  int thread_id,
 		}
 		else // MMU is not present	
 		{
-				*read_data=0;	*cacheable=0; *mae = 0;
+			*read_data=0;	*cacheable=0; *mae = 0;
 
-				MUTEX_UNLOCK(ms->mmu_mutex);
-				return;
+			MUTEX_UNLOCK(ms->mmu_mutex);
+			return;
 		}
 	}
 
@@ -377,7 +381,8 @@ void Mmu(MmuState* ms,  int thread_id,
 				*read_data =  *read_data << 32; 
 				//send response to cpu
 				*mae=0; 	*cacheable=0;
-				ms->Num_Mmu_register_reads[thread_id] +=1;
+				if(global_enable_statistic_collection)
+					ms->Num_Mmu_register_reads[thread_id] +=1;
 
 			}
 			else if(request_type==REQUEST_TYPE_WRITE)
@@ -386,7 +391,8 @@ void Mmu(MmuState* ms,  int thread_id,
 				writeMmuRegister(ms, thread_id,  addr,byte_mask,write_data);
 				//send response to cpu
 				*mae=0; *read_data=0; 	*cacheable=0;
-				ms->Num_Mmu_register_writes[thread_id] +=1;
+				if(global_enable_statistic_collection)
+					ms->Num_Mmu_register_writes[thread_id] +=1;
 			}
 		}
 
@@ -524,7 +530,10 @@ void Mmu(MmuState* ms,  int thread_id,
 			*mmu_fsr=0;
 
 			if(MmuEnabled(ms, thread_id))
-				ms->Num_Mmu_translated_accesses[thread_id] += 1;
+			{
+				if(global_enable_statistic_collection)
+					ms->Num_Mmu_translated_accesses[thread_id] += 1;
+			}
 
 		}
 		else
@@ -717,7 +726,8 @@ uint8_t translateToPhysicalAddress(MmuState* ms,
 		if(TLB_hit)
 		{
 			//get the pte
-			ms->Num_Mmu_TLB_hits[thread_id] +=1;
+			if(global_enable_statistic_collection)
+				ms->Num_Mmu_TLB_hits[thread_id] +=1;
 			pte_found=1;
 		}
 	}
@@ -1121,7 +1131,7 @@ void printMmuStatistics(MmuState* ms)
 	if(ms->mmu_is_present)
 	{
 		fprintf(stderr,"\n	TLB size (L0 %d L1 %d L2 %d L3 %d)\n",
-					TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
+				TLB0_SIZE, TLB1_SIZE, TLB2_SIZE, TLB3_SIZE);
 	}
 	else
 	{
@@ -1330,14 +1340,14 @@ uint8_t isCacheRelatedRequest(uint8_t asi)
 uint8_t isValidMmuRequest(uint8_t asi)
 {
 	if(  asi==ASI_BLOCK_COPY
-	   ||asi==ASI_BLOCK_FILL
-	   ||ASI_reserved(asi)
-	   ||ASI_unassigned(asi)
+			||asi==ASI_BLOCK_FILL
+			||ASI_reserved(asi)
+			||ASI_unassigned(asi)
 	  )
 	{
-		#ifdef SW
+#ifdef SW
 		fprintf(stderr,"\nMMU: ERROR. asi=0x%x not valid or not supported",asi);
-		#endif 
+#endif 
 		return 0;
 	}
 	return 1;
@@ -1386,7 +1396,7 @@ uint8_t getFaultType(uint8_t AT, uint32_t PTE)
 	uint32_t ET  = getSlice32(PTE,1,0);   	//type of PTE entry
 	uint32_t ACC = getSlice32(PTE,4,2);   	//page access permissions
 	uint8_t fault_type=0;   		//fault type
-		
+
 	//Compute fault-type	
 	if(ET==0) fault_type=1; //PTE not found
 	else if(ET==0x1 || ET==0x3) fault_type=4; //Invalid PTE
@@ -1445,7 +1455,7 @@ uint8_t getFaultType(uint8_t AT, uint32_t PTE)
 					 break;
 				 }
 
-				
+
 			case 6 : {
 					 switch(AT)
 					 {
@@ -1475,7 +1485,7 @@ void updateFsrFar(MmuState* ms, int thread_id, uint32_t Fsr_val, uint32_t Far_va
 	//Overwrite (OW)=1 only if one IACCESS_FAULT tries to overwrite an existing IACCESS_FAULT
 	//or a DACCESS_FAULT tries to overwrite another DACCESS_FAULT.
 	if( ((ms->Mmu_FSR_FAULT_CLASS[thread_id] == IACCESS_FAULT) && (fault_class==IACCESS_FAULT)) 
-	 || ((ms->Mmu_FSR_FAULT_CLASS[thread_id] == DACCESS_FAULT) && (fault_class==DACCESS_FAULT)) )
+			|| ((ms->Mmu_FSR_FAULT_CLASS[thread_id] == DACCESS_FAULT) && (fault_class==DACCESS_FAULT)) )
 	{
 		//set the OW bit
 		Fsr_val = setBit32(Fsr_val,0,1);

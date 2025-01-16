@@ -165,6 +165,7 @@ void print_usage(char* app_name)
 	// if -R is specified, the memory is initially randomized, else it is initialized to 0.
 	fprintf(stderr, "   -R <randomization-seed>, optional, for randomizing initial memory values (if omitted, memory will be initialized to 0).\n");
 	fprintf(stderr, "   -i <init-pc>, optional, for specifying  initial value of PC (default=0). NPC is PC+4\n");
+	fprintf(stderr, "   -s <trigger-pc>, optional, for specifying  value of PC at which stat collection is triggered. (by default is stat collection is enabled).\n");
 	// cache trace: requests and responses to/from caches for each thread.
 	fprintf(stderr, "   -e <cache-trace-file>, optional, for specifying cache access dump file.\n");
 	fprintf(stderr, "   -f <mem-trace-file>, optional, for specifying mem access dump file.\n");
@@ -220,6 +221,8 @@ FILE* long_reg_write_file;
 char* logger_server_ip_address;
 int   logger_server_port_number;
 int   global_verbose_flag = 0;
+int   global_enable_statistic_collection = 1;
+int   global_stat_collection_trigger_pc  = 0x0;
 char* bridge_targets_file = NULL;
 char* key_file_name = NULL;
 FILE* key_file  = NULL;
@@ -290,7 +293,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:E:")) != -1) {
+	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:E:s:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -298,6 +301,14 @@ int main(int argc, char **argv)
 				else
 					sscanf(optarg,"0x%x",&init_pc);
 				fprintf(stderr,"Info: init_pc=0x%x.\n", init_pc);
+				break;
+			case 's':
+				if(strstr(optarg,"0x") == NULL)
+					sscanf(optarg,"%d", &global_stat_collection_trigger_pc);
+				else
+					sscanf(optarg,"0x%x",&global_stat_collection_trigger_pc);
+				fprintf(stderr,"Info: stat collection trigger pc=0x%x.\n", global_stat_collection_trigger_pc);
+				global_enable_statistic_collection = 0;
 				break;
 			case 'D':
 				dcache_number_of_lines = atoi(optarg);

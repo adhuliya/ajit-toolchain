@@ -16,6 +16,8 @@
 #include "RequestTypeValues.h"
 #include "Mmu.h"
 
+extern int global_enable_statistic_collection;
+
 extern pthread_mutex_t cache_mutex;
 
 void cpuDcacheAccess (int core_id,
@@ -71,7 +73,8 @@ void cpuDcacheAccess (int core_id,
 	uint8_t lock_mask    = (request_type & 0x40);
 	if(lock_mask != 0)
 	{
-		dcache->number_of_locked_accesses++;	
+		if(global_enable_statistic_collection)
+			dcache->number_of_locked_accesses++;	
 		dcache->lock_flag = 1;
 		dcache->lock_core_id = core_id;
 	}
@@ -105,14 +108,18 @@ void cpuDcacheAccess (int core_id,
 	decodeDcacheRequest(asi, request_type,
 				&is_nop, &is_stbar, &is_flush, &is_read,
 				&is_cached_mem_access, &is_mmu_access, &is_mmu_bypass);
-	dcache->number_of_accesses++;
+
+	if(global_enable_statistic_collection)
+		dcache->number_of_accesses++;
+
 	if(is_flush)
 	{
 		// In principle, we could communicate the
 		// flush to the MMU so that it can clear the RLUT.
 		// If we do not do this, there will be some spurious
 		// invalidates from the RLUT to the caches.. 
-		dcache->number_of_flushes++;
+		if(global_enable_statistic_collection)
+			dcache->number_of_flushes++;
 
 		// flush and forget about it.
 		flushCache(dcache);
@@ -134,25 +141,32 @@ void cpuDcacheAccess (int core_id,
 
 			if(is_hit)
 			{
-				dcache->number_of_hits++;
-				if(is_read)
-					dcache->number_of_read_hits++;
-				else
-					dcache->number_of_write_hits++;
+				if(global_enable_statistic_collection) 
+				{
+					dcache->number_of_hits++;
+					if(is_read)
+						dcache->number_of_read_hits++;
+					else
+						dcache->number_of_write_hits++;
+				}
 			}
 			else
 			{
-				dcache->number_of_misses++;
-				if(is_read)
-					dcache->number_of_read_misses++;
-				else
-					dcache->number_of_write_misses++;
+				if(global_enable_statistic_collection) 
+				{
+					dcache->number_of_misses++;
+					if(is_read)
+						dcache->number_of_read_misses++;
+					else
+						dcache->number_of_write_misses++;
+				}
 			}
 		}
 		else if(ASI_MMU_ACCESS(asi))
-		// induced flush.
+			// induced flush.
 		{
-			dcache->number_of_flushes++;
+			if(global_enable_statistic_collection)
+				dcache->number_of_flushes++;
 
 			//
 			// Note: In multi-context case,  do not flush on context-register write
@@ -161,27 +175,28 @@ void cpuDcacheAccess (int core_id,
 			{
 				flushCache(dcache);
 			}
-			#ifdef DEBUG
+#ifdef DEBUG
 			fprintf(stderr,"Info: DCACHE-%d flushed by ASI-MMU-ACCESS, asi 0x%x\n", dcache->core_id, asi);
-			#endif
+#endif
 		}
 		else
 		{
-			dcache->number_of_bypasses++;
+			if(global_enable_statistic_collection)
+					dcache->number_of_bypasses++;
 		}
 
 		int is_cacheable_based_on_mmu_status = isCacheableRequestBasedOnMmuStatus (dcache, cpu_id);
-		
+
 		uint8_t do_mmu_read_dword  = 
-				(is_read && (is_mmu_access  || is_mmu_bypass || 
-							(lock_mask != 0) || 
-							!is_cacheable_based_on_mmu_status));
+			(is_read && (is_mmu_access  || is_mmu_bypass || 
+				     (lock_mask != 0) || 
+				     !is_cacheable_based_on_mmu_status));
 		uint8_t do_mmu_write_dword = 
-				!is_read && (is_cached_mem_access || is_mmu_access || is_mmu_bypass
-							|| !is_cacheable_based_on_mmu_status);
+			!is_read && (is_cached_mem_access || is_mmu_access || is_mmu_bypass
+					|| !is_cacheable_based_on_mmu_status);
 
 		uint8_t do_mmu_fetch_line = (is_cached_mem_access && !is_hit && (lock_mask == 0) &&
-							is_cacheable_based_on_mmu_status);
+				is_cacheable_based_on_mmu_status);
 
 		if(is_read && is_hit)
 		{	
@@ -200,8 +215,8 @@ void cpuDcacheAccess (int core_id,
 		{
 			uint8_t mmu_dword_command = 
 				((request_type == REQUEST_TYPE_WRFSRFAR) ? MMU_WRITE_FSR :
-					(do_mmu_read_dword ? MMU_READ_DWORD : 
-				 		(is_hit ? MMU_WRITE_DWORD_NO_RESPONSE : MMU_WRITE_DWORD)));
+				 (do_mmu_read_dword ? MMU_READ_DWORD : 
+				  (is_hit ? MMU_WRITE_DWORD_NO_RESPONSE : MMU_WRITE_DWORD)));
 
 			Mmu(ms, cpu_id,
 					mmu_dword_command, (request_type | lock_mask),
@@ -219,7 +234,7 @@ void cpuDcacheAccess (int core_id,
 			Mmu(ms, cpu_id,
 					MMU_READ_LINE, request_type, asi, addr, byte_mask, write_data,
 					mae, &cacheable, &acc, (uint64_t*) line_data, &mmu_fsr, 
-						&synonym_invalidation_word);
+					&synonym_invalidation_word);
 
 			if(synonym_invalidation_word != 0)
 			{

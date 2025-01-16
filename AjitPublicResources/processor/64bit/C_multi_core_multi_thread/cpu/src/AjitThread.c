@@ -31,6 +31,9 @@
 extern int global_verbose_flag;
 extern int use_instruction_buffer;
 
+extern int   global_enable_statistic_collection;
+extern int   global_stat_collection_trigger_pc;
+
 
 void increment_instruction_count(ThreadState* s) 
 { 
@@ -289,7 +292,10 @@ void ajit_thread(void* id_ptr)
 
 		if(!skip_trap_execution)
 		{
-			(thread_state->num_traps)++;
+			if(global_enable_statistic_collection)
+			{
+				(thread_state->num_traps)++;
+			}
 			executeTrap(thread_state,
 					&(thread_state->trap_vector), &(thread_state->status_reg.psr), 
 					&(thread_state->status_reg.tbr), &(thread_state->interrupt_level), &(thread_state->mode),
@@ -321,12 +327,23 @@ void ajit_thread(void* id_ptr)
 			clearStateUpdateFlags(thread_state);
 			thread_state->reg_update_flags.pc = thread_state->status_reg.pc;
 			
+			// statistics collection to be triggered?
+			if(!global_enable_statistic_collection)
+			{
+				if(thread_state->status_reg.pc == global_stat_collection_trigger_pc)
+					global_enable_statistic_collection = 1;
+			}
+
 			post_fetch_trap = fetchInstruction(thread_state, thread_state->addr_space, thread_state->status_reg.pc, &(thread_state->instruction),
 								&(thread_state->mmu_fsr)); //memory_read
 
 			//================================
 			//increment count of instructions fetched
-			(thread_state->num_ifetches)++;
+			if(global_enable_statistic_collection)
+			{
+				(thread_state->num_ifetches)++;
+			}
+
 			if((thread_state->reporting_interval > 0) && ((thread_state->num_ifetches)%(thread_state->reporting_interval)==0) )
 			{
 				fprintf(stderr,"\n==============================================\n");

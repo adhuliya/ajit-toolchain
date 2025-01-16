@@ -15,6 +15,7 @@
 
 extern int global_verbose_flag;
 extern int use_encrypted_memory;
+extern int global_enable_statistic_collection;
 
 FILE* l2_cache_trace_file = NULL;
 
@@ -139,7 +140,8 @@ void writeCacheLineBackToMemory (WriteBackCache* c, uint64_t pa)
 			{
 				// write to memory.
 				setDoubleWordInMemory(pa_base + (W << 3), c->cache_lines[line_index].cache_line[W], 0xff);
-				c->number_of_memory_writes++;
+				if(global_enable_statistic_collection)
+					c->number_of_memory_writes++;
 			}
 		}
 	}
@@ -178,7 +180,8 @@ void readWriteBackCacheLineFromMemory    (WriteBackCache* c, uint64_t pa)
 			uint64_t dw = getDoubleWordInMemory(pa_base + (W << 3));
 			c->cache_lines[line_index].cache_line[W] = dw;
 			c->cache_lines[line_index].dirty_dword_bits[W] = 0;
-			c->number_of_memory_reads++;
+			if(global_enable_statistic_collection)
+				c->number_of_memory_reads++;
 		}
 	}
 }
@@ -433,7 +436,8 @@ uint64_t doWriteBackCacheAccess (WriteBackCache* c,
 		6. return the read-value (or written value).
 	*/
 
-	c->number_of_accesses++;
+	if(global_enable_statistic_collection)
+		c->number_of_accesses++;
 
 	// 1.
 	uint8_t is_hit; 
@@ -445,13 +449,17 @@ uint64_t doWriteBackCacheAccess (WriteBackCache* c,
 	if(!is_hit)
 	{
 
-		if(rwbar) c->number_of_read_misses++;
-		else c->number_of_write_misses++;
+		
+		if(global_enable_statistic_collection)
+		{
+			if(rwbar) c->number_of_read_misses++;
+			else c->number_of_write_misses++;
+		}
 
 #ifdef DEBUG_PRINT
 		fprintf(stderr,"Info: miss\n");
 #endif
-		
+
 
 		//2: find line to replace..
 		uint8_t replace_flag;	
@@ -493,13 +501,16 @@ uint64_t doWriteBackCacheAccess (WriteBackCache* c,
 #ifdef DEBUG_PRINT
 		fprintf(stderr,"Info: hit\n");
 #endif
-		if(rwbar)
-			c->number_of_read_hits++;
-		else
-			c->number_of_write_hits++;
+		if(global_enable_statistic_collection)
+		{
+			if(rwbar)
+				c->number_of_read_hits++;
+			else
+				c->number_of_write_hits++;
+		}
 	}
 
-	
+
 	is_hit = lookupL2Cache(c, pa,&line_index, &index_in_set);
 	int set_id = writeBackCacheSetId(c, pa);
 	c->most_recently_used_indices[set_id] = index_in_set;
