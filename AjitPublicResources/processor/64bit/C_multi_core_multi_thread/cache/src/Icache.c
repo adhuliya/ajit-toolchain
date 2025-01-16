@@ -97,7 +97,9 @@ void cpuIcacheAccess (int core_id, int cpu_id, uint8_t context, MmuState* ms,
 		}
 		else
 		{
-			icache->number_of_misses++;
+			if(global_enable_statistic_collection)
+				icache->number_of_misses++;
+
 			uint32_t line_addr = (addr & LINE_ADDR_MASK);
 			uint64_t line_data[8];
 			uint32_t synonym_invalidation_word = 0;

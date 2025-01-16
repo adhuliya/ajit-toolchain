@@ -180,7 +180,7 @@ void processAddress (SwizzlerRecord* sr,
 		// elements within the temporary memory which stores all the elements
 		for (int j = 0; j < mp; j++){
 			if ((uint64_t)j == (broad_set*set_size + temp2)){
-				sr->lc[j] = L;
+				sr->lc[j] = __SL;
 			}
 			else if (sr->lc[j] != 1 && sr->lc[j] != 0){
 		// Note: this ensures that a memory location which never had an addr
@@ -218,7 +218,7 @@ void processAddress (SwizzlerRecord* sr,
 			// decrement life of all others given they are not 0 or 1
 			for (int j = 0; j < mp; j++){
 				if ((uint64_t)j == Ms){
-					sr->lc[j] = L;
+					sr->lc[j] = __SL;
 				}
 				else if (sr->lc[j] != 1 && sr->lc[j] != 0){
 					sr->lc[j] --;
@@ -226,7 +226,7 @@ void processAddress (SwizzlerRecord* sr,
 			}
 			
 			if ((Ms - broad_set*set_size) == sr->LC[broad_set])
-			// If LC itself was initialised back to L then recompute LC 
+			// If LC itself was initialised back to __SL then recompute LC 
 			// as minimum of all life counters (lc's)
 			{
 				// loop to reevaluate temp
