@@ -164,5 +164,3 @@
 #define ADDR_PERF_COUNTERS_MAX				(ADDR_IO_MIN + 0x2FFF)
 
 #endif
-
-#endif

@@ -134,21 +134,21 @@ void setupBridgeTargetsAndPeripherals(char* file_name)
 			// ram format:  ram <ram-name> <min-addr> <max-addr> <permissions (rw)>
 			//
 			{
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
 				sprintf(mem_name,"%s", strtok_buffer);
 
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
-				mina = atoll(strtok_buffer);
+				mina = strtoll(strtok_buffer, NULL, 16);
 
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
-				maxa = atoll(strtok_buffer);
+				maxa = strtoll(strtok_buffer, NULL, 16);
 
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
-				perms = atoi(strtok_buffer);
+				perms = strtoll(strtok_buffer, NULL, 16);
 
 				addMem(mem_name, perms, mina, maxa);
 			}
@@ -157,17 +157,17 @@ void setupBridgeTargetsAndPeripherals(char* file_name)
 			//
 			else if(strcmp(strtok_buffer,"peripheral") == 0)
 			{
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
 				char* pname = strtok_buffer;
 
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
-				mina = atoll(strtok_buffer);
+				mina = strtoll(strtok_buffer, NULL, 16);
 
-				strtok_buffer = strtok_r(strtok_buffer," \t\n", &save_ptr);
+				strtok_buffer = strtok_r(NULL," \t\n", &save_ptr);
 				assert(strtok_buffer != NULL);
-				maxa = atoll(strtok_buffer);
+				maxa = strtoll(strtok_buffer, NULL, 16);
 
 				addPeripheral(pname, mina, maxa);
 			}
