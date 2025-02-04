@@ -69,15 +69,15 @@
 #define ADDR_SERIAL_MAX 				(ADDR_IO_MIN + 0x113) // Max serial address.
 
 // second serial device
-#define ADDR_SERIAL_1_MIN 				(ADDR_IO_MIN + 0x240) // AJIT default-countdown-timer control register (word).
-#define ADDR_SERIAL_1_CONTROL_REGISTER 			(ADDR_IO_MIN + 0x240) // AJIT default-serial-device control register (word).
+#define ADDR_SERIAL_1_MIN 				(ADDR_IO_MIN + 0x900) // AJIT default-countdown-timer control register (word).
+#define ADDR_SERIAL_1_CONTROL_REGISTER 			(ADDR_IO_MIN + 0x900) // AJIT default-serial-device control register (word).
 // Note: the next two are byte accesses..
-#define ADDR_SERIAL_1_TX_REGISTER      			(ADDR_IO_MIN + 0x244) // AJIT default-serial-device transmit register (byte).
-#define ADDR_SERIAL_1_RX_REGISTER      			(ADDR_IO_MIN + 0x248) // AJIT default-serial-device receive register (byte).
-#define ADDR_SERIAL_1_BAUD_CONTROL_REGISTER		(ADDR_IO_MIN + 0x24c) // AJIT default-serial-device control register
-#define ADDR_SERIAL_1_BAUD_LIMIT_REGISTER		(ADDR_IO_MIN + 0x24c) // baud-limit
-#define ADDR_SERIAL_1_BAUD_FREQUENCY_REGISTER		(ADDR_IO_MIN + 0x250) // baud-frequency
-#define ADDR_SERIAL_1_MAX 				(ADDR_IO_MIN + 0x253) // AJIT default-countdown-timer control register (word).
+#define ADDR_SERIAL_1_TX_REGISTER      			(ADDR_IO_MIN + 0x904) // AJIT default-serial-device transmit register (byte).
+#define ADDR_SERIAL_1_RX_REGISTER      			(ADDR_IO_MIN + 0x908) // AJIT default-serial-device receive register (byte).
+#define ADDR_SERIAL_1_BAUD_CONTROL_REGISTER		(ADDR_IO_MIN + 0x90c) // AJIT default-serial-device control register
+#define ADDR_SERIAL_1_BAUD_LIMIT_REGISTER		(ADDR_IO_MIN + 0x90c) // baud-limit
+#define ADDR_SERIAL_1_BAUD_FREQUENCY_REGISTER		(ADDR_IO_MIN + 0x910) // baud-frequency
+#define ADDR_SERIAL_1_MAX 				(ADDR_IO_MIN + 0x213) // AJIT default-countdown-timer control register (word).
 
 //
 //	SPI data registers 16 bytes per SPI master.
@@ -121,7 +121,11 @@
 #define ADDR_I2C_MASTER_CONFIG_REGISTER			(ADDR_IO_MIN + 0xb00)
 #define ADDR_I2C_MASTER_COMMAND_REGISTER		(ADDR_IO_MIN + 0xb04)
 #define ADDR_I2C_MASTER_STATUS_REGISTER			(ADDR_IO_MIN + 0xb08)
-#define ADDR_I2C_MASTER_MAX				(ADDR_IO_MIN + 0xb0c)
+#define ADDR_I2C_MASTER_MAX				(ADDR_IO_MIN + 0xb0b)
+
+// spi slave (a 256 B memory)
+#define ADDR_SPI_SLAVE_MIN	 			(ADDR_IO_MIN  + 0x1400) 
+#define ADDR_SPI_SLAVE_MAX 	 			((ADDR_IO_MIN + 0x1400 + 0x100) - 0x1) 
 
 // performance counters..
 //

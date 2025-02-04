@@ -103,7 +103,10 @@ uint32_t do_ipi_access(uint8_t rwbar, uint8_t bmask, uint32_t addr, uint32_t dat
 
 uint32_t regIdOffset (uint32_t addr)
 {
-	uint32_t offset = ((0xfffff & addr) - (0xfffff & ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER))/4;
+	uint32_t    a20 = (0xfffff & addr);
+	uint32_t    b20 = (0xfffff & ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER);
+
+	uint32_t offset = (a20 - b20) >> 2;
 	return(offset);
 }
 
