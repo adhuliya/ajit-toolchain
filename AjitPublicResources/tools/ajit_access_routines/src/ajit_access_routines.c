@@ -1087,7 +1087,7 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 					uint8_t send_byte, 
 					uint8_t deselect_after_transfer)
 {
-	uint8_t cmd = ((device_id & 0x7) << 3) | ((deselect_after_transfer & 0x1) << 1) | 1;
+	uint8_t cmd = ((device_id & 0x7) << 4) | ((deselect_after_transfer & 0x1) << 1) | 1;
 	if(use_vmap)
 	{
 		*((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW) = send_byte;
@@ -1112,11 +1112,13 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 		if(!(status & 0x1))
 			break;
 
-		spin_count++;
-		if(spin_count == (2*4096))
-		{
-			break;
-		}
+		__ajit_sleep__ (64);
+
+		// spin_count++;
+		// if(spin_count == (2*4096))
+		// {
+			// break;
+		// }
 	}
 		
 	uint32_t val = 0;

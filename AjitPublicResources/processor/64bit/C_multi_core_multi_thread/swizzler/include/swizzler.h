@@ -9,24 +9,22 @@
 
 #ifndef swizzler_h___
 #define  swizzler_h___
-#define queue_size 2048
-#define memory_size 8192
-  #define Cth 2
-#define __SL 4294967296 // (2^32) 
-  #define no_sets 3
-#define set_size 128
-#define mp no_sets * set_size
 
+#define __a(sr, K, M) sr->a[(M * queue_size) + K]
+#define __M(sr, I, J) sr->M[(I * set_size) + J]
 typedef struct __SwizzlerRecord {
+	int swizzler_seed;
+
 	// mapping FIFO queue which stores the pairs of addresses that are swapped
 	//   Let x = a[p][0] and y = a[p][1]
 	//   Then whenever the processor generates an access to x
 	//     the swizzler will remap it to y and the location y
 	//     is accessed.
-	uint64_t a[queue_size][2]; 
+	uint64_t* a; 
 	
 	// queue read/write pointers.
 	int front_a, rear_a; 
+
 
 	//
 	//  Set associative memory, which is used to maintain
@@ -41,26 +39,30 @@ typedef struct __SwizzlerRecord {
 	//    based on the lc array below and inserts the query address
 	//
 	// 
-	uint64_t M[no_sets][set_size]; // Defines the Memory. Array M stores stores mp addresses as integers
+	//uint64_t M[no_sets][set_size]; // Defines the Memory. Array M stores stores mp addresses as integers
+	uint64_t* M;
 
 	//
 	// Data associated with addresses in the set associative memory.
 	//
 	// lc[x] = age of the address in memory (timestamp at entry time).
-	uint64_t lc[mp]; 
+	uint64_t* lc; 
 	// C[x] = number of times an address has been accessed.
-	uint64_t C[mp]; 
-	// Most rarelu used index in a set.
-	uint64_t LC[no_sets]; 
+	uint64_t* C; 
+	// Most rarely used index in a set.
+	uint64_t* LC; 
 } SwizzlerRecord;
 
 
 // initialize internal data structures..
-void initSwizzler(SwizzlerRecord* sr);
+void initSwizzler(SwizzlerRecord* sr, char* initialize_file_name);
+
+// set random number generator seed.
+void setRNGSeed (SwizzlerRecord* sr);
 
 // Function to add a pair of elements (num1, num2) to the queue and storing the
 // removed pair of elements (if queue is full) in (old_num1, old_num2)
-void queue_in(uint64_t (*queue)[2], int* front, int* rear, uint64_t num1, uint64_t num2, uint64_t* old_num1, uint64_t* old_num2);
+void queue_in(SwizzlerRecord* sr, int* front, int* rear, uint64_t num1, uint64_t num2, uint64_t* old_num1, uint64_t* old_num2);
 
 // Main swizzling function: Arguments
 //  sr = Swizzler data structure
@@ -74,5 +76,6 @@ void processAddress (SwizzlerRecord* sr,
 			uint64_t* dword_h, 
 			uint64_t* dword_l);
 
+void freeSwizzler (SwizzlerRecord* sr);
 
 #endif

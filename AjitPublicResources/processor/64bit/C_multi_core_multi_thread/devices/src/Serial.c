@@ -40,9 +40,9 @@
 //
 //DEVICE REGISTERS :
 //	There are three device registers :
-//		1. Control Register (32b) 	(address = ADDR_SERIAL_CONTROL_REGISTER)
-//		2. Tx register	    (8b)	(address = ADDR_SERIAL_TX_REGISTER)
-//		3. Rx register	    (8b)	(address = ADDR_SERIAL_RX_REGISTER)
+//		1. Control Register (32b) 	(address & 0xff) == 0
+//		2. Tx register	    (8b)	(address & 0xff) == 0x4
+//		3. Rx register	    (8b)	(address & 0xff) == 0x8
 //
 //CONTROL REGISTER :
 //	The control register has the following fields:
@@ -100,7 +100,7 @@
 
 
 
-#include "default_peripheral_device_addresses.h"
+#include "Ajit_Device_Addresses.h"
 #include "Ajit_Hardware_Configuration.h"
 #include "Serial.h"
 #include <assert.h>
@@ -308,6 +308,7 @@ void Serial_Control(void* vst)
 				&rwbar, &byte_mask, &addr, &data_in);
 		uint32_t data_out=0;
 
+		// 0x0 -> 0, 0x4 -> 1, 0x8 -> 2, 0xc -> 3 etc.
 		int reg_id = (addr >> 2) & 0x7;
 
 		if(!rwbar)

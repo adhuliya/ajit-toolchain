@@ -64,7 +64,7 @@
 
 
 
-#include "default_peripheral_device_addresses.h"
+#include "Ajit_Device_Addresses.h"
 #include "Ajit_Hardware_Configuration.h"
 #include <unistd.h>
 #include "Timer.h"
@@ -97,6 +97,7 @@ DEFINE_THREAD(Timer_Output);
 //mutexes for locking Timer state variables
 //so that only one thread can access it at a time
 pthread_mutex_t Timer_lock = PTHREAD_MUTEX_INITIALIZER;
+
 
 //Timer state variables
 uint32_t Timer_Control_Register;
@@ -198,7 +199,7 @@ void Timer_Control()
 			//lock the state variables
 			pthread_mutex_lock(&Timer_lock);
 			
-			if(addr==(0xffffff & ADDR_TIMER_CONTROL_REGISTER))
+			if((addr & 0xff) == 0x0)
 			{
 				//Cpu wants to update the control register
 				Timer_Control_Register = insertUsingByteMask(Timer_Control_Register, 

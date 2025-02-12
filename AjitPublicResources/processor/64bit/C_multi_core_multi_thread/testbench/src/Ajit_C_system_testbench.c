@@ -293,7 +293,7 @@ int main(int argc, char **argv)
 	uint32_t dcache_number_of_lines = 512;
 	uint32_t icache_number_of_lines = 512;
 
-	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:E:s:")) != -1) {
+	while ((opt = getopt(argc, argv, "a:hvydgm:w:r:l:S:P:p:c:q:n:u:I:R:b:i:B:D:N:t:e:f:A:Q:a:L:E:s:W:")) != -1) {
 		switch(opt) {
 			case 'i':
 				if(strstr(optarg,"0x") == NULL)
@@ -484,9 +484,8 @@ int main(int argc, char **argv)
 	if(use_swizzler)
 	{
 		Sr = (SwizzlerRecord*) malloc (sizeof(SwizzlerRecord));
-
-		// TODO: add config file!
-		initSwizzler(Sr);
+		initSwizzler(Sr, swizzler_config_file_name);
+		setRNGSeed (Sr);
 	}
 
 	if(cache_trace_file_name != NULL)
@@ -823,6 +822,9 @@ int main(int argc, char **argv)
 	printRlutStatisticsInManager ();
 	bridgePrintL2Stats ();
 
+	// Free the swizzler if needed
+	if(Sr != NULL)
+		freeSwizzler(Sr);	
 	return (main_ret_val);
 }
 

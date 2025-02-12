@@ -13,6 +13,7 @@
 #include "pthreadUtils.h"
 
 #include <stdio.h>
+#include <inttypes.h>
 #include "aes_block.h"
 #include "swizzler.h" 
 
@@ -397,6 +398,16 @@ void getQuadWordInMemory(uint32_t address, uint64_t* data_h, uint64_t* data_l)
 				address,  // root address, not swizzled address!!
 				data_h, 
 				data_l);
+
+		if (global_verbose_flag)
+		{
+			fprintf(stderr,
+				"Info: getQuadWordInMemory: addr=0x%x edata_h = %" PRIx64 
+				", edata_l = %" PRIx64 
+				", data_h = %" PRIx64 
+				", data_l = %" PRIx64 "\n",
+					address, d1, d0, data_h, data_l);
+		}
 	}
 	else
 	{
@@ -419,11 +430,22 @@ void setQuadWordInMemory(uint32_t address, uint64_t data_h, uint64_t data_l)
 		uint64_t e_data_h;
 		uint64_t e_data_l;
 
+
 		encryptBlock (aes_ed_block, 
 				data_h, data_l,
 				address,
 				&e_data_h,
 				&e_data_l);
+
+		if (global_verbose_flag)
+		{
+			fprintf(stderr,
+				"Info: setQuadWordInMemory: addr=0x%x data_h = %" PRIx64 
+				", data_l = %" PRIx64 
+				", edata_h = %" PRIx64 
+				", edata_l = %" PRIx64 "\n",
+					address, data_h, data_l, e_data_h, e_data_l);
+		}
 
 		//
 		// call the swizzler here, it will rearrange the

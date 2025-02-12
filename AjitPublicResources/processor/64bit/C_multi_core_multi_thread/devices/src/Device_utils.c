@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdint.h>
-#include "default_peripheral_device_addresses.h"
+#include "Ajit_Device_Addresses.h"
 #include "Pipes.h"
 #include "pipeHandler.h"
 #include "RequestTypeValues.h"

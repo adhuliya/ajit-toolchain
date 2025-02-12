@@ -1,0 +1,17 @@
+/* Linker script generated for AJIT standalone application */
+/* command: makeLinkerScript.py -t 0x40000000 -d 0x40040000 -o customLinkerScript.lnk */
+ENTRY (_start)
+__DYNAMIC = 0;
+SECTIONS
+{
+    . = 0x40000000;
+    .text ALIGN(4) : { 
+     KEEP(*(.text.ajitstart))
+     KEEP(*(.text.pagetablesetup))
+     KEEP(*(.text.traphandlers))
+     KEEP(*(.text.traptablebase))
+     *(.text) *(.text.*) }
+    . = 0x40040000;
+    .rodata ALIGN(4) : { *(.rodata) *(.rodata.*) }
+    .data ALIGN(4) : { *(.data) *(.data.*) *(.bss)}
+}

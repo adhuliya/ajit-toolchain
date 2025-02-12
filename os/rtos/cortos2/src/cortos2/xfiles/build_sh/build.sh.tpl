@@ -35,6 +35,7 @@ compileToSparcUclibc.py \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -s ${_AAR_MT}/asm/generic_sys_calls.s \
+  -s ${_AAR_MT}/asm/mutexes.s \
   -C .. \
   -C ${_CORTOS_SRC_DIR} \
   -C ${_AAR_MT}/src \

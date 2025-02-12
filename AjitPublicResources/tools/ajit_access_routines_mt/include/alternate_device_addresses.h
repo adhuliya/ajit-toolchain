@@ -1,6 +1,15 @@
 #ifndef __alternate_device_addresses_h
 #define __alternate_device_addresses_h
 
+#define NMI_IRL		15
+#define GNSS_IRL	14
+#define SERIAL_IRL	12
+#define TIMER_IRL       10
+#define GNSS_AUX_0_IRL   9
+#define GNSS_AUX_1_IRL   8
+#define GNSS_AUX_2_IRL   7
+#define GNSS_AUX_3_IRL   6
+
 //
 //
 //    For SAC system.

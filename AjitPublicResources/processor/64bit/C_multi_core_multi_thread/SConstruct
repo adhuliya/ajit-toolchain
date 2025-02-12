@@ -38,4 +38,5 @@ SConscript(['l2_cache/SConscript'])
 SConscript(['aes_block/SConscript'])
 SConscript(['swizzler/SConscript'])
 SConscript(['testbench/SConscript'])
+SConscript(['mmap_encrypt/SConscript'])
 

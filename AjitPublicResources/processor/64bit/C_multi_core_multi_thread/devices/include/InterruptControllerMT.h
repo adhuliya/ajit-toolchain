@@ -29,6 +29,8 @@ typedef struct __IrcMt {
 	uint8_t  irc_int_out;
 } IrcMt;
 
+void set_irc_mt_control_register_address(uint32_t addr);
+uint32_t get_irc_mt_control_register_address();
 
 //thread to monitor reads/writes from cpu to 
 //device registers

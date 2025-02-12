@@ -80,7 +80,9 @@
 				// actions.
 				if(rwbar) 
 				{
-					// NOTE: 24-bit address comparison.
+					//
+					// NOTE: 24-bit address comparison... you may use
+					//       fewer bits.
 					if (addr == (0xffffff & ADDRESS_OF_SOME_REG) 
 					{
 						// ... do something..

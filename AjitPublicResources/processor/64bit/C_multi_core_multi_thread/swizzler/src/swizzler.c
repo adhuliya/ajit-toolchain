@@ -11,6 +11,9 @@
 #include "swizzler.h"
 #include "memory.h"
 
+uint64_t Cth, memory_size, L;
+int mp, set_size, no_sets, queue_size;
+
 // function to calculate the index corresponding to minimum element of an array (temp)
 // used for updating the LC pointer to point to the element with the least life (lc)
 int64_t argmin(uint64_t* temp, int number_of_elements) {
@@ -24,11 +27,69 @@ int64_t argmin(uint64_t* temp, int number_of_elements) {
 }
 
 // function to initialise the swizzler record
-void initSwizzler(SwizzlerRecord* sr) {
+//    Reads three numbers from file file_name
+//          Cth
+//          memory_size
+//          rng seed.
+void initSwizzler(SwizzlerRecord* sr, char* initialize_file_name) {
+	
+	// steps to extract the value of Cth and memory_size out of the given file
+	FILE *file;
+	file = fopen(initialize_file_name, "r");
+	if (file == NULL){
+		printf("Error, could not find initialize file");
+		fclose(file);
+		return;
+	}
+	
+	if(fscanf(file, "%lu", &Cth) != 1){
+		printf("Error, could not read Cth\n");
+		fclose(file);
+		return;
+	}	
+	if(fscanf(file, "%lu", &memory_size) != 1){
+		printf("Error, could not read memory size\n");
+		fclose(file);
+		return;
+	}
+	if(fscanf(file, "%d", &no_sets) != 1){
+		printf("Error, could not read no_sets\n");
+		fclose(file);
+		return;
+	}
+	if(fscanf(file, "%d", &set_size) != 1){
+		printf("Error, could not read set_size\n");
+		fclose(file);
+		return;
+	}
+	if(fscanf(file, "%d", &queue_size) != 1){
+		printf("Error, could not read queue_size\n");
+		fclose(file);
+		return;
+	}
+	if(fscanf(file, "%d", &(sr->swizzler_seed)) != 1){
+		printf("Error, could not read swizzler seed\n ");
+		fclose(file);
+		return;
+	}
+	if(fscanf(file, "%lu", &L) != 1){
+		printf("Error, could not read L\n ");
+		fclose(file);
+		return;
+	}
+	mp = no_sets*set_size;
+	fclose(file);
+	
+	sr->a = (uint64_t*)malloc((2*queue_size) * sizeof(uint64_t));
+	sr->M = (uint64_t*)malloc(mp * sizeof(uint64_t));
+	sr->lc = (uint64_t*)malloc(mp * sizeof(uint64_t));
+	sr->C = (uint64_t*)malloc(mp * sizeof(uint64_t));
+	sr->LC = (uint64_t*)malloc(no_sets * sizeof(uint64_t));
+	
     for (int i = 0; i < queue_size; i++) {
     	// initialise 'a' (FIFO queue) to contain all 0's
-        sr->a[i][0] = 0;
-        sr->a[i][1] = 0; 
+        __a(sr,i,0) = 0;
+        __a(sr,i,1) = 0; 
     }
     
     // front and rear pointers of queue will be properly initialised in the function
@@ -40,7 +101,7 @@ void initSwizzler(SwizzlerRecord* sr) {
     // LC (pointer to the element with least life per set) to zero
     for (int i = 0; i < no_sets; i++) {
         for (int j = 0; j < set_size; j++) {
-            sr->M[i][j] = 0;
+            __M(sr,i,j) = 0;
         }
     }
     for (int i = 0; i < mp; i++) {
@@ -54,16 +115,21 @@ void initSwizzler(SwizzlerRecord* sr) {
     }
 }
 
+void setRNGSeed (SwizzlerRecord* sr)
+{
+	srand (sr->swizzler_seed);
+}
+
 // Function to add a pair of elements (num1, num2) to the queue ('a') and storing the
 // removed pair of elements (if queue is full) in (old_num1, old_num2)
-void queue_in(uint64_t (*queue)[2], int* front, int* rear, uint64_t num1, uint64_t num2, uint64_t* old_num1, uint64_t* old_num2) {
+void queue_in(SwizzlerRecord* sr, int* front, int* rear, uint64_t num1, uint64_t num2, uint64_t* old_num1, uint64_t* old_num2) {
     *old_num1 = 0;
     *old_num2 = 0;
     // Checking if the circular queue is full 
     if ((*rear + 1) % queue_size == *front) {
         // Queue is full, so we remove the element at the front of the queue
-        *old_num1 = queue[*front][0];  // Return the pair at the front
-        *old_num2 = queue[*front][1];
+        *old_num1 = __a(sr,*front,0);  // Return the pair at the front
+        *old_num2 = __a(sr,*front,1);
         *front = (*front + 1) % queue_size;  // Move the front pointer forward 
     }
     
@@ -77,8 +143,8 @@ void queue_in(uint64_t (*queue)[2], int* front, int* rear, uint64_t num1, uint64
     }
     
     // Insert the pair of values at the rear of the queue
-    queue[*rear][0] = num1;  // Insert the first element in the pair at the rear
-    queue[*rear][1] = num2;  // Insert the second element in the pair at the rear
+    __a(sr,*rear,0) = num1;  // Insert the first element in the pair at the rear
+    __a(sr,*rear,1) = num2;  // Insert the second element in the pair at the rear
 }
 
 // Main function for checking if address is repeated frequently, shuffling the address
@@ -99,16 +165,16 @@ void processAddress (SwizzlerRecord* sr,
 	// is there in queue and storing the mapping of address 
 	// (present in the other coloumn) in addr_new
 	for (; Q_in < queue_size; Q_in ++){
-		if (sr->a[Q_in][0] == address){
-			addr_new = sr->a[Q_in][1];
+		if (__a(sr,Q_in,0) == address){
+			addr_new = __a(sr,Q_in,1);
 			//printf("remapped to %lu \n", addr_new);
 			break;
 		}
 	}
 	Q_in = 0;
 	for (; Q_in < queue_size; Q_in ++){
-		if (sr->a[Q_in][1] == address){
-			addr_new = sr->a[Q_in][0];
+		if (__a(sr,Q_in,1) == address){
+			addr_new = __a(sr,Q_in,0);
 			//printf("remapped to %lu \n", addr_new);
 			break;
 		}
@@ -142,7 +208,7 @@ void processAddress (SwizzlerRecord* sr,
 	// Ms points to the index of the memory where the new_address and stored
 	// address match. If they dont match in entire M, then it stays at mp
 	for (int j = 0; j < set_size; j++){
-		if(sr->M[broad_set][j] == addr_new){
+		if(__M(sr,broad_set,j) == addr_new){
 			Ms = broad_set*set_size + j;
 			break;
 		}
@@ -161,13 +227,13 @@ void processAddress (SwizzlerRecord* sr,
 	uint64_t addr_update = 0;
 	
 	
-	if (Ms == mp)
+	if (Ms == (uint64_t)mp)
 	// Operations to do if the new_address wasnt found anywhere in the memory
 	{
 		//printf("new address !\n");
 		
 		// Store the new address inplace of address with least life
-		sr->M[broad_set][temp2] = addr_new;
+		__M(sr,broad_set,temp2) = addr_new;
 		
 		// Make the corresponding counter as 1. NOTE C expects an index
 		// corresponding to the full temp Memory (i.e. mp) but temp2 is an
@@ -180,7 +246,7 @@ void processAddress (SwizzlerRecord* sr,
 		// elements within the temporary memory which stores all the elements
 		for (int j = 0; j < mp; j++){
 			if ((uint64_t)j == (broad_set*set_size + temp2)){
-				sr->lc[j] = __SL;
+				sr->lc[j] = L;
 			}
 			else if (sr->lc[j] != 1 && sr->lc[j] != 0){
 		// Note: this ensures that a memory location which never had an addr
@@ -218,7 +284,7 @@ void processAddress (SwizzlerRecord* sr,
 			// decrement life of all others given they are not 0 or 1
 			for (int j = 0; j < mp; j++){
 				if ((uint64_t)j == Ms){
-					sr->lc[j] = __SL;
+					sr->lc[j] = L;
 				}
 				else if (sr->lc[j] != 1 && sr->lc[j] != 0){
 					sr->lc[j] --;
@@ -226,7 +292,7 @@ void processAddress (SwizzlerRecord* sr,
 			}
 			
 			if ((Ms - broad_set*set_size) == sr->LC[broad_set])
-			// If LC itself was initialised back to __SL then recompute LC 
+			// If LC itself was initialised back to L then recompute LC 
 			// as minimum of all life counters (lc's)
 			{
 				// loop to reevaluate temp
@@ -250,7 +316,7 @@ void processAddress (SwizzlerRecord* sr,
 		
 		// Erase the contents of that memory location and give
 		// the root address to addr_update for shuffling
-		sr->M[broad_set][Ms - broad_set*set_size] = 0;
+		__M(sr,broad_set,(Ms - broad_set*set_size)) = 0;
 		addr_update = address;
 		}
 	}
@@ -262,11 +328,6 @@ void processAddress (SwizzlerRecord* sr,
 		
 		// generates a random number seed and makes a random address which
 		// is always a multiple of 16 and strictly inbetween 0 and memory size
-//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO//
-//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO//
-		//srand(clock()); FOR TESTING PURPOSES 
-//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO//
-//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO//
 		uint64_t rand_address = ((rand() % ((memory_size - 1) / 16)) + 1) * 16;
 		
 		// To rectify the case if rand_address is equal to root address
@@ -282,8 +343,8 @@ void processAddress (SwizzlerRecord* sr,
 		
 		// Q_in1 and Q_in2 stores the index of root address and 
 		// rand_address if they are already present in the queue
-		uint64_t Q_in1 = 0;
-		uint64_t Q_in2 = 0;
+		int Q_in1 = 0;
+		int Q_in2 = 0;
 		
 		// Use of case defined below, addr_c and addr_d will store the
 		// respective old mappings of root address and rand_address 
@@ -294,27 +355,27 @@ void processAddress (SwizzlerRecord* sr,
 		// Logic to find Q_in1 and Q_in2 by parsing each coloumn vector of the
 		// queue and searching first for root address and then for rand_address
 		for (; Q_in1 < queue_size; Q_in1 ++){
-			if (sr->a[Q_in1][0] == address){
+			if (__a(sr,Q_in1,0) == address){
 				break;
 			}
 		}
 		if (Q_in1 == queue_size){
 			Q_in1 = 0;
 			for (; Q_in1 < queue_size; Q_in1 ++){
-				if (sr->a[Q_in1][1] == address){
+				if (__a(sr,Q_in1,1) == address){
 					break;
 				}
 			}
 		}
 		for (; Q_in2 < queue_size; Q_in2 ++){
-			if (sr->a[Q_in2][0] == rand_address){
+			if (__a(sr,Q_in2,0) == rand_address){
 				break;
 			}
 		}
 		if (Q_in2 == queue_size){
 			Q_in2 = 0;
 			for (; Q_in2 < queue_size; Q_in2 ++){
-				if (sr->a[Q_in2][1] == rand_address){
+				if (__a(sr,Q_in2,1) == rand_address){
 					break;
 				}
 			}
@@ -331,22 +392,22 @@ void processAddress (SwizzlerRecord* sr,
 		// Initial state: (root, c) (rand, d) | Final: (root, rand) (0, 0)
 			{
 				Case = 1;
-				if(sr->a[Q_in1][0] == address){
-					addr_c = sr->a[Q_in1][1];
-					sr->a[Q_in1][1] = rand_address;
-				}else if(sr->a[Q_in1][1] == address){
-					addr_c = sr->a[Q_in1][0];
-					sr->a[Q_in1][0] = rand_address;
+				if(__a(sr,Q_in1,0) == address){
+					addr_c = __a(sr,Q_in1,1);
+					__a(sr,Q_in1,1) = rand_address;
+				}else if(__a(sr,Q_in1,1) == address){
+					addr_c = __a(sr,Q_in1,0);
+					__a(sr,Q_in1,0) = rand_address;
 				}else{printf("bug1");
 				}
-				if(sr->a[Q_in2][0] == rand_address){
-					addr_d = sr->a[Q_in2][1];
-					sr->a[Q_in2][1] = 0;
-					sr->a[Q_in2][0] = 0;
-				}else if(sr->a[Q_in2][1] == rand_address){
-					addr_d = sr->a[Q_in2][0];
-					sr->a[Q_in2][1] = 0;
-					sr->a[Q_in2][0] = 0;
+				if(__a(sr,Q_in2,0) == rand_address){
+					addr_d = __a(sr,Q_in2,1);
+					__a(sr,Q_in2,1) = 0;
+					__a(sr,Q_in2,0) = 0;
+				}else if(__a(sr,Q_in2,1) == rand_address){
+					addr_d = __a(sr,Q_in2,0);
+					__a(sr,Q_in2,1) = 0;
+					__a(sr,Q_in2,0) = 0;
 				}else{printf("bug2");
 				}
 			}else
@@ -356,14 +417,14 @@ void processAddress (SwizzlerRecord* sr,
 		// Initial state: (root, c) | Final: (root, rand)
 			{
 				Case = 2;
-				if(sr->a[Q_in1][0] == address){
-					addr_c = sr->a[Q_in1][1];
+				if(__a(sr,Q_in1,0) == address){
+					addr_c = __a(sr,Q_in1,1);
 					//printf("block 2 %lu %lu and addr c is %lu and addr is %lu \n", sr->a[Q_in1][1], sr->a[Q_in1][0], addr_c, address);
-					sr->a[Q_in1][1] = rand_address;
-				}else if(sr->a[Q_in1][1] == address){
-					addr_c = sr->a[Q_in1][0];
+					__a(sr,Q_in1,1) = rand_address;
+				}else if(__a(sr,Q_in1,1) == address){
+					addr_c = __a(sr,Q_in1,0);
 					//printf("block 2 %lu %lu and addr c is %lu and addr is %lu \n", sr->a[Q_in1][1], sr->a[Q_in1][0], addr_c, address);
-					sr->a[Q_in1][0] = rand_address;
+					__a(sr,Q_in1,0) = rand_address;
 				}else{printf("bug3");}
 			}
 		}else if(Q_in2 != queue_size)
@@ -373,12 +434,12 @@ void processAddress (SwizzlerRecord* sr,
 		// Initial state: (rand, d) | Final: (rand, root)
 		{
 			Case = 3;
-			if(sr->a[Q_in2][0] == rand_address){
-				addr_d = sr->a[Q_in2][1];
-				sr->a[Q_in2][1] = address;
-			}else if(sr->a[Q_in2][1] == rand_address){
-				addr_d = sr->a[Q_in2][0];
-				sr->a[Q_in2][0] = address;
+			if(__a(sr,Q_in2,0) == rand_address){
+				addr_d = __a(sr,Q_in2,1);
+				__a(sr,Q_in2,1) = address;
+			}else if(__a(sr,Q_in2,1) == rand_address){
+				addr_d = __a(sr,Q_in2,0);
+				__a(sr,Q_in2,0) = address;
 			}else{printf("bug4");}
 		}else
 		// If neither root address nor rand_address is found, invoke the 
@@ -387,7 +448,7 @@ void processAddress (SwizzlerRecord* sr,
 		{
 			Case = 4;
 			uint64_t t1, t2 = 0;
-			queue_in(sr->a, &sr->front_a, &sr->rear_a, address, rand_address, &t1, &t2);
+			queue_in(sr, &sr->front_a, &sr->rear_a, address, rand_address, &t1, &t2);
 			addr_c = t1;
 			addr_d = t2;
 		}
@@ -483,4 +544,15 @@ void processAddress (SwizzlerRecord* sr,
 	}
 	return;
 
+}
+
+void freeSwizzler (SwizzlerRecord* sr){
+	free(sr->M);  // Free the allocated memory
+	sr->M = NULL;
+	free(sr->LC);  // Free the allocated memory
+	sr->LC = NULL;
+	free(sr->lc);  // Free the allocated memory
+	sr->lc = NULL;
+	free(sr->C);  // Free the allocated memory
+	sr->C = NULL;
 }

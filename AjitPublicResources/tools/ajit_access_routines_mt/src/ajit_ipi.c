@@ -136,26 +136,22 @@ int __ajit_clear_ipi_interrupt__ (uint32_t ipi_base_address, uint8_t dest_core_i
 
 void __ajit_set_ipi_mask_register__  (uint32_t ipi_base_address, uint32_t m)
 {
-	uint32_t base_addr = ipi_base_address;
-	*((uint32_t*) base_addr) = m;
+	*((uint32_t*) ipi_base_address) = m;
 }
 
 uint32_t __ajit_get_ipi_mask_register__ (uint32_t ipi_base_address)
 {
-	uint32_t base_addr = ipi_base_address;
-	return (*((uint32_t*) base_addr));
+	return (*((uint32_t*) ipi_base_address));
 }
 
 void __ajit_set_ipi_value_register__  (uint32_t ipi_base_address, uint32_t m)
 {
-	uint32_t base_addr = ipi_base_address;
-	*((uint32_t*) (base_addr+4)) = m;
+	*((uint32_t*) (ipi_base_address +4)) = m;
 }
 
 uint32_t __ajit_get_ipi_value_register__ (uint32_t ipi_base_address)
 {
-	uint32_t base_addr = base_addr;
-	return (*((uint32_t*) (base_addr + 4)));
+	return (*((uint32_t*) (ipi_base_address  + 4)));
 }
 
 

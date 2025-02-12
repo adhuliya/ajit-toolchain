@@ -40,7 +40,7 @@
 
 
 
-#include "default_peripheral_device_addresses.h"
+#include "Ajit_Device_Addresses.h"
 #include "Ajit_Hardware_Configuration.h"
 
 #include "InterruptController.h"
@@ -170,8 +170,7 @@ void IRC_Control()
 		else 
 		{
 			
-			// bottom 24 bits of address are checked.
-			if(addr== (0xffffff & ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER))
+			if((addr & 0xff) == 0x0)
 			{
 				//Cpu wants to update the control register
 				IRC_Control_Register = insertUsingByteMask(IRC_Control_Register, data_in, byte_mask);

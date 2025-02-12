@@ -1,0 +1,5 @@
+A program to test the ee_printf and
+mp_printf utils.  mp_printf seems to be
+better.
+
+Go to BIGMEM and run ./compile_for_....sh 

@@ -19,7 +19,7 @@
 
 
 
-#include "default_peripheral_device_addresses.h"
+#include "Ajit_Device_Addresses.h"
 #include "Ajit_Hardware_Configuration.h"
 
 #include "InterruptController.h"
@@ -103,10 +103,8 @@ uint32_t do_ipi_access(uint8_t rwbar, uint8_t bmask, uint32_t addr, uint32_t dat
 
 uint32_t regIdOffset (uint32_t addr)
 {
-	uint32_t    a20 = (0xfffff & addr);
-	uint32_t    b20 = (0xfffff & ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER);
-
-	uint32_t offset = (a20 - b20) >> 2;
+	uint32_t    a8 = (0xff & addr);
+	uint32_t offset = (a8 - 0x0) >> 2;
 	return(offset);
 }
 

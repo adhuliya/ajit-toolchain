@@ -1,0 +1,16 @@
+import os
+
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
+COMPILATION_FLAGS = ' -g -DDEBUG_PRINT'
+AJIT_C_REF_MODEL=os.environ['AJIT_C_REF_MODEL']
+
+
+env.Append(CPPPATH = "include/:./:")
+env.Append(CPPPATH = AJIT_C_REF_MODEL + "/aes_block/include/:")
+
+LIBS=['aes_block']
+LIBPATH=[AJIT_C_REF_MODEL + '/aes_block/lib' ]
+
+# create a library for the cache :
+env.Program ('./bin/fc', Glob('src/file_compare_int.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);
+env.Program ('./bin/mmap_encrypt', Glob('src/crypto_program.c'), CCFLAGS=COMPILATION_FLAGS, LIBS=LIBS, LIBPATH=LIBPATH);

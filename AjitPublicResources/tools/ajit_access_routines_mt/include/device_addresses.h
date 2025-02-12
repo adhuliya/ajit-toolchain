@@ -3,7 +3,7 @@
 
 // Change this to 0 if you wish to use
 // alternate device address.
-#define USE_DEFAULT_DEVICE_ADDRESSES        0
+#define USE_DEFAULT_DEVICE_ADDRESSES        1
 
 
 #if USE_DEFAULT_DEVICE_ADDRESSES

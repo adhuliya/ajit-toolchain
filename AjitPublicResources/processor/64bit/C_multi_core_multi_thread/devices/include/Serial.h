@@ -34,6 +34,9 @@ typedef struct SerialState__ {
 	char to_console_pipe[1024];
 	char from_console_pipe[1024];
 	
+	uint32_t control_register;
+	uint32_t tx_register;
+	uint32_t rx_register;
 
 } SerialState;
 

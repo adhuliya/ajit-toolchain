@@ -1,223 +1,172 @@
+// measures.c
+//
+// Contains the function defining the measures for randomness 
+//
+// AUTHOR : Manan Garg
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
 #include <math.h>
 #include <malloc.h>
-#include <fftw3.h>
 #include <complex.h>
+#include "measures.h"
 
-FILE* input_file = NULL;
+// Expects 2 inputs as file names which will contain the main 
+// file (inp1) and the reference file (inp2). The rest 3 inputs 
+// are pointers which will store the values of the measures
+void measure (const char* inp1, const char* inp2, double* measure1, double* measure2, int* measure3){
 
-// Function to calculate the log2 of an integer
-int log2_int(int N) {
-    int k = N, i = 0;
-    while (k) {
-        k >>= 1;
-        i++;
+	FILE *file1 = fopen(inp1, "r");
+    FILE *file2 = fopen(inp2, "r");
+
+    if (!file1 || !file2) {
+        perror("Error opening files, Make sure base.txt exists beforehand. Base file is the reference trace file against which comparison will be done. Please refer to the README file, measures section. If you dont want this comparison then create a base.txt in same directory as the script with just 0 in the first line. If you have a reference text file then please provide it as base.txt in same directory as scripts ");
+        if (file1) fclose(file1);
+        if (file2) fclose(file2);
+        exit(1);
     }
-    return i - 1;
-}
 
-// Function to check if the number of elements is a power of 2
-int check(int n) {
-    return n > 0 && (n & (n - 1)) == 0;
-}
-
-// Function to calculate the reverse of a number
-int reverse(int N, int n) {
-    int j, p = 0;
-    for (j = 1; j <= log2_int(N); j++) {
-        if (n & (1 << (log2_int(N) - j)))
-            p |= 1 << (j - 1);
-    }
-    return p;
-}
-
-// Function to reorder the array based on reverse order
-void ordina(double complex* f1, int N) {
-    double complex *f2 = (double complex *)malloc(N * sizeof(double complex));
-    // Check if malloc was successful
-    if (f2 == NULL) {
-        printf("Memory allocation failed!\n");
-        return;  // Exit if memory allocation failed
-    }
-    for (int i = 0; i < N; i++)
-        f2[i] = f1[reverse(N, i)];
-    for (int j = 0; j < N; j++)
-        f1[j] = f2[j];
-    free(f2);
-}
-
-// Function to perform the FFT transformation
-void transform(double complex* f, int N) {
-    ordina(f, N);  // Reverse order
-    //printf("Milestone 1.91\n");
-    double complex* W;
-    W = (double complex*)malloc(N / 2 * sizeof(double complex));
-    W[0] = 1.0 + 0.0 * I;
-    W[1] = cexp(-2.0 * M_PI * I / N);  // Polar representation
-    for (int i = 2; i < N / 2; i++)
-        W[i] = cpow(W[1], i);
-    
-    int n = 1;
-    int a = N / 2;
-    for (int j = 0; j < log2_int(N); j++) {
-        for (int i = 0; i < N; i++) {
-            if (!(i & n)) {
-                double complex temp = f[i];
-                double complex Temp = W[(i * a) % (n * a)] * f[i + n];
-                f[i] = temp + Temp;
-                f[i + n] = temp - Temp;
-            }
+    // variables for the number of lines of data present and the actual data present
+    size_t size1 = 0, size2 = 0;
+    double *data1 = NULL, *data2 = NULL;
+    char line[256];
+	
+	// populates size1 and data1 by reading the first file
+    while (fgets(line, sizeof(line), file1)) {
+        data1 = realloc(data1, (size1 + 1) * sizeof(double));
+        if (!data1) {
+            perror("Memory allocation error");
+            fclose(file1);
+            fclose(file2);
+            return ;
         }
-        n *= 2;
-        a = a / 2;
-    }
-    free(W);
-}
-
-// Function to compute the FFT of a sequence and multiply by a constant factor
-void FFT(double complex* f, int N, double d) {
-    transform(f, N);
-    for (int i = 0; i < N; i++)
-        f[i] *= d;  // Multiply by the step size
-}
-
-// Function to compute magnitudes from a file1 containing hexadecimal numbers
-double* compute_magnitude(const char* filename, int* num_samples_out) {
-    FILE* file1 = fopen(filename, "r");
-    if (!file1) {
-        perror("Error opening file1");
-        return NULL;
+        // Convert hex to decimal
+        data1[size1++] = strtoul(line, NULL, 16); 
     }
 
-    //printf("Milestone 1.6\n");
+    // Read the second file similarly
+    while (fgets(line, sizeof(line), file2)) {
+        data2 = realloc(data2, (size2 + 1) * sizeof(double));
+        if (!data2) {
+            perror("Memory allocation error");
+            free(data1);
+            fclose(file1);
+            fclose(file2);
+            return ;
+        }
+        // Convert hex to decimal
+        data2[size2++] = strtoul(line, NULL, 16); 
+    }
 
-	int num_samples = 0;
-	uint32_t temp;
-	while (fscanf(file1, "%X", &temp) == 1) {
-	    num_samples++;
-	}
-	uint32_t* signal = (uint32_t*)malloc(num_samples * sizeof(uint32_t));
-	if (!signal) {
-	    perror("Memory allocation failed");
-	    fclose(file1);
-	    return NULL;
-	}
-	rewind(file1);
-	int index = 0;
-	while (fscanf(file1, "%X", &temp) == 1) {
-	    signal[index++] = temp;
-	}
-
-// Now `signal` contains the parsed data, and `num_samples` is the size of the array
-	//printf("Milestone 1.65\n");
-	//printf("num_samples: %d\n", num_samples);
     fclose(file1);
-	//printf("Milestone 1.7\n");
-    // Ensure the number of samples is a power of 2
-    int N = 1;
-    while (N < num_samples) {
-        N *= 2;
-    }
-//printf("N : %d\n",N);
-    // Pad the signal with zeros if necessary to make the size a power of 2
-    signal = (uint32_t*)realloc(signal, N * sizeof(uint32_t));
-    for (int i = num_samples; i < N; i++) {
-        signal[i] = 0;
-    }
-//printf("Milestone 1.8\n");
-    // Allocate FFT arrays
-    double complex* vec = (double complex*)malloc(N * sizeof(double complex));
-    for (int i = 0; i < N; i++) {
-        vec[i] = (double complex)signal[i];
-    }
+    fclose(file2);
+    
+    // Makes the 2 sizes equal if they are not by appending zeroes
+    if (size1 != size2) {
+        int max_samples = (size1 > size2) ? size1 : size2;
+		
+		// calloc ensures the appending of zeroes
+        double* new_data1 = calloc(max_samples, sizeof(double));
+        double* new_data2 = calloc(max_samples, sizeof(double));
 
-    // Perform FFT
-    double d = 1.0;  // Sampling step (could be passed as an argument if needed)
-    //printf("Milestone 1.9\n");
-    FFT(vec, N, d);
-	//printf("Milestone 1.99\n");
-    // Compute the magnitudes
-    double* magnitudes = (double*)malloc(N * sizeof(double));
-    for (int i = 1; i < N ; i++) {
-        magnitudes[i-1] = cabs(vec[i]);  // Compute magnitude of complex number
+        if (!new_data1 || !new_data2) {
+            free(data1);
+            free(data2);
+            free(new_data1);
+            free(new_data2);
+            return ;
+        }
+
+        // Copy original data to new arrays and pad with zeroes
+        for (size_t i = 0; i < size1; i++) {
+            new_data1[i] = data1[i];
+        }
+        for (size_t i = 0; i < size2; i++) {
+            new_data2[i] = data2[i];
+        }
+
+        // Replace old arrays with resized ones
+        free(data1);
+        free(data2);
+        data1 = new_data1;
+        data2 = new_data2;
+        size1 = size2 = max_samples;
     }
+    
+    // Calculates the mean of both the datas (Req for zero centering the data)
+    // and also the number of similar entries for measure 3
+    double mean1 = 0.0, mean2 = 0.0;
+    int similar = 0;
+    for (size_t i = 0; i < size1; i++) {
+        mean1 += data1[i];
+        mean2 += data2[i];
+        
+        if( data1[i] == data2[i] ){
+    		similar++ ;
+    	}
+    	
+    }
+    mean1 /= size1;
+    mean2 /= size2;
 
-    free(signal);
-    free(vec);
+    // Subtract means (zero-centering the data)
+    for (size_t i = 0; i < size1; i++) {
+        data1[i] -= mean1;
+        data2[i] -= mean2;
+    }
+    
+    // Measure 3 is assigned over here
+    *measure3 = similar;
+    
+    // Variables for cross and self correlations 
+    double max_cross_corr = 0.0;
+    double norm1 = 0.0, norm2 = 0.0;
+    double max_self_corr = 0.0;
+    double norm_self = 0.0;
 
-    *num_samples_out = N - 1;  // Return the size of the magnitude array
-    return magnitudes;
+    // Compute the normalization factor (energy of the signals)
+    for (size_t i = 0; i < size1; i++) {
+        norm1 += data1[i] * data1[i];
+        norm2 += data2[i] * data2[i];
+    }
+    norm1 = sqrt(norm1);
+    norm2 = sqrt(norm2);
+    
+    // Compute the normalised self(auto) and cross correlation
+    for (size_t lag = 0; lag < size1; lag++) {
+        double sum_cross = 0.0;
+        double sum_self = 0.0;
+        for (size_t i = 0; i < size1 - lag; i++) {
+        	sum_self += data1[i] * data1[i + lag];
+            sum_cross += data1[i] * data2[i + lag];
+        }
+        
+        // Taking lag0 as the normalising factor for self correlation
+        if (lag == 0){
+        	norm_self = sum_self;
+        }
+        // Finding the maximum auto correlation to report as final measure1
+        if ((lag != 0) && (sum_self > max_self_corr)) {
+            max_self_corr = sum_self;
+        }
+        // Finding the maximum cross correlation to report as final measure2
+        if (sum_cross > max_cross_corr) {
+            max_cross_corr = sum_cross;
+        }
+    }
+    
+    // Normalising the self(auto) and cross correlation
+    max_self_corr /= norm_self;
+    max_cross_corr /= (norm1*norm2);
+    
+    // Assigning the proper pointers
+    *measure2 = max_cross_corr;
+    *measure1 = max_self_corr;
+    
+    free (data1);
+    free (data2);
+    
+    return ;
 }
-
-double measure2(const char* inp1, const char* inp2) {
-    if (!inp1 || !inp2) {
-        perror("Invalid input files");
-        return NAN;
-    }
-
-    // Compute magnitude spectrums for both files
-    int num_samples1 = 0, num_samples2 = 0;
-    double* magnitude1 = compute_magnitude(inp1, &num_samples1);
-    double* magnitude2 = compute_magnitude(inp2, &num_samples2);
-
-    if (!magnitude1 || !magnitude2) {
-        free(magnitude1);
-        free(magnitude2);
-        return NAN;
-    }
-
-    // Ensure the number of samples matches
-    if (num_samples1 != num_samples2) {
-        fprintf(stderr, "Error: Magnitude spectra have different lengths\n");
-        free(magnitude1);
-        free(magnitude2);
-        return NAN;
-    }
-
-    // Compute dot product for similarity score
-    double dot_product = 0;
-    for (int i = 0; i < num_samples1; i++) {
-        dot_product += magnitude1[i] * magnitude2[i];
-    }
-
-    // Cleanup
-    free(magnitude1);
-    free(magnitude2);
-
-    return dot_product;
-}
-
-double measure1(const char* inp) {
-    if (!inp) {
-        perror("Invalid input file1");
-        return NAN;
-    }
-    // Compute magnitude spectrum for the file1
-    int num_samples = 0;
-    //printf("Milestone 1.5\n");
-    double* magnitude = compute_magnitude(inp, &num_samples);
-    if (!magnitude) {
-        return NAN;
-    }
-
-    // Compute CV (coefficient of variation)
-    double sum = 0, sum_sq = 0;
-    for (int i = 0; i < num_samples; i++) {
-        sum += magnitude[i];
-        sum_sq += magnitude[i] * magnitude[i];
-    }
-
-    double mean = sum / num_samples;
-    double variance = (sum_sq / num_samples) - (mean * mean);
-    double std_dev = sqrt(variance);
-    double cv = (mean != 0) ? (std_dev / mean) * 100 : NAN;
-	//printf("Milestone 2\n");
-    // Cleanup
-    free(magnitude);
-
-    return cv;
-}
-
