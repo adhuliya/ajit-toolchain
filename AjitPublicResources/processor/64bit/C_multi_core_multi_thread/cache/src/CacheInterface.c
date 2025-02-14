@@ -429,8 +429,9 @@ void updateMmuState (WriteThroughAllocateCache* c,
 			uint32_t  waddr,
 			uint64_t  write_dword)
 {
-	cpu_id = (cpu_id & MMU_THREAD_MASK);
 	assert(!c->is_icache);
+
+	cpu_id = (cpu_id & MMU_THREAD_MASK);
 
 	uint32_t mask_value   = 0;	
 	uint32_t upper_word = (write_dword >> 32) & 0xffffffff;
@@ -449,15 +450,8 @@ void updateMmuState (WriteThroughAllocateCache* c,
 	{
 		case 0:
 			ctrl_reg_value = c->mmu_control_register[cpu_id];
-			if(c->multi_context)
-				c->mmu_control_register[cpu_id] = (ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
-			else 
-			{
-				// for all
-				int i;
-				for(i = 0; i <= MMU_MAX_NUMBER_OF_THREADS; i++)
-					c->mmu_context_register[i] = 0;
-			}
+			c->mmu_control_register[cpu_id] = 
+					(ctrl_reg_value & (~mask_value)) | (upper_word & mask_value);
 			break;
 		case 2:
 			ctrl_reg_value = c->mmu_context_register[cpu_id];

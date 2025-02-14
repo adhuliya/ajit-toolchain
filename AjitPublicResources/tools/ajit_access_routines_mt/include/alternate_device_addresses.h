@@ -100,6 +100,16 @@
 #define ADDR_SPI_CONFIG_REGISTER                     	(ADDR_IO_MIN + 0xe0c) // AJIT default-SPI-config register (word).
 #define ADDR_SPI_MAX		                   	(ADDR_IO_MIN + 0xe0f) // AJIT default-SPI-master data-register low (word).
 
+// SPI Flash controller can be programmed using
+// these registers..
+#define ADDR_SPI_FLASH_PROGRAMMING_ADDR_MIN		(ADDR_IO_MIN + 0xf00)
+#define ADDR_SPI_FLASH_PROGRAMMING_DATA_REG_LOW_ADDR	(ADDR_IO_MIN + 0xf00)
+#define ADDR_SPI_FLASH_PROGRAMMING_DATA_REG_HIGH_ADDR	(ADDR_IO_MIN + 0xf04)
+#define ADDR_SPI_FLASH_PROGRAMMING_COMMAND_STATUS_REG_ADDR	(ADDR_IO_MIN + 0xf08)
+#define ADDR_SPI_FLASH_PROGRAMMING_CONFIG_REG_ADDR	(ADDR_IO_MIN + 0xf0c)
+#define ADDR_SPI_FLASH_PROGRAMMING_ADDR_MAX		(ADDR_IO_MIN + 0xfff)
+
+
 //
 //	GPIO
 //	16-bytes allocated.

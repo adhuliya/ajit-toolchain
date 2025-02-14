@@ -9,6 +9,7 @@ makeLinkerScript.py -t $TEXTBASE -d $DATABASE -o customLinkerScript.lnk
 #2 compile the application
 compileToSparcUclibc.py -g -V $VMAP -N all_kinds_mem\
 			-s ../init.s -s $AAR/asm/trap_handlers.s -s $AAR/asm/generic_sys_calls.s \
+			-s $AAR/asm/mutexes.s \
 			-L customLinkerScript.lnk \
 			-I $AAR/include -I $PT/include \
 			-c ../main.c -C $AAR/src -C $PT/src -D VA_DATA_SECTION_START=$DATABASE -D CLK_FREQUENCY=$CLKFREQ

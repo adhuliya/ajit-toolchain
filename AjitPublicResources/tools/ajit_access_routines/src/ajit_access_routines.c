@@ -1010,15 +1010,17 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__()
 //               the clock-division is by (2**(clk_divide_count+1))
 //        The transfer length ranges from 00-11 (4/8/12/16 bits)
 //
-inline void     __ajit_write_spi_master_register_via_bypass__(uint8_t reg_id, uint8_t reg_val)
+inline void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, 
+									uint8_t reg_id, uint8_t reg_val)
 {
-	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
+	uint32_t addr = spim_base_addr + (reg_id*4);
 	__ajit_store_word_mmu_bypass__(reg_val, addr);
 }
 
-inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val)
+inline void     __ajit_write_spi_master_register_via_vmap__(uint32_t spim_base_addr,
+								uint8_t reg_id, uint8_t reg_val)
 {
-	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
+	uint32_t addr = spim_base_addr + (reg_id*4);
 
 	// NOTE: byte write.
 	*((uint8_t*)addr) = reg_val;
@@ -1033,16 +1035,16 @@ inline void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t  __ajit_read_spi_master_register_via_bypass__(uint8_t reg_id)
+inline uint8_t  __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id)
 {
-	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
+	uint32_t addr = spim_base_addr + (reg_id*4);
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
 	return(ret_val);
 }
 
-inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
+inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint32_t spim_base_addr, uint8_t reg_id)
 {
-	uint32_t addr = ADDR_SPI_DATA_REGISTER_LOW + (reg_id*4);
+	uint32_t addr = spim_base_addr + (reg_id*4);
 
 	// NOTE: byte read.
 	uint32_t ret_val = *((uint8_t*) addr);
@@ -1051,21 +1053,23 @@ inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id)
 }
 
 
-uint8_t __ajit_do_spi_transfer_via_bypass__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_bypass__ (uint32_t spim_base_addr,
+						uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer)
 {
-	return(__ajit_do_spi_transfer_inner__(0, device_id, send_byte, deselect_after_transfer));
+	return(__ajit_do_spi_transfer_inner__(0, spim_base_addr,  device_id, send_byte, deselect_after_transfer));
 }
 
-uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_vmap__ (uint32_t spim_base_addr,
+						uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer)
 {
-	return(__ajit_do_spi_transfer_inner__(1, device_id, send_byte, deselect_after_transfer));
+	return(__ajit_do_spi_transfer_inner__(1, spim_base_addr, device_id, send_byte, deselect_after_transfer));
 }
 
-uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count)
+uint8_t  __ajit_configure_spi_master_via_bypass___ (uint32_t spim_base_addr, uint8_t clk_divide_count)
 {
 	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
 	// transfer width is kept to 8 bits, clk divide count is modified.
@@ -1073,9 +1077,9 @@ uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count)
 	return(0);
 }
 
-uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count)
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, uint8_t clk_divide_count)
 {
-	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
+	uint32_t addr = (spim_base_addr + 0xc);
 	// transfer width is kept to 8 bits, clk divide count is modified.
 	*((uint32_t*) addr) = (0x1 << 4) | (clk_divide_count & 0xf);
 	return(0);
@@ -1083,6 +1087,7 @@ uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count)
 
 // times out after 8K clock cycles.
 uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
+					uint32_t spim_base_addr,
 					uint8_t device_id,
 					uint8_t send_byte, 
 					uint8_t deselect_after_transfer)
@@ -1090,13 +1095,13 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 	uint8_t cmd = ((device_id & 0x7) << 4) | ((deselect_after_transfer & 0x1) << 1) | 1;
 	if(use_vmap)
 	{
-		*((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW) = send_byte;
-		*((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER) = cmd;
+		*((uint32_t*) spim_base_addr) = send_byte;
+		*((uint32_t*) (spim_base_addr + 0x8)) = cmd;
 	}	
 	else
 	{
-		__AJIT_STORE_WORD_MMU_BYPASS__ (ADDR_SPI_DATA_REGISTER_LOW, send_byte);
-		__AJIT_STORE_WORD_MMU_BYPASS__ (ADDR_SPI_COMMAND_STATUS_REGISTER, cmd);
+		__AJIT_STORE_WORD_MMU_BYPASS__ (spim_base_addr, send_byte);
+		__AJIT_STORE_WORD_MMU_BYPASS__ ((spim_base_addr + 0x8), cmd);
 	}
 
 	int spin_count = 0;
@@ -1105,9 +1110,9 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 	{
 		uint32_t status;
 		if(use_vmap)
-			status = *((uint32_t*) ADDR_SPI_COMMAND_STATUS_REGISTER);
+			status = *((uint32_t*) (spim_base_addr + 0xc));
 		else
-			__AJIT_LOAD_WORD_MMU_BYPASS__ (ADDR_SPI_COMMAND_STATUS_REGISTER, status);
+			__AJIT_LOAD_WORD_MMU_BYPASS__ ((spim_base_addr + 0xc), status);
 
 		if(!(status & 0x1))
 			break;
@@ -1123,9 +1128,9 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 		
 	uint32_t val = 0;
 	if(use_vmap)
-		val = *((uint32_t*) ADDR_SPI_DATA_REGISTER_LOW);
+		val = *((uint32_t*) spim_base_addr);
 	else
-		__AJIT_LOAD_WORD_MMU_BYPASS__ (ADDR_SPI_DATA_REGISTER_LOW, val);
+		__AJIT_LOAD_WORD_MMU_BYPASS__ (spim_base_addr, val);
 
 
 	return(val);
@@ -1136,7 +1141,7 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 // SPI GPIO! 8-bit in and out.
 //---------------------------------------------------------------------------------------------
 // write gpio-out to GPIO_OUT pins and read back GPIO_IN pins.
-uint32_t __ajit_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out)
+uint32_t __ajit_gpio_xfer__(uint32_t spim_base_addr, uint8_t gpio_dev_id, uint8_t gpio_out)
 {
 
 	int retry_limit;
@@ -1145,25 +1150,25 @@ uint32_t __ajit_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out)
 	uint32_t status_reg = 1;
 
 	// write data-l in master.
-	__ajit_write_spi_master_register__(0, gpio_out);
+	__ajit_write_spi_master_register__(spim_base_addr, 0, gpio_out);
 
 	// master-command
 	// spi-dev-id = 1, deselect = 1, start-xfer = 1.
-	uint8_t cmd_to_master = (((gpio_dev_id  & 0x7) << 3) | 0x3);
+	uint8_t cmd_to_master = (((gpio_dev_id  & 0x7) << 4) | 0x3);
 
 	// write master-command
-	__ajit_write_spi_master_register__(2, cmd_to_master);
+	__ajit_write_spi_master_register__(spim_base_addr, 2, cmd_to_master);
 
 	// check status-reg..
 	retry_limit = 256;
 	while(status_reg & (retry_limit > 0))
 	{
-		status_reg = __ajit_read_spi_master_register__(2);
+		status_reg = __ajit_read_spi_master_register__(spim_base_addr, 2);
 		retry_limit--;
 	}
 
 	// read back data-l
-	ret_val = __ajit_read_spi_master_register__(0);
+	ret_val = __ajit_read_spi_master_register__(spim_base_addr, 0);
 	return(ret_val);
 }
 

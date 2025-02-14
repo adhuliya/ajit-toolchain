@@ -535,7 +535,7 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__();
 //---------------------------------------------------------------------------------------------
 // with mmu bypass..
 //---------------------------------------------------------------------------------------------
-inline void     __ajit_write_spi_master_register_via_bypass__(uint8_t reg_id, uint8_t reg_val);
+inline void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id, uint8_t reg_val);
 
 // 
 // use this to read the data-registers, status (command) register
@@ -544,13 +544,14 @@ inline void     __ajit_write_spi_master_register_via_bypass__(uint8_t reg_id, ui
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t __ajit_read_spi_master_register_via_bypass__(uint8_t reg_id);
+inline uint8_t __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id);
 
 // In SPI, we send a byte and simultaneously receive a byte,
 // which is returned by this routine.   Deselection of
 // the slave device after the transfer is controlled by
 // deselect_after_transfer.
-uint8_t __ajit_do_spi_transfer_via_bypass__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_bypass__ (uint32_t spim_base_addr, 
+						uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer);
 
@@ -560,22 +561,22 @@ uint8_t __ajit_do_spi_transfer_via_bypass__ (uint8_t device_id,
 // only the bottom 4-bits of clk_divide_count are used.  So we can
 // get spi clk frequencies in the range clk to clk/2^17.
 //
-uint8_t  __ajit_configure_spi_master_via_bypass___ (uint8_t clk_divide_count);
+uint8_t  __ajit_configure_spi_master_via_bypass___ (uint32_t spim_base_addr, uint8_t clk_divide_count);
 
 //---------------------------------------------------------------------------------------------
 // with normal load/store with non-cacheable page
 //---------------------------------------------------------------------------------------------
-void     __ajit_write_spi_master_register_via_vmap__(uint8_t reg_id, uint8_t reg_val);
-uint8_t  __ajit_read_spi_master_register_via_vmap__(uint8_t reg_id);
+void     __ajit_write_spi_master_register_via_vmap__(uint32_t spim_base_addr, uint8_t reg_id, uint8_t reg_val);
+uint8_t  __ajit_read_spi_master_register_via_vmap__(uint32_t spim_base_addr, uint8_t reg_id);
 
-uint8_t __ajit_do_spi_transfer_via_vmap__ (uint8_t device_id,
+uint8_t __ajit_do_spi_transfer_via_vmap__ (uint32_t spim_base_addr, uint8_t device_id,
 							uint8_t send_byte, uint8_t deselect_after_transfer);
 //
 // spi master's output clock is clock_frequency/(2^(clk_divide_count+1))
 // only the bottom 4-bits of clk_divide_count are used.  So we can
 // get spi clk frequencies in the range clk to clk/2^17.
 //
-uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count);
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, uint8_t clk_divide_count);
 
 #ifdef USE_VMAP
 #define   __ajit_write_spi_master_register__		__ajit_write_spi_master_register_via_vmap__
@@ -593,6 +594,7 @@ uint8_t  __ajit_configure_spi_master_via_vmap___ (uint8_t clk_divide_count);
 // do an SPI transfer..  send send_byte to spi slave device_id, and
 // return byte received from slave.
 inline uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
+						uint32_t spim_base_addr,
 						uint8_t device_id,
 						uint8_t send_byte, 
 						uint8_t deselect_after_transfer);
@@ -601,7 +603,7 @@ inline uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 //---------------------------------------------------------------------------------------------
 // 8-bit GPIO  via SPI
 //---------------------------------------------------------------------------------------------
-uint8_t __ajit_spi_gpio_xfer__(uint8_t gpio_dev_id, uint8_t gpio_out);
+uint8_t __ajit_spi_gpio_xfer__(uint32_t spim_base_addr, uint8_t gpio_dev_id, uint8_t gpio_out);
 
 //---------------------------------------------------------------------------------------------
 // 32-bit GPIO 
