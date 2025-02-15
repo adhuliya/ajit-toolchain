@@ -1201,7 +1201,8 @@ void      __ajit_write_gpio_32_via_bypass__ (uint32_t w)
 //---------------------------------------------------------------------------------------------
 //  Performance counters.
 //---------------------------------------------------------------------------------------------
-void __ajit_init_thread_performance_counters (int core_id, int thread_id, 
+void __ajit_clear_thread_performance_counters (int core_id, int thread_id, 
+					uint32_t pc_base_address,
 					AjitPerThreadPerformanceCounters *tpc)
 {
 	tpc->executed_instruction_count = 0;
@@ -1214,6 +1215,13 @@ void __ajit_init_thread_performance_counters (int core_id, int thread_id,
 	tpc->trap_count = 0;
 	tpc->icache_access_count = 0;
 	tpc->icache_miss_count = 0;
+
+	// Clear in the performance counters!
+	uint32_t I;
+	for(I = 0; I < 40; I += 8)
+	{
+		*((uint64_t*) (pc_base_address + I)) = 0;
+	}
 }
 
 
@@ -1223,10 +1231,11 @@ void __ajit_init_thread_performance_counters (int core_id, int thread_id,
 	dw = (((uint64_t) hw) << 32) | ((uint64_t) lw); }
 	
 void __ajit_sample_thread_performance_counters (int core_id, int thread_id, 
+					uint32_t pc_base_address, 
 					AjitPerThreadPerformanceCounters *tpc)
 {
 	uint32_t tid = (core_id * 2) + thread_id;
-	uint32_t base_addr = 0xffff4000 + (256*tid);
+	uint32_t base_addr = pc_base_address  + (256*tid);
 
 	___fill_performance_counter__ (tpc->executed_instruction_count, base_addr, 0);
 	___fill_performance_counter__ (tpc->skipped_instruction_count,  base_addr, 8);

@@ -649,6 +649,7 @@ void __ajit_init_thread_performance_counters (int core_id, int thread_id,
 
 // samples the values of the performance counters.
 void __ajit_sample_thread_performance_counters (int core_id, int thread_id, 
+					uint32_t pc_base_address,  // IOMEM address.
 					AjitPerThreadPerformanceCounters *tpc);
 
 
