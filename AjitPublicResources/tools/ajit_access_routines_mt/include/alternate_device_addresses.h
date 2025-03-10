@@ -117,7 +117,7 @@
 #define ADDR_GPIO_MIN		                     	(ADDR_IO_MIN + 0xa00) 
 #define ADDR_GPIO_DOUT_REGISTER                     	(ADDR_IO_MIN + 0xa00) // GPIO DOUT register address (word).
 #define ADDR_GPIO_DIN_REGISTER                     	(ADDR_IO_MIN + 0xa04) // GPIO DIN register address (word).
-#define ADDR_CONFIG_UART_BAUD_CONTROL_REGISTER		(ADDR_IO_MIN + 0xa08) // Baud-rate control word for UARTS in the system.
+#define ADDR_GPIO_DOUT_ENABLE_REGISTER			(ADDR_IO_MIN + 0xa08) // GPIO_DOUT_ENABLE  (word)
 #define ADDR_GPIO_MAX		                     	(ADDR_IO_MIN + 0xa0b)
 
 
