@@ -1110,20 +1110,30 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 	{
 		uint32_t status;
 		if(use_vmap)
-			status = *((uint32_t*) (spim_base_addr + 0xc));
+			status = *((uint32_t*) (spim_base_addr + 0x8));
 		else
-			__AJIT_LOAD_WORD_MMU_BYPASS__ ((spim_base_addr + 0xc), status);
+			__AJIT_LOAD_WORD_MMU_BYPASS__ ((spim_base_addr + 0x8), status);
 
 		if(!(status & 0x1))
 			break;
 
 		__ajit_sleep__ (64);
 
-		// spin_count++;
-		// if(spin_count == (2*4096))
-		// {
-			// break;
-		// }
+#if DEBUG_SPI_MASTER
+		spin_count++;
+		if(spin_count == (2*4096))
+		{
+			if(use_vmap)
+			{
+				__ajit_serial_puts_via_vmap__("Error: too many spins in SPI master\n", 40);
+			}
+			else	
+			{
+				__ajit_serial_puts_via_bypass__("Error: too many spins in SPI master\n", 40);
+			}
+			break;
+		}
+#endif
 	}
 		
 	uint32_t val = 0;
