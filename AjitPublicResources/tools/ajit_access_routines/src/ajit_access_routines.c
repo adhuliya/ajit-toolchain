@@ -1110,9 +1110,9 @@ uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 	{
 		uint32_t status;
 		if(use_vmap)
-			status = *((uint32_t*) (spim_base_addr + 0xc));
+			status = *((uint32_t*) (spim_base_addr + 0x8));
 		else
-			__AJIT_LOAD_WORD_MMU_BYPASS__ ((spim_base_addr + 0xc), status);
+			__AJIT_LOAD_WORD_MMU_BYPASS__ ((spim_base_addr + 0x8), status);
 
 		if(!(status & 0x1))
 			break;
@@ -1157,13 +1157,13 @@ uint32_t __ajit_gpio_xfer__(uint32_t spim_base_addr, uint8_t gpio_dev_id, uint8_
 	uint8_t cmd_to_master = (((gpio_dev_id  & 0x7) << 4) | 0x3);
 
 	// write master-command
-	__ajit_write_spi_master_register__(spim_base_addr, 2, cmd_to_master);
+	__ajit_write_spi_master_register__(spim_base_addr + 0x8, 2, cmd_to_master);
 
 	// check status-reg..
 	retry_limit = 256;
 	while(status_reg & (retry_limit > 0))
 	{
-		status_reg = __ajit_read_spi_master_register__(spim_base_addr, 2);
+		status_reg = __ajit_read_spi_master_register__(spim_base_addr + 0x8, 2);
 		retry_limit--;
 	}
 
