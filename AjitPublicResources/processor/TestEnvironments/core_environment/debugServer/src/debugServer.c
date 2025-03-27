@@ -9,8 +9,8 @@
 #include "Pipes.h"
 #include "SockPipes.h"
 #include "pthreadUtils.h"
-#include <debugServer.h>
 #include <debugServerDefines.h>
+#include <debugServer.h>
 
 DebugServerConnectMode server_connect_mode = dbg_CONNECT_WITH_PIPE_HANDLER;
 void setDebugServerConnectMode(DebugServerConnectMode val)
@@ -105,44 +105,69 @@ void probeCcu(DebugServerState* server_state)
 		server_state->gdb_command.gdb_read_init_psr  ||
 		server_state->gdb_command.gdb_read_mode  ||
 		server_state->gdb_command.gdb_detach_cmd ;
-	uint32_t words_to_ccu[4];
-	uint32_t n_words_to_ccu = send_first_word_to_ccu;
-	words_to_ccu[0] = (send_connect_ok_to_ccu  ?
-			((1 << 24) | (gdb_dbg_CONNECT << 16) | 0) : 
-			server_state->gdb_word_1);
 
-	uint8_t send_pc_npc_psr_to_ccu =  
-		send_connect_ok_to_ccu ||
-		server_state->gdb_command.gdb_continue_cmd ||
-		server_state->gdb_command.gdb_detach_cmd;
-	uint8_t send_second_word_to_ccu  =
-		(server_state->gdb_nwords > 1) || send_pc_npc_psr_to_ccu;
-
-	n_words_to_ccu += send_second_word_to_ccu;
-	words_to_ccu[1] = (send_pc_npc_psr_to_ccu ? server_state->PC : server_state->gdb_word_2);
-	if(send_second_word_to_ccu && !send_pc_npc_psr_to_ccu)
-		assert (server_state->gdb_nwords > 1);
-
-	uint8_t send_third_word_to_ccu  =
-		(server_state->gdb_nwords > 2) || send_pc_npc_psr_to_ccu;
-	n_words_to_ccu += send_third_word_to_ccu;
-	words_to_ccu[2] = (send_pc_npc_psr_to_ccu ? server_state->NPC : server_state->gdb_word_3);
-	if(send_third_word_to_ccu && !send_pc_npc_psr_to_ccu)
-		assert (server_state->gdb_nwords > 2);
-
-
-	uint8_t send_fourth_word_to_ccu  = send_pc_npc_psr_to_ccu;
-	n_words_to_ccu += send_fourth_word_to_ccu;
-	words_to_ccu[3] = server_state->PSR;
-
-	int IDX;
-	for(IDX = 0; IDX < n_words_to_ccu; IDX++)
+	if(server_state->gdb_command.gdb_load_mmap)
+	// This a new case for load mmap(March 2025).  
 	{
-		sendU32FromDebugServerToCcu (server_connect_mode, words_to_ccu[IDX]);
+		// send the first one to ccu .. this is the command for load-mmap.
+		sendU32FromDebugServerToCcu (server_connect_mode, server_state->gdb_word_1);
+
+		// fprintf(stderr,"Info: load_mmap command = 0x%x\n", server_state->gdb_word_1);
+		int W;
+
+		// send the burst of words for mmap writes (address, then data).
+		for(W = 0; W < server_state->gdb_command.gdb_mmap_nwrites; W++)
+		{
+			sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_words[2*W]);
+			// fprintf(stderr,"Info: load_mmap sent address to CPU = 0x%x\n", server_state->mmap_words[2*W]);
+
+			sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_words[(2*W) + 1]);
+			// fprintf(stderr,"Info: load_mmap sent data  to CPU = 0x%x\n", server_state->mmap_words[(2*W) + 1]);
+		}
+	}
+	else
+	// All other commands.
+	{
+		uint32_t words_to_ccu[4];
+		uint32_t n_words_to_ccu = send_first_word_to_ccu;
+		words_to_ccu[0] = (send_connect_ok_to_ccu  ?
+				((1 << 24) | (gdb_dbg_CONNECT << 16) | 0) : 
+				server_state->gdb_word_1);
+
+		uint8_t send_pc_npc_psr_to_ccu =  
+			send_connect_ok_to_ccu ||
+			server_state->gdb_command.gdb_continue_cmd ||
+			server_state->gdb_command.gdb_detach_cmd;
+		uint8_t send_second_word_to_ccu  =
+			(server_state->gdb_nwords > 1) || send_pc_npc_psr_to_ccu;
+
+		n_words_to_ccu += send_second_word_to_ccu;
+		words_to_ccu[1] = (send_pc_npc_psr_to_ccu ? server_state->PC : server_state->gdb_word_2);
+		if(send_second_word_to_ccu && !send_pc_npc_psr_to_ccu)
+			assert (server_state->gdb_nwords > 1);
+
+		uint8_t send_third_word_to_ccu  =
+			(server_state->gdb_nwords > 2) || send_pc_npc_psr_to_ccu;
+		n_words_to_ccu += send_third_word_to_ccu;
+		words_to_ccu[2] = (send_pc_npc_psr_to_ccu ? server_state->NPC : server_state->gdb_word_3);
+		if(send_third_word_to_ccu && !send_pc_npc_psr_to_ccu)
+			assert (server_state->gdb_nwords > 2);
+
+
+		uint8_t send_fourth_word_to_ccu  = send_pc_npc_psr_to_ccu;
+		n_words_to_ccu += send_fourth_word_to_ccu;
+		words_to_ccu[3] = server_state->PSR;
+
+		int IDX;
+		for(IDX = 0; IDX < n_words_to_ccu; IDX++)
+		{
+			sendU32FromDebugServerToCcu (server_connect_mode, words_to_ccu[IDX]);
 #ifdef VERBOSE
-		fprintf(stderr,"Info: probeCcu: sent word_to_ccu[%d] = 0x%x\n",
-				IDX, words_to_ccu[IDX]);
+			fprintf(stderr,"Info: probeCcu: sent word_to_ccu[%d] = 0x%x\n",
+					IDX, words_to_ccu[IDX]);
 #endif
+		}
+
 	}
 
 	//////////////////////////////////////////////  get info from ccu ////////////////////////////////////////
@@ -350,6 +375,8 @@ void probeGdb(DebugServerState* server_state)
 	uint32_t get_second_word_from_gdb  = 0;
 	uint32_t get_third_word_from_gdb  = 0;
 	uint8_t  gdb_word_1_valid = 0;
+	int is_load_mmap = 0;
+
 	if(!gdb_in_invalid_state)
 	{
 		gdb_word_1_valid = recvValidGdbMessage (0, &gdb_word_1);
@@ -357,86 +384,117 @@ void probeGdb(DebugServerState* server_state)
 		if(gdb_word_1_valid)
 			fprintf(stderr,"Info: probeGdb: received gdb_word_1 = 0x%x\n", gdb_word_1);
 #endif
+
 		parseGdbCommand (server_state, gdb_word_1_valid, gdb_word_1);
 
-		get_second_word_from_gdb =
-			(
-			 server_state->gdb_command.gdb_set_bp_cmd  ||
-			 server_state->gdb_command.gdb_set_wp_cmd  ||
-			 server_state->gdb_command.gdb_clear_bp_cmd  ||
-			 server_state->gdb_command.gdb_clear_wp_cmd ||
-			 server_state->gdb_command.gdb_write_iureg  ||
-			 server_state->gdb_command.gdb_write_fpureg  ||
-			 server_state->gdb_command.gdb_write_cntrl_reg  ||
-			 server_state->gdb_command.gdb_write_mem  ||
-			 server_state->gdb_command.gdb_write_init_pc  ||
-			 server_state->gdb_command.gdb_write_init_npc  ||
-			 server_state->gdb_command.gdb_write_init_psr  ||
-			 server_state->gdb_command.gdb_write_cpreg  ||
-			 server_state->gdb_command.gdb_read_mem
-			);
-
-		if(get_second_word_from_gdb)
+		is_load_mmap = server_state->gdb_command.gdb_load_mmap;
+		if (is_load_mmap)
 		{
-			uint8_t gdb_word_2_valid = 0;
-			gdb_word_2_valid = recvValidGdbMessage (1, &gdb_word_2);
-			assert(gdb_word_2_valid);
-#ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: received gdb_word_2 = 0x%x\n", gdb_word_2);
-#endif
+			// fprintf(stderr,"Info: dbg_load_mmap command nwrites=0x%x\n", server_state->gdb_command.gdb_mmap_nwrites);
+
+			// read addresses and data into 
+			// the mmap_words field.
+			int I;
+			for(I = 0; I < server_state->gdb_command.gdb_mmap_nwrites; I++)
+			{
+				uint32_t w;
+
+				// get 2!
+				recvValidGdbMessage (1, &w);
+				server_state->mmap_words[2*I] = w;
+
+				recvValidGdbMessage (1, &w);
+				server_state->mmap_words[(2*I)+1] = w;
+
+				// fprintf(stderr,"Info: dbg_load_mmap received pair=0x%x, 0x%x\n", 
+				// server_state->mmap_words[2*I], 
+				// server_state->mmap_words[(2*I) + 1]); 
+
+
+			}
 		}
-
-		if(server_state->gdb_command.gdb_set_wp_cmd)
+		else
 		{
-			server_state->WP_REGS[server_state->gdb_command.gdb_wp_reg_index] = gdb_word_2;
-		}	
 
-		if(server_state->gdb_command.gdb_write_pc)
-		{
-			server_state->PC = gdb_word_2;
+			get_second_word_from_gdb =
+				(
+				 server_state->gdb_command.gdb_set_bp_cmd  ||
+				 server_state->gdb_command.gdb_set_wp_cmd  ||
+				 server_state->gdb_command.gdb_clear_bp_cmd  ||
+				 server_state->gdb_command.gdb_clear_wp_cmd ||
+				 server_state->gdb_command.gdb_write_iureg  ||
+				 server_state->gdb_command.gdb_write_fpureg  ||
+				 server_state->gdb_command.gdb_write_cntrl_reg  ||
+				 server_state->gdb_command.gdb_write_mem  ||
+				 server_state->gdb_command.gdb_write_init_pc  ||
+				 server_state->gdb_command.gdb_write_init_npc  ||
+				 server_state->gdb_command.gdb_write_init_psr  ||
+				 server_state->gdb_command.gdb_write_cpreg  ||
+				 server_state->gdb_command.gdb_read_mem
+				);
+
+			if(get_second_word_from_gdb)
+			{
+				uint8_t gdb_word_2_valid = 0;
+				gdb_word_2_valid = recvValidGdbMessage (1, &gdb_word_2);
+				assert(gdb_word_2_valid);
 #ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: set pc = 0x%x\n", gdb_word_2);
+				fprintf(stderr,"Info: probeGdb: received gdb_word_2 = 0x%x\n", gdb_word_2);
 #endif
-		}
+			}
 
-		if(server_state->gdb_command.gdb_write_npc)
-		{
-			server_state->NPC = gdb_word_2;
-#ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: set npc = 0x%x\n", gdb_word_2);
-#endif
-		}
+			if(server_state->gdb_command.gdb_set_wp_cmd)
+			{
+				server_state->WP_REGS[server_state->gdb_command.gdb_wp_reg_index] = gdb_word_2;
+			}	
 
-		if(server_state->gdb_command.gdb_write_psr)
-		{
-			server_state->PSR = gdb_word_2;
+			if(server_state->gdb_command.gdb_write_pc)
+			{
+				server_state->PC = gdb_word_2;
 #ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: set psr = 0x%x\n", gdb_word_2);
+				fprintf(stderr,"Info: probeGdb: set pc = 0x%x\n", gdb_word_2);
 #endif
-		}
+			}
 
-		get_third_word_from_gdb = server_state->gdb_command.gdb_write_mem;
-		if(get_third_word_from_gdb)
-		{
-			uint8_t gdb_word_3_valid = 0;
-			gdb_word_3_valid = recvValidGdbMessage (1, &gdb_word_3);
-			assert(gdb_word_3_valid);
+			if(server_state->gdb_command.gdb_write_npc)
+			{
+				server_state->NPC = gdb_word_2;
 #ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: received gdb_word_2 = 0x%x\n", gdb_word_3);
+				fprintf(stderr,"Info: probeGdb: set npc = 0x%x\n", gdb_word_2);
 #endif
-		}
+			}
 
-		uint8_t send_pc_or_npc = (server_state->gdb_command.gdb_read_pc ||
-				server_state->gdb_command.gdb_read_npc);	
-		send_quick_response_to_gdb = send_pc_or_npc;
-		if(send_pc_or_npc)
-		{
-			uint32_t quick_debug_response_word = 
-				(server_state->gdb_command.gdb_read_pc ? server_state->PC : server_state->NPC);
-			sendU32FromDebugServerToGdb(quick_debug_response_word);
+			if(server_state->gdb_command.gdb_write_psr)
+			{
+				server_state->PSR = gdb_word_2;
 #ifdef VERBOSE
-			fprintf(stderr,"Info: probeGdb: sent quick-response = 0x%x\n", quick_debug_response_word);
+				fprintf(stderr,"Info: probeGdb: set psr = 0x%x\n", gdb_word_2);
 #endif
+			}
+
+			get_third_word_from_gdb = server_state->gdb_command.gdb_write_mem;
+			if(get_third_word_from_gdb)
+			{
+				uint8_t gdb_word_3_valid = 0;
+				gdb_word_3_valid = recvValidGdbMessage (1, &gdb_word_3);
+				assert(gdb_word_3_valid);
+#ifdef VERBOSE
+				fprintf(stderr,"Info: probeGdb: received gdb_word_2 = 0x%x\n", gdb_word_3);
+#endif
+			}
+
+			uint8_t send_pc_or_npc = (server_state->gdb_command.gdb_read_pc ||
+					server_state->gdb_command.gdb_read_npc);	
+			send_quick_response_to_gdb = send_pc_or_npc;
+			if(send_pc_or_npc)
+			{
+				uint32_t quick_debug_response_word = 
+					(server_state->gdb_command.gdb_read_pc ? server_state->PC : server_state->NPC);
+				sendU32FromDebugServerToGdb(quick_debug_response_word);
+#ifdef VERBOSE
+				fprintf(stderr,"Info: probeGdb: sent quick-response = 0x%x\n", quick_debug_response_word);
+#endif
+			}
 		}
 	}
 
@@ -478,12 +536,19 @@ void probeGdb(DebugServerState* server_state)
 		server_state->gdb_nwords = 1;
 	else if(!gdb_in_invalid_state)
 	{
-		if(get_third_word_from_gdb)
-			server_state->gdb_nwords = 3;
-		else if(get_second_word_from_gdb)
-			server_state->gdb_nwords = 2;
-		else if(gdb_word_1_valid)
+		if(is_load_mmap) 
+		{
 			server_state->gdb_nwords = 1;
+		}
+		else 
+		{
+			if(get_third_word_from_gdb)
+				server_state->gdb_nwords = 3;
+			else if(get_second_word_from_gdb)
+				server_state->gdb_nwords = 2;
+			else if(gdb_word_1_valid)
+				server_state->gdb_nwords = 1;
+		}
 	}
 
 	server_state->gdb_word_1 = (send_continue_to_ccu ?
@@ -491,7 +556,13 @@ void probeGdb(DebugServerState* server_state)
 	server_state->gdb_word_2 = ((!gdb_in_invalid_state && get_second_word_from_gdb) ? gdb_word_2 : 0);
 	server_state->gdb_word_3 = ((!gdb_in_invalid_state && get_third_word_from_gdb)  ? gdb_word_3 : 0);
 
-	if(server_state->gdb_nwords > 0)
+	if(is_load_mmap)
+	{
+#ifdef VERBOSE
+		fprintf(stderr,"Info: leaving probeGdb: is_load_mmap with nwrites=%d\n", server_state->gdb_command.gdb_mmap_nwrites);
+#endif
+	}
+	else if(server_state->gdb_nwords > 0)
 	{
 #ifdef VERBOSE
 		fprintf(stderr,"Info: leaving probeGdb: gdb_nwords=%d, gdb_word_1=0x%x, gdb_word_2=0x%x, gdb_word_3=0x%x, pc=0x%x, npc=0x%x, psr=0x%x\n",

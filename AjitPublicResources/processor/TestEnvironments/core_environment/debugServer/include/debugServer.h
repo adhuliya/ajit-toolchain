@@ -26,7 +26,8 @@ typedef enum _DebugServerCcuState {
 
 
 typedef struct _GdbCommand {
-	uint8_t gdb_wp_reg_index;
+	uint8_t   gdb_wp_reg_index;
+	uint16_t  gdb_mmap_nwrites;
 
 	unsigned gdb_connect_cmd: 1;
 	unsigned gdb_continue_cmd : 1;
@@ -61,6 +62,8 @@ typedef struct _GdbCommand {
 	unsigned gdb_read_init_npc: 1;
 	unsigned gdb_read_init_psr: 1;
 	unsigned gdb_read_mode: 1;
+
+	unsigned gdb_load_mmap: 1;
 
 
 } GdbCommand;
@@ -109,6 +112,9 @@ typedef struct __DebugServerState  {
 	GdbCommand gdb_command;
 	CcuCommand ccu_command;
 	
+
+	uint32_t mmap_words[2*MAX_GDB_NUMBER_OF_MMAP_WRITES];
+ 
 
 } DebugServerState;
 

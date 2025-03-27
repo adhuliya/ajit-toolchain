@@ -1,6 +1,9 @@
 #ifndef __debugServerMultiThreadDefines___
 #define __debugServerMultiThreadDefines___
 
+//  mmap max block size.
+#define MAX_GDB_NUMBER_OF_MMAP_WRITES   1024     
+
 #define dbg_gdb_OK 		  0x00004F4B
 #define dbg_gdb_ERROR		  0x00004F5C
 #define dbg_gdb_BP_HIT	  	  0x53494705
@@ -45,6 +48,8 @@
 #define   gdb_dbg_READ_INIT_PSR             30
 #define   gdb_dbg_READ_MODE                 31
 
+// New added in  March 2025.
+#define   gdb_dbg_LOAD_MMAP                 32
 
 // "ccu_to_debug" commands
 // Unused opcode command

@@ -29,6 +29,9 @@
 #define DBG_READ_INIT_PSR         30
 #define DBG_READ_MODE             31
 
+// Added: load mmap... in March, 2025.
+#define DBG_LOAD_MMAP             32
+
 #define DBG_OK  		  0
 #define DBG_ERROR 		  1  
 
@@ -36,6 +39,14 @@
 #define DBG_CONNECT_WITH_PIPEHANDLER 0
 #define DBG_CONNECT_WITH_SOCKET      1
 #define DBG_CONNECT_WITH_UART        2
+
+#define DBG_UTILS_MMAP_STRUCT_SIZE   256
+typedef struct __DbgUtilsMmapDownloadStruct {
+	uint32_t address[DBG_UTILS_MMAP_STRUCT_SIZE];
+	uint32_t wdata[DBG_UTILS_MMAP_STRUCT_SIZE];
+
+	uint32_t number_of_writes;
+} DbgUtilsMmapDownloadStruct;
 	
 void setDebugUtilsInMultiCoreMode(int mcm);
 int  getDebugUtilsInMultiCoreMode();
@@ -44,6 +55,8 @@ int  getDebugUtilsCurrentCoreId();
 void setDebugUtilsCurrentThreadId(int thread_id);
 int  getDebugUtilsCurrentThreadId();
 
+void setDebugUtilsOptimizeMmapDownload(int v);
+int  getDebugUtilsOptimizeMmapDownload();
 
 uint32_t dbg_read_psr();
 uint32_t dbg_read_wim();
@@ -63,6 +76,8 @@ uint32_t dbg_write_asr(uint32_t asr_id, uint32_t val);
 uint32_t dbg_write_fsr(uint32_t val);
 uint32_t dbg_write_iunit_register(uint32_t reg_id, uint32_t val);
 uint32_t dbg_write_fpunit_register(uint32_t reg_id, uint32_t val);
+
+void dbg_send_write_mem_request (uint32_t asi, uint32_t addr, uint32_t data);
 uint32_t dbg_write_mem(uint32_t asi, uint32_t addr, uint32_t data);
 
 uint32_t dbg_set_watch_point(uint32_t addr);
@@ -97,6 +112,7 @@ void setDebugUtilsInSocketMode();
 void setDebugUtilsInUartMode();
 
 int dbg_load_mmap(char* memmap_filename);
+int dbg_load_mmap_optimized(char* memoryMapFile);
 
 void startDebugInterpreter();
 #endif

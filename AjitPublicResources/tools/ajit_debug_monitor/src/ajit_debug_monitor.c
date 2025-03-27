@@ -27,6 +27,7 @@
 #include "pthreadUtils.h"
 #include "aggregator.h"
 #include "spi_common.h"
+#include "debugServerDefines.h"
 #include "debugServer.h"
 #ifdef SUPPORT_AA2C
 #include "chip_afb_bridge_afb_bridge_aa_c_model.h"

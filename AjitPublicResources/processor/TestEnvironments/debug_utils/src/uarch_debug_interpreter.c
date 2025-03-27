@@ -18,6 +18,18 @@ FILE* log_file = NULL;
 
 int ajit_debug_interpreter_mt_ncores = 1;
 int ajit_debug_interpreter_mt_nthreads_per_core = 1;
+int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
+
+void setDebugInterpreterInFastMmapDownloadMode(int mcm)
+{
+	ajit_debug_interpreter_in_fast_mmap_download_mode = mcm;
+}
+
+int getDebugInterpreterInFastMmapDownloadMode()
+{
+	return (ajit_debug_interpreter_in_fast_mmap_download_mode);
+}
+
 void setDebugInterpreterNcoresNthreadsPerCore(int n, int t)
 {
 	if(n <= MAX_NCORES)
@@ -417,7 +429,12 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				err = 1;
 				break;
 			}
-			err = dbg_load_mmap(cmd_file_name);
+
+			if (getDebugInterpreterInFastMmapDownloadMode())
+				err = dbg_load_mmap_optimized(cmd_file_name);
+			else
+				err = dbg_load_mmap(cmd_file_name);
+
 			fprintf(stdout,"mmap returns 0x%x\n", err);
 			break;
 		case WRST:  // "w rst"

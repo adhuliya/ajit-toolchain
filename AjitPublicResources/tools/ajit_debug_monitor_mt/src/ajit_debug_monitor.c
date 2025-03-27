@@ -22,6 +22,7 @@
 #include "pthreadUtils.h"
 #include "spi_common.h"
 #include "GDBtoAJITbridge.h"
+#include "debugServerDefines.h"
 #include "debugServerMultiThread.h"
 #include "RxQueueServer.h"
 
@@ -93,6 +94,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -n <ncores>        : optional, specifies number of cores (default = 1).\n");
 	fprintf(stderr, "   -t <nthreads>      : optional, specifies number of threads-per-core (default = 1).\n");
 	fprintf(stderr, "   -u <serial-dev>    : optional, specifies serial device to use for debug interface.\n");
+	fprintf(stderr, "   -O                 : optional, load mmap in optimized (fast) mode.\n");
 	fprintf(stderr, "   -H                 : optional, use if you are monitoring a VHDL sim via socket.\n");
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
@@ -163,8 +165,10 @@ int main(int argc, char **argv)
 	char* uart_device_name = NULL;
 	uart_verbose_flag = 0;
 
+	int select_fast_mmap_mode = 0;
+
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:O")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -181,6 +185,9 @@ int main(int argc, char **argv)
 				mode_specified = 1;
 				uart_flag = 1;
 				uart_device_name = strdup(optarg);
+				break;
+			case 'O':
+				select_fast_mmap_mode = 1;
 				break;
 			case 'H':
 				mode_specified = 1;
@@ -291,6 +298,14 @@ int main(int argc, char **argv)
 	
 	// start the debug interpreter.
 	setDebugInterpreterNcoresNthreadsPerCore(ncores,nthreads_per_core);
+
+	int fast_mmap_mode = (select_fast_mmap_mode &&  !uart_verbose_flag);
+
+	if(fast_mmap_mode)
+		fprintf(stderr,"Info: use fast mmap download mode\n");
+
+	setDebugInterpreterInFastMmapDownloadMode(fast_mmap_mode);
+	
 	startDebugInterpreter();
 
 	return (main_ret_val);

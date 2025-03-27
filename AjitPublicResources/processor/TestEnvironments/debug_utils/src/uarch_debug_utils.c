@@ -3,8 +3,10 @@
 #include <stdint.h>
 #include <pipeHandler.h>
 #include <Pipes.h>
+#include <pthreadUtils.h>
 #include <uarch_debug_utils.h>
 #include <uart_interface.h>
+
 
 
 uint8_t debug_connect_mode = DBG_CONNECT_WITH_PIPEHANDLER;
@@ -48,6 +50,23 @@ int  getDebugUtilsCurrentThreadId()
 {
 	return(debug_utils_current_thread_id);
 }
+
+int debug_utils_optimize_mmap_download = 0;
+void setDebugUtilsOptimizeMmapDownload(int v)
+{
+	debug_utils_optimize_mmap_download = v;
+}
+int  getDebugUtilsOptimizeMmapDownload()
+{
+	return(debug_utils_optimize_mmap_download);
+}
+
+DbgUtilsMmapDownloadStruct  mmap_download_struct;
+void initMmapDownloadStruct()
+{
+	mmap_download_struct.number_of_writes = 0;
+}
+
 
 
 
@@ -221,7 +240,8 @@ uint32_t dbg_write_fpunit_register(uint32_t reg_id, uint32_t val)
 {
 	return(__dbg_write_reg(DBG_WRITE_FPUNIT_REG, 6, reg_id, val));
 }
-uint32_t dbg_write_mem(uint32_t asi, uint32_t addr, uint32_t data)
+
+void dbg_send_write_mem_request (uint32_t asi, uint32_t addr, uint32_t data)
 {
 	uint32_t cmd_val = (3 << 24);
 	cmd_val = (cmd_val | (DBG_WRITE_MEM << 16));
@@ -229,6 +249,11 @@ uint32_t dbg_write_mem(uint32_t asi, uint32_t addr, uint32_t data)
 	dbg_send_debug_command( cmd_val);
 	dbg_send_debug_command( addr);
 	dbg_send_debug_command( data);
+}
+
+uint32_t dbg_write_mem(uint32_t asi, uint32_t addr, uint32_t data)
+{
+	dbg_send_write_mem_request (asi, addr, data);
 	uint32_t ret_val = dbg_get_debug_response();
 	return(ret_val);
 }
@@ -468,6 +493,8 @@ int dbg_load_mmap(char* memoryMapFile)
 	fclose(file);
 	return 0;
 }
+
+
 uint32_t dbg_write_reset(uint32_t rval)
 {
 	uint32_t cmd_val = (1 << 24); // 1-word comand
@@ -557,3 +584,127 @@ uint32_t dbg_read_mode()
 	return(0);
 }
 
+///////////////////////   Added to speed up mmap downloads ///////////////////////////////////
+			
+int insertWriteIntoMmapDownloadStructmmap(uint32_t addr, uint32_t data)
+{
+	mmap_download_struct.address[mmap_download_struct.number_of_writes] = addr;
+	mmap_download_struct.wdata[mmap_download_struct.number_of_writes] = data;
+
+	mmap_download_struct.number_of_writes += 1;
+	return(mmap_download_struct.number_of_writes == DBG_UTILS_MMAP_STRUCT_SIZE);
+}
+
+uint32_t exec_burst_mmap_download()
+{
+	int I;
+
+	uint32_t command = (DBG_LOAD_MMAP << 16) | (mmap_download_struct.number_of_writes & 0xffff);
+	dbg_send_debug_command(command);
+
+	for(I = 0; I < mmap_download_struct.number_of_writes; I++)
+	{
+		// send address, data..
+		dbg_send_debug_command(mmap_download_struct.address[I]);
+		dbg_send_debug_command(mmap_download_struct.wdata[I]);
+	}
+	
+	uint32_t resp = dbg_get_debug_response();
+	// fprintf(stderr,"exec_burst response=0x%x\n", resp);
+
+	// clear number_of_writes.
+	initMmapDownloadStruct();
+
+	return(resp);
+}
+
+int dbg_load_mmap_optimized(char* memoryMapFile)
+{
+	// clear.
+	initMmapDownloadStruct();
+
+	FILE * file;
+	file= fopen(memoryMapFile, "r");
+	if(!file)
+	{
+		#ifdef SW
+		fprintf(stderr,"\n ERROR: file %s could not be opened for reading!\n",memoryMapFile);
+		#endif
+		return 1;
+	}
+	
+	#ifdef DEBUG
+	printf("\n opened memory map file %s\n",memoryMapFile);
+	#endif
+	uint32_t addr;
+	uint32_t  data;
+	int file_read=0;
+
+	int number_of_bytes_read = 0;
+	int current_word_address = -1;
+	int current_read_word    = 0;
+	int written_word_count = 0;
+
+	while (1)
+	{
+		int eof_reached = 0;
+		data = 0;
+		
+		file_read=fscanf(file, "%x", &addr);
+		if (feof(file)) 
+		{
+			eof_reached = 1;
+		}
+		else
+		{
+			file_read=fscanf(file, "%x", &data);
+		}
+
+		if(number_of_bytes_read == 0)
+		{
+			current_word_address = (addr & 0xfffffffc);
+			if(!eof_reached)
+				current_read_word = (data <<  8*(3 - (addr & 0x3)));
+		}
+
+		uint32_t masked_addr = addr & 0xfffffffc;
+		if ((current_word_address != masked_addr) || (eof_reached))
+		{
+			int sfull = 
+				insertWriteIntoMmapDownloadStructmmap(current_word_address, current_read_word);
+
+			if(sfull || eof_reached)
+			{
+				exec_burst_mmap_download();
+			}	
+			
+			current_word_address = masked_addr;
+			current_read_word = (data <<  8*(3 - (addr & 0x3)));
+
+			written_word_count++;
+
+			if((written_word_count % 1024) == 0)
+			{
+				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
+			}
+		}
+		else if (current_word_address == masked_addr)
+		{
+			current_read_word = current_read_word | (data <<  8*(3 - (addr & 0x3)));
+		}
+
+		number_of_bytes_read++;
+
+		if(eof_reached)
+		{
+			break;
+		}
+
+	}
+	fprintf(stderr, "\n Finished initializing memory from file %s.\
+			\nLast address written = %x.\n",memoryMapFile, addr);
+
+	
+	fclose(file);
+	return 0;
+}

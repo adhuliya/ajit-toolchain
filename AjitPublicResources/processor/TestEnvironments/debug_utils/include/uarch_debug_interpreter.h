@@ -47,6 +47,9 @@ int getDebugInterpreterNthreadsPerCore();
 void setDebugInterpreterInMultiCoreMode(int mcm);
 int getDebugInterpreterInMultiCoreMode();
 
+void setDebugInterpreterInFastMmapDownloadMode(int mcm);
+int getDebugInterpreterInFastMmapDownloadMode();
+
 void traceConfigure(uint32_t command_byte, uint32_t trigger_value, uint32_t start_addr, uint32_t trace_buffer_size);
 void traceDump(char* dump_file);
 

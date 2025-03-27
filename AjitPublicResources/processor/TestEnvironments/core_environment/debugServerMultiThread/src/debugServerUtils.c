@@ -9,8 +9,8 @@
 #include "SockPipes.h"
 #include <pthread.h>
 #include "pthreadUtils.h"
-#include <debugServerMultiThread.h>
 #include <debugServerDefines.h>
+#include <debugServerMultiThread.h>
 #include <uart_interface.h>
 #include "RxQueueServer.h"
 
@@ -239,6 +239,9 @@ void parseGdbCommand (DebugServerState* server_state, uint8_t valid_flag, uint32
 		server_state->gdb_command.gdb_read_init_pc = (gdb_cmd_opcode == gdb_dbg_READ_INIT_PC);
 		server_state->gdb_command.gdb_read_init_npc = (gdb_cmd_opcode == gdb_dbg_READ_INIT_NPC);
 		server_state->gdb_command.gdb_read_init_psr = (gdb_cmd_opcode == gdb_dbg_READ_INIT_PSR);
+
+		server_state->gdb_command.gdb_load_mmap = (gdb_cmd_opcode == gdb_dbg_LOAD_MMAP);
+                server_state->gdb_command.gdb_mmap_nwrites = gdb_cmd_data;
 	}
 }
 
