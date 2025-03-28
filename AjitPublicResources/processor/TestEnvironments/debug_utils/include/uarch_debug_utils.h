@@ -113,5 +113,7 @@ void setDebugUtilsInUartMode();
 int dbg_load_mmap(char* memmap_filename);
 int dbg_load_mmap_optimized(char* memoryMapFile);
 
+int dbg_check_mmap(char* memmap_filename);
+
 void startDebugInterpreter();
 #endif

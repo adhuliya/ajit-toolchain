@@ -10,6 +10,7 @@ typedef enum __InterpreterCommand {
         SCRIPT, // "s"
 	QUIT,  // "q"
 	MMAP,  // "m"
+	CMMAP, // "c"
         HELP,  // "h"
 	WRST,  // "w rst"
 	RMODE, // "r mode"

@@ -495,6 +495,97 @@ int dbg_load_mmap(char* memoryMapFile)
 	return 0;
 }
 
+// returns 0 if all ok
+int dbg_check_mmap(char* memoryMapFile)
+{
+	int ret_val = 0;
+	FILE * file;
+	file= fopen(memoryMapFile, "r");
+	if(!file)
+	{
+		#ifdef SW
+		fprintf(stderr,"\n ERROR: file %s could not be opened for reading!\n",memoryMapFile);
+		#endif
+		return 1;
+	}
+	
+	#ifdef DEBUG
+	printf("\n opened memory map file %s\n",memoryMapFile);
+	#endif
+	uint32_t addr;
+	uint32_t  data;
+	int file_read=0;
+
+	int number_of_bytes_read = 0;
+	int current_word_address = -1;
+	int current_read_word    = 0;
+	int written_word_count = 0;
+
+	while (1)
+	{
+		int eof_reached = 0;
+		data = 0;
+		
+		file_read=fscanf(file, "%x", &addr);
+		if (feof(file)) 
+		{
+			eof_reached = 1;
+		}
+		else
+		{
+			file_read=fscanf(file, "%x", &data);
+		}
+
+		if(number_of_bytes_read == 0)
+		{
+			current_word_address = (addr & 0xfffffffc);
+			if(!eof_reached)
+				current_read_word = (data <<  8*(3 - (addr & 0x3)));
+		}
+
+		uint32_t masked_addr = addr & 0xfffffffc;
+		if ((current_word_address != masked_addr) || (eof_reached))
+		{
+			uint32_t read_back = dbg_read_mem(0x20, current_word_address);
+			if(read_back != current_read_word)
+			{
+					fprintf(stderr,"Error: read-back mem[0x%x] = 0x%x, expected 0x%x.\n",  
+										current_word_address, 
+										read_back,
+										current_read_word);
+				ret_val = 1;
+			}
+
+
+			current_word_address = masked_addr;
+			current_read_word = (data <<  8*(3 - (addr & 0x3)));
+
+			written_word_count++;
+
+			if((written_word_count % 1024) == 0)
+			{
+				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
+			}
+		}
+		else if (current_word_address == masked_addr)
+		{
+			current_read_word = current_read_word | (data <<  8*(3 - (addr & 0x3)));
+		}
+
+		number_of_bytes_read++;
+
+		if(eof_reached)
+			break;
+
+	}
+
+	fprintf(stderr, "\n Finished checking memory from file %s\n",  memoryMapFile);
+	if(ret_val == 1)
+		fprintf(stderr, "\n There were errors.\n");
+
+	fclose(file);
+	return ret_val;
+}
 
 uint32_t dbg_write_reset(uint32_t rval)
 {
@@ -705,7 +796,7 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 		// word aligned value of addr.
 		uint32_t masked_addr = addr & 0xfffffffc;
 
-#ifdef DEBBUGGGG
+#if DEBBUGGGG
 		fprintf(stderr,"Info: dbg_load_mmap_optimized: addr=0x%x, byte=0x%x, current_word_address=0x%x, masked_addr=0x%x, last_current_word_addr=0x%x\n",
 					addr, data, current_word_address, masked_addr, current_word_address);
 #endif

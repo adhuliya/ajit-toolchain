@@ -40,7 +40,7 @@ uint32_t exec_burst_mmap_download()
 
 	int I;
 
-	fprintf (stdout, "---------------------------------  End Burst %d  --------------------------------\n", burst_counter);
+	fprintf (stdout, "---------------------------------  Start Burst %d  --------------------------------\n", burst_counter);
 	uint32_t base_address = mmap_download_struct.base_address;
 	for(I = 0; I < mmap_download_struct.number_of_writes; I++)
 		// send the burst.

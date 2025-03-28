@@ -113,7 +113,8 @@ void probeCcu(DebugServerState* server_state)
 		sendU32FromDebugServerToCcu (server_connect_mode, server_state->gdb_word_1);
 
 		// send the base address
-		sendU32FromDebugServerToCcu (server_connect_mode, server_state->gdb_command.gdb_mmap_base_address); 
+		sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_base_address); 
+		// fprintf(stderr,"Info: load_mmap base_address = 0x%x\n", server_state->mmap_base_address);
 
 		int W;
 		// send the burst of words for mmap writes (address, then data).
@@ -393,7 +394,8 @@ void probeGdb(DebugServerState* server_state)
 			// get the base address
 			uint32_t base_addr = 0;
 			recvValidGdbMessage (1, &base_addr);
-			server_state->gdb_command.gdb_mmap_base_address = base_addr;
+			// fprintf(stderr,"Info: load_mmap base_address = 0x%x\n", base_addr);
+			server_state->mmap_base_address = base_addr;
 
 			// read data burst
 			// the mmap_words field.

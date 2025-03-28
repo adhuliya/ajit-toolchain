@@ -85,6 +85,7 @@ void printHelpMessage()
 				"g stop                              : GDB server stop\n"\
 				"s <script-file>                     : execute commands in script-file\n"\
 				"m  <mmap-file>                      : load mmap file to processor system memory\n" \
+				"c  <mmap-file>                      : check load mmap values in processor system memory\n" \
 				"w rst <rst-val>                     : write reset value\n"\
 				"r mode                              : read processor-mode\n"\
 				"w ipc/inpc/ipsr/psr/tbr/y/wim <write-val>  : write value to ipc/inpc/ etc.\n"\
@@ -191,12 +192,15 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 	}
 	else if ( (kw[0] == 's') ||
 			(kw[0] == 'm') ||
+			(kw[0] == 'c') ||
 			(kw[0] == 'l'))
 	{
 		if(kw[0] == 's')
 			*opcode = SCRIPT;
 		else if(kw[0] == 'm')
 			*opcode = MMAP;
+		else if(kw[0] == 'c')
+			*opcode = CMMAP;
 		else
 			*opcode = LOG;
 
@@ -436,6 +440,16 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				err = dbg_load_mmap(cmd_file_name);
 
 			fprintf(stdout,"mmap returns 0x%x\n", err);
+			break;
+		case CMMAP:
+			if(nargs < 2)
+			{
+				fprintf(stderr,"Error: not enough args\n");
+				err = 1;
+				break;
+			}
+
+			err = dbg_check_mmap(cmd_file_name);
 			break;
 		case WRST:  // "w rst"
 			if(nargs > 1)

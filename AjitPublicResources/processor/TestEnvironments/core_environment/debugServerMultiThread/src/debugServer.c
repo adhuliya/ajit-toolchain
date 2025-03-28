@@ -107,7 +107,7 @@ void probeCcu(DebugServerState* server_state, int CORE_ID, int THREAD_ID)
 		perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->gdb_word_1);
 
 		// send the base address
-		perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->gdb_command.gdb_mmap_base_address);
+		perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->mmap_base_address);
 
 
 		// send the write burst.
@@ -414,7 +414,7 @@ void probeGdb(DebugServerState* server_state, int CORE_ID, int THREAD_ID)
 			// get the base address of the mmap burst.
 			uint32_t base_addr;
 			perThreadRecvValidGdbMessage (CORE_ID, THREAD_ID, 1, &base_addr);
-			server_state->gdb_command.gdb_mmap_base_address = base_addr;
+			server_state->mmap_base_address = base_addr;
 
 
 			// read addresses and data into 
