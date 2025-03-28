@@ -28,6 +28,7 @@ typedef enum _DebugServerCcuState {
 typedef struct _GdbCommand {
 	uint8_t   gdb_wp_reg_index;
 	uint16_t  gdb_mmap_nwrites;
+	uint32_t  gdb_mmap_base_address;
 
 	unsigned gdb_connect_cmd: 1;
 	unsigned gdb_continue_cmd : 1;

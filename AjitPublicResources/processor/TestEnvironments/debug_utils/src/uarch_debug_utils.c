@@ -8,6 +8,7 @@
 #include <uart_interface.h>
 
 
+#define DEBBUGGGG  0
 
 uint8_t debug_connect_mode = DBG_CONNECT_WITH_PIPEHANDLER;
 extern int global_verbose_flag;
@@ -588,10 +589,21 @@ uint32_t dbg_read_mode()
 			
 int insertWriteIntoMmapDownloadStructmmap(uint32_t addr, uint32_t data)
 {
-	mmap_download_struct.address[mmap_download_struct.number_of_writes] = addr;
-	mmap_download_struct.wdata[mmap_download_struct.number_of_writes] = data;
+	int nw = 	mmap_download_struct.number_of_writes;
 
-	mmap_download_struct.number_of_writes += 1;
+	if(nw == 0)
+	{
+		// update base address.
+		mmap_download_struct.base_address = addr;
+	}
+
+	mmap_download_struct.wdata[nw] = data;
+	mmap_download_struct.number_of_writes = nw + 1;
+
+#if DEBBUGGGG 
+	fprintf(stderr,"Info: insert-into-burst: 0x%x, 0x%x, nwrites=0x%x\n", addr, data, nw+1);
+#endif
+
 	return(mmap_download_struct.number_of_writes == DBG_UTILS_MMAP_STRUCT_SIZE);
 }
 
@@ -599,18 +611,38 @@ uint32_t exec_burst_mmap_download()
 {
 	int I;
 
+#if DEBBUGGGG
+	fprintf(stderr,"Info: in exec_burst_map_download\n");
+#endif
+
 	uint32_t command = (DBG_LOAD_MMAP << 16) | (mmap_download_struct.number_of_writes & 0xffff);
 	dbg_send_debug_command(command);
 
+#if DEBBUGGGG
+	fprintf(stderr,"Info: in exec_burst_map_download, sent command=0x%x\n", command);
+#endif
+
+	uint32_t base_address = mmap_download_struct.base_address;
+	dbg_send_debug_command(base_address);
+
+#if DEBBUGGGG
+	fprintf(stderr,"Info: in exec_burst_map_download, sent base_address=0x%x\n", base_address);
+#endif
+
 	for(I = 0; I < mmap_download_struct.number_of_writes; I++)
+		// send the burst.
 	{
-		// send address, data..
-		dbg_send_debug_command(mmap_download_struct.address[I]);
 		dbg_send_debug_command(mmap_download_struct.wdata[I]);
+#if DEBBUGGGG
+		fprintf(stderr,"Info: in exec_burst_map_download, sent wdata[%d]=0x%x\n", I, mmap_download_struct.wdata[I]);
+#endif
 	}
-	
+
+
 	uint32_t resp = dbg_get_debug_response();
-	// fprintf(stderr,"exec_burst response=0x%x\n", resp);
+#if DEBBUGGGG
+	fprintf(stderr,"Info: in exec_burst_map_download, received response=0x%x\n", resp);
+#endif
 
 	// clear number_of_writes.
 	initMmapDownloadStruct();
@@ -627,21 +659,24 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 	file= fopen(memoryMapFile, "r");
 	if(!file)
 	{
-		#ifdef SW
+#ifdef SW
 		fprintf(stderr,"\n ERROR: file %s could not be opened for reading!\n",memoryMapFile);
-		#endif
+#endif
 		return 1;
 	}
-	
-	#ifdef DEBUG
+
+#ifdef DEBUG
 	printf("\n opened memory map file %s\n",memoryMapFile);
-	#endif
+#endif
 	uint32_t addr;
 	uint32_t  data;
 	int file_read=0;
 
 	int number_of_bytes_read = 0;
+
+	int last_current_word_address = -1;
 	int current_word_address = -1;
+
 	int current_read_word    = 0;
 	int written_word_count = 0;
 
@@ -649,7 +684,7 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 	{
 		int eof_reached = 0;
 		data = 0;
-		
+
 		file_read=fscanf(file, "%x", &addr);
 		if (feof(file)) 
 		{
@@ -667,17 +702,48 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 				current_read_word = (data <<  8*(3 - (addr & 0x3)));
 		}
 
+		// word aligned value of addr.
 		uint32_t masked_addr = addr & 0xfffffffc;
+
+#ifdef DEBBUGGGG
+		fprintf(stderr,"Info: dbg_load_mmap_optimized: addr=0x%x, byte=0x%x, current_word_address=0x%x, masked_addr=0x%x, last_current_word_addr=0x%x\n",
+					addr, data, current_word_address, masked_addr, current_word_address);
+#endif
+
+		// if current word address (that is, the last sent) is different from the masked value of addr that was just read...
 		if ((current_word_address != masked_addr) || (eof_reached))
 		{
-			int sfull = 
-				insertWriteIntoMmapDownloadStructmmap(current_word_address, current_read_word);
+			// always put the current word into the buffer.
+			int sfull;
+			sfull = insertWriteIntoMmapDownloadStructmmap(current_word_address, current_read_word);
 
-			if(sfull || eof_reached)
+			int continue_burst = (!eof_reached) && ((current_word_address + 4) == masked_addr);
+
+			if(continue_burst && !sfull)
+			// continue and not full... go on.
 			{
+				// burst can be continued..
+#if DEBBUGGGG
+				fprintf(stderr, "Continue burst.\n");
+#endif
+			}
+			else
+			// !continue or full
+			{
+#if DEBBUGGGG
+				if(!eof_reached) 
+					fprintf(stderr,"restart burst\n");
+				fprintf(stderr,"Info: dbg_load_mmap_optimized: identified burst(%d) from 0x%x to 0x%x (sfull=%d, eof=%d)\n",
+						mmap_download_struct.number_of_writes,
+						mmap_download_struct.base_address,
+						last_current_word_address,
+						sfull, eof_reached);
+#endif
+				// send the burst..
 				exec_burst_mmap_download();
-			}	
-			
+			}
+
+
 			current_word_address = masked_addr;
 			current_read_word = (data <<  8*(3 - (addr & 0x3)));
 
@@ -687,6 +753,8 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 			{
 				fprintf(stderr,"Info: initialized %d words..\n", written_word_count);
 			}
+
+			last_current_word_address    = current_word_address;
 		}
 		else if (current_word_address == masked_addr)
 		{
@@ -704,7 +772,7 @@ int dbg_load_mmap_optimized(char* memoryMapFile)
 	fprintf(stderr, "\n Finished initializing memory from file %s.\
 			\nLast address written = %x.\n",memoryMapFile, addr);
 
-	
+
 	fclose(file);
-	return 0;
+	return (written_word_count);
 }

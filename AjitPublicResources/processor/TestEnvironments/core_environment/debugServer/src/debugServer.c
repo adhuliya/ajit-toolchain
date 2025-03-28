@@ -112,16 +112,14 @@ void probeCcu(DebugServerState* server_state)
 		// send the first one to ccu .. this is the command for load-mmap.
 		sendU32FromDebugServerToCcu (server_connect_mode, server_state->gdb_word_1);
 
-		// fprintf(stderr,"Info: load_mmap command = 0x%x\n", server_state->gdb_word_1);
-		int W;
+		// send the base address
+		sendU32FromDebugServerToCcu (server_connect_mode, server_state->gdb_command.gdb_mmap_base_address); 
 
+		int W;
 		// send the burst of words for mmap writes (address, then data).
 		for(W = 0; W < server_state->gdb_command.gdb_mmap_nwrites; W++)
 		{
-			sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_words[2*W]);
-			// fprintf(stderr,"Info: load_mmap sent address to CPU = 0x%x\n", server_state->mmap_words[2*W]);
-
-			sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_words[(2*W) + 1]);
+			sendU32FromDebugServerToCcu (server_connect_mode, server_state->mmap_words[W]);
 			// fprintf(stderr,"Info: load_mmap sent data  to CPU = 0x%x\n", server_state->mmap_words[(2*W) + 1]);
 		}
 	}
@@ -391,25 +389,21 @@ void probeGdb(DebugServerState* server_state)
 		if (is_load_mmap)
 		{
 			// fprintf(stderr,"Info: dbg_load_mmap command nwrites=0x%x\n", server_state->gdb_command.gdb_mmap_nwrites);
+			
+			// get the base address
+			uint32_t base_addr = 0;
+			recvValidGdbMessage (1, &base_addr);
+			server_state->gdb_command.gdb_mmap_base_address = base_addr;
 
-			// read addresses and data into 
+			// read data burst
 			// the mmap_words field.
 			int I;
 			for(I = 0; I < server_state->gdb_command.gdb_mmap_nwrites; I++)
 			{
 				uint32_t w;
 
-				// get 2!
 				recvValidGdbMessage (1, &w);
-				server_state->mmap_words[2*I] = w;
-
-				recvValidGdbMessage (1, &w);
-				server_state->mmap_words[(2*I)+1] = w;
-
-				// fprintf(stderr,"Info: dbg_load_mmap received pair=0x%x, 0x%x\n", 
-				// server_state->mmap_words[2*I], 
-				// server_state->mmap_words[(2*I) + 1]); 
-
+				server_state->mmap_words[I] = w;
 
 			}
 		}

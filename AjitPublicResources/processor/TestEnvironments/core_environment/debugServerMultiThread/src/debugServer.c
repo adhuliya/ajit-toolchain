@@ -106,17 +106,15 @@ void probeCcu(DebugServerState* server_state, int CORE_ID, int THREAD_ID)
 		// send the first one to ccu .. this is the command for load-mmap.
 		perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->gdb_word_1);
 
-		// fprintf(stderr,"Info: load_mmap command = 0x%x\n", server_state->gdb_word_1);
-		int W;
+		// send the base address
+		perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->gdb_command.gdb_mmap_base_address);
 
-		// send the burst of words for mmap writes (address, then data).
+
+		// send the write burst.
+		int W;
 		for(W = 0; W < server_state->gdb_command.gdb_mmap_nwrites; W++)
 		{
-			perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->mmap_words[2*W]);
-			// fprintf(stderr,"Info: load_mmap sent address to CPU = 0x%x\n", server_state->mmap_words[2*W]);
-
-			perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->mmap_words[(2*W) + 1]);
-			//fprintf(stderr,"Info: load_mmap sent data  to CPU = 0x%x\n", server_state->mmap_words[(2*W) + 1]);
+			perThreadSendU32FromDebugServerToCcu (CORE_ID, THREAD_ID, server_connect_mode, server_state->mmap_words[W]);
 		}
 	}
 	else
@@ -410,9 +408,14 @@ void probeGdb(DebugServerState* server_state, int CORE_ID, int THREAD_ID)
 		parseGdbCommand (server_state, gdb_word_1_valid, gdb_word_1);
 		is_load_mmap = server_state->gdb_command.gdb_load_mmap;
 
+
 		if (is_load_mmap)
 		{
-			// fprintf(stderr,"Info: dbg_load_mmap command nwrites=0x%x\n", server_state->gdb_command.gdb_mmap_nwrites);
+			// get the base address of the mmap burst.
+			uint32_t base_addr;
+			perThreadRecvValidGdbMessage (CORE_ID, THREAD_ID, 1, &base_addr);
+			server_state->gdb_command.gdb_mmap_base_address = base_addr;
+
 
 			// read addresses and data into 
 			// the mmap_words field.
@@ -421,18 +424,9 @@ void probeGdb(DebugServerState* server_state, int CORE_ID, int THREAD_ID)
 			{
 				uint32_t w;
 
-				// get 2!
+				// get the data
 				perThreadRecvValidGdbMessage (CORE_ID, THREAD_ID, 1, &w);
-				server_state->mmap_words[2*I] = w;
-
-				perThreadRecvValidGdbMessage (CORE_ID, THREAD_ID, 1, &w);
-				server_state->mmap_words[(2*I)+1] = w;
-
-				//fprintf(stderr,"Info: dbg_load_mmap received pair=0x%x, 0x%x\n", 
-						//server_state->mmap_words[2*I], 
-						//server_state->mmap_words[(2*I) + 1]); 
-
-
+				server_state->mmap_words[I] = w;
 			}
 		}
 		else

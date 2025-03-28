@@ -40,11 +40,10 @@
 #define DBG_CONNECT_WITH_SOCKET      1
 #define DBG_CONNECT_WITH_UART        2
 
-#define DBG_UTILS_MMAP_STRUCT_SIZE   256
+#define DBG_UTILS_MMAP_STRUCT_SIZE   16
 typedef struct __DbgUtilsMmapDownloadStruct {
-	uint32_t address[DBG_UTILS_MMAP_STRUCT_SIZE];
 	uint32_t wdata[DBG_UTILS_MMAP_STRUCT_SIZE];
-
+	uint32_t base_address;
 	uint32_t number_of_writes;
 } DbgUtilsMmapDownloadStruct;
 	
