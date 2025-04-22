@@ -167,7 +167,7 @@ void perThreadRecvBytesFromRxDaemon (int CORE_ID, int THREAD_ID, uint8_t*  buf, 
 				break;
 			}
 
-			usleep(100);
+			usleep(10);
 		}
 		buf[I] = bval;
 	}

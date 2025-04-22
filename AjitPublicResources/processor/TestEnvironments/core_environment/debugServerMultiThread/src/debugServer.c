@@ -615,7 +615,7 @@ void perThreadDebugServerDaemon(void* vid)
 	{
 		probeCcu(&server_state, CORE_ID, THREAD_ID);
 		probeGdb(&server_state, CORE_ID, THREAD_ID);
-		usleep(100);
+		usleep(1);
 	}
 }
 

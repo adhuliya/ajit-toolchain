@@ -166,7 +166,7 @@ uint8_t perThreadRecvValidCcuMessage (int CORE_ID, int THREAD_ID, uint8_t blocki
 			*read_word = rsp & 0xffffffff;
 			break;
 		}
-		usleep (100);
+		usleep (1);
 	}
 	return(ret_val);
 }
@@ -186,7 +186,7 @@ uint8_t perThreadRecvValidGdbMessage (int CORE_ID, int THREAD_ID,  uint8_t block
 			*read_word = rsp & 0xffffffff;
 			break;
 		}
-		usleep (100);
+		usleep (1);
 	}
 	return(ret_val);
 }

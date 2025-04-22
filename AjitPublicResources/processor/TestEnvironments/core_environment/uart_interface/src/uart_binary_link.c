@@ -38,6 +38,12 @@ int uart_blocking_flag = 1;
 #define B38400	0x0000000f
 #define  B57600   0010001
 #define  B115200  0010002
+#define   B230400 0010003
+#define   B460800 0010004
+#define   B500000 0010005
+#define   B576000 0010006
+#define   B921600 0010007
+#define  B1000000 0010010
 
 */
 
@@ -69,10 +75,18 @@ int setBaudRate(int b)
 		case 38400: uart_baud_rate = B38400; break;
 		case 57600: uart_baud_rate = B57600; break;
 		case 115200: uart_baud_rate = B115200; break;
+		case 230400: uart_baud_rate = B230400; break;
+		case 460800: uart_baud_rate = B460800; break;
+		case 500000: uart_baud_rate = B500000; break;
+		case 576000: uart_baud_rate = B576000; break;
+		case 921600: uart_baud_rate = B921600; break;
+		case 1000000: uart_baud_rate = B1000000; break;
 		default: 
 			ret_val = 1;
-			fprintf(stderr,"Error: setBaudRate %d: supported values 9600/19200/38400/57600/115200.\n",
+			fprintf(stderr,"Error: setBaudRate %d: supported values 9600/19200/38400/57600/115200\n"
+                                       "                           /230400/460800/500000/576000/921600/1000000.\n",
 						b);
+			fprintf(stderr,"     default is 115200\n");
 			break;
 	}
 	return(ret_val);
@@ -233,7 +247,7 @@ int sendByte(uint8_t x)
 		if(ret_val == 1)
 			break;
 
-		usleep(10);
+		usleep(1);
 	}
 
 	return(1);
@@ -251,7 +265,7 @@ uint8_t recvByte()
 		if(n == 1)
 			break;
 
-		usleep(10);
+		usleep(1);
 	}
 
 	return(ret_val);
@@ -284,7 +298,7 @@ uint8_t recvByteFromSpecifiedUart(int fd)
 			break;
 		}
 
-		usleep(10);
+		usleep(1);
 	}
 
 	return(ret_val);
@@ -349,7 +363,7 @@ int recvBytesOverUartBase(uint8_t* buf,  int count, int noblock_flag, int downto
 					}
 					else
 					{
-						usleep(10);
+						usleep(1);
 					}
 				}
 			}
