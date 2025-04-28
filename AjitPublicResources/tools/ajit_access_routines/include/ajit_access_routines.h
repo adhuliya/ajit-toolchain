@@ -101,7 +101,7 @@ void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr);
 //  MSB                     LSB
 //  0x52  0x50  <core-id> <thread-id>
 //
-inline uint32_t __ajit_read_core_thread_id_word__();
+uint32_t __ajit_read_core_thread_id_word__();
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ void release_mutex_using_ldstub(int mutex_address);
 // initialize all iu gp-registers to 0. All globals and window
 //  registers (across all windows) will be cleared.
 //
-inline void __ajit_clear_all_gp_registers__();
+void __ajit_clear_all_gp_registers__();
 
 
 //
@@ -137,15 +137,15 @@ inline void __ajit_clear_all_gp_registers__();
 //      following routines allow you to access the high and
 //      low words in the counter).
 //
-inline uint32_t __ajit_read_cycle_count_register_high__();
-inline uint32_t __ajit_read_cycle_count_register_low__();
+uint32_t __ajit_read_cycle_count_register_high__();
+uint32_t __ajit_read_cycle_count_register_low__();
 
 //
 // reads high and low clock counters to return
 // the value...   Returns the number of elapsed ticks
 // where one tick is one clock cycle.
 // 
-inline uint64_t __ajit_get_clock_time();
+uint64_t __ajit_get_clock_time();
 //
 // sleep for specified number of clock cycles.
 //
@@ -209,19 +209,19 @@ void __ajit_sleep__(uint32_t clock_cycles);
 //
 //  pass dc_bit = 1 to set the default cacheable bit, 0 to clear it.
 //
-inline void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit);
+void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit);
 
 
 //
 // store word into mmu register
 //
-inline void __ajit_store_word_mmu_reg__(uint32_t value, uint32_t addr);
+void __ajit_store_word_mmu_reg__(uint32_t value, uint32_t addr);
 
 //
 // store while bypassing the MMU.
 //   (this is one way to access peripherals).
 //
-inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr);
+void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr);
 #define __AJIT_STORE_WORD_MMU_BYPASS__(addr,value) {\
 	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr), "i"(ASI_MMU_BYPASS) : "memory");}
 #define __AJIT_STORE_UBYTE_MMU_BYPASS__(addr,value) {\
@@ -234,17 +234,17 @@ inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr);
 //
 // Use bypass ASI to read directly from physical address!
 //
-inline void	 __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address);
-inline uint32_t  __ajit_load_word_from_physical_address__(uint64_t physical_address);
+void	 __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address);
+uint32_t  __ajit_load_word_from_physical_address__(uint64_t physical_address);
 
 //
 // load word from mmu register
 //
-inline uint32_t __ajit_load_word_mmu_reg__(uint32_t addr);
+uint32_t __ajit_load_word_mmu_reg__(uint32_t addr);
 //
 // load while bypassing mmu
 //   (this is one way to access peripherals).
-inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
+uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
 #define __AJIT_LOAD_WORD_MMU_BYPASS__(addr,value) {\
         __asm__ __volatile__("lda [%1] %2, %0\n\t" : "=r"(value) : "r"(addr), "i"(ASI_MMU_BYPASS));}
 #define __AJIT_LOAD_UBYTE_MMU_BYPASS__(addr,value) {\
@@ -261,13 +261,13 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr);
 //
 // flush icache
 // 
-inline void __ajit_flush_icache__(void);
+void __ajit_flush_icache__(void);
 
 
 //
 // flush_dcache
 //
-inline void __ajit_flush_dcache__(void);
+void __ajit_flush_dcache__(void);
 
 
 
@@ -275,8 +275,8 @@ inline void __ajit_flush_dcache__(void);
 //  Cycle-count register
 //     (cycle-count is maintained as a 64 bit register which is stored in ASR-30,31.)
 ///////////////////////////////////////////////////////////////////////////////////////////////
-inline uint32_t __ajit_read_cycle_count_register_high__();
-inline uint32_t __ajit_read_cycle_count_register_low__();
+uint32_t __ajit_read_cycle_count_register_high__();
+uint32_t __ajit_read_cycle_count_register_low__();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Built-in peripherals
@@ -296,19 +296,19 @@ inline uint32_t __ajit_read_cycle_count_register_low__();
 // Timer
 //---------------------------------------------------------------------------------------------
 //
-inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
-inline uint32_t __ajit_read_timer_control_register_via_bypass__();		  
+void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
+uint32_t __ajit_read_timer_control_register_via_bypass__();		  
 
 // bypass based methods.
 //
-inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
-inline uint32_t __ajit_read_timer_control_register_via_bypass__();		  
+void __ajit_write_timer_control_register_via_bypass__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
+uint32_t __ajit_read_timer_control_register_via_bypass__();		  
 
 //
 //  normal load-store with non-cacheable page.
 //
-inline void __ajit_write_timer_control_register_via_vmap__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
-inline uint32_t __ajit_read_timer_control_register_via_vmap__();		  
+void __ajit_write_timer_control_register_via_vmap__(uint32_t val);  // [31:1] -> timer count, [0] -> enable.
+uint32_t __ajit_read_timer_control_register_via_vmap__();		  
 
 #ifdef USE_VMAP
 #define __ajit_write_timer_control_register__	__ajit_write_timer_control_register_via_vmap__
@@ -477,11 +477,11 @@ void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, 
 //
 //
 //  using mmu-bypass
-inline void __ajit_write_irc_control_register_via_bypass__(uint32_t val);
+void __ajit_write_irc_control_register_via_bypass__(uint32_t val);
 #define __AJIT_WRITE_IRC_CONTROL_REGISTER__(val) {\
 	__AJIT_STORE_WORD_MMU_BYPASS__(ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER, val);}
 
-inline uint32_t __ajit_read_irc_control_register_via_bypass__();
+uint32_t __ajit_read_irc_control_register_via_bypass__();
 #define __AJIT_READ_IRC_CONTROL_REGISTER__(val) {\
 	__AJIT_LOAD_WORD_MMU_BYPASS__(ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER, val);}
 
@@ -491,8 +491,8 @@ inline uint32_t __ajit_read_irc_control_register_via_bypass__();
 //
 // using normal load/store with non-cacheable page.
 //
-inline void 	__ajit_write_irc_control_register_via_vmap__(uint32_t val);
-inline uint32_t __ajit_read_irc_control_register_via_vmap__();
+void 	__ajit_write_irc_control_register_via_vmap__(uint32_t val);
+uint32_t __ajit_read_irc_control_register_via_vmap__();
 
 #ifdef USE_VMAP
 #define __ajit_write_irc_control_register__     __ajit_write_irc_control_register_via_vmap__
@@ -535,7 +535,7 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__();
 //---------------------------------------------------------------------------------------------
 // with mmu bypass..
 //---------------------------------------------------------------------------------------------
-inline void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id, uint8_t reg_val);
+void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id, uint8_t reg_val);
 
 // 
 // use this to read the data-registers, status (command) register
@@ -544,7 +544,7 @@ inline void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id);
+uint8_t __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id);
 
 // In SPI, we send a byte and simultaneously receive a byte,
 // which is returned by this routine.   Deselection of
@@ -593,7 +593,7 @@ uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, uint8
 
 // do an SPI transfer..  send send_byte to spi slave device_id, and
 // return byte received from slave.
-inline uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
+uint8_t __ajit_do_spi_transfer_inner__ (uint8_t use_vmap,
 						uint32_t spim_base_addr,
 						uint8_t device_id,
 						uint8_t send_byte, 
@@ -624,7 +624,7 @@ void      __ajit_write_gpio_32_via_vmap__ (uint32_t w);
 //---------------------------------------------------------------------------------------------
 // Trap
 //---------------------------------------------------------------------------------------------
-inline void __ajit_ta_0__ ();
+void __ajit_ta_0__ ();
 
 //---------------------------------------------------------------------------------------------
 //  Structure for performance counters.
@@ -657,17 +657,17 @@ void __ajit_sample_thread_performance_counters (int core_id, int thread_id,
 // SQRT
 //---------------------------------------------------------------------------------------------
 // *b  = fsqrtd (*a), uses f0,f1,f2,f3 registers..
-inline void __ajit_fsqrtd__ (uint32_t a, uint32_t b);
+void __ajit_fsqrtd__ (uint32_t a, uint32_t b);
 // *b  = fsqrts (*a), uses f0,f1 registers..
-inline void __ajit_fsqrts__ (uint32_t a, uint32_t b);
+void __ajit_fsqrts__ (uint32_t a, uint32_t b);
 // *b  = fitod (*a), uses f0,f2,f3 registers..
-inline void __ajit_fitod__  (uint32_t a, uint32_t b);
+void __ajit_fitod__  (uint32_t a, uint32_t b);
 // *b  = fitos (*a), uses f0,f1 registers..
-inline void __ajit_fitos__  (uint32_t a, uint32_t b);
+void __ajit_fitos__  (uint32_t a, uint32_t b);
 // *b  = fdtoi (*a), uses f0,f1,f2 registers..
-inline void __ajit_fdtoi__  (uint32_t a, uint32_t b);
+void __ajit_fdtoi__  (uint32_t a, uint32_t b);
 // *b  = fstoi (*a), uses f0,f1 registers..
-inline void __ajit_fstoi__  (uint32_t a, uint32_t b);
+void __ajit_fstoi__  (uint32_t a, uint32_t b);
 
 
 //---------------------------------------------------------------------------------------------

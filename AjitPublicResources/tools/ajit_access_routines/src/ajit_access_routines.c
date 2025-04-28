@@ -6,7 +6,7 @@
 //
 // initialize all iu gp-registers to 0.
 //
-inline void __ajit_clear_all_gp_registers__()
+void __ajit_clear_all_gp_registers__()
 {
 	//Initialize all registers
 	__asm__ __volatile__( "mov %g0, %g1 \n\t "); __asm__ __volatile__( "mov %g0, %g2 \n\t ");
@@ -144,7 +144,7 @@ uint8_t  ajit_i2c_master_access_slave_memory_device
 // If the first two bytes are not as indicated, this feature
 // is not supported in the CPU/thread.
 //
-inline uint32_t __ajit_read_core_thread_id_word__()
+uint32_t __ajit_read_core_thread_id_word__()
 {
         uint32_t retval;
         __asm__ __volatile__("rd %%asr29, %0 " :  "=r" (retval) : );
@@ -197,21 +197,21 @@ void ajit_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id)
 //      following routines allow you to access the high and
 //      low words in the counter).
 //
-inline uint32_t __ajit_read_cycle_count_register_high__()
+uint32_t __ajit_read_cycle_count_register_high__()
 {
         uint32_t retval;
         __asm__ __volatile__("rd %%asr30, %0 " :  "=r" (retval) : );
 	return(retval);
 }
 
-inline uint32_t __ajit_read_cycle_count_register_low__()
+uint32_t __ajit_read_cycle_count_register_low__()
 {
         uint32_t retval;
         __asm__ __volatile__("rd %%asr31, %0 " :  "=r" (retval) : );
 	return(retval);
 }
 
-inline uint64_t __ajit_get_clock_time()
+uint64_t __ajit_get_clock_time()
 {
 	uint64_t ret_val;
 	uint32_t v_l = __ajit_read_cycle_count_register_low__();
@@ -270,7 +270,7 @@ void __ajit_sleep__(uint32_t clock_cycles)
 //
 //  pass dc_bit = 1 to set the default cacheable bit, 0 to clear it.
 //
-inline void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit)
+void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit)
 {
 	uint32_t value = ((dc_bit != 0) ? 0x100 : 0);
 	uint32_t addr  = MMU_REG_CONTROL;
@@ -283,20 +283,20 @@ inline void __ajit_set_mmu_default_cacheable_bit__(uint8_t dc_bit)
 //
 // store word into mmu register
 //
-inline void __ajit_store_word_mmu_reg__(uint32_t value, uint32_t addr)
+void __ajit_store_word_mmu_reg__(uint32_t value, uint32_t addr)
 {
 	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr),
 			     "i"(ASI_MMU_REGISTER) : "memory");
 }
 
-inline void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr)
+void __ajit_store_word_mmu_bypass__(uint32_t value, uint32_t addr)
 {
 	//uint32_t asi = 0x20 | (highest_4_bits_of_phy_addr & 0xf);
 	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr),
 			     "i"(ASI_MMU_BYPASS) : "memory");
 }
 
-inline void __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address)
+void __ajit_store_word_to_physical_address__(uint32_t value, uint64_t physical_address)
 {
 	uint32_t la = physical_address;
 
@@ -360,7 +360,7 @@ inline void __ajit_store_word_to_physical_address__(uint32_t value, uint64_t phy
 	}
 }
 
-inline uint32_t __ajit_load_word_from_physical_address__(uint64_t physical_address)
+uint32_t __ajit_load_word_from_physical_address__(uint64_t physical_address)
 {
 	uint32_t value = 0;
 	uint64_t ms = (physical_address >> 32) & 0xf;
@@ -431,7 +431,7 @@ inline uint32_t __ajit_load_word_from_physical_address__(uint64_t physical_addre
 //
 // load word from mmu register
 //
-inline uint32_t __ajit_load_word_mmu_reg__(uint32_t addr)
+uint32_t __ajit_load_word_mmu_reg__(uint32_t addr)
 {
         uint32_t retval;
         __asm__ __volatile__("lda [%1] %2, %0\n\t" :
@@ -440,7 +440,7 @@ inline uint32_t __ajit_load_word_mmu_reg__(uint32_t addr)
 }
 
 
-inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr)
+uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr)
 {
         uint32_t retval;
         __asm__ __volatile__("lda [%1] %2, %0\n\t" :
@@ -455,7 +455,7 @@ inline uint32_t __ajit_load_word_mmu_bypass__(uint32_t addr)
 //
 // flush icache
 // 
-inline void __ajit_flush_icache__(void)
+void __ajit_flush_icache__(void)
 {
 	__asm__ __volatile__(" flush ");
 }
@@ -464,7 +464,7 @@ inline void __ajit_flush_icache__(void)
 //
 // flush_dcache
 //
-inline void __ajit_flush_dcache__(void)
+void __ajit_flush_dcache__(void)
 {
 	__asm__ __volatile__("sta %%g0, [%%g0] %0\n\t" : :
 			     "i"(ASI_FLUSH_I_D_CONTEXT) : "memory");
@@ -480,25 +480,25 @@ inline void __ajit_flush_dcache__(void)
 //---------------------------------------------------------------------------------------------
 // Timer
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_timer_control_register_via_bypass__(uint32_t val)
+void __ajit_write_timer_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_TIMER_CONTROL_REGISTER;
 	__ajit_store_word_mmu_bypass__(val,addr);
 					
 }
 
-inline uint32_t __ajit_read_timer_control_register_via_bypass__()
+uint32_t __ajit_read_timer_control_register_via_bypass__()
 {
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(ADDR_TIMER_CONTROL_REGISTER);
 	return(ret_val);
 }
 
-inline void __ajit_write_timer_control_register_via_vmap__(uint32_t val)
+void __ajit_write_timer_control_register_via_vmap__(uint32_t val)
 {
 	*((uint32_t*) ADDR_TIMER_CONTROL_REGISTER) = val;
 }
 
-inline uint32_t __ajit_read_timer_control_register_via_vmap__()
+uint32_t __ajit_read_timer_control_register_via_vmap__()
 {
 	uint32_t ret_val = *((uint32_t*)ADDR_TIMER_CONTROL_REGISTER);
 	return(ret_val);
@@ -508,13 +508,13 @@ inline uint32_t __ajit_read_timer_control_register_via_vmap__()
 //---------------------------------------------------------------------------------------------
 // Serial
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_serial_control_register_via_bypass__(uint32_t val)
+void __ajit_write_serial_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_SERIAL_CONTROL_REGISTER;
 	__AJIT_STORE_WORD_MMU_BYPASS__(addr,val);
 }
 
-inline uint32_t __ajit_read_serial_control_register_via_bypass__()
+uint32_t __ajit_read_serial_control_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_CONTROL_REGISTER;
 	uint32_t ret_val = 0;
@@ -522,13 +522,13 @@ inline uint32_t __ajit_read_serial_control_register_via_bypass__()
 	return(ret_val);
 }
 
-inline void __ajit_write_serial_tx_register_via_bypass__(uint8_t val)
+void __ajit_write_serial_tx_register_via_bypass__(uint8_t val)
 {
 	uint32_t addr = ADDR_SERIAL_TX_REGISTER;
 	__AJIT_STORE_UBYTE_MMU_BYPASS__(addr, val);
 }
 
-inline uint8_t __ajit_read_serial_tx_register_via_bypass__()
+uint8_t __ajit_read_serial_tx_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_TX_REGISTER;
 	uint8_t ret_val = 0;
@@ -536,7 +536,7 @@ inline uint8_t __ajit_read_serial_tx_register_via_bypass__()
 	return(ret_val);
 }
 
-inline uint8_t __ajit_read_serial_rx_register_via_bypass__()
+uint8_t __ajit_read_serial_rx_register_via_bypass__()
 {
 	uint32_t addr = ADDR_SERIAL_RX_REGISTER;
 	uint8_t ret_val = 0;
@@ -575,7 +575,7 @@ void	__ajit_serial_configure_via_bypass__ (uint8_t enable_tx, uint8_t enable_rx,
 	__ajit_serial_configure_inner__ (0,0, enable_tx, enable_rx, enable_intr);
 }
 
-inline void __ajit_serial_set_baudrate_via_bypass__ (uint32_t baud_rate, uint32_t clock_frequency)
+void __ajit_serial_set_baudrate_via_bypass__ (uint32_t baud_rate, uint32_t clock_frequency)
 {
 	__ajit_serial_set_baudrate_inner__ (0,0, baud_rate, clock_frequency);
 }
@@ -690,7 +690,7 @@ void __ajit_serial_set_uart_reset_via_vmap__ (uint8_t reset_val)
 	__ajit_serial_set_uart_reset_inner__(1,0, reset_val);
 }
 
-inline void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency)
+void __ajit_serial_set_baudrate_via_vmap__ (uint32_t baud_rate, uint32_t clock_frequency)
 {
 	__ajit_serial_set_baudrate_inner__ (1, 0, baud_rate, clock_frequency);
 }
@@ -797,7 +797,7 @@ void __ajit_serial_configure_inner__
 		__AJIT_STORE_WORD_MMU_BYPASS__(ctrl_reg_addr, cval);
 
 }
-inline void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, 
+void __ajit_serial_set_baudrate_inner__ (uint8_t use_vmap, 
 							uint32_t serial_device_index,
 							uint32_t baud_rate, 
 							uint32_t clock_frequency)
@@ -957,25 +957,25 @@ void __ajit_serial_set_uart_reset_inner__(uint8_t use_vmap, uint32_t device_id, 
 //---------------------------------------------------------------------------------------------
 // Interrupt-controller.
 //---------------------------------------------------------------------------------------------
-inline void __ajit_write_irc_control_register_via_bypass__(uint32_t val)
+void __ajit_write_irc_control_register_via_bypass__(uint32_t val)
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
 	__ajit_store_word_mmu_bypass__(val, addr);
 }
 
-inline uint32_t __ajit_read_irc_control_register_via_bypass__()
+uint32_t __ajit_read_irc_control_register_via_bypass__()
 {
 	uint32_t addr = ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER;
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
 	return(ret_val);
 }
 
-inline void __ajit_write_irc_control_register_via_vmap__(uint32_t val)
+void __ajit_write_irc_control_register_via_vmap__(uint32_t val)
 {
 	*((uint32_t*) ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER) = val;
 }
 
-inline uint32_t __ajit_read_irc_control_register_via_vmap__()
+uint32_t __ajit_read_irc_control_register_via_vmap__()
 {
 	uint32_t ret_val = *((uint32_t*)ADDR_INTERRUPT_CONTROLLER_CONTROL_REGISTER);
 	return(ret_val);
@@ -1010,14 +1010,14 @@ inline uint32_t __ajit_read_irc_control_register_via_vmap__()
 //               the clock-division is by (2**(clk_divide_count+1))
 //        The transfer length ranges from 00-11 (4/8/12/16 bits)
 //
-inline void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, 
+void     __ajit_write_spi_master_register_via_bypass__(uint32_t spim_base_addr, 
 									uint8_t reg_id, uint8_t reg_val)
 {
 	uint32_t addr = spim_base_addr + (reg_id*4);
 	__ajit_store_word_mmu_bypass__(reg_val, addr);
 }
 
-inline void     __ajit_write_spi_master_register_via_vmap__(uint32_t spim_base_addr,
+void     __ajit_write_spi_master_register_via_vmap__(uint32_t spim_base_addr,
 								uint8_t reg_id, uint8_t reg_val)
 {
 	uint32_t addr = spim_base_addr + (reg_id*4);
@@ -1035,14 +1035,14 @@ inline void     __ajit_write_spi_master_register_via_vmap__(uint32_t spim_base_a
 // A status reg read returns 1 if the master is busy with the
 // previous transfer and 0 else.
 //
-inline uint8_t  __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id)
+uint8_t  __ajit_read_spi_master_register_via_bypass__(uint32_t spim_base_addr, uint8_t reg_id)
 {
 	uint32_t addr = spim_base_addr + (reg_id*4);
 	uint32_t ret_val = __ajit_load_word_mmu_bypass__(addr);
 	return(ret_val);
 }
 
-inline uint8_t  __ajit_read_spi_master_register_via_vmap__(uint32_t spim_base_addr, uint8_t reg_id)
+uint8_t  __ajit_read_spi_master_register_via_vmap__(uint32_t spim_base_addr, uint8_t reg_id)
 {
 	uint32_t addr = spim_base_addr + (reg_id*4);
 
@@ -1252,37 +1252,37 @@ void __ajit_sample_thread_performance_counters (int core_id, int thread_id,
 //---------------------------------------------------------------------------------------------
 // Miscellaneous
 //---------------------------------------------------------------------------------------------
-inline void __ajit_ta_0__ ()
+void __ajit_ta_0__ ()
 {
 	__asm__ __volatile__("ta 0; nop; nop;");
 }
 
-inline void __ajit_fsqrtd__ (uint32_t a, uint32_t b)
+void __ajit_fsqrtd__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ldd [%0], %%f0; fsqrtd %%f0, %%f2; std %%f2, [%1];" : : "r" (a), "r" (b):);
 }
 
-inline void __ajit_fsqrts__ (uint32_t a, uint32_t b)
+void __ajit_fsqrts__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ld [%0], %%f0; fsqrts %%f0, %%f1; st %%f1, [%1];" : : "r" (a), "r" (b):);
 }
 
-inline void __ajit_fitod__ (uint32_t a, uint32_t b)
+void __ajit_fitod__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ld [%0], %%f0; fitod %%f0, %%f2; std %%f2, [%1];" : : "r" (a), "r" (b):);
 }
 
-inline void __ajit_fitos__ (uint32_t a, uint32_t b)
+void __ajit_fitos__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ld [%0], %%f0; fitos %%f0, %%f1; st %%f1, [%1];" : : "r" (a), "r" (b):);
 }
 
-inline void __ajit_fdtoi__ (uint32_t a, uint32_t b)
+void __ajit_fdtoi__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ldd [%0], %%f0; fdtoi %%f0, %%f2; st %%f2, [%1];" : : "r" (a), "r" (b):);
 }
 
-inline void __ajit_fstoi__ (uint32_t a, uint32_t b)
+void __ajit_fstoi__ (uint32_t a, uint32_t b)
 {
         __asm__ __volatile__ ( "ld [%0], %%f0; fstoi %%f0, %%f1; st %%f1, [%1];" : : "r" (a), "r" (b):);
 }
