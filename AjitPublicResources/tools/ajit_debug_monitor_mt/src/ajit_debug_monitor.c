@@ -95,6 +95,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -t <nthreads>      : optional, specifies number of threads-per-core (default = 1).\n");
 	fprintf(stderr, "   -u <serial-dev>    : optional, specifies serial device to use for debug interface.\n");
 	fprintf(stderr, "   -O                 : optional, load mmap in optimized (fast) mode.\n");
+	fprintf(stderr, "   -f <batch-file>    : optional, use if you want to run in batch mode.\n");
 	fprintf(stderr, "   -H                 : optional, use if you are monitoring a VHDL sim via socket.\n");
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
@@ -167,8 +168,10 @@ int main(int argc, char **argv)
 
 	int select_fast_mmap_mode = 0;
 
+	char* batch_file_name = NULL;
+
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:O")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:Of:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -198,6 +201,10 @@ int main(int argc, char **argv)
 				break;
 			case 'c':
 				console_server_port = atoi(optarg);
+				break;
+			case 'f':
+				batch_file_name = strdup(optarg);
+				fprintf(stderr,"Info: batch file = %s.\n", batch_file_name);
 				break;
 			case 'n':
 				ncores = atoi(optarg);	
@@ -306,7 +313,10 @@ int main(int argc, char **argv)
 
 	setDebugInterpreterInFastMmapDownloadMode(fast_mmap_mode);
 	
-	startDebugInterpreter();
+	if(batch_file_name != NULL)
+		startDebugInterpreterInBatchMode(batch_file_name);
+	else
+		startDebugInterpreter();
 
 	return (main_ret_val);
 }

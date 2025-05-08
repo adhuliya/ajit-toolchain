@@ -20,6 +20,15 @@ int ajit_debug_interpreter_mt_ncores = 1;
 int ajit_debug_interpreter_mt_nthreads_per_core = 1;
 int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
 
+void checkMatch(char* s, uint32_t rval, uint32_t expected_rval, uint32_t check_mask)
+{
+	if((rval & check_mask) == (expected_rval & check_mask))
+		fprintf(stdout,"Info: __match__ %s == 0x%x, mask=0x%x\n", s, rval, check_mask);
+	else
+		fprintf(stdout,"Info: __mismatch__ %s == 0x%x, expected 0x%x\n", 
+				s, rval, expected_rval);
+}
+
 void setDebugInterpreterInFastMmapDownloadMode(int mcm)
 {
 	ajit_debug_interpreter_in_fast_mmap_download_mode = mcm;
@@ -76,7 +85,7 @@ int executeScriptFile(char* file_name);
 			
 void printHelpMessage()
 {
-	fprintf(stdout, "Possible commands\n" \
+	fprintf(stderr, "Possible commands\n" \
 				"q                                   : quit\n" \
         			"h                                   : print help message\n"\
 				"t <core-id> <thread-id>             : switch to thread thread-id in core  core-id\n"
@@ -87,19 +96,28 @@ void printHelpMessage()
 				"m  <mmap-file>                      : load mmap file to processor system memory\n" \
 				"c  <mmap-file>                      : check load mmap values in processor system memory\n" \
 				"w rst <rst-val>                     : write reset value\n"\
-				"r mode                              : read processor-mode\n"\
+				"r mode [check-value]                : read processor-mode\n"\
+				"     if check-value is specified (0/1/2/3), wait here until mode becomes == value\n"\
 				"w ipc/inpc/ipsr/psr/tbr/y/wim <write-val>  : write value to ipc/inpc/ etc.\n"\
-				"r ipc/inpc/ipsr/psr/tbr/y/wim              : read value from ipc/inpc/ etc.\n"\
+				"r ipc/inpc/ipsr                            : read value from ipc/inpc/ etc.\n"\
 				"   note: by ipc,inpc,ipsr we mean the init values of pc/npc/psr post-reset.\n"\
-				"w asr   <asr-id> <asr-val>          : write asr-val to asr[asr-id]\n"\
-				"r asr   <asr-id>                    : read asr-val from asr[asr-id]\n"\
-				"w iureg <iureg-id> <iureg-val>      : write iureg-val to iureg[iureg-id]\n"\
-				"r iureg <iureg-id>                  : read iureg-val from iureg[iureg-id]\n"\
-				"w fpreg <fpreg-id> <fpreg-val>      : write fpreg-val to fpreg[fpreg-id]\n"\
-				"r fpreg <fpreg-id>                  : read fpreg-val from fpreg[fpreg-id]\n"\
-				"w mem <asi> <addr> <wdata>          : mem<asi>[addr] = wdata\n"\
-				"r mem <asi> <addr>                  : ret-val=mem<asi>[addr]\n"
-				"d <asi> <addr>  <n-words>           : dumps memory contents from addr to addr+(n-words*4)\n"
+				"r /psr/tbr/y/wim [optional-check-value] [optional-check-mask]\n"\
+                                "                                           : read value from psr/tbr/ etc.\n"\
+				"   note: if check-value is specified then report if read value is different\n"\
+                                "         from check-value (on a bit position which is 1 in the  optional-check-mask).\n"\
+				"w asr   <asr-id> <asr-val>                 : write asr-val to asr[asr-id]\n"\
+				"r asr   <asr-id> [optional-check-value]   [optional-check-mask]   \n"
+                                "                                           : read asr-val from asr[asr-id]\n"\
+				"w iureg <iureg-id> <iureg-val>             : write iureg-val to iureg[iureg-id]\n"\
+				"r iureg <iureg-id> [optional-check-value] [optional-check-mask] \n"
+                                "                                           : read iureg-val from iureg[iureg-id]\n"\
+				"w fpreg <fpreg-id> <fpreg-val>             : write fpreg-val to fpreg[fpreg-id]\n"\
+				"r fpreg <fpreg-id> [optional-check-value] [optional-check-mask] \n"\
+                                "                                           : read fpreg-val from fpreg[fpreg-id]\n"\
+				"w mem <asi> <addr> <wdata>                 : mem<asi>[addr] = wdata\n"\
+				"r mem <asi> <addr> [optional-check-value]  [optional-check-mask] \n"\
+                                "                                           : ret-val=mem<asi>[addr]\n"
+				"d <asi> <addr>  <n-words>                  : dumps memory contents from addr to addr+(n-words*4)\n"
 				"T c <trace-control-byte> <trig-val> <start-addr> <buf-size>  : trace configure\n"
 				"       control-byte fields:  oneshot trig-on-pc !trigger-on-pc ls fp iu pc enable\n"
 				"       trigger-val:  first sample PC or count as indicated by control byte.\n"
@@ -214,7 +232,6 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 		{
 			return(0);
 		}
-		return(1);
 	}
 	else if(kw[0] == 'd')
 	{
@@ -464,7 +481,22 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			}
 			break;
 		case RMODE: // "r mode"
-			rval = dbg_read_mode();
+			    // make it spin until required mode is reached.
+			if(nargs > 1)
+			{
+				fprintf(stderr,"Info: start spinning until rmode == 0x%x\n", arg1);
+				while(1)
+				{
+					rval = dbg_read_mode();
+					if(rval == arg1)
+						break;
+				}
+			}
+			else
+			{
+				rval = dbg_read_mode();
+			}
+
 			fprintf(stdout,"r mode returns 0x%x\n", rval);
 			break;
 		case WIPC:   // "w ipc"
@@ -507,7 +539,13 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			break;
 		case RPSR:  // "r psr"
 			rval = dbg_read_psr();
+
+			if(nargs > 1) 
+			{
+				checkMatch ("psr", rval, arg1, arg2);
+			}
 			fprintf(stdout,"r psr returns 0x%x\n", rval);
+
 			break;
 		case WIPSR:  // "w ipsr"
 			if(nargs < 2)
@@ -535,6 +573,7 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			break;
 		case RTBR:    // "r tbr"
 			rval = dbg_read_tbr();
+			if(nargs > 1) checkMatch ("tbr", rval, arg1, arg2);
 			fprintf(stdout,"r tbr returns 0x%x\n", rval);
 			break;
 		case WY:    // "w y"
@@ -549,6 +588,7 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			break;
 		case RY:    // "r y"
 			rval = dbg_read_y();
+			if(nargs > 1) checkMatch ("y", rval, arg1, arg2);
 			fprintf(stdout,"r y returns 0x%x\n", rval);
 			break;
 		case WWIM:  // "w wim"
@@ -563,6 +603,7 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			break;
 		case RWIM:  // "r wim"
 			rval = dbg_read_wim();
+			if(nargs > 1) checkMatch ("wim", rval, arg1, arg2);
 			fprintf(stdout,"r wim returns 0x%x\n", rval);
 			break;
 		case WASR:  // "w asr <asr-id> <asr-val>"
@@ -583,6 +624,13 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				break;
 			}
 			rval = dbg_read_asr(arg1);
+
+			if(nargs > 2) 
+			{
+				char asr_id[8]; sprintf(asr_id,"asr%d", arg1);
+				checkMatch (asr_id, rval, arg2, arg3);
+			}
+
 			fprintf(stdout,"r asr returns 0x%x\n", rval);
 			break;
 		case WIUREG: // "w iureg <reg-id> <reg-val>"
@@ -603,6 +651,13 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				break;
 			}
 			rval = dbg_read_iunit_register(arg1);
+
+			if(nargs > 2) 
+			{
+				char reg_id[8]; sprintf(reg_id,"r%d", arg1);
+				checkMatch (reg_id, rval, arg2, arg3);
+			}
+
 			fprintf(stdout,"r iureg returns 0x%x\n", rval);
 			break;
 		case WFPREG: // "w fpreg <reg-id> <reg-val>"
@@ -623,6 +678,13 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				break;
 			}
 			rval = dbg_read_fpunit_register(arg1);
+
+			if(nargs > 2) 
+			{
+				char reg_id[8]; sprintf(reg_id,"f%d", arg1);
+				checkMatch (reg_id, rval, arg2, arg3);
+			}
+
 			fprintf(stdout,"r fpreg returns 0x%x\n", rval);
 			break;
 		case WMEM:   // "w mem <asi> <addr> <wdata>"
@@ -643,6 +705,13 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 				break;
 			}
 			rval = dbg_read_mem(arg1, arg2);
+
+			if(nargs > 3) 
+			{
+				char reg_id[32]; sprintf(reg_id,"mem[%d] asi=%d", arg2, arg1);
+				checkMatch (reg_id, rval, arg3, arg4);
+			}
+
 			fprintf(stdout,"r mem returns 0x%x\n", rval);
 			break;
 		case DUMPMEM:  // "r mem <asi> <addr>
@@ -717,6 +786,7 @@ int executeCommandLine(char* line_buffer)
 	uint32_t arg1, arg2, arg3, arg4;
 
 
+	arg1 = 0xffffffff; arg2 = 0xffffffff; arg3 = 0xffffffff; arg4 = 0xffffffff;
 	int n = parseCommandLine(line_buffer, &icmd, cmd_file, &arg1, &arg2, &arg3, &arg4);
 
 	int err = 0;
@@ -776,11 +846,46 @@ void startDebugInterpreter()
 	}
 }
 
+void startDebugInterpreterInBatchMode(char* file_name)
+{
+	FILE* fp = fopen (file_name, "r");
+	if(fp == NULL)
+	{
+		fprintf(stderr,"Error: ajit_debug_interpreter: could not open batch file %s\n", file_name);
+		return;
+	}
+	char line_buffer[LINESIZE+1];
+
+	fprintf(stdout,"Running AJIT debug interpreter in batch mode (file=%s).\n", file_name);
+
+	while(!feof(fp))
+	{
+		char* t = fgets(line_buffer, LINESIZE, fp);
+		if(t == 0)
+			break;
+
+		if(line_buffer[0] != '!')
+		{
+			char log_buffer[LINESIZE+1];
+			strncpy (log_buffer, line_buffer, LINESIZE);
+
+			int err = executeCommandLine(line_buffer);
+
+			if((log_file != NULL) && !err)
+				fprintf(log_file,"%s\n", log_buffer);
+
+			if(err == 2)
+				break;
+		}
+	}
+	fclose(fp);
+}
+
 
 void traceConfigure(uint32_t control_word, uint32_t trigger_value, 
-					uint32_t start_addr, uint32_t trace_buffer_size)
+		uint32_t start_addr, uint32_t trace_buffer_size)
 {
-	
+
 	// write min address register.
 	dbg_write_mem(0x20, ADDR_TRACE_LOGGER_MIN_ADDR_REGISTER, start_addr);
 	uint32_t rb = dbg_read_mem(0x20, ADDR_TRACE_LOGGER_MIN_ADDR_REGISTER);
@@ -831,10 +936,10 @@ void traceDump(char* dump_file_name)
 
 	fprintf(stderr,"Info: trace memory had %d samples\n", sample_count);
 	fprintf(tf, "// Trace located in address range 0x%x to 0x%x, with %d samples\n", 
-					min_addr, max_addr,
-					sample_count);
+			min_addr, max_addr,
+			sample_count);
 	fprintf(tf, "// Presence bits PC=%d, IU=%d, FP=%d, LS=%d\n", pc, iu, fp, ls);
-	
+
 
 	uint32_t I;
 	uint32_t ADDR = min_addr;
