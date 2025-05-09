@@ -34,7 +34,6 @@ docker run \
   --ulimit nofile=100000:100000 \
   --name $_CONT_NAME \
   --mount type=bind,source=$_HOST_MOUNT_DIR,target=$_CONT_MOUNT_POINT \
-  -v /home/madhav/AjitIITG:$_CONT_MOUNT_POINT/AjitIITG \
   $_IMG_NAME;
 
 echo -e "\nAjit: Docker container started? Status: $? (Non Zero = ERROR)";
