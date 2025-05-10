@@ -16,6 +16,25 @@
 #include <pthread.h>
 #include <stdlib.h>	//for strtol
 
+int dump_adm_flag = 0;
+char* adm_script_file_name = NULL;
+char* adm_mmap_file_name = NULL;
+int adm_ncores = 1;
+int adm_nthreads_per_core = 1;
+uint32_t adm_init_pc = 0x0;
+
+void configureDumpAdm (int ncores, int nthreads, uint32_t init_pc, char* mmap_file_name, char* ofile_name)
+{
+	dump_adm_flag = 1;
+	adm_mmap_file_name = strdup (mmap_file_name);
+	adm_script_file_name = strdup (ofile_name);
+	adm_ncores =ncores;
+	adm_nthreads_per_core = nthreads;
+	adm_init_pc = init_pc;
+
+}
+
+
 // local functions.
 void parser ();
 int register_id (const char* reg, int intgr);
@@ -42,9 +61,66 @@ char* log_f;
 int global_error_flag = 0;
 CoreState** g_core_state_vector;
 
+FILE* dump_adm_file = NULL;
 
 int doval(CoreState** core_states, char* input_file, char* logf)
 {	
+	if(dump_adm_flag)
+	{
+		dump_adm_file = fopen(adm_script_file_name, "w");
+		if(dump_adm_file == NULL)
+		{
+			fprintf(stderr,"Error: could not open %s for writing\n", adm_script_file_name);
+			return(1);
+		}
+		else
+		{
+			fprintf(dump_adm_file,"r mode\n");
+			int n, t;
+
+			// reset all the threads.
+			for(n = 0; n < adm_ncores; n++)
+			{
+				for(t=0; t < adm_nthreads_per_core; t++)
+				{
+					fprintf(dump_adm_file,"t %d %d\n", n, t);
+					fprintf(dump_adm_file,"r mode\nw rst 1\n");
+					fprintf(dump_adm_file,"w ipc 0x%x\n", adm_init_pc);
+					fprintf(dump_adm_file,"w inpc 0x%x\n", adm_init_pc + 4);
+				}
+			}
+
+			// in thread 0 0, read mmap.
+			fprintf(dump_adm_file,"t 0 0 \n");
+			fprintf(dump_adm_file,"m %s\n", adm_mmap_file_name);
+
+			// bring all threads out of reset.
+			for(n = 0; n < adm_ncores; n++)
+			{
+				for(t=0; t < adm_nthreads_per_core; t++)
+				{
+					fprintf(dump_adm_file,"t %d %d\n", n, t);
+					fprintf(dump_adm_file,"w rst 0\n");
+				}
+			}
+
+			//
+			// wait until all threads go into error and halt.
+			// 
+			for(n = 0; n < adm_ncores; n++)
+			{
+				for(t=0; t < adm_nthreads_per_core; t++)
+				{
+					fprintf(dump_adm_file,"t %d %d\n", n, t);
+					fprintf(dump_adm_file,"r mode 0x3\n");
+				}
+			}
+			fprintf(dump_adm_file,"t 0 0 \n");
+
+		}
+	}
+
+
 	g_core_state_vector = core_states;
 
 	rec.c = NULL;
@@ -67,6 +143,12 @@ int doval(CoreState** core_states, char* input_file, char* logf)
 	if(tstream!=NULL){tstream ->free  (tstream);  	tstream = NULL;}
 	if(lxr!=NULL)	{lxr->free(lxr);	lxr = NULL;}
 	if(input!=NULL)	{input ->close (input);    input   = NULL;}
+
+	if(dump_adm_file != NULL)
+	{
+		fclose (dump_adm_file);
+		dump_adm_file = NULL;
+	}
 
 	// printf("\n");
 	return global_error_flag;
@@ -102,6 +184,59 @@ void parser ()
 	return;
 }
 
+		
+void write_doval_entry_into_adm_file(gpb_spi_cmd* cmd)
+{
+
+	if(cmd->cmd == 'm')
+	{
+		uint8_t  asi = cmd->reg_id;
+		uint32_t address = cmd->address;
+
+		fprintf(dump_adm_file, "t %d %d\n", rec.core_id, rec.thread_id);
+		fprintf(dump_adm_file, "r mem 0x%x 0x%x 0x%x 0x%x \n", asi, address, exptd_value, compare_mask);
+	}
+	else if (cmd->cmd == 'r')
+	{
+		int reg_id = register_id(rec.c, rec.reg_int);
+
+		fprintf(dump_adm_file, "t %d %d\n", rec.core_id, rec.thread_id);
+		if(reg_id < 32)
+		{
+			fprintf(dump_adm_file, "r iureg 0x%x 0x%x 0x%x \n", reg_id, exptd_value, compare_mask);
+		}
+		else if(reg_id == 64)
+		{
+			fprintf(dump_adm_file, "r y 0x%x 0x%x \n", exptd_value, compare_mask);
+		}
+		else if(reg_id == 65)
+		{
+			fprintf(dump_adm_file, "r psr 0x%x 0x%x \n", exptd_value, compare_mask);
+		}
+		else if(reg_id == 66)
+		{
+			fprintf(dump_adm_file, "r wim 0x%x 0x%x \n", exptd_value, compare_mask);
+		}
+		else if(reg_id == 67)
+		{
+			fprintf(dump_adm_file, "r tbr 0x%x 0x%x \n", exptd_value, compare_mask);
+		}
+		else if((reg_id >= 32) && (reg_id < 64))
+		{
+			fprintf(dump_adm_file, "r fpreg 0x%x  0x%x 0x%x \n", (reg_id - 32), exptd_value, compare_mask);
+		}
+		else if((reg_id >= 72) && (reg_id < 104))
+		{
+			fprintf(dump_adm_file, "r asr 0x%x  0x%x 0x%x \n", (reg_id - 32), exptd_value, compare_mask);
+		}
+		else
+		{
+			fprintf(stderr, "Warning: ignored read of register index %d\n", reg_id);
+		}
+
+	}
+}
+
 
 void perform_validation (uint32_t line_num)
 {
@@ -117,43 +252,51 @@ void perform_validation (uint32_t line_num)
 
 	fill_send_struct (&send_pckt);
 
-	// send and receive response
-	uint8_t err = 0;
-	if ((rec.core_id >= 0) && (rec.core_id < 4) && (g_core_state_vector[rec.core_id] != NULL))
+	if(dump_adm_flag)
 	{
-		if((rec.thread_id >= 0 ) && (rec.thread_id < 2))
+		write_doval_entry_into_adm_file(&send_pckt);
+	}
+	else
+	{
+
+		// send and receive response
+		uint8_t err = 0;
+		if ((rec.core_id >= 0) && (rec.core_id < 4) && (g_core_state_vector[rec.core_id] != NULL))
 		{
-			ThreadState* ts = g_core_state_vector[rec.core_id]->threads[rec.thread_id];
-			char* cmd_pipe  = ts->hw_server->debug_command_pipe_name;
-			char* resp_pipe = ts->hw_server->debug_response_pipe_name;
+			if((rec.thread_id >= 0 ) && (rec.thread_id < 2))
+			{
+				ThreadState* ts = g_core_state_vector[rec.core_id]->threads[rec.thread_id];
+				char* cmd_pipe  = ts->hw_server->debug_command_pipe_name;
+				char* resp_pipe = ts->hw_server->debug_response_pipe_name;
 
-			send_gpb_spi_cmd (cmd_pipe, &send_pckt);
-			recv_gpb_spi_cmd (resp_pipe, &resp_pckt);
+				send_gpb_spi_cmd (cmd_pipe, &send_pckt);
+				recv_gpb_spi_cmd (resp_pipe, &resp_pckt);
 
-			// printf ("resp_pckt.content = %u\n", resp_pckt.content);
+				// printf ("resp_pckt.content = %u\n", resp_pckt.content);
 
-			//exe_spi_cmd (&send_pckt, &resp_pckt);
+				//exe_spi_cmd (&send_pckt, &resp_pckt);
 
-			// write log
-			err = gen_log(line_num, resp_pckt, rec.core_id, rec.thread_id);
+				// write log
+				err = gen_log(line_num, resp_pckt, rec.core_id, rec.thread_id);
+			}
+			else
+			{
+				err = 1;
+			}
 		}
 		else
 		{
 			err = 1;
 		}
-	}
-	else
-	{
-		err = 1;
-	}
 
 
-	if (err)
-	{
-		fprintf(stderr,"Error:doval: core, thread %d,%d does not exist.\n", rec.core_id,
-							rec.thread_id);
-		//printf ("Error in %s\n", log_f);
-		global_error_flag = 1;
+		if (err)
+		{
+			fprintf(stderr,"Error:doval: core, thread %d,%d does not exist.\n", rec.core_id,
+					rec.thread_id);
+			//printf ("Error in %s\n", log_f);
+			global_error_flag = 1;
+		}
 	}
 
 	return;

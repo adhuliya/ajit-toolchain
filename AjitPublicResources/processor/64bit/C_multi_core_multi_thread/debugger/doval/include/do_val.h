@@ -15,6 +15,11 @@
 #include"spi_common.h"
 
 //
+// just dump to adm script format.
+//
+void configureDumpAdm (int ncores, int nthreads, uint32_t init_pc, char* mmap_file_name, char* ofile_name);
+
+//
 // arguments: 
 //  1. command and response pipes to interact with 4 cores.
 //  2. input-file

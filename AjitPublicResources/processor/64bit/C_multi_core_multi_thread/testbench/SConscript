@@ -61,8 +61,9 @@ env.Append(CPPPATH = C_COMMON_INCLUDE + ":")
 
 
 #ajit_C_system_model executable
-LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'l2Cache', 'aes_block', 'swizzler',  'Rlut', 'Mmu', 'Tlbs', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger', 'gpb', 'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'l2Cache', 'rt' , 'SPICommon','BitVectors', 'SockPipes',  'Hserver','doval', 'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors', 'swizzler' ]
+LIBS=[ 'Cpu', 'CpuInterface', 'Cache', 'l2Cache', 'aes_block', 'swizzler',  'Rlut', 'Mmu', 'Tlbs', 'Devices', 'Console','CharClientServer', 'Memory', 'fpu', 'Common', 'monitorLogger',  'pthread', 'PipeHandlerDebugPthreads', 'Bridge', 'l2Cache', 'rt' , 'doval', 'gpb' ,'SPICommon', 'doval', 'Common','PipeHandlerDebugPthreads','BitVectors', 'SockPipes',  'Hserver',  'antlr3c' , 'm' , 'HalfPrecisionFloat', 'FpExecAa', 'BitVectors', 'swizzler' , 'pthread']
 
 LIBPATH=Split('/usr/local/lib/  ../common/lib  ../memory/lib ../cache/lib ../aes_block/lib ../swizzler/lib  ../l2_cache/lib ../rlut/lib ../mmu/lib ../tlbs/lib ../devices/lib ../cpu/lib ../cpu_interface/lib/ ../monitorLogger/lib  ../bridge/lib ../debugger/gpb/lib ../debugger/doval/lib ../debugger/hwServer/lib ../debugger/spi_common/lib ' + ANTLR_PATH +  ' ' +  PIPE_HANDLER_LIBPATH + "  " + FUNCTIONLIB_PATH + " " + "./lib/ "  + AHIR_LIBPATH +" "+MONITOR_LOGGER_LIBPATH+ " " + CONSOLE_LIB+ " " + CHAR_SERVER_LIB + " " + HALFPREC_LIBPATH + " " + HALFPREC_AA_LIBPATH)
 
 env.Program('./bin/ajit_C_system_model', './src/Ajit_C_system_testbench.c', CCFLAGS=COMPILATION_FLAGS, LINKFLAGS='-g  ', LIBS=LIBS, LIBPATH=LIBPATH)
+env.Program('./bin/adm_script_gen', './src/adm_script_gen.c', CCFLAGS=COMPILATION_FLAGS, LINKFLAGS='-g  ', LIBS=LIBS, LIBPATH=LIBPATH)

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #
 # generate_program_and_reset_scripts..py generates
+#
 # two tcl scripts
 #   - to program and reset an FPGA prototype.
 #   - to reset an FPGA prototype.
+#  
+# one ajit-debug-monitor script.
 #
 # when executed in vivado.
 #
@@ -19,6 +22,11 @@ import threading
 import subprocess
 import pdb
 import time
+
+def execSysCmd(sys_cmd):
+    logCommand(sys_cmd)
+    ret_val = os.system(sys_cmd)
+    return ret_val
 
 
 # logging.
@@ -47,6 +55,9 @@ def printUsage(app_name):
      -f <fpga-device-id>     (as labeled in vivado)
      -b <bit-file-name>      (full path)
      -p <probes-file-name>   (full path)
+     -i <init-pc>   
+     -m <mmap-file>          (full path)
+     -r <check-results-file> (full path)
      -o <output-directory>   (relative path)
      -h    print-help-message-and-quit.
           '''
@@ -55,15 +66,14 @@ def printUsage(app_name):
 def main():
 
 
-    if len(sys.argv) < 6:
+    if len(sys.argv) < 8:
        printUsage(sys.argv[0])
        return 1
 
     arg_list = sys.argv[1:]
 
     output_directory = "./"
-    root_directory = "./"
-    opts,args = getopt.getopt(arg_list,'f:b:p:o:h')
+    opts,args = getopt.getopt(arg_list,'f:b:p:o:i:m:r:h')
     app_name = ""
     c_include_dirs = []
     cc_flags =  " "
@@ -81,6 +91,15 @@ def main():
         elif option ==  '-o':
            output_directory = parameter
            logInfo("output_directory = " + parameter + ".")
+        elif option ==  '-i':
+           init_pc = parameter
+           logInfo("init-pc = " + parameter + ".")
+        elif option ==  '-m':
+           mmap_file_name = parameter
+           logInfo("mmap-file-name = " + parameter + ".")
+        elif option ==  '-r':
+           results_file_name = parameter
+           logInfo("results-file-name = " +  parameter + ".")
         elif option ==  '-h':
            printUsage(sys.argv[0])
            return 1
@@ -88,9 +107,16 @@ def main():
            logError("unknown-option " + option)
            return 1
 	
+    work_area = "./"
+    global command_log_file
+    command_log_file = open(work_area + "/executed_command_log.txt","w")
 
     program_tcl_file =  open(output_directory + "/program.tcl","w")
     reset_tcl_file  =  open(output_directory + "/reset.tcl","w")
+
+    output_script_file_name = output_directory + "/adm.script"
+    gen_command = "adm_script_gen " + init_pc + " " + mmap_file_name + " " + results_file_name + " " + output_script_file_name
+    execSysCmd (gen_command)
 
     program_string =  "open_hw \n" + \
             "connect_hw_server\n" + \
@@ -124,6 +150,8 @@ def main():
     
     program_tcl_file.close()
     reset_tcl_file.close()
+    command_log_file.close()
+
     return 0
 
 if __name__ == '__main__':
