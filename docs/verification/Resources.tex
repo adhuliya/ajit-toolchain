@@ -1,0 +1,88 @@
+\documentclass{beamer}
+\title{Verification resources}
+\author{Madhav Desai}
+
+\begin{document}
+\maketitle
+
+\frame[containsverbatim]{\frametitle{Overview}
+
+\begin{itemize}
+\item Documentation.
+\item CPU verification.
+\item MMU verification.
+\item Peripherals verification.
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Documentation}
+
+\begin{itemize}
+\item SPARC V8 ISA.
+\item AJIT processor implementation reference.
+\end{itemize}
+}
+
+\frame[containsverbatim]{\frametitle{CPU verification}
+
+\begin{itemize}
+\item 238+ assembly level tests.
+	\begin{itemize}
+	\item Automation of running tests on C model.
+	\item Easy to migrate for automated tests on FPGA using ADM.
+	\end{itemize}
+\item Several benchmarks
+	\begin{itemize}
+	\item Core-mark, Dhrystone, Whetstone, FLOPS20, Linpack.
+	\end{itemize}
+\item Linux boot (with MMU).
+\item User is expected to write programs here.
+\end{itemize}
+
+}
+
+\frame[containsverbatim]{\frametitle{Cache verification}
+\begin{itemize}
+	\item Cache verification using VHDL simulation has been
+		carried out thoroughly (as part of design process)..
+	\item Cache specific C programs have been written and
+		used to verify correctness and performance of caches.
+		\begin{itemize}
+		\item User is expected write C programs for this purpose.
+		\end{itemzie}
+\end{itemize}
+}
+
+\frame[containsverbatim]{\frametitle{MMU verification}
+\begin{itemize}
+	\item 100+ MMU tests covering SRMMU specification (V8.pdf)
+	\item Note: some system configurations do not include the MMU.
+\end{itemize}
+}
+
+
+\frame[containsverbatim]{\frametitle{Peripheral device verification}
+\begin{itemize}
+	\item Each peripheral has been verified in isolation 
+		using VHDL simulations.
+	\item Peripheral documentation is available in reference manual.
+	\item Sample code describing use of each peripheral can be
+		shared with user (for a specific FPGA prototype implementation).
+	\begin{itemize}
+		\item Already shared: serial UART, GPIO, I2C, timer, interrupt controller.
+		\item To be shared: scratch-pad, SPI.
+	\end{itemize}
+\end{itemize}
+}
+
+\frame[containsverbatim]{\frametitle{Going ahead}
+\begin{itemize}
+	\item Shift focus of verification effort to validation of FPGA
+		prototype.
+	\item Write test cases (C + assembly)to verify CPU, caches and peripherals.
+\end{itemize}
+
+}
+
+\end{document}

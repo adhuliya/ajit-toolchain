@@ -1,0 +1,4 @@
+! memory and peripheral ranges..
+ram lowmem 0x40000000 0x7fffffff 0x3
+peripheral serial 0x80000100 0x80000110
+peripheral scratch_pad 0x80001000 0x80001400
