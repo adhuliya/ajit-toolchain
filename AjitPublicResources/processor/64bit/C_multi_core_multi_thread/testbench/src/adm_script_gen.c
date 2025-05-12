@@ -27,8 +27,9 @@ int main(int argc, char* argv [])
 	uint32_t nthreads = atoi(argv[2]);
 	fprintf(stderr,"nthreads (per core) = 0x%x\n", nthreads);
 
-	uint32_t init_pc = atoi(argv[3]);
-	fprintf(stderr,"init_pc = 0x%x\n", init_pc);
+	uint32_t init_pc;
+	sscanf(argv[3], "0x%x", &init_pc);
+	fprintf(stderr,"init_pc = 0x%x (%s)\n", init_pc, argv[3]);
 
 	fprintf(stderr,"mmap-file = %s\n", argv[4]);
 	fprintf(stderr,"results-file = %s\n", argv[5]);
