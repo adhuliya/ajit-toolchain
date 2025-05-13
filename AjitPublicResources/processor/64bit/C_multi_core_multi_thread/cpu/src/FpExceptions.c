@@ -5,22 +5,12 @@
 
 uint8_t isNaN32(float op)
 {
-	uint32_t NaN_single = 0x7F800000;
-	uint32_t op_int  = _BITCAST_(uint32_t, op);
-	op_int = op_int & NaN_single;
-	if(op_int == NaN_single) 
-		return 1;
-	return 0;
+	return (isQNaN32(op) || isSNaN32(op));
 }
 
 uint8_t isNaN64(double op)
 {
-	uint64_t NaN_double = 0x7FF0000000000000;
-	uint64_t op_int  = _BITCAST_(uint64_t, op);
-	op_int = op_int & NaN_double;
-	if(op_int == NaN_double) 
-		return 1;
-	return 0;
+	return (isQNaN64(op) || isSNaN64(op));
 }
 
 /* Chekking operand is a sNaN
@@ -57,13 +47,26 @@ uint8_t isSNaN64(double op)
 }
 uint8_t isQNaN32(float op)
 {
-	return(isNaN32(op) && !isSNaN32(op));
+        // qnan  := ($reduce & exp_all_ones (~mant_a_zero)  mant_top_bit)
+	uint32_t op_int  = _BITCAST_(uint32_t, op);
+
+	//between X'7F80 0001' and X'7FBF FFFF' or between X'FF80 0001' and X'FFBF FFFF'.
+	uint8_t ret_val = ((op_int >= 0x7f800001) && (op_int <= 0x7fbfffff)) ||
+				((op_int >= 0xff800001) && (op_int <= 0xffbfffff));
+	return(ret_val);
 }
 
 uint8_t isQNaN64(double op)
 {
-	return(isNaN64(op) && !isSNaN64(op));
+	uint64_t op_int  = _BITCAST_(uint64_t, op);
+
+        // qnan  := ($reduce & exp_all_ones (~mant_a_zero)  mant_top_bit)
+	// between X'7FF80000 00000000' and X'7FFFFFFF FFFFFFFF' or between X'FFF80000 00000000' and X'FFFFFFFF FFFFFFFF'.
+	uint8_t ret_val = ((op_int >= 0x7ff8000000000000) && (op_int <= 0x7fffffffffffffff)) ||
+				((op_int >= 0xfff8000000000000) &&  (op_int <= 0xffffffffffffffff));
+	return(ret_val);
 }
+
 uint8_t isPosZero32(float op)
 {
 	uint32_t tv = *((uint32_t*) &op);

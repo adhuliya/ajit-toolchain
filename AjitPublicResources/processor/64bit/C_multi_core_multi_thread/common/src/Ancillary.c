@@ -267,7 +267,7 @@ double doubleSqrt(double a)
 {
 	double ret_val = 0.0;
 	if ( a > 0.0)
-		ret_val = pow (a, 0.5);
+		ret_val = sqrt(a);
 	return(ret_val);
 }
 

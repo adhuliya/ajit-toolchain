@@ -1,3 +1,6 @@
+#define cortos_printf printf
+#define cortos_exit exit
+
 /*	A C version of Kahan's Floating Point Test "Paranoia"
 
 			Thos Sumner, UCSF, Feb. 1985
@@ -225,13 +228,12 @@ q
 #ifndef NOSIGNAL
 #include <signal.h>
 #endif
-
 #include <setjmp.h>
-#include <cortos.h>
+#include <stdint.h>
+// #include <cortos.h> 
 
-		
-int fake_setjmp (jmp_buf ovfl_buf) {return(0);}
 void fake_fflush (FILE* fp) {}
+int fake_setjmp  (jmp_buf env) {return 1;}
 
 #ifdef Single
 #define FLOAT float
@@ -257,6 +259,7 @@ jmp_buf ovfl_buf;
 #define CHARP /* char * */
 #define CHARPP /* char ** */
 extern double fabs(), floor(), log(), pow(), sqrt();
+extern void exit();
 typedef void (*Sig_type)();
 FLOAT Sign(), Random();
 extern void BadCond();
@@ -279,6 +282,7 @@ extern "C" {
 #endif
 extern double fabs(double), floor(double), log(double);
 extern double pow(double,double), sqrt(double);
+extern void exit(INT);
 #ifdef __cplusplus
 	}
 #endif
@@ -1500,7 +1504,7 @@ void part6(VOID){
 	if (UfNGrad) {
 		cortos_printf("\n");
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf)) {
+		if (!fake_setjmp (ovfl_buf)) {
 			cortos_printf("Underflow / UfThold failed!\n");
 			R = H + H;
 			}
@@ -1526,7 +1530,7 @@ void part6(VOID){
 			cortos_printf("  ... (f(X) - f(Z)) / (X - Z) ...\n");
 			cortos_printf("encounter Division by Zero although actually\n");
 			sigsave = sigfpe;
-			if (fake_setjmp(ovfl_buf)) cortos_printf("X / Z fails!\n");
+			if (!fake_setjmp (ovfl_buf)) cortos_printf("X / Z fails!\n");
 			else cortos_printf("X / Z = 1 + %g .\n", (X / Z - Half) - Half);
 			sigsave = 0;
 			}
@@ -1564,7 +1568,7 @@ void part7(VOID){
 	cortos_printf("should afflict the expression\n\t(%.17e) ^ (%.17e);\n",
 		HInvrse, Y2);
 	cortos_printf("actually calculating yields:");
-	if (fake_setjmp(ovfl_buf)) {
+	if (!fake_setjmp (ovfl_buf)) {
 		sigsave = 0;
 		BadCond(Serious, "trap on underflow.\n");
 		}
@@ -1676,24 +1680,21 @@ void part7(VOID){
 	cortos_printf("This may generate an error.\n");
 	Y = - CInvrse;
 	V9 = HInvrse * Y;
-	sigsave = sigfpe;
-	if (fake_setjmp(ovfl_buf)) { I = 0; V9 = Y; goto overflow; }
+	sigsave = sigfpe; 
+	if (fake_setjmp (ovfl_buf)) { I = 0; V9 = Y; goto overflow; }
 	do {
-
 		V = Y;
 		Y = V9;
 		V9 = HInvrse * Y;
-		cortos_printf("INFO:OVFLOW:  V9=%.17e (0x%llx)\n", V9, *((uint64_t*) &V9));
-		cortos_printf("INFO:OVFLOW:  Y=%.17e (0x%llx)\n",  Y, *((uint64_t*) &Y));
-		int  condition = (V9 < Y);
-		cortos_printf("INFO:OVFLOW:  (V9 < Y)=%d\n", condition);
 		} while(V9 < Y);
 	I = 1;
 overflow:
 	sigsave = 0;
+	cortos_printf("V  = 0x%llx\n", *((uint64_t*) &V));
+	cortos_printf("V9 = 0x%llx\n", *((uint64_t*) &V9));
 	Z = V9;
 	cortos_printf("Can `Z = -Y' overflow?\n");
-	cortos_printf("Trying it on Y = %.17e .\n", Y);
+	cortos_printf("Trying it on Y = %.17e (0x%llx), Z=%.17e (0x%llx).\n", Y, *((uint64_t*) &Y), Z, *((uint64_t*) &Z));
 	V9 = - Y;
 	V0 = V9;
 	if (V - Y == V + V0) cortos_printf("Seems O.K.\n");
@@ -1804,7 +1805,7 @@ int part8(VOID){
 			}
 		Y = X;
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf))
+		if (!fake_setjmp (ovfl_buf))
 			cortos_printf("  X / X  traps when X = %g\n", X);
 		else {
 			V9 = (Y / X - Half) - Half;
@@ -1832,7 +1833,7 @@ int part8(VOID){
 #endif
 		sigsave = sigfpe;
 		cortos_printf("    Trying to compute 1 / 0 produces ...");
-		if (!fake_setjmp(ovfl_buf)) cortos_printf("  %.7e .\n", One / MyZero);
+		if (!fake_setjmp (ovfl_buf)) cortos_printf("  %.7e .\n", One / MyZero);
 		sigsave = 0;
 #ifndef NOPAUSE
 		}
@@ -1844,7 +1845,7 @@ int part8(VOID){
 #endif
 		sigsave = sigfpe;
 		cortos_printf("\n    Trying to compute 0 / 0 produces ...");
-		if (!fake_setjmp(ovfl_buf)) cortos_printf("  %.7e .\n", Zero / MyZero);
+		if (!fake_setjmp (ovfl_buf)) cortos_printf("  %.7e .\n", Zero / MyZero);
 		sigsave = 0;
 #ifndef NOPAUSE
 		}
@@ -1946,6 +1947,7 @@ Pause(VOID)
 	++Milestone;
 	++PageNo;
 	}
+
 
  void
 TstCond (INT K, INT Valid, CHARP T)
@@ -2080,10 +2082,10 @@ TstPtUf(VOID)
 {
 	N = 0;
 	if (Z != Zero) {
-		cortos_printf("Since comparison denies Z = 0, evaluating ");
+		cortos_printf("Since comparison denies Z = 0 (0x%llx), evaluating ", *((uint64_t*) &Z));
 		cortos_printf("(Z + Z) / Z should be safe.\n");
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf)) goto very_serious;
+		if (!fake_setjmp (ovfl_buf)) goto very_serious;
 		Q9 = (Z + Z) / Z;
 		cortos_printf("What the machine gets for (Z + Z) / Z is  %.17e .\n",
 			Q9);

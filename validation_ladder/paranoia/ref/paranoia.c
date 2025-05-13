@@ -219,19 +219,11 @@ q
 
 */
 
-#define NOSIGNAL to comment out the invocations of signal.
-
 #include <stdio.h>
 #ifndef NOSIGNAL
 #include <signal.h>
 #endif
-
 #include <setjmp.h>
-#include <cortos.h>
-
-		
-int fake_setjmp (jmp_buf ovfl_buf) {return(0);}
-void fake_fflush (FILE* fp) {}
 
 #ifdef Single
 #define FLOAT float
@@ -257,6 +249,7 @@ jmp_buf ovfl_buf;
 #define CHARP /* char * */
 #define CHARPP /* char ** */
 extern double fabs(), floor(), log(), pow(), sqrt();
+extern void exit();
 typedef void (*Sig_type)();
 FLOAT Sign(), Random();
 extern void BadCond();
@@ -279,6 +272,7 @@ extern "C" {
 #endif
 extern double fabs(double), floor(double), log(double);
 extern double pow(double,double), sqrt(double);
+extern void exit(INT);
 #ifdef __cplusplus
 	}
 #endif
@@ -390,8 +384,8 @@ int Break, Done, NotMonot, Monot, Anomaly, IEEE,
 sigfpe(INT x)
 {
 	fpecount++;
-	cortos_printf("\n* * * FLOATING-POINT ERROR %d * * *\n", x);
-	fake_fflush(stdout);
+	printf("\n* * * FLOATING-POINT ERROR %d * * *\n", x);
+	fflush(stdout);
 	if (sigsave) {
 #ifndef NOSIGNAL
 		signal(SIGFPE, sigsave);
@@ -399,7 +393,7 @@ sigfpe(INT x)
 		sigsave = 0;
 		longjmp(ovfl_buf, 1);
 		}
-	cortos_exit(1);
+	exit(1);
 }
 
 main(VOID)
@@ -441,7 +435,7 @@ main(VOID)
 	/*=============================================*/
 	Milestone = 7;
 	/*=============================================*/
-	cortos_printf("Program is now RUNNING tests on small integers:\n");
+	printf("Program is now RUNNING tests on small integers:\n");
 	
 	TstCond (Failure, (Zero + Zero == Zero) && (One - One == Zero)
 		   && (One > Zero) && (One + One == Two),
@@ -449,7 +443,7 @@ main(VOID)
 	Z = - Zero;
 	if (Z != 0.0) {
 		ErrCnt[Failure] = ErrCnt[Failure] + 1;
-		cortos_printf("Comparison alleges that -0.0 is Non-zero!\n");
+		printf("Comparison alleges that -0.0 is Non-zero!\n");
 		U2 = 0.001;
 		Radix = 1;
 		TstPtUf();
@@ -498,10 +492,10 @@ void part2(VOID){
 		   && ( TwoForty / Five - Four * Three * Four == Zero),
 		  "5 != 4+1, 240/3 != 80, 240/4 != 60, or 240/5 != 48");
 	if (ErrCnt[Failure] == 0) {
-		cortos_printf("-1, 0, 1/2, 1, 2, 3, 4, 5, 9, 27, 32 & 240 are O.K.\n");
-		cortos_printf("\n");
+		printf("-1, 0, 1/2, 1, 2, 3, 4, 5, 9, 27, 32 & 240 are O.K.\n");
+		printf("\n");
 		}
-	cortos_printf("Searching for Radix and Precision.\n");
+	printf("Searching for Radix and Precision.\n");
 	W = One;
 	do  {
 		W = W + W;
@@ -518,7 +512,7 @@ void part2(VOID){
 		Radix = Radix - W;
 		} while ( Radix == Zero);
 	if (Radix < Two) Radix = One;
-	cortos_printf("Radix = %f .\n", Radix);
+	printf("Radix = %f .\n", Radix);
 	if (Radix != 1) {
 		W = One;
 		do  {
@@ -531,8 +525,8 @@ void part2(VOID){
 			                              ...*/
 	U1 = One / W;
 	U2 = Radix * U1;
-	cortos_printf("Closest relative separation found is U1 = %.7e .\n\n", U1);
-	cortos_printf("Recalculating radix and precision\n ");
+	printf("Closest relative separation found is U1 = %.7e .\n\n", U1);
+	printf("Recalculating radix and precision\n ");
 	
 	/*save old values*/
 	E0 = Radix;
@@ -573,13 +567,13 @@ void part2(VOID){
 		X = Half + Y;
 		} while ( ! ((U1 <= X) || (X <= Zero)));
 	/*... now U1 == 1 ulp of 1 - ... */
-	if (U1 == E1) cortos_printf("confirms closest relative separation U1 .\n");
-	else cortos_printf("gets better closest relative separation U1 = %.7e .\n", U1);
+	if (U1 == E1) printf("confirms closest relative separation U1 .\n");
+	else printf("gets better closest relative separation U1 = %.7e .\n", U1);
 	W = One / U1;
 	F9 = (Half - U1) + Half;
 	Radix = FLOOR(0.01 + U2 / U1);
-	if (Radix == E0) cortos_printf("Radix confirmed.\n");
-	else cortos_printf("MYSTERY: recalculated Radix = %.7e .\n", Radix);
+	if (Radix == E0) printf("Radix confirmed.\n");
+	else printf("MYSTERY: recalculated Radix = %.7e .\n", Radix);
 	TstCond (Defect, Radix <= Eight + Eight,
 		   "Radix is too big: roundoff problems");
 	TstCond (Flaw, (Radix == Two) || (Radix == 10)
@@ -613,12 +607,12 @@ void part2(VOID){
 		if (FABS(Precision - Y) * TwoForty < Half) Precision = Y;
 		}
 	if ((Precision != FLOOR(Precision)) || (Radix == One)) {
-		cortos_printf("Precision cannot be characterized by an Integer number\n");
-		cortos_printf("of significant digits but, by itself, this is a minor flaw.\n");
+		printf("Precision cannot be characterized by an Integer number\n");
+		printf("of significant digits but, by itself, this is a minor flaw.\n");
 		}
 	if (Radix == One) 
-		cortos_printf("logarithmic encoding has precision characterized solely by U1.\n");
-	else cortos_printf("The number of significant digits of the Radix is %f .\n",
+		printf("logarithmic encoding has precision characterized solely by U1.\n");
+	else printf("The number of significant digits of the Radix is %f .\n",
 			Precision);
 	TstCond (Serious, U2 * Nine * Nine * TwoForty < One,
 		   "Precision worse than 5 decimal figures  ");
@@ -648,11 +642,11 @@ void part2(VOID){
 		} while ( ! ((X1 <= X) || (X <= Zero)));
 	if ((X1 != Y1) || (X1 != Z1)) {
 		BadCond(Serious, "Disagreements among the values X1, Y1, Z1,\n");
-		cortos_printf("respectively  %.7e,  %.7e,  %.7e,\n", X1, Y1, Z1);
-		cortos_printf("are symptoms of inconsistencies introduced\n");
-		cortos_printf("by extra-precise evaluation of arithmetic subexpressions.\n");
+		printf("respectively  %.7e,  %.7e,  %.7e,\n", X1, Y1, Z1);
+		printf("are symptoms of inconsistencies introduced\n");
+		printf("by extra-precise evaluation of arithmetic subexpressions.\n");
 		notify("Possibly some part of this");
-		if ((X1 == U1) || (Y1 == U1) || (Z1 == U1))  cortos_printf(
+		if ((X1 == U1) || (Y1 == U1) || (Z1 == U1))  printf(
 			"That feature is not tested further by this program.\n") ;
 		}
 	else  {
@@ -660,14 +654,14 @@ void part2(VOID){
 			if ((Z1 >= U1) || (Z2 >= U2)) {
 				BadCond(Failure, "");
 				notify("Precision");
-				cortos_printf("\tU1 = %.7e, Z1 - U1 = %.7e\n",U1,Z1-U1);
-				cortos_printf("\tU2 = %.7e, Z2 - U2 = %.7e\n",U2,Z2-U2);
+				printf("\tU1 = %.7e, Z1 - U1 = %.7e\n",U1,Z1-U1);
+				printf("\tU2 = %.7e, Z2 - U2 = %.7e\n",U2,Z2-U2);
 				}
 			else {
 				if ((Z1 <= Zero) || (Z2 <= Zero)) {
-					cortos_printf("Because of unusual Radix = %f", Radix);
-					cortos_printf(", or exact rational arithmetic a result\n");
-					cortos_printf("Z1 = %.7e, or Z2 = %.7e ", Z1, Z2);
+					printf("Because of unusual Radix = %f", Radix);
+					printf(", or exact rational arithmetic a result\n");
+					printf("Z1 = %.7e, or Z2 = %.7e ", Z1, Z2);
 					notify("of an\nextra-precision");
 					}
 				if (Z1 != Z2 || Z1 > Zero) {
@@ -675,13 +669,13 @@ void part2(VOID){
 					Y = Z2 / U2;
 					if (Y > X) X = Y;
 					Q = - LOG(X);
-					cortos_printf("Some subexpressions appear to be calculated extra\n");
-					cortos_printf("precisely with about %g extra B-digits, i.e.\n",
+					printf("Some subexpressions appear to be calculated extra\n");
+					printf("precisely with about %g extra B-digits, i.e.\n",
 						(Q / LOG(Radix)));
-					cortos_printf("roughly %g extra significant decimals.\n",
+					printf("roughly %g extra significant decimals.\n",
 						Q / LOG(10.));
 					}
-				cortos_printf("That feature is not tested further by this program.\n");
+				printf("That feature is not tested further by this program.\n");
 				}
 			}
 		}
@@ -702,10 +696,10 @@ void part3(VOID){
 		X = T - Z;
 		TstCond (Failure, X == U2,
 			"Subtraction is not normalized X=Y,X+Z != Y+Z!");
-		if (X == U2) cortos_printf(
+		if (X == U2) printf(
 			"Subtraction appears to be normalized, as it should be.");
 		}
-	cortos_printf("\nChecking for guard digit in *, /, and -.\n");
+	printf("\nChecking for guard digit in *, /, and -.\n");
 	Y = F9 * One;
 	Z = One * F9;
 	X = F9 - Half;
@@ -785,17 +779,17 @@ or  1/3  and  3/9  and  9/27 may disagree");
 		}
 	if (F9 != One && F9 - One >= Zero) {
 		BadCond(Serious, "comparison alleges  (1-U1) < 1  although\n");
-		cortos_printf("  subtraction yields  (1-U1) - 1 = 0 , thereby vitiating\n");
-		cortos_printf("  such precautions against division by zero as\n");
-		cortos_printf("  ...  if (X == 1.0) {.....} else {.../(X-1.0)...}\n");
+		printf("  subtraction yields  (1-U1) - 1 = 0 , thereby vitiating\n");
+		printf("  such precautions against division by zero as\n");
+		printf("  ...  if (X == 1.0) {.....} else {.../(X-1.0)...}\n");
 		}
-	if (GMult == Yes && GDiv == Yes && GAddSub == Yes) cortos_printf(
+	if (GMult == Yes && GDiv == Yes && GAddSub == Yes) printf(
 		"     *, /, and - appear to have guard digits, as they should.\n");
 	/*=============================================*/
 	Milestone = 40;
 	/*=============================================*/
 	Pause();
-	cortos_printf("Checking rounding on multiply, divide and add/subtract.\n");
+	printf("Checking rounding on multiply, divide and add/subtract.\n");
 	RMult = Other;
 	RDiv = Other;
 	RAddSub = Other;
@@ -854,18 +848,18 @@ or  1/3  and  3/9  and  9/27 may disagree");
 		if ((X == Zero) && (Y == Zero) && (Z == Zero) && (T == Zero)
 			&& ( StickyBit == Zero) && (Y1 == Half)) {
 			RMult = Rounded;
-			cortos_printf("Multiplication appears to round correctly.\n");
+			printf("Multiplication appears to round correctly.\n");
 			}
 		else	if ((X + U2 == Zero) && (Y < Zero) && (Z + U2 == Zero)
 				&& (T < Zero) && (StickyBit + U2 == Zero)
 				&& (Y1 < Half)) {
 				RMult = Chopped;
-				cortos_printf("Multiplication appears to chop.\n");
+				printf("Multiplication appears to chop.\n");
 				}
-			else cortos_printf("* is neither chopped nor correctly rounded.\n");
+			else printf("* is neither chopped nor correctly rounded.\n");
 		if ((RMult == Rounded) && (GMult == No)) notify("Multiplication");
 		}
-	else cortos_printf("* is neither chopped nor correctly rounded.\n");
+	else printf("* is neither chopped nor correctly rounded.\n");
 	/*=============================================*/
 	Milestone = 45;
 	/*=============================================*/
@@ -899,16 +893,16 @@ or  1/3  and  3/9  and  9/27 may disagree");
 			&& (Y2 == Zero) && (Y2 == Zero)
 			&& (Y1 - Half == F9 - Half )) {
 			RDiv = Rounded;
-			cortos_printf("Division appears to round correctly.\n");
+			printf("Division appears to round correctly.\n");
 			if (GDiv == No) notify("Division");
 			}
 		else if ((X < Zero) && (Y < Zero) && (Z < Zero) && (T < Zero)
 			&& (Y2 < Zero) && (Y1 - Half < F9 - Half)) {
 			RDiv = Chopped;
-			cortos_printf("Division appears to chop.\n");
+			printf("Division appears to chop.\n");
 			}
 		}
-	if (RDiv == Other) cortos_printf("/ is neither chopped nor correctly rounded.\n");
+	if (RDiv == Other) printf("/ is neither chopped nor correctly rounded.\n");
 	BInvrse = One / Radix;
 	TstCond (Failure, (BInvrse * Radix - Half == Half),
 		   "Radix * ( 1 / Radix ) differs from 1");
@@ -930,7 +924,7 @@ void part4(VOID){
 	Y = Y - One;
 	if ((X == Zero) && (Y == Zero)) {
 		RAddSub = Chopped;
-		cortos_printf("Add/Subtract appears to be chopped.\n");
+		printf("Add/Subtract appears to be chopped.\n");
 		}
 	if (GAddSub == Yes) {
 		X = (Half + U2) * U2;
@@ -948,14 +942,14 @@ void part4(VOID){
 			Y = One - Y;
 			if ((X == Zero) && (Y == Zero)) {
 				RAddSub = Rounded;
-				cortos_printf("Addition/Subtraction appears to round correctly.\n");
+				printf("Addition/Subtraction appears to round correctly.\n");
 				if (GAddSub == No) notify("Add/Subtract");
 				}
-			else cortos_printf("Addition/Subtraction neither rounds nor chops.\n");
+			else printf("Addition/Subtraction neither rounds nor chops.\n");
 			}
-		else cortos_printf("Addition/Subtraction neither rounds nor chops.\n");
+		else printf("Addition/Subtraction neither rounds nor chops.\n");
 		}
-	else cortos_printf("Addition/Subtraction neither rounds nor chops.\n");
+	else printf("Addition/Subtraction neither rounds nor chops.\n");
 	S = One;
 	X = One + Half * (One + Half);
 	Y = (One + U2) * Half;
@@ -970,7 +964,7 @@ void part4(VOID){
 	if ((GMult == Yes) && (GDiv == Yes) && (GAddSub == Yes)
 		&& (RMult == Rounded) && (RDiv == Rounded)
 		&& (RAddSub == Rounded) && (FLOOR(RadixD2) == RadixD2)) {
-		cortos_printf("Checking for sticky bit.\n");
+		printf("Checking for sticky bit.\n");
 		X = (Half + U1) * U2;
 		Y = Half * U2;
 		Z = One + Y;
@@ -1006,8 +1000,8 @@ void part4(VOID){
 				}
 			}
 		}
-	if (StickyBit == One) cortos_printf("Sticky bit apparently used correctly.\n");
-	else cortos_printf("Sticky bit used incorrectly or not at all.\n");
+	if (StickyBit == One) printf("Sticky bit apparently used correctly.\n");
+	else printf("Sticky bit used incorrectly or not at all.\n");
 	TstCond (Flaw, !(GMult == No || GDiv == No || GAddSub == No ||
 			RMult == Other || RDiv == Other || RAddSub == Other),
 		"lack(s) of guard digits or failure(s) to correctly round or chop\n\
@@ -1015,9 +1009,9 @@ void part4(VOID){
 	/*=============================================*/
 	Milestone = 60;
 	/*=============================================*/
-	cortos_printf("\n");
-	cortos_printf("Does Multiplication commute?  ");
-	cortos_printf("Testing on %d random pairs.\n", NoTrials);
+	printf("\n");
+	printf("Does Multiplication commute?  ");
+	printf("Testing on %d random pairs.\n", NoTrials);
 	Random9 = SQRT(3.0);
 	Random1 = Third;
 	I = 1;
@@ -1039,11 +1033,11 @@ void part4(VOID){
 		}
 	if (! ((I == NoTrials) || (Z9 == Zero)))
 		BadCond(Defect, "X * Y == Y * X trial fails.\n");
-	else cortos_printf("     No failures found in %d integer pairs.\n", NoTrials);
+	else printf("     No failures found in %d integer pairs.\n", NoTrials);
 	/*=============================================*/
 	Milestone = 70;
 	/*=============================================*/
-	cortos_printf("\nRunning test of square root(x).\n");
+	printf("\nRunning test of square root(x).\n");
 	TstCond (Failure, (Zero == SQRT(Zero))
 		   && (- Zero == SQRT(- Zero))
 		   && (One == SQRT(One)), "Square root of 0.0, -0.0 or 1.0 wrong");
@@ -1060,7 +1054,7 @@ void part4(VOID){
 	OneUlp = U1 * U1;
 	SqXMinX (Serious);
 	if (J != Zero) Pause();
-	cortos_printf("Testing if sqrt(X * X) == X for %d Integers X.\n", NoTrials);
+	printf("Testing if sqrt(X * X) == X for %d Integers X.\n", NoTrials);
 	J = Zero;
 	X = Two;
 	Y = Radix;
@@ -1076,7 +1070,7 @@ void part4(VOID){
 		if (J > Zero) break;
 		I = I + 1;
 		}
-	cortos_printf("Test for sqrt monotonicity.\n");
+	printf("Test for sqrt monotonicity.\n");
 	I = - 1;
 	X = BMinusU2;
 	Y = Radix;
@@ -1107,10 +1101,10 @@ void part4(VOID){
 				}
 			}
 		}
-	if (Monot) cortos_printf("sqrt has passed a test for Monotonicity.\n");
+	if (Monot) printf("sqrt has passed a test for Monotonicity.\n");
 	else {
 		BadCond(Defect, "");
-		cortos_printf("sqrt(X) is non-monotonic for X near %.7e .\n", Y);
+		printf("sqrt(X) is non-monotonic for X near %.7e .\n", Y);
 		}
 	/*=============================================*/
 	/*SPLIT
@@ -1156,7 +1150,7 @@ void part5(VOID){
 	Anomaly = False;
 	RSqrt = Other; /* ~dgh */
 	if (Radix != One) {
-		cortos_printf("Testing whether sqrt is rounded or chopped.\n");
+		printf("Testing whether sqrt is rounded or chopped.\n");
 		D = FLOOR(Half + POW(Radix, One + Precision - FLOOR(Precision)));
 	/* ... == Radix^(1 + fract) if (Precision == Integer + fract. */
 		X = D / Radix;
@@ -1238,29 +1232,29 @@ void part5(VOID){
 			}
 		if ((I == 0) || Anomaly) {
 			BadCond(Failure, "Anomalous arithmetic with Integer < ");
-			cortos_printf("Radix^Precision = %.7e\n", W);
-			cortos_printf(" fails test whether sqrt rounds or chops.\n");
+			printf("Radix^Precision = %.7e\n", W);
+			printf(" fails test whether sqrt rounds or chops.\n");
 			SqRWrng = True;
 			}
 		}
 	if (! Anomaly) {
 		if (! ((MinSqEr < Zero) || (MaxSqEr > Zero))) {
 			RSqrt = Rounded;
-			cortos_printf("Square root appears to be correctly rounded.\n");
+			printf("Square root appears to be correctly rounded.\n");
 			}
 		else  {
 			if ((MaxSqEr + U2 > U2 - Half) || (MinSqEr > Half)
 				|| (MinSqEr + Radix < Half)) SqRWrng = True;
 			else {
 				RSqrt = Chopped;
-				cortos_printf("Square root appears to be chopped.\n");
+				printf("Square root appears to be chopped.\n");
 				}
 			}
 		}
 	if (SqRWrng) {
-		cortos_printf("Square root is neither chopped nor correctly rounded.\n");
-		cortos_printf("Observed errors run from %.7e ", MinSqEr - Half);
-		cortos_printf("to %.7e ulps.\n", Half + MaxSqEr);
+		printf("Square root is neither chopped nor correctly rounded.\n");
+		printf("Observed errors run from %.7e ", MinSqEr - Half);
+		printf("to %.7e ulps.\n", Half + MaxSqEr);
 		TstCond (Serious, MaxSqEr - MinSqEr < Radix * Radix,
 			"sqrt gets too many last digits wrong");
 		}
@@ -1268,7 +1262,7 @@ void part5(VOID){
 	Milestone = 90;
 	/*=============================================*/
 	Pause();
-	cortos_printf("Testing powers Z^i for small Integers Z and i.\n");
+	printf("Testing powers Z^i for small Integers Z and i.\n");
 	N = 0;
 	/* ... test powers of zero. */
 	I = 0;
@@ -1318,14 +1312,14 @@ void part5(VOID){
 			} while ( Three * FLOOR(Z / Three) == Z );
 		} while ( Z < Eight * Three );
 	if (N > 0) {
-		cortos_printf("Errors like this may invalidate financial calculations\n");
-		cortos_printf("\tinvolving interest rates.\n");
+		printf("Errors like this may invalidate financial calculations\n");
+		printf("\tinvolving interest rates.\n");
 		}
 	PrintIfNPositive();
 	N += N1;
-	if (N == 0) cortos_printf("... no discrepancies found.\n");
+	if (N == 0) printf("... no discrepancies found.\n");
 	if (N > 0) Pause();
-	else cortos_printf("\n");
+	else printf("\n");
 	/*=============================================*/
 	/*SPLIT
 	}
@@ -1334,7 +1328,7 @@ void part6(VOID){
 */
 	Milestone = 110;
 	/*=============================================*/
-	cortos_printf("Seeking Underflow thresholds UfThold and E0.\n");
+	printf("Seeking Underflow thresholds UfThold and E0.\n");
 	D = U1;
 	if (Precision != FLOOR(Precision)) {
 		D = BInvrse;
@@ -1409,24 +1403,24 @@ void part6(VOID){
 		}
 	/* Comment line 4530 .. 4560 */
 	if (PseudoZero != Zero) {
-		cortos_printf("\n");
+		printf("\n");
 		Z = PseudoZero;
 	/* ... Test PseudoZero for "phoney- zero" violates */
 	/* ... PseudoZero < Underflow or PseudoZero < PseudoZero + PseudoZero
 		   ... */
 		if (PseudoZero <= Zero) {
 			BadCond(Failure, "Positive expressions can underflow to an\n");
-			cortos_printf("allegedly negative value\n");
-			cortos_printf("PseudoZero that prints out as: %g .\n", PseudoZero);
+			printf("allegedly negative value\n");
+			printf("PseudoZero that prints out as: %g .\n", PseudoZero);
 			X = - PseudoZero;
 			if (X <= Zero) {
-				cortos_printf("But -PseudoZero, which should be\n");
-				cortos_printf("positive, isn't; it prints out as  %g .\n", X);
+				printf("But -PseudoZero, which should be\n");
+				printf("positive, isn't; it prints out as  %g .\n", X);
 				}
 			}
 		else {
 			BadCond(Flaw, "Underflow can stick at an allegedly positive\n");
-			cortos_printf("value PseudoZero that prints out as %g .\n", PseudoZero);
+			printf("value PseudoZero that prints out as %g .\n", PseudoZero);
 			}
 		TstPtUf();
 		}
@@ -1440,17 +1434,17 @@ void part6(VOID){
 	if (! ((E1 == Zero) || (E1 == E0))) {
 		BadCond(Defect, "");
 		if (E1 < E0) {
-			cortos_printf("Products underflow at a higher");
-			cortos_printf(" threshold than differences.\n");
+			printf("Products underflow at a higher");
+			printf(" threshold than differences.\n");
 			if (PseudoZero == Zero) 
 			E0 = E1;
 			}
 		else {
-			cortos_printf("Difference underflows at a higher");
-			cortos_printf(" threshold than products.\n");
+			printf("Difference underflows at a higher");
+			printf(" threshold than products.\n");
 			}
 		}
-	cortos_printf("Smallest strictly positive number found is E0 = %g .\n", E0);
+	printf("Smallest strictly positive number found is E0 = %g .\n", E0);
 	Z = E0;
 	TstPtUf();
 	Underflow = E0;
@@ -1465,18 +1459,18 @@ void part6(VOID){
 		if ((CInvrse * Q) != ((CInvrse * Y) * S)) {
 			UfThold = Y;
 			BadCond(Failure, "Either accuracy deteriorates as numbers\n");
-			cortos_printf("approach a threshold = %.17e\n", UfThold);;
-			cortos_printf(" coming down from %.17e\n", C);
-			cortos_printf(" or else multiplication gets too many last digits wrong.\n");
+			printf("approach a threshold = %.17e\n", UfThold);;
+			printf(" coming down from %.17e\n", C);
+			printf(" or else multiplication gets too many last digits wrong.\n");
 			}
 		Pause();
 		break;
 	
 		case	2:
 		BadCond(Failure, "Underflow confuses Comparison, which alleges that\n");
-		cortos_printf("Q == Y while denying that |Q - Y| == 0; these values\n");
-		cortos_printf("print out as Q = %.17e, Y = %.17e .\n", Q, Y2);
-		cortos_printf ("|Q - Y| = %.17e .\n" , FABS(Q - Y2));
+		printf("Q == Y while denying that |Q - Y| == 0; these values\n");
+		printf("print out as Q = %.17e, Y = %.17e .\n", Q, Y2);
+		printf ("|Q - Y| = %.17e .\n" , FABS(Q - Y2));
 		UfThold = Q;
 		break;
 	
@@ -1488,8 +1482,8 @@ void part6(VOID){
 		if ((Q == UfThold) && (E1 == E0)
 			&& (FABS( UfThold - E1 / E9) <= E1)) {
 			UfNGrad = False;
-			cortos_printf("Underflow is gradual; it incurs Absolute Error =\n");
-			cortos_printf("(roundoff in UfThold) < E0.\n");
+			printf("Underflow is gradual; it incurs Absolute Error =\n");
+			printf("(roundoff in UfThold) < E0.\n");
 			Y = E0 * CInvrse;
 			Y = Y * (OneAndHalf + U2);
 			X = CInvrse * (One + U2);
@@ -1498,10 +1492,10 @@ void part6(VOID){
 			}
 		}
 	if (UfNGrad) {
-		cortos_printf("\n");
+		printf("\n");
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf)) {
-			cortos_printf("Underflow / UfThold failed!\n");
+		if (setjmp(ovfl_buf)) {
+			printf("Underflow / UfThold failed!\n");
 			R = H + H;
 			}
 		else R = SQRT(Underflow / UfThold);
@@ -1516,25 +1510,25 @@ void part6(VOID){
 			}
 		if (! ((X == Z) || (X - Z != Zero))) {
 			BadCond(Flaw, "");
-			cortos_printf("X = %.17e\n\tis not equal to Z = %.17e .\n", X, Z);
+			printf("X = %.17e\n\tis not equal to Z = %.17e .\n", X, Z);
 			Z9 = X - Z;
-			cortos_printf("yet X - Z yields %.17e .\n", Z9);
-			cortos_printf("    Should this NOT signal Underflow, ");
-			cortos_printf("this is a SERIOUS DEFECT\nthat causes ");
-			cortos_printf("confusion when innocent statements like\n");;
-			cortos_printf("    if (X == Z)  ...  else");
-			cortos_printf("  ... (f(X) - f(Z)) / (X - Z) ...\n");
-			cortos_printf("encounter Division by Zero although actually\n");
+			printf("yet X - Z yields %.17e .\n", Z9);
+			printf("    Should this NOT signal Underflow, ");
+			printf("this is a SERIOUS DEFECT\nthat causes ");
+			printf("confusion when innocent statements like\n");;
+			printf("    if (X == Z)  ...  else");
+			printf("  ... (f(X) - f(Z)) / (X - Z) ...\n");
+			printf("encounter Division by Zero although actually\n");
 			sigsave = sigfpe;
-			if (fake_setjmp(ovfl_buf)) cortos_printf("X / Z fails!\n");
-			else cortos_printf("X / Z = 1 + %g .\n", (X / Z - Half) - Half);
+			if (setjmp(ovfl_buf)) printf("X / Z fails!\n");
+			else printf("X / Z = 1 + %g .\n", (X / Z - Half) - Half);
 			sigsave = 0;
 			}
 		}
-	cortos_printf("The Underflow threshold is %.17e, %s\n", UfThold,
+	printf("The Underflow threshold is %.17e, %s\n", UfThold,
 		   " below which");
-	cortos_printf("calculation may suffer larger Relative error than ");
-	cortos_printf("merely roundoff.\n");
+	printf("calculation may suffer larger Relative error than ");
+	printf("merely roundoff.\n");
 	Y2 = U1 * U1;
 	Y = Y2 * Y2;
 	Y2 = Y * U1;
@@ -1547,7 +1541,7 @@ void part6(VOID){
 			BadCond(Serious, "");
 			I = 4;
 			}
-		cortos_printf("Range is too narrow; U1^%d Underflows.\n", I);
+		printf("Range is too narrow; U1^%d Underflows.\n", I);
 		}
 	/*=============================================*/
 	/*SPLIT
@@ -1559,12 +1553,12 @@ void part7(VOID){
 	/*=============================================*/
 	Y = - FLOOR(Half - TwoForty * LOG(UfThold) / LOG(HInvrse)) / TwoForty;
 	Y2 = Y + Y;
-	cortos_printf("Since underflow occurs below the threshold\n");
-	cortos_printf("UfThold = (%.17e) ^ (%.17e)\nonly underflow ", HInvrse, Y);
-	cortos_printf("should afflict the expression\n\t(%.17e) ^ (%.17e);\n",
+	printf("Since underflow occurs below the threshold\n");
+	printf("UfThold = (%.17e) ^ (%.17e)\nonly underflow ", HInvrse, Y);
+	printf("should afflict the expression\n\t(%.17e) ^ (%.17e);\n",
 		HInvrse, Y2);
-	cortos_printf("actually calculating yields:");
-	if (fake_setjmp(ovfl_buf)) {
+	printf("actually calculating yields:");
+	if (setjmp(ovfl_buf)) {
 		sigsave = 0;
 		BadCond(Serious, "trap on underflow.\n");
 		}
@@ -1572,22 +1566,22 @@ void part7(VOID){
 		sigsave = sigfpe;
 		V9 = POW(HInvrse, Y2);
 		sigsave = 0;
-		cortos_printf(" %.17e .\n", V9);
+		printf(" %.17e .\n", V9);
 		if (! ((V9 >= Zero) && (V9 <= (Radix + Radix + E9) * UfThold))) {
 			BadCond(Serious, "this is not between 0 and underflow\n");
-		cortos_printf("   threshold = %.17e .\n", UfThold);
+		printf("   threshold = %.17e .\n", UfThold);
 		}
 		else if (! (V9 > UfThold * (One + E9)))
-			cortos_printf("This computed value is O.K.\n");
+			printf("This computed value is O.K.\n");
 		else {
 			BadCond(Defect, "this is not between 0 and underflow\n");
-			cortos_printf("   threshold = %.17e .\n", UfThold);
+			printf("   threshold = %.17e .\n", UfThold);
 			}
 		}
 	/*=============================================*/
 	Milestone = 140;
 	/*=============================================*/
-	cortos_printf("\n");
+	printf("\n");
 	/* ...calculate Exp2 == exp(2) == 7.389056099... */
 	X = Zero;
 	I = 2;
@@ -1607,7 +1601,7 @@ void part7(VOID){
 	Exp2 = X * X;
 	X = F9;
 	Y = X - U1;
-	cortos_printf("Testing X^((X + 1) / (X - 1)) vs. exp(2) = %.17e as X -> 1.\n",
+	printf("Testing X^((X + 1) / (X - 1)) vs. exp(2) = %.17e as X -> 1.\n",
 		Exp2);
 	for(I = 1;;) {
 		Z = X - BInvrse;
@@ -1617,11 +1611,11 @@ void part7(VOID){
 			N = 1;
 	 		V9 = (X - BInvrse) - (One - BInvrse);
 			BadCond(Defect, "Calculated");
-			cortos_printf(" %.17e for\n", POW(X,Z));
-			cortos_printf("\t(1 + (%.17e) ^ (%.17e);\n", V9, Z);
-			cortos_printf("\tdiffers from correct value by %.17e .\n", Q);
-			cortos_printf("\tThis much error may spoil financial\n");
-			cortos_printf("\tcalculations involving tiny interest rates.\n");
+			printf(" %.17e for\n", POW(X,Z));
+			printf("\t(1 + (%.17e) ^ (%.17e);\n", V9, Z);
+			printf("\tdiffers from correct value by %.17e .\n", Q);
+			printf("\tThis much error may spoil financial\n");
+			printf("\tcalculations involving tiny interest rates.\n");
 			break;
 			}
 		else {
@@ -1633,7 +1627,7 @@ void part7(VOID){
 			else  {
 				if (X > One) {
 					if (N == 0)
-					   cortos_printf("Accuracy seems adequate.\n");
+					   printf("Accuracy seems adequate.\n");
 					break;
 					}
 				else {
@@ -1648,7 +1642,7 @@ void part7(VOID){
 	/*=============================================*/
 	Milestone = 150;
 	/*=============================================*/
-	cortos_printf("Testing powers Z^Q at four nearly extreme values.\n");
+	printf("Testing powers Z^Q at four nearly extreme values.\n");
 	N = 0;
 	Z = A1;
 	Q = FLOOR(Half - LOG(C) / LOG(A1));
@@ -1665,45 +1659,40 @@ void part7(VOID){
 		else Z = AInvrse;
 		} while ( ! (Break));
 	PrintIfNPositive();
-	if (N == 0) cortos_printf(" ... no discrepancies found.\n");
-	cortos_printf("\n");
+	if (N == 0) printf(" ... no discrepancies found.\n");
+	printf("\n");
 	
 	/*=============================================*/
 	Milestone = 160;
 	/*=============================================*/
 	Pause();
-	cortos_printf("Searching for Overflow threshold:\n");
-	cortos_printf("This may generate an error.\n");
+	printf("Searching for Overflow threshold:\n");
+	printf("This may generate an error.\n");
 	Y = - CInvrse;
 	V9 = HInvrse * Y;
 	sigsave = sigfpe;
-	if (fake_setjmp(ovfl_buf)) { I = 0; V9 = Y; goto overflow; }
+	if (setjmp(ovfl_buf)) { I = 0; V9 = Y; goto overflow; }
 	do {
-
 		V = Y;
 		Y = V9;
 		V9 = HInvrse * Y;
-		cortos_printf("INFO:OVFLOW:  V9=%.17e (0x%llx)\n", V9, *((uint64_t*) &V9));
-		cortos_printf("INFO:OVFLOW:  Y=%.17e (0x%llx)\n",  Y, *((uint64_t*) &Y));
-		int  condition = (V9 < Y);
-		cortos_printf("INFO:OVFLOW:  (V9 < Y)=%d\n", condition);
 		} while(V9 < Y);
 	I = 1;
 overflow:
 	sigsave = 0;
 	Z = V9;
-	cortos_printf("Can `Z = -Y' overflow?\n");
-	cortos_printf("Trying it on Y = %.17e .\n", Y);
+	printf("Can `Z = -Y' overflow?\n");
+	printf("Trying it on Y = %.17e .\n", Y);
 	V9 = - Y;
 	V0 = V9;
-	if (V - Y == V + V0) cortos_printf("Seems O.K.\n");
+	if (V - Y == V + V0) printf("Seems O.K.\n");
 	else {
-		cortos_printf("finds a ");
+		printf("finds a ");
 		BadCond(Flaw, "-(-Y) differs from Y.\n");
 		}
 	if (Z != Y) {
 		BadCond(Serious, "");
-		cortos_printf("overflow past %.17e\n\tshrinks to %.17e .\n", Y, Z);
+		printf("overflow past %.17e\n\tshrinks to %.17e .\n", Y, Z);
 		}
 	if (I) {
 		Y = V * (HInvrse * U2 - HInvrse);
@@ -1716,28 +1705,28 @@ overflow:
 		V = Y * (HInvrse * U2 - HInvrse);
 		V = V + ((One - HInvrse) * U2) * Y;
 		}
-	cortos_printf("Overflow threshold is V  = %.17e .\n", V);
-	if (I) cortos_printf("Overflow saturates at V0 = %.17e .\n", V0);
-	else cortos_printf("There is no saturation value because \
+	printf("Overflow threshold is V  = %.17e .\n", V);
+	if (I) printf("Overflow saturates at V0 = %.17e .\n", V0);
+	else printf("There is no saturation value because \
 the system traps on overflow.\n");
 	V9 = V * One;
-	cortos_printf("No Overflow should be signaled for V * 1 = %.17e\n", V9);
+	printf("No Overflow should be signaled for V * 1 = %.17e\n", V9);
 	V9 = V / One;
-	cortos_printf("                           nor for V / 1 = %.17e .\n", V9);
-	cortos_printf("Any overflow signal separating this * from the one\n");
-	cortos_printf("above is a DEFECT.\n");
+	printf("                           nor for V / 1 = %.17e .\n", V9);
+	printf("Any overflow signal separating this * from the one\n");
+	printf("above is a DEFECT.\n");
 	/*=============================================*/
 	Milestone = 170;
 	/*=============================================*/
 	if (!(-V < V && -V0 < V0 && -UfThold < V && UfThold < V)) {
 		BadCond(Failure, "Comparisons involving ");
-		cortos_printf("+-%g, +-%g\nand +-%g are confused by Overflow.",
+		printf("+-%g, +-%g\nand +-%g are confused by Overflow.",
 			V, V0, UfThold);
 		}
 	/*=============================================*/
 	Milestone = 175;
 	/*=============================================*/
-	cortos_printf("\n");
+	printf("\n");
 	for(Indx = 1; Indx <= 3; ++Indx) {
 		switch (Indx)  {
 			case 1: Z = UfThold; break;
@@ -1751,8 +1740,8 @@ the system traps on overflow.\n");
 			   || Y > (One + Radix * E9) * Z) { /* dgh: + E9 --> * E9 */
 				if (V9 > U1) BadCond(Serious, "");
 				else BadCond(Defect, "");
-				cortos_printf("Comparison alleges that what prints as Z = %.17e\n", Z);
-				cortos_printf(" is too far from sqrt(Z) ^ 2 = %.17e .\n", Y);
+				printf("Comparison alleges that what prints as Z = %.17e\n", Z);
+				printf(" is too far from sqrt(Z) ^ 2 = %.17e .\n", Y);
 				}
 			}
 		}
@@ -1769,8 +1758,8 @@ the system traps on overflow.\n");
 			Y = V9;
 			if (X < W) BadCond(Serious, "");
 			else BadCond(Defect, "");
-			cortos_printf("Comparison alleges that Z = %17e\n", Z);
-			cortos_printf(" is too far from sqrt(Z) ^ 2 (%.17e) .\n", Y);
+			printf("Comparison alleges that Z = %17e\n", Z);
+			printf(" is too far from sqrt(Z) ^ 2 (%.17e) .\n", Y);
 			}
 		}
 	/*=============================================*/
@@ -1788,7 +1777,7 @@ int part8(VOID){
 		if (X * Y < U1 || X > Y/U1) BadCond(Defect, "Badly");
 		else BadCond(Flaw, "");
 			
-		cortos_printf(" unbalanced range; UfThold * V = %.17e\n\t%s\n",
+		printf(" unbalanced range; UfThold * V = %.17e\n\t%s\n",
 			X, "is too far from 1.\n");
 		}
 	/*=============================================*/
@@ -1804,15 +1793,15 @@ int part8(VOID){
 			}
 		Y = X;
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf))
-			cortos_printf("  X / X  traps when X = %g\n", X);
+		if (setjmp(ovfl_buf))
+			printf("  X / X  traps when X = %g\n", X);
 		else {
 			V9 = (Y / X - Half) - Half;
 			if (V9 == Zero) continue;
 			if (V9 == - U1 && Indx < 5) BadCond(Flaw, "");
 			else BadCond(Serious, "");
-			cortos_printf("  X / X differs from 1 when X = %.17e\n", X);
-			cortos_printf("  instead, X / X - 1/2 - 1/2 = %.17e .\n", V9);
+			printf("  X / X differs from 1 when X = %.17e\n", X);
+			printf("  instead, X / X - 1/2 - 1/2 = %.17e .\n", V9);
 			}
 		sigsave = 0;
 		}
@@ -1820,41 +1809,41 @@ int part8(VOID){
 	Milestone = 210;
 	/*=============================================*/
 	MyZero = Zero;
-	cortos_printf("\n");
-	cortos_printf("What message and/or values does Division by Zero produce?\n") ;
+	printf("\n");
+	printf("What message and/or values does Division by Zero produce?\n") ;
 #ifndef NOPAUSE
-	cortos_printf("This can interupt your program.  You can ");
-	cortos_printf("skip this part if you wish.\n");
-	cortos_printf("Do you wish to compute 1 / 0? ");
-	fake_fflush(stdout);
+	printf("This can interupt your program.  You can ");
+	printf("skip this part if you wish.\n");
+	printf("Do you wish to compute 1 / 0? ");
+	fflush(stdout);
 	read (KEYBOARD, ch, 8);
 	if ((ch[0] == 'Y') || (ch[0] == 'y')) {
 #endif
 		sigsave = sigfpe;
-		cortos_printf("    Trying to compute 1 / 0 produces ...");
-		if (!fake_setjmp(ovfl_buf)) cortos_printf("  %.7e .\n", One / MyZero);
+		printf("    Trying to compute 1 / 0 produces ...");
+		if (!setjmp(ovfl_buf)) printf("  %.7e .\n", One / MyZero);
 		sigsave = 0;
 #ifndef NOPAUSE
 		}
-	else cortos_printf("O.K.\n");
-	cortos_printf("\nDo you wish to compute 0 / 0? ");
-	fake_fflush(stdout);
+	else printf("O.K.\n");
+	printf("\nDo you wish to compute 0 / 0? ");
+	fflush(stdout);
 	read (KEYBOARD, ch, 80);
 	if ((ch[0] == 'Y') || (ch[0] == 'y')) {
 #endif
 		sigsave = sigfpe;
-		cortos_printf("\n    Trying to compute 0 / 0 produces ...");
-		if (!fake_setjmp(ovfl_buf)) cortos_printf("  %.7e .\n", Zero / MyZero);
+		printf("\n    Trying to compute 0 / 0 produces ...");
+		if (!setjmp(ovfl_buf)) printf("  %.7e .\n", Zero / MyZero);
 		sigsave = 0;
 #ifndef NOPAUSE
 		}
-	else cortos_printf("O.K.\n");
+	else printf("O.K.\n");
 #endif
 	/*=============================================*/
 	Milestone = 220;
 	/*=============================================*/
 	Pause();
-	cortos_printf("\n");
+	printf("\n");
 	{
 		static char *msg[] = {
 			"FAILUREs  encountered =",
@@ -1863,60 +1852,60 @@ int part8(VOID){
 			"FLAWs  discovered =" };
 		int i;
 		for(i = 0; i < 4; i++) if (ErrCnt[i])
-			cortos_printf("The number of  %-29s %d.\n",
+			printf("The number of  %-29s %d.\n",
 				msg[i], ErrCnt[i]);
 		}
-	cortos_printf("\n");
+	printf("\n");
 	if ((ErrCnt[Failure] + ErrCnt[Serious] + ErrCnt[Defect]
 			+ ErrCnt[Flaw]) > 0) {
 		if ((ErrCnt[Failure] + ErrCnt[Serious] + ErrCnt[
 			Defect] == 0) && (ErrCnt[Flaw] > 0)) {
-			cortos_printf("The arithmetic diagnosed seems ");
-			cortos_printf("Satisfactory though flawed.\n");
+			printf("The arithmetic diagnosed seems ");
+			printf("Satisfactory though flawed.\n");
 			}
 		if ((ErrCnt[Failure] + ErrCnt[Serious] == 0)
 			&& ( ErrCnt[Defect] > 0)) {
-			cortos_printf("The arithmetic diagnosed may be Acceptable\n");
-			cortos_printf("despite inconvenient Defects.\n");
+			printf("The arithmetic diagnosed may be Acceptable\n");
+			printf("despite inconvenient Defects.\n");
 			}
 		if ((ErrCnt[Failure] + ErrCnt[Serious]) > 0) {
-			cortos_printf("The arithmetic diagnosed has ");
-			cortos_printf("unacceptable Serious Defects.\n");
+			printf("The arithmetic diagnosed has ");
+			printf("unacceptable Serious Defects.\n");
 			}
 		if (ErrCnt[Failure] > 0) {
-			cortos_printf("Potentially fatal FAILURE may have spoiled this");
-			cortos_printf(" program's subsequent diagnoses.\n");
+			printf("Potentially fatal FAILURE may have spoiled this");
+			printf(" program's subsequent diagnoses.\n");
 			}
 		}
 	else {
-		cortos_printf("No failures, defects nor flaws have been discovered.\n");
+		printf("No failures, defects nor flaws have been discovered.\n");
 		if (! ((RMult == Rounded) && (RDiv == Rounded)
 			&& (RAddSub == Rounded) && (RSqrt == Rounded))) 
-			cortos_printf("The arithmetic diagnosed seems Satisfactory.\n");
+			printf("The arithmetic diagnosed seems Satisfactory.\n");
 		else {
 			if (StickyBit >= One &&
 				(Radix - Two) * (Radix - Nine - One) == Zero) {
-				cortos_printf("Rounding appears to conform to ");
-				cortos_printf("the proposed IEEE standard P");
+				printf("Rounding appears to conform to ");
+				printf("the proposed IEEE standard P");
 				if ((Radix == Two) &&
 					 ((Precision - Four * Three * Two) *
 					  ( Precision - TwentySeven -
 					   TwentySeven + One) == Zero)) 
-					cortos_printf("754");
-				else cortos_printf("854");
-				if (IEEE) cortos_printf(".\n");
+					printf("754");
+				else printf("854");
+				if (IEEE) printf(".\n");
 				else {
-					cortos_printf(",\nexcept for possibly Double Rounding");
-					cortos_printf(" during Gradual Underflow.\n");
+					printf(",\nexcept for possibly Double Rounding");
+					printf(" during Gradual Underflow.\n");
 					}
 				}
-			cortos_printf("The arithmetic diagnosed appears to be Excellent!\n");
+			printf("The arithmetic diagnosed appears to be Excellent!\n");
 			}
 		}
 	if (fpecount)
-		cortos_printf("\nA total of %d floating point exceptions were registered.\n",
+		printf("\nA total of %d floating point exceptions were registered.\n",
 			fpecount);
-	cortos_printf("END OF TEST.\n");
+	printf("END OF TEST.\n");
 	return 0;
 	}
 
@@ -1937,12 +1926,12 @@ Pause(VOID)
 #ifndef NOPAUSE
 	char ch[8];
 
-	cortos_printf("\nTo continue, press RETURN");
-	fake_fflush(stdout);
+	printf("\nTo continue, press RETURN");
+	fflush(stdout);
 	read(KEYBOARD, ch, 8);
 #endif
-	cortos_printf("\nDiagnosis resumes after milestone Number %d", Milestone);
-	cortos_printf("          Page: %d\n\n", PageNo);
+	printf("\nDiagnosis resumes after milestone Number %d", Milestone);
+	printf("          Page: %d\n\n", PageNo);
 	++Milestone;
 	++PageNo;
 	}
@@ -1953,7 +1942,7 @@ TstCond (INT K, INT Valid, CHARP T)
 int K, Valid;
 char *T;
 #endif
-{ if (! Valid) { BadCond(K,T); cortos_printf(".\n"); } }
+{ if (! Valid) { BadCond(K,T); printf(".\n"); } }
 
  void
 BadCond(INT K, CHARP T)
@@ -1965,7 +1954,7 @@ char *T;
 	static char *msg[] = { "FAILURE", "SERIOUS DEFECT", "DEFECT", "FLAW" };
 
 	ErrCnt [K] = ErrCnt [K] + 1;
-	cortos_printf("%s:  %s", msg[K], T);
+	printf("%s:  %s", msg[K], T);
 	}
 
 
@@ -2004,8 +1993,8 @@ int ErrKind;
 		if (SqEr > MaxSqEr) MaxSqEr = SqEr;
 		J = J + 1.0;
 		BadCond(ErrKind, "\n");
-		cortos_printf("sqrt( %.17e) - %.17e  = %.17e\n", X * X, X, OneUlp * SqEr);
-		cortos_printf("\tinstead of correct value 0 .\n");
+		printf("sqrt( %.17e) - %.17e  = %.17e\n", X * X, X, OneUlp * SqEr);
+		printf("\tinstead of correct value 0 .\n");
 		}
 	}
 
@@ -2045,13 +2034,13 @@ IsYeqX(VOID)
 	if (Y != X) {
 		if (N <= 0) {
 			if (Z == Zero && Q <= Zero)
-				cortos_printf("WARNING:  computing\n");
+				printf("WARNING:  computing\n");
 			else BadCond(Defect, "computing\n");
-			cortos_printf("\t(%.17e) ^ (%.17e)\n", Z, Q);
-			cortos_printf("\tyielded %.17e;\n", Y);
-			cortos_printf("\twhich compared unequal to correct %.17e ;\n",
+			printf("\t(%.17e) ^ (%.17e)\n", Z, Q);
+			printf("\tyielded %.17e;\n", Y);
+			printf("\twhich compared unequal to correct %.17e ;\n",
 				X);
-			cortos_printf("\t\tthey differ by %.17e .\n", Y - X);
+			printf("\t\tthey differ by %.17e .\n", Y - X);
 			}
 		N = N + 1; /* ... count discrepancies. */
 		}
@@ -2072,7 +2061,7 @@ SR3980(VOID)
  void
 PrintIfNPositive(VOID)
 {
-	if (N > 0) cortos_printf("Similar discrepancies have occurred %d times.\n", N);
+	if (N > 0) printf("Similar discrepancies have occurred %d times.\n", N);
 	}
 
  void
@@ -2080,28 +2069,28 @@ TstPtUf(VOID)
 {
 	N = 0;
 	if (Z != Zero) {
-		cortos_printf("Since comparison denies Z = 0, evaluating ");
-		cortos_printf("(Z + Z) / Z should be safe.\n");
+		printf("Since comparison denies Z = 0, evaluating ");
+		printf("(Z + Z) / Z should be safe.\n");
 		sigsave = sigfpe;
-		if (fake_setjmp(ovfl_buf)) goto very_serious;
+		if (setjmp(ovfl_buf)) goto very_serious;
 		Q9 = (Z + Z) / Z;
-		cortos_printf("What the machine gets for (Z + Z) / Z is  %.17e .\n",
+		printf("What the machine gets for (Z + Z) / Z is  %.17e .\n",
 			Q9);
 		if (FABS(Q9 - Two) < Radix * U2) {
-			cortos_printf("This is O.K., provided Over/Underflow");
-			cortos_printf(" has NOT just been signaled.\n");
+			printf("This is O.K., provided Over/Underflow");
+			printf(" has NOT just been signaled.\n");
 			}
 		else {
 			if ((Q9 < One) || (Q9 > Two)) {
 very_serious:
 				N = 1;
 				ErrCnt [Serious] = ErrCnt [Serious] + 1;
-				cortos_printf("This is a VERY SERIOUS DEFECT!\n");
+				printf("This is a VERY SERIOUS DEFECT!\n");
 				}
 			else {
 				N = 1;
 				ErrCnt [Defect] = ErrCnt [Defect] + 1;
-				cortos_printf("This is a DEFECT!\n");
+				printf("This is a DEFECT!\n");
 				}
 			}
 		sigsave = 0;
@@ -2116,18 +2105,18 @@ very_serious:
 		else {
 			N = 1;
 			BadCond(Defect, "What prints as Z = ");
-			cortos_printf("%.17e\n\tcompares different from  ", Z);
-			if (Z != Random1) cortos_printf("Z * 1 = %.17e ", Random1);
+			printf("%.17e\n\tcompares different from  ", Z);
+			if (Z != Random1) printf("Z * 1 = %.17e ", Random1);
 			if (! ((Z == Random2)
 				|| (Random2 == Random1)))
-				cortos_printf("1 * Z == %g\n", Random2);
-			if (! (Z == V9)) cortos_printf("Z / 1 = %.17e\n", V9);
+				printf("1 * Z == %g\n", Random2);
+			if (! (Z == V9)) printf("Z / 1 = %.17e\n", V9);
 			if (Random2 != Random1) {
 				ErrCnt [Defect] = ErrCnt [Defect] + 1;
 				BadCond(Defect, "Multiplication does not commute!\n");
-				cortos_printf("\tComparison alleges that 1 * Z = %.17e\n",
+				printf("\tComparison alleges that 1 * Z = %.17e\n",
 					Random2);
-				cortos_printf("\tdiffers from Z * 1 = %.17e\n", Random1);
+				printf("\tdiffers from Z * 1 = %.17e\n", Random1);
 				}
 			Pause();
 			}
@@ -2140,8 +2129,8 @@ notify(CHARP s)
  char *s;
 #endif
 {
-	cortos_printf("%s test appears to be inconsistent...\n", s);
-	cortos_printf("   PLEASE NOTIFY KARPINKSI!\n");
+	printf("%s test appears to be inconsistent...\n", s);
+	printf("   PLEASE NOTIFY KARPINKSI!\n");
 	}
 
 /*SPLIT msgs.c
@@ -2153,7 +2142,7 @@ msglist(CHARPP s)
 #ifdef KR_headers
 char **s;
 #endif
-{ while(*s) cortos_printf("%s\n", *s++); }
+{ while(*s) printf("%s\n", *s++); }
 
  void
 Instructions(VOID)
