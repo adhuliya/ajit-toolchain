@@ -1,0 +1,8 @@
+generate_tcl.sh
+	generates program.tcl and reset.tcl
+
+Requires
+	Vivado
+	device id (from Vivado)
+	full path of bitfile
+	full path of probes file.

@@ -16,6 +16,9 @@
 
 FILE* log_file = NULL;
 
+int debug_interpreter_current_core_id = 0;
+int debug_interpreter_current_thread_id = 0;
+
 int ajit_debug_interpreter_mt_ncores = 1;
 int ajit_debug_interpreter_mt_nthreads_per_core = 1;
 int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
@@ -23,10 +26,15 @@ int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
 void checkMatch(char* s, uint32_t rval, uint32_t expected_rval, uint32_t check_mask)
 {
 	if((rval & check_mask) == (expected_rval & check_mask))
-		fprintf(stdout,"Info: __match__ %s == 0x%x, mask=0x%x\n", s, rval, check_mask);
+		fprintf(stdout,"Info: __match__ %s == 0x%x, mask=0x%x  core=%d, thread=%d\n", 
+					s, rval, check_mask, 
+						debug_interpreter_current_core_id,
+						debug_interpreter_current_thread_id);
 	else
-		fprintf(stdout,"Info: __mismatch__ %s == 0x%x, expected 0x%x\n", 
-				s, rval, expected_rval);
+		fprintf(stdout,"Info: __mismatch__ %s == 0x%x, expected 0x%x  core=%d, thread=%d\n", 
+				s, rval, expected_rval,
+						debug_interpreter_current_core_id,
+						debug_interpreter_current_thread_id);
 }
 
 void setDebugInterpreterInFastMmapDownloadMode(int mcm)
@@ -77,8 +85,6 @@ int getDebugInterpreterInMultiCoreMode()
 	return(debug_interpreter_multi_core_mode);
 }
 
-int debug_interpreter_current_core_id = 0;
-int debug_interpreter_current_thread_id = 0;
 
 int executeCommandLine(char* line_buffer);
 int executeScriptFile(char* file_name);

@@ -13,12 +13,9 @@
 # Author: Madhav Desai
 #
 import os
-import os.path
-import shutil
 import getopt
 import sys
 import glob
-import threading 
 import subprocess
 import pdb
 import time
@@ -31,7 +28,8 @@ def execSysCmd(sys_cmd):
 
 # logging.
 def logCommand(sys_cmd):
-    print(sys_cmd, file= command_log_file)
+    #print(sys_cmd, file=command_log_file)
+    print >> command_log_file, sys_cmd
 
 def logInfo(mesg):
     print ("Info: " + mesg)
@@ -55,16 +53,12 @@ def printUsage(app_name):
      -f <fpga-device-id>     (as labeled in vivado)
      -b <bit-file-name>      (full path)
      -p <probes-file-name>   (full path)
-     -i <init-pc>   
-     -m <mmap-file>          (full path)
-     -r <check-results-file> (full path)
      -o <output-directory>   (relative path)
      -h    print-help-message-and-quit.
           '''
           )
 
 def main():
-
 
     if len(sys.argv) < 8:
        printUsage(sys.argv[0])
@@ -73,7 +67,7 @@ def main():
     arg_list = sys.argv[1:]
 
     output_directory = "./"
-    opts,args = getopt.getopt(arg_list,'f:b:p:o:i:m:r:h')
+    opts,args = getopt.getopt(arg_list,'f:b:p:o:h')
     app_name = ""
     c_include_dirs = []
     cc_flags =  " "
@@ -91,15 +85,6 @@ def main():
         elif option ==  '-o':
            output_directory = parameter
            logInfo("output_directory = " + parameter + ".")
-        elif option ==  '-i':
-           init_pc = parameter
-           logInfo("init-pc = " + parameter + ".")
-        elif option ==  '-m':
-           mmap_file_name = parameter
-           logInfo("mmap-file-name = " + parameter + ".")
-        elif option ==  '-r':
-           results_file_name = parameter
-           logInfo("results-file-name = " +  parameter + ".")
         elif option ==  '-h':
            printUsage(sys.argv[0])
            return 1
@@ -113,10 +98,6 @@ def main():
 
     program_tcl_file =  open(output_directory + "/program.tcl","w")
     reset_tcl_file  =  open(output_directory + "/reset.tcl","w")
-
-    output_script_file_name = output_directory + "/adm.script"
-    gen_command = "adm_script_gen " + init_pc + " " + mmap_file_name + " " + results_file_name + " " + output_script_file_name
-    execSysCmd (gen_command)
 
     program_string =  "open_hw \n" + \
             "connect_hw_server\n" + \
@@ -133,7 +114,7 @@ def main():
             "set_property OUTPUT_VALUE 0 [get_hw_probes reset_vio -of_objects [get_hw_vios -of_objects [get_hw_devices " + fpga_device_id + "] -filter {CELL_NAME=~\"vio_inst\"}]]\n" + \
             "commit_hw_vio [get_hw_probes {reset_vio} -of_objects [get_hw_vios -of_objects [get_hw_devices " + fpga_device_id + "] -filter {CELL_NAME=~\"vio_inst\"}]]\n"
 
-    print (program_string, file=program_tcl_file)
+    print >> program_tcl_file, program_string
 
     reset_string =  "open_hw\n" +  \
             "connect_hw_server\n" +  \
@@ -146,7 +127,7 @@ def main():
             "commit_hw_vio [get_hw_probes {reset_vio} -of_objects [get_hw_vios -of_objects [get_hw_devices " + fpga_device_id  + "] -filter {CELL_NAME=~\"vio_inst\"}]]\n" +  \
             "set_property OUTPUT_VALUE 0 [get_hw_probes reset_vio -of_objects [get_hw_vios -of_objects [get_hw_devices " + fpga_device_id + "] -filter {CELL_NAME=~\"vio_inst\"}]]\n" +  \
             "commit_hw_vio [get_hw_probes {reset_vio} -of_objects [get_hw_vios -of_objects [get_hw_devices " + fpga_device_id + "] -filter {CELL_NAME=~\"vio_inst\"}]]\n"
-    print(reset_string, file = reset_tcl_file)
+    print >> reset_tcl_file, reset_string
     
     program_tcl_file.close()
     reset_tcl_file.close()
