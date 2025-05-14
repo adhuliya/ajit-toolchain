@@ -1,0 +1,18 @@
+Successful paranoia run.  Paranoia found one
+(major) bug in the divide logic.
+
+The results of the run are here:
+paranoia_run.log
+
+Other notable files:
+
+check.c
+	small util for debug purposed.
+host/
+	to run on the X86 host for comparison.
+
+paranoia.c
+	paranoia source (edited to run bare-metal without signals).
+ref/
+	original paranoia  code and version without setjmp.
+
