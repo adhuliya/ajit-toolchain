@@ -745,17 +745,33 @@ void part3(VOID){
 	TstCond(Defect, X == Zero && Y == Zero && Z == Zero,
 		"Division lacks a Guard Digit, so error can exceed 1 ulp\n\
 or  1/3  and  3/9  and  9/27 may disagree");
-	Y = F9 / One;
-	X = F9 - Half;
+	Y = F9 / One; // 1/1 -> 1
+	X = F9 - Half;// 1 - 0.5 -> 0.5
+
+	double Xss = X;  // 0.5
+	double Y1 = Y;   // 1
+	double Y2 = (Y - Half); // 1 - 0.5 -> 0.5
+	double Y3 = Y2 - X;
+
 	Y = (Y - Half) - X;
 	X = One + U2;
 	T = X / One;
+	double Xs = X;
 	X = T - X;
 	if ((X == Zero) && (Y == Zero) && (Z == Zero)) GDiv = Yes;
 	else {
+
 		GDiv = No;
 		TstCond (Serious, False,
 			"Division lacks a Guard Digit, so X/1 != X");
+
+		// BUGGG!
+		cortos_printf("F9(%.17e) / One(%.17e) = Y1 (%.17e)\n", F9, One, Y1);
+		cortos_printf("F9(%.17e) - Half(%.17e) = X (%.17e)\n", F9, Half, Xss);
+		cortos_printf("Y1(%.17e) - Half(%.17e) = Y2 (%.17e)\n", Y1, Half, Y2);
+		cortos_printf("Y2(%.17e) - Xss(%.17e) = Y3 (%.17e)\n", Y2, Xss, Y3);
+		cortos_printf("Y=%.17e\n", Y);
+
 		}
 	X = One / (One + U2);
 	Y = X - Half - Half;
