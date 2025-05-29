@@ -1,0 +1,79 @@
+
+HiFromAjit
+
+
+##########################################
+Double Precision C/C++ Whetstone Benchmark
+
+Calibrate
+       0.15 Seconds          1   Passes (x 100)
+       0.76 Seconds          5   Passes (x 100)
+       3.80 Seconds         25   Passes (x 100)
+
+Use 1314  passes (x 100)
+
+          Double Precision C/C++ Whetstone Benchmark
+
+Loop content                  Result              MFLOPS      MOPS   Seconds
+
+N1 floating point     -1.12398255667391900        36.363              0.694
+N2 floating point     -1.12187079889284425        37.353              4.728
+N3 if then else        1.00000000000000000                  99.991    1.360
+N4 fixed point        12.00000000000000000                  46.875    8.830
+N5 sin,cos etc.        0.49902937281518271                   1.299   84.153
+N6 floating point      0.99999987890802817        14.286             49.614
+N7 assignments         3.00000000000000000                  21.428   11.332
+N8 exp,sqrt etc.       1.00000010612064560                   0.964   50.714
+***
+
+TimeUsed=211.424664
+
+MWIPS            mwips=62.149797
+   62.150   211.425 (1314,100)
+
+Enter the following which will be added with results to file WHETS.RES
+When submitting a number of results you need only provide details once
+but a cross reference such as an abbreviated CPU type would be useful.
+You can kill (exit or close) the program now and no data will be added.
+
+
+##############################################
+Whetstone Double  Precision Benchmark in C/C++
+
+Date: 2019      
+Computer: AJIT prototype system 1 (with 4MB SRAM)  
+CPU chip: AJIT v0 
+Clock MHz: 100  
+Cache size: 32kB (I), 32kB (D)
+H/W options: MMU enabled.
+OS version: none
+Compiler: gcc  
+Options:   -O3 
+Your name:  Madhav Desai 
+From:     IIT Bombay 
+Email:    madhav@ee.iitb.ac.in
+Loop content                   Result              MFLOPS      MOPS   Seconds
+
+N1 floating point      -1.12398255667391900        36.363               0.694
+N2 floating point      -1.12187079889284425        37.353               4.728
+N3 if then else         1.00000000000000000                  99.991     1.360
+N4 fixed point         12.00000000000000000                  46.875     8.830
+N5 sin,cos etc.         0.49902937281518271                   1.299    84.153
+N6 floating point       0.99999987890802817        14.286              49.614
+N7 assignments          3.00000000000000000                  21.428    11.332
+N8 exp,sqrt etc.        1.00000010612064560                   0.964    50.714
+
+MWIPS                                              62.150             211.425
+
+Results  to  load  to  spreadsheet                  MWIPS   Mflops1   Mflops2   Mflops3   Cosmops   Expmops  Fixpmops    Ifmops    Eqmops
+Results  to  load  to  spreadsheet                 62.150    36.363    37.353    14.286     1.299     0.964    46.875    99.991    21.428
+
+
+1. -1.123983, 0.000528
+2. -1.121871, 0.003602
+3. 1.000000, 0.001037
+4. 12.000000, 0.006722
+5. 0.499029, 0.064060
+6. 1.000000, 0.037760
+7. 3.000000, 0.008625
+8. 1.000000, 0.029866

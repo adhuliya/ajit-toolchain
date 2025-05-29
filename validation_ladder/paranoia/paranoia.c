@@ -232,6 +232,9 @@ q
 		
 int fake_setjmp (jmp_buf ovfl_buf) {return(0);}
 void fake_fflush (FILE* fp) {}
+float ajit_sqroot_sp(float);
+double ajit_sqroot_dp(double);
+
 
 #ifdef Single
 #define FLOAT float
@@ -239,14 +242,22 @@ void fake_fflush (FILE* fp) {}
 #define FLOOR(x) (float)floor((double)(x))
 #define LOG(x) (float)log((double)(x))
 #define POW(x,y) (float)pow((double)(x),(double)(y))
+#ifdef AJIT
+#define SQRT(x) ajit_sqroot_sp(x)
+#else
 #define SQRT(x) (float)sqrt((double)(x))
+#endif
 #else
 #define FLOAT double
 #define FABS(x) fabs(x)
 #define FLOOR(x) floor(x)
 #define LOG(x) log(x)
 #define POW(x,y) pow(x,y)
+#ifdef AJIT
+#define SQRT(x) ajit_sqroot_dp(x)
+#else
 #define SQRT(x) sqrt(x)
+#endif
 #endif
 
 jmp_buf ovfl_buf;

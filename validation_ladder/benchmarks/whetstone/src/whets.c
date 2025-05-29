@@ -361,7 +361,10 @@ int main()
 
 
 #ifdef AJIT
-	__ajit_write_serial_control_register__ ( TX_ENABLE );
+	__ajit_serial_configure__ (1,0,0);
+	__ajit_serial_set_baudrate__ (115200, CLK_FREQUENCY);
+	__ajit_serial_set_uart_reset__ (0);
+	__ajit_serial_puts__ ("\nHiFromAjit\n\n", 13);
 #endif 
 
 #ifdef PRINTON
@@ -690,7 +693,12 @@ void whetstones(long xtra, long x100, int calibrate)
 		{
 			for(i=0; i<n8; i++)
 			{
+#ifdef AJIT  
+				double __y = exp(log(x)/t1);
+				__ajit_fsqrtd__((uint32_t) &y,(uint32_t) &x);
+#else
 				x = sqrt(exp(log(x)/t1));
+#endif
 			}
 		}
 	}

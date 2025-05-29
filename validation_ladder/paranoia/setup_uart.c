@@ -31,3 +31,17 @@ int read (int fp, char* c, int what)
 }
 
 
+float ajit_sqroot_sp(float x)
+{
+	float y;
+	__ajit_fsqrts__ ((uint32_t) &x, (uint32_t) &y);
+	return(y);
+}
+
+double ajit_sqroot_dp(double x)
+{
+	double y;
+	__ajit_fsqrtd__ ((uint32_t) &x, (uint32_t) &y);
+	return(y);
+}
+

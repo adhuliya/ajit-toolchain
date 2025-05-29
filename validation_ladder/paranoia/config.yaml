@@ -70,7 +70,7 @@ Software:
     EnableSerial: No # enabled in setup_uart.
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " -D CLK_FREQUENCY=60000000 "
+    BuildArgs: " -D CLK_FREQUENCY=60000000 -D AJIT "
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

@@ -1,5 +1,4 @@
-Successful paranoia run.  Paranoia found one
-(major) bug in the divide logic.
+Successful paranoia run.  
 
 The results of the run are here:
 paranoia_run.log
@@ -16,3 +15,6 @@ paranoia.c
 ref/
 	original paranoia  code and version without setjmp.
 
+
+NOTE: this example has been run on the ajit_sac_processor
+setup, with alternate device addresses..

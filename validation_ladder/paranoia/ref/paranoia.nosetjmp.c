@@ -1686,10 +1686,6 @@ void part7(VOID){
 		V = Y;
 		Y = V9;
 		V9 = HInvrse * Y;
-		printf("INFO:OVFLOW:  V9=%.17e (0x%llx)\n", V9, *((uint64_t*) &V9));
-		printf("INFO:OVFLOW:  Y=%.17e (0x%llx)\n",  Y, *((uint64_t*) &Y));
-		int  condition = (V9 < Y);
-		printf("INFO:OVFLOW:  (V9 < Y)=%d\n", condition);
 		} while(V9 < Y);
 	I = 1;
 overflow:
