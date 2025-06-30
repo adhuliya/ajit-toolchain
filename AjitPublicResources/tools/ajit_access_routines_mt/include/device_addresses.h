@@ -1,19 +1,23 @@
 #ifndef __device_addresses_h
 #define __device_addresses_h
 
-// Change this to 0 if you wish to use
-// alternate device address.
-#define USE_DEFAULT_DEVICE_ADDRESSES        0
+//
+// The currently supported device address mappings
+// can be one of the following:
+//    - default 
+//        addresses are mapped to the range 
+//        0xffff0000 to 0xffffffff.
+//    - alternate
+//        addresses are mapped to the
+//        range 0x80000000 to 0x8000ffff.
+//
 
 
-#if USE_DEFAULT_DEVICE_ADDRESSES
 
-#include "default_device_addresses.h"
-
-#else
-
+#ifdef USE_ALTERNATE_DEVICE_ADDRESSES
 #include "alternate_device_addresses.h"
-
+#else
+#include "default_device_addresses.h"
 #endif
 
 #endif

@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include "ajit_access_routines.h"
 #include "ajit_mmap.h"
-#ifdef CORTOS2
-#include <cortos.h>
-#endif
 
 void initPageTableAllocator (PageTableAllocator* pts, uint64_t base_addr, uint32_t allocated_size)
 // allocated size and base-addr must be aligned to word boundary..
@@ -265,9 +262,6 @@ int ajit_mmap_operation
 							&ign_pa,
 							&pdte_a,
 							&pdte);
-#ifdef CORTOS2
-	cortos_printf("ajit_mmap_operation: lookup-status = %d, pdte_level = %d\n", status, pdte_level);
-#endif
 	if(status == 0)
 	{
 		if(operation == ADD_TO_MMAP_OP)

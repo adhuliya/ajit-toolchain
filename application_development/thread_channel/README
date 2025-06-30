@@ -1,0 +1,80 @@
+	Thread channel
+
+1. Overview
+	A thread channel is a mechanism for sharing
+	work between multiple processor hardware threads.
+
+	Intended for use in  user space program running
+	on an AJIT multi-core and/or multi-threaded computer
+	with coherent memory.
+
+
+2. Details of use
+
+     2.1 A thread channel must first be declared.
+	ThreadChannel tc;
+
+	The ThreadChannel data structure is
+
+	typedef struct ThreadChannel__ {
+		uint32_t id;
+		uint32_t request_id;
+		uint32_t response_id;
+		void*    fn_ptr;
+		void*    arg_ptr;
+		// FREE, REQUESTED, COMPLETED
+		int status;
+	} ThreadChannel;
+
+	The thread channel must then be initialized
+
+	initChannel (&tc, int id_of_channel);
+
+
+     2.2  A thread channel when created has status FREE.
+
+	  A processor thread can put a job into a free
+	  thread channel using 
+ 
+	  uint32_t scheduleChannelJob (ThreadChannel* tc, void *fn_ptr, void* arg_ptr);
+
+	  Here we are passing a function (via fn_ptr) and a single argument
+          to this function (void* arg_ptr).
+
+	  After a job is scheduled in the channel, the channel moves to status
+	  REQUESTED
+	
+     2.3  A processor thread which is looking for work can use
+          the call
+
+	   uint32_t getChannelJob (ThreadChannel* tc, void** __fn, void** __arg);
+
+	   to get a job in the channel tc.  If *__fn is returned as non-null,
+	   then *__fn(*__arg) is called
+
+	   After a worker thread has received a job using getChannelJob, the
+	   thread channel moves to status IN_PROGRESS.
+
+     2.4  The worker thread puts the response to the job (in *__arg above) into 
+	  the thread channel..
+
+	   uint32_t setChannelResponse (ThreadChannel* tc, void* arg_ptr);
+
+	   After a worker thread has updated the response using setChannelResponse
+	   thread channel moves to status COMPLETED.
+     
+     2.5  The processor who scheduled the job in the channel can read the response 
+	  and use it.
+
+	uint32_t getChannelResponse (ThreadChannel* tc, void** arg_ptr);
+
+	  The channel moves to status FREE after the response has been read.
+
+	The cycle can then repeat.
+
+4.0 Example: matrix multiplication..
+
+
+5.0 Notes:  
+	5.1 There can be any number of thread-channels.  
+		Each thread channel has a single slot in which a job can be scheduled.
