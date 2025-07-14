@@ -48,9 +48,57 @@ int pcore(int core_id, int thread_id)
 	}
 }
 
+void macros_test()
+{
+#define A 1
+#define B 1
+
+#if (A == B)
+	cortos_printf("A==B\n");
+#else
+	cortos_printf("ERROR!\n");
+#endif
+
+#if (1)
+	cortos_printf("Always\n");
+#else
+	cortos_printf("ERROR!\n");
+#endif
+
+#ifndef C 
+#define C 2
+#endif
+
+#ifndef D 
+#define D 3
+#endif
+
+#if (C!=D)
+	cortos_printf("C!=D\n");
+#endif
+
+#if (C!=E)
+	cortos_printf("C!=E\n");
+#endif
+
+#if (C==E)
+	cortos_printf("C==E\n");
+#endif
+
+#if (F==E)
+	cortos_printf("F==E\n");
+#endif
+	
+#if (F!=E)
+	cortos_printf("F!=E\n");
+#endif
+}
+
 int main()
 {
+	macros_test();
 	pcore(0,0);
+
 	cortos_printf("Done.\n");
 }
 

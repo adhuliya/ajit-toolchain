@@ -284,7 +284,7 @@ void startPerThreadNoblockDaemon (int CORE_ID, int THREAD_ID)
 	sprintf(pname_command_to_debug_server, "COMMAND_TO_DEBUG_SERVER_%d_%d", CORE_ID, THREAD_ID);
 
 	char pname_response_from_debug_server[256];
-	sprintf(pname_command_to_debug_server, "RESPONSE_FROM_DEBUG_SERVER_%d_%d", CORE_ID, THREAD_ID);
+	sprintf(pname_response_from_debug_server, "RESPONSE_FROM_DEBUG_SERVER_%d_%d", CORE_ID, THREAD_ID);
 
 	char pname_from_gdb[256];
 	sprintf(pname_from_gdb, "NOBLOCK_FROM_gdb_%d_%d", CORE_ID, THREAD_ID);
