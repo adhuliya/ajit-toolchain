@@ -32,4 +32,10 @@ echo "build tools/ajit_debug_monitor";
 cd tools/ajit_debug_monitor;
 scons;
 cd $CWD;
+# ajit_access_routines_mt (libajit*.a).
+echo "build tools/ajit_access_routines_mt";
+cd tools/ajit_access_routines_mt;
+./build.sh alt
+./build.sh default
+cd $CWD;
 
