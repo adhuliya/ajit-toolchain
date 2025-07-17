@@ -35,7 +35,7 @@ cd $CWD;
 # ajit_access_routines_mt (libajit*.a).
 echo "build tools/ajit_access_routines_mt";
 cd tools/ajit_access_routines_mt;
-./build.sh alt
-./build.sh default
+./build_lib.sh alt
+./build_lib.sh default
 cd $CWD;
 
