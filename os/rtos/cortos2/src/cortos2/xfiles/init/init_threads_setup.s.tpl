@@ -81,15 +81,6 @@ CORTOS_SETUP_THREADS:
   call cortos_init_sw_traps
   nop
 
-% if confObj.software.build.enableSerial and (not confObj.software.build.enableSerialInt):
-  call __cortos_enable_serial
-  nop
-% end
-% if confObj.software.build.enableSerialInt:
-  call __cortos_enable_serial_interrupt
-  nop
-% end
-
   ! ! initialize the queue headers
   ! call cortos_init_queue_headers
   ! nop

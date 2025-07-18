@@ -28,8 +28,10 @@ RemapStruct* make_remap_struct (uint8_t level,  uint32_t vpn, uint32_t ppn)
 	ret_rs->ppn = ppn;
 	ret_rs->next = NULL;
 
+#ifdef DEBUG_PRINT_FLAG
 	fprintf(stderr,"Info: new RemapStruct: level=0x%x, vpn=0x%x, ppn=0x%x\n", 
 				ret_rs->level, ret_rs->vpn, ret_rs->ppn);
+#endif
 	return(ret_rs);
 }
 
@@ -117,7 +119,9 @@ int main(int argc, char* argv[])
 			if (tbuf == NULL) break;
 			sscanf (tbuf, "0x%x", &level);
 
+#ifdef DEBUG_PRINT_FLAG
 			fprintf(stderr,"Info:remap: vpn=0x%x, ppn=0%x, level=0x%x\n",vpn, ppn, level);
+#endif
 
 			RemapStruct* rs = make_remap_struct (level, vpn, ppn);
 			rs->next = remaps;
@@ -139,14 +143,16 @@ int main(int argc, char* argv[])
 		uint32_t pa = remap_va (remaps, va);
 		fprintf(remapped_mmap_file,"%x %x\n", pa, byte);
 
-#ifdef DEBUG
+#ifdef DEBUG_PRINT_FLAG
 		fprintf(stderr,"Info:remap: map %x -> %x, %x\n", va,pa,byte);
 #endif
 
 		byte_count++;
 	}
 
+#ifdef DEBUG_PRINT_FLAG
 	fprintf(stderr,"Info:remap: re-mapped %d bytes\n", byte_count);
+#endif
 
 	fclose (vmap_file);
 	fclose (mmap_file);

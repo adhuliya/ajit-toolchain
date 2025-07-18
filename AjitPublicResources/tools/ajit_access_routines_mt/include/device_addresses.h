@@ -11,9 +11,6 @@
 //        addresses are mapped to the
 //        range 0x80000000 to 0x8000ffff.
 //
-
-
-
 #ifdef USE_ALTERNATE_DEVICE_ADDRESSES
 #include "alternate_device_addresses.h"
 #else
