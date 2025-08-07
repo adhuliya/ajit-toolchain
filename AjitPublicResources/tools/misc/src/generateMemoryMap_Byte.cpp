@@ -84,6 +84,8 @@ bool initializeMemory(string hex_dump_file)
 			fprintf(stdout,"%x\t%x\n",it->first,it->second);
 		}
 	}
+
+	return(true);
 }
 
 int main(int argc, char **argv)
