@@ -64,6 +64,8 @@ export PATH=$AJIT_SCRIPTS_DIR:$PATH;
 export PATH=$AJIT_TOOLS_DIR/misc/bin:$PATH;
 # for: remapMemmap
 export PATH=$AJIT_TOOLS_DIR/genVmapAsm/bin:$PATH;
+# for: mmapToBin
+export PATH=$AJIT_TOOLS_DIR/flash_image/bin:$PATH;
 # for: ajit_C_system_model
 export PATH=$AJIT_CMODEL_BIN_DIR:$PATH;
 # for: sourcing makeLinkerScript.py
