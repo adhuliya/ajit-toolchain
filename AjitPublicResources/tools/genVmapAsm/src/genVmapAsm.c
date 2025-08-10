@@ -570,7 +570,10 @@ int main(int argc, char* argv[])
 	}
 
 	alloc_vmap ();
+
+#ifdef DEBUG_PRINT_FLAG
 	dump_vmap ();
+#endif
 
 	fprintf (out_file,".section .text.pagetablesetup\n");
 	fprintf (out_file,".global page_table_setup\n");
@@ -603,7 +606,9 @@ int main(int argc, char* argv[])
 	fprintf(out_file,".align 1024\n");
 	fprintf(out_file,"PAGE_TABLE_BASE: .skip %d\n", memory_needed_for_page_tables);
 
+#ifdef DEBUG_PRINT_FLAG
 	dumpPageTableMemory();
+#endif
 
 	fclose(in_file);
 	fclose(out_file);

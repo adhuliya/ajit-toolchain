@@ -13,16 +13,16 @@ class Build:
       firstDebugPort: int = consts.DEFAULT_FIRST_DEBUG_PORT,
       optLevel: int = consts.DEFAULT_OPT_LEVEL,
       logLevel: consts.LogLevel = consts.DEFAULT_LOG_LEVEL,
-      enableSerial: bool = consts.DEFAULT_ENABLE_SERIAL_DEVICE,
-      enableSerialInt: bool = consts.DEFAULT_ENABLE_SERIAL_INTERRUPT,
+      useLibAjit: bool = consts.DEFAULT_USE_LIB_AJIT,
+      useDefaultLibAjit: bool = consts.DEFAULT_USE_DEFAULT_LIB_AJIT,
       buildArgs: str = "",
   ) -> None:
     self.debug = debug
     self.firstDebugPort = firstDebugPort
     self.optLevel = optLevel
     self.logLevel = logLevel
-    self.enableSerial = enableSerial
-    self.enableSerialInt = enableSerialInt
+    self.useLibAjit = useLibAjit
+    self.useDefaultLibAjit = useDefaultLibAjit
     self.buildArgs = buildArgs
 
 
@@ -49,7 +49,7 @@ class Build:
       if logLevelStr else consts.DEFAULT_LOG_LEVEL
 
     if self.logLevel != consts.LogLevel.NONE:
-      self.enableSerial = True
+      self.useLibAjit = True
 
   @staticmethod
   def generateObject(
@@ -70,8 +70,8 @@ class Build:
     debugPort = Build.generateFirstDebugPortParam(config, prevKeySeq)
     optLevel = Build.generateOptLevelParam(config, prevKeySeq)
     logLevel = Build.generateLogLevelParam(config, prevKeySeq)
-    enableSerial = Build.generateEnableSerialParam(config, prevKeySeq)
-    enableSerialInt = Build.generateEnableSerialIntParam(config, prevKeySeq)
+    useLibAjit = Build.generateUseLibAjitParam(config, prevKeySeq)
+    useDefaultLibAjit = Build.generateUseDefaultLibAjitParam(config, prevKeySeq)
     buildArgs = Build.generateBuildArgsParam(config, prevKeySeq)
 
     prevKeySeq.pop()
@@ -80,8 +80,8 @@ class Build:
       firstDebugPort=debugPort,
       optLevel=optLevel,
       logLevel=logLevel,
-      enableSerial=enableSerial,
-      enableSerialInt=enableSerialInt,
+      useLibAjit=useLibAjit,
+      useDefaultLibAjit=useDefaultLibAjit,
       buildArgs=buildArgs,
     )
     return build
@@ -147,38 +147,38 @@ class Build:
 
 
   @staticmethod
-  def generateEnableSerialIntParam(
+  def generateUseDefaultLibAjitParam(
       userProvidedConfig: Dict,
       prevKeySeq: Opt[List] = None,
   ) -> bool:
-    keyName = "EnableSerialInterrupt"
+    keyName = "UseDefaultLibAjit"
 
-    enableSerialInt: bool = util.getConfigurationParameter(
+    useDefaultLibAjit: bool = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=[keyName],
-      default= consts.DEFAULT_ENABLE_SERIAL_INTERRUPT,
+      default= consts.DEFAULT_USE_DEFAULT_LIB_AJIT,
       prevKeySeq=prevKeySeq,
     )
 
-    return enableSerialInt
+    return useDefaultLibAjit
 
 
   @staticmethod
-  def generateEnableSerialParam(
+  def generateUseLibAjitParam(
       userProvidedConfig: Dict,
       prevKeySeq: Opt[List] = None,
   ) -> bool:
-    keyName = "EnableSerial"
+    keyName = "UseLibAjit"
 
-    enableSerial: bool = util.getConfigurationParameter(
+    useLibAjit: bool = util.getConfigurationParameter(
       data=userProvidedConfig,
       keySeq=[keyName],
-      default= consts.DEFAULT_ENABLE_SERIAL_DEVICE,
+      default= consts.DEFAULT_USE_LIB_AJIT,
       prevKeySeq=prevKeySeq,
     )
-    enableSerialBool = enableSerial
+    useLibAjitBool = useLibAjit
 
-    return enableSerialBool
+    return useLibAjitBool
 
 
   @staticmethod

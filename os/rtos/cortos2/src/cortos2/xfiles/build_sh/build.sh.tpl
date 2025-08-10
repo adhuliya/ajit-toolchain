@@ -31,16 +31,25 @@ compileToSparcUclibc.py \
   -I ${_PT}/include \
   -S .. \
   -S ${_CORTOS_SRC_DIR} \
+  -C .. \
+  -C ${_CORTOS_SRC_DIR} \
+  -N ${_MAIN} \
+  -L ${_LINKER_SCRIPT} \
+% if confObj.software.build.useLibAjit:
+  -l ${_AAR_MT}/lib\
+  % if  confObj.software.build.useDefaultLibAjit:
+    -a ajit_default\
+  % else:
+    -a ajit_alt\
+  % end
+% else :
   -s ${_AAR_MT}/asm/clear_stack_pointers.s \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -s ${_AAR_MT}/asm/generic_sys_calls.s \
   -s ${_AAR_MT}/asm/mutexes.s \
-  -C .. \
-  -C ${_CORTOS_SRC_DIR} \
   -C ${_AAR_MT}/src \
-  -N ${_MAIN} \
-  -L ${_LINKER_SCRIPT} \
+% end
   -D AJIT \
   -U \
   {{ confObj.software.build.buildArgs }};

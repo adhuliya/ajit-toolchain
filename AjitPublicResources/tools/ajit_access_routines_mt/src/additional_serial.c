@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
-#include "ajit_access_routines.h"
 #include "additional_serial.h"
+#include "ajit_access_routines.h"
 
 void __ajit_write_serial_1_control_register_via_bypass__(uint32_t val)
 {

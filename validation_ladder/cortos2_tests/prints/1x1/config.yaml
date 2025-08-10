@@ -28,36 +28,13 @@ Hardware:
       # SizeInKiloBytes: 4
       Permissions: RW
 
-  # see ./AjitPublicResources/tools/ajit_access_routines_mt/include/device_addresses.h
   Devices:
-    - Name: Timer
-      MemoryRegion:
-        StartAddr: 0xFFFF3100 # physical address (in MMIO)
-        SizeInBytes: 256 # 16x16
-        Permissions: RW
-      NamedRegisters:
-        Control: 0xFFFF3100
-    - Name: InterruptController
-      MemoryRegion:
-        StartAddr: 0xFFFF3000
-        SizeInBytes: 32
-        Permissions: RW
-      NamedRegisters:
-        Control: 0xFFFF3000
-    - Name: Serial
-      MemoryRegion:
-        StartAddr: 0xFFFF3200
-        SizeInBytes: 64
-        Permissions: RW
-      NamedRegisters:
-        Control: 0xFFFF3200
-        TX: 0xFFFF3204
-        RX: 0xFFFF3208
     - Name: ScratchArea
       MemoryRegion:
         StartAddr: 0xFFFF2C00
         SizeInBytes: 1024
         Permissions: RW
+
 
 Software:
   StartupFuncName: setup_uart
@@ -67,7 +44,8 @@ Software:
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
-    EnableSerial: No # enabled in setup_uart.
+    UseLibAjit: Yes 
+    UseDefaultLibAjit: Yes
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs: " "

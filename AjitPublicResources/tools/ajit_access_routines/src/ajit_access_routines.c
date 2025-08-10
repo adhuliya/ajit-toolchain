@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "device_addresses.h"
 #include "ajit_access_routines.h"
 
 

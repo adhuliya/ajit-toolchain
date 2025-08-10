@@ -21,6 +21,9 @@
 #         added functionality to use glibc (-G option)
 #    (modified by : Anshuman Dhuliya [AD] (1 Aug 2019)
 #         replaced glibc with buildroot uclibc (-U option)
+#    (modified by : Madhav Desai [MPD] (20 July 2025)
+#         added -l lib-dir -a lib-name options for linking
+#         with .a files.
 
 
 
@@ -207,7 +210,7 @@ def  compileFiles(work_area, src_files,src_dirs,include_dirs,define_strings,asse
 import generateMemoryMap as gm
 
 
-def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump_file,variable_dump_file,memmap_file, objdump_file, uclibc_flag):
+def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump_file,variable_dump_file,memmap_file, objdump_file, uclibc_flag, ld_lib_directories, ld_libs):
     
     if(not linker_script_file) :
         logError ("linker script file not specified")
@@ -229,6 +232,12 @@ def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump
       sparc_ld_command += " -L" + AJIT_LIBGCC_INSTALL_DIR + " " # has libgcc.a
       sparc_ld_command += " -static -lm -lc -lgcc "
       sparc_ld_command += " --gc-sections"
+
+    for libdir in ld_lib_directories:
+      sparc_ld_command += " -L " + libdir + " "
+    
+    for lib in ld_libs:
+      sparc_ld_command += " -l" + lib + " "
 
     ret_val = execSysCmd(sparc_ld_command)
     if(ret_val != 0):
@@ -262,6 +271,8 @@ def Usage():
                (-I include-dir)* (add include-dir to header search path) \n\
                (-C src_dir)* (add src-dir to list of directories from which C source is to be compiled)\n\
                (-c src_file)* (add src_file to list of C files to be compiled) \n\
+               (-l <ld_link_dir>)*  (add ld_link_dir by passing -L<ld_link_dir> to linker \n\
+               (-l <ld-lib-suffix>)*  (pass -l<ld_lib-suffix> to linker during link) \n\
                (-S assembly_dir)* (add assembly-dir to list of directories where assembly code is to assembled)\n\
                (-s assembly_file)* (add assembly_file to list of assembly files to be assembled to object code) \n\
                (-D define-string)* (add define-string as a define when compiling C files)\n\
@@ -283,6 +294,8 @@ def Usage():
 #     (-c  src-file)*
 #     (-D  define-string)*
 #     (-T link-section)*
+#     (-l link library directory)*
+#     (-a link library.. e.g. ajit_default  will be treated as -lajit_default )*
 #     (-o 1/2/3)?
 #     (-F compiler-option)*
 #     (-g )? (compile with debug -g flag) \n\
@@ -303,6 +316,8 @@ def parseOptions(opts):
     debug_mode = ""
     opt_level  = 0
     compile_options = []
+    ld_lib_directories = []
+    ld_libs = []
     uclibc_flag = False
 
     assembly_dirs = []
@@ -347,6 +362,12 @@ def parseOptions(opts):
         if option == '-S':
            assembly_dirs.append(parameter)
            logInfo("added assembly-directory = " + parameter + ".")
+        if option == '-l':
+           ld_lib_directories.append(parameter)
+           logInfo("added LD directory = " + parameter + ".")
+        if option == '-a':
+           ld_libs.append(parameter)
+           logInfo("added link library  = " + parameter + ".")
         if option == '-I':
            include_dirs.append(parameter)
            logInfo("added include-directory = " + parameter + ".")
@@ -368,7 +389,7 @@ def parseOptions(opts):
        var_file = app_name + ".vars"
        mmap_file = app_name + ".mmap"
 
-    return help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings , debug_mode, opt_level, compile_options, uclibc_flag, vmap_file
+    return help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings , debug_mode, opt_level, compile_options, uclibc_flag, vmap_file, ld_lib_directories, ld_libs
 
 def main():
     ret_status = 0
@@ -385,8 +406,8 @@ def main():
     setGlobals(ajit_uclibc_install_dir, ajit_libgcc_install_dir)
 
     arg_list = sys.argv[1:]
-    opts,args = getopt.getopt(arg_list,'W:L:C:c:S:s:I:D:Uhgo:T:F:V:N:')
-    help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings, debug_mode, opt_level,compiler_options,uclibc_flag,vmap_file  = parseOptions(opts)
+    opts,args = getopt.getopt(arg_list,'W:L:C:c:S:s:I:D:Uhgo:T:F:V:N:l:a:')
+    help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings, debug_mode, opt_level,compiler_options,uclibc_flag,vmap_file, ld_lib_directories, ld_libs  = parseOptions(opts)
     
     #pdb.set_trace()
     if(help_flag == 1):
@@ -425,7 +446,7 @@ def main():
        return 1
 
     if(elf_file != None):
-       ret_status = buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, uclibc_flag)
+       ret_status = buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, uclibc_flag, ld_lib_directories, ld_libs)
        if(ret_status == 1):
           print ("Error: sparc-executable build failed." )
           return 1
