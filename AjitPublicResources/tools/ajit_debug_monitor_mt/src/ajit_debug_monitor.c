@@ -89,7 +89,7 @@ void Handle_Ctrl_C(int signal)
 
 void print_usage(char* app_name)
 {
-	fprintf(stderr, "USAGE:   %s [-n <ncores>] [-t <nthreads-per-core>] [-h] [-H] [-E] [-u serial-dev-name] \n", 
+	fprintf(stderr, "USAGE:   %s [-n <ncores>] [-t <nthreads-per-core>] [-h] [-H] [-E] [-u serial-dev-name] [-A <flash-address-bytes] [-E <flash-erase-opcode>] \n", 
 			app_name);
 	fprintf(stderr, "   -n <ncores>        : optional, specifies number of cores (default = 1).\n");
 	fprintf(stderr, "   -t <nthreads>      : optional, specifies number of threads-per-core (default = 1).\n");
@@ -100,6 +100,9 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
 	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
+	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address?\n");
+	fprintf(stderr, "   -E  <flash-erase-opcode>    : optional, opcode (in hex) of the erase command in the flash memory\n");
+	fprintf(stderr, "   -F  <flash-spi-master-base-addr>    : optional, base address (in hex) of the spi flash master.\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
 }
@@ -170,8 +173,12 @@ int main(int argc, char **argv)
 
 	char* batch_file_name = NULL;
 
+	uint32_t spi_flash_master_base_address = 0x0;
+	int flash_address_nbytes = -1;
+	uint32_t flash_erase_opcode = 0x0;
+
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:Of:")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:Of:A:E:F:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -206,6 +213,17 @@ int main(int argc, char **argv)
 				batch_file_name = strdup(optarg);
 				fprintf(stderr,"Info: batch file = %s.\n", batch_file_name);
 				break;
+			case 'A': 
+				flash_address_nbytes = atoi (optarg);
+				fprintf(stderr,"Info: flash address nbytes = %d.\n", flash_address_nbytes);
+				break;
+			case 'E': 
+				sscanf (optarg, "0x%x", &flash_erase_opcode);
+				fprintf(stderr,"Info: flash erase opcode = 0x%x.\n", flash_erase_opcode);
+				break;
+			case 'F': 
+				sscanf (optarg, "0x%x", &spi_flash_master_base_address);
+				fprintf(stderr,"Info: spi flash master base address= 0x%x.\n", spi_flash_master_base_address);
 			case 'n':
 				ncores = atoi(optarg);	
 				if(ncores <= MAX_NCORES)
@@ -312,6 +330,7 @@ int main(int argc, char **argv)
 		fprintf(stderr,"Info: use fast mmap download mode\n");
 
 	setDebugInterpreterInFastMmapDownloadMode(fast_mmap_mode);
+	setDebugInterpreterFlashOptions(spi_flash_master_base_address, flash_address_nbytes, flash_erase_opcode);
 	
 	if(batch_file_name != NULL)
 		startDebugInterpreterInBatchMode(batch_file_name);

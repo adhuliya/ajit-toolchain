@@ -11,6 +11,7 @@ typedef enum __InterpreterCommand {
 	QUIT,  // "q"
 	MMAP,  // "m"
 	CMMAP, // "c"
+	FMMAP, // "f"
         HELP,  // "h"
 	WRST,  // "w rst"
 	RMODE, // "r mode"
@@ -53,6 +54,11 @@ int getDebugInterpreterInFastMmapDownloadMode();
 
 void startDebugInterpreter();
 void startDebugInterpreterInBatchMode(char* file_name);
+
+
+void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address,
+						int flash_address_nbytes, uint32_t flash_erase_opcode);
+
 
 void traceConfigure(uint32_t command_byte, uint32_t trigger_value, uint32_t start_addr, uint32_t trace_buffer_size);
 void traceDump(char* dump_file);
