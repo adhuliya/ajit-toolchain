@@ -9,9 +9,9 @@ typedef enum __InterpreterCommand {
 	GDBSTOP,    // "g stop"
         SCRIPT, // "s"
 	QUIT,  // "q"
-	MMAP,  // "m"
-	CMMAP, // "c"
-	FMMAP, // "f"
+	MMAP,  // "m <mmap-file>"
+	CMMAP, // "c <mmap-file>"
+	ERASEFLASH,// "e <erase-op-code>"
         HELP,  // "h"
 	WRST,  // "w rst"
 	RMODE, // "r mode"
@@ -56,8 +56,7 @@ void startDebugInterpreter();
 void startDebugInterpreterInBatchMode(char* file_name);
 
 
-void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address,
-						int flash_address_nbytes, uint32_t flash_erase_opcode);
+void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address, int flash_address_nbytes);
 
 
 void traceConfigure(uint32_t command_byte, uint32_t trigger_value, uint32_t start_addr, uint32_t trace_buffer_size);

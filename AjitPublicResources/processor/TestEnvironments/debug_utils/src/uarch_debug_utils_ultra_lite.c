@@ -3,8 +3,14 @@
 #include <stdint.h>
 #include <pipeHandler.h>
 #include <Pipes.h>
-#include <uarch_debug_utils_ultra_lite.h>
 #include <uart_interface.h>
+#include <uarch_debug_utils_ultra_lite.h>
+
+int sendBytesOverUart(uint8_t *buf, int count);
+int sendBytesOverUartInBurstMode(uint8_t *buf, int count);
+
+int recvBytesOverUart(uint8_t* buf,  int count, int noblock_flag);
+int recvBytesOverUartInBurstMode(uint8_t* buf,  int count, int noblock_flag);
 
 
 extern uint32_t global_verbose_flag;

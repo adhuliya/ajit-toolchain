@@ -101,7 +101,6 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
 	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
 	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address?\n");
-	fprintf(stderr, "   -E  <flash-erase-opcode>    : optional, opcode (in hex) of the erase command in the flash memory\n");
 	fprintf(stderr, "   -F  <flash-spi-master-base-addr>    : optional, base address (in hex) of the spi flash master.\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
@@ -178,7 +177,7 @@ int main(int argc, char **argv)
 	uint32_t flash_erase_opcode = 0x0;
 
 	int uart_flag = 0;
-	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:Of:A:E:F:")) != -1) {
+	while ((opt = getopt(argc, argv, "hHvu:n:t:bB:Of:A:F:")) != -1) {
 		switch(opt) {
 			case 'h':
 				print_usage(argv[0]);
@@ -217,13 +216,10 @@ int main(int argc, char **argv)
 				flash_address_nbytes = atoi (optarg);
 				fprintf(stderr,"Info: flash address nbytes = %d.\n", flash_address_nbytes);
 				break;
-			case 'E': 
-				sscanf (optarg, "0x%x", &flash_erase_opcode);
-				fprintf(stderr,"Info: flash erase opcode = 0x%x.\n", flash_erase_opcode);
-				break;
 			case 'F': 
 				sscanf (optarg, "0x%x", &spi_flash_master_base_address);
 				fprintf(stderr,"Info: spi flash master base address= 0x%x.\n", spi_flash_master_base_address);
+				break;
 			case 'n':
 				ncores = atoi(optarg);	
 				if(ncores <= MAX_NCORES)
@@ -330,7 +326,7 @@ int main(int argc, char **argv)
 		fprintf(stderr,"Info: use fast mmap download mode\n");
 
 	setDebugInterpreterInFastMmapDownloadMode(fast_mmap_mode);
-	setDebugInterpreterFlashOptions(spi_flash_master_base_address, flash_address_nbytes, flash_erase_opcode);
+	setDebugInterpreterFlashOptions(spi_flash_master_base_address, flash_address_nbytes);
 	
 	if(batch_file_name != NULL)
 		startDebugInterpreterInBatchMode(batch_file_name);

@@ -25,13 +25,11 @@ int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
 
 int      ajit_debug_interpreter_flash_address_nbytes = -1;
 uint32_t ajit_spi_flash_master_base_address = 0;
-uint8_t  ajit_debug_interpreter_flash_erase_opcode = 0x0;
 
-void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address, int flash_address_nbytes, uint32_t flash_erase_opcode)
+void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address, int flash_address_nbytes)
 {
 	ajit_spi_flash_master_base_address = spi_flash_master_base_address;
 	ajit_debug_interpreter_flash_address_nbytes = flash_address_nbytes;
-	ajit_debug_interpreter_flash_erase_opcode = flash_erase_opcode & 0xff;
 }
 
 void checkMatch(char* s, uint32_t rval, uint32_t expected_rval, uint32_t check_mask)
@@ -112,7 +110,7 @@ void printHelpMessage()
 				"s <script-file>                     : execute commands in script-file\n"\
 				"m  <mmap-file>                      : load mmap file to processor system memory\n" \
 				"c  <mmap-file>                      : check load mmap values in processor system memory\n" \
-				"f  <mmap-file>                      : program flash with mmap file\n"\
+				"e  <erase-op-code>                  : erase flash (use opcode set by ajit_debug_monitor_mt\n"\
 				"w rst <rst-val>                     : write reset value\n"\
 				"r mode [check-value]                : read processor-mode\n"\
 				"     if check-value is specified (0/1/2/3), wait here until mode becomes == value\n"\
@@ -226,6 +224,10 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 		*opcode = QUIT;
 		return(1);
 	}
+	else if(kw[0] == 'e')
+	{
+		*opcode = ERASEFLASH;
+	}
 	else if ( (kw[0] == 's') ||
 			(kw[0] == 'm') ||
 			(kw[0] == 'c') ||
@@ -238,8 +240,6 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 			*opcode = MMAP;
 		else if(kw[0] == 'c')
 			*opcode = CMMAP;
-		else if(kw[0] == 'f')
-			*opcode = FMMAP;
 		else
 			*opcode = LOG;
 
@@ -493,19 +493,18 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 
 			err = dbg_check_mmap(cmd_file_name);
 			break;
-		case FMMAP:
-			if((ajit_debug_interpreter_flash_address_nbytes < 0) || (ajit_debug_interpreter_flash_address_nbytes > 4))
+		case ERASEFLASH:
+			if(arg1 == 0xfffffffff)
 			{
-				fprintf (stderr,"Error: flash address nbytes should be between 1 and 4\n");
+				fprintf (stderr,"Error: flash erase opcode not set\n");
 				err = 1;
 			}
 			else
 			{
-				err = dbg_load_mmap_into_flash 
-					(cmd_file_name, 
-					 		ajit_spi_flash_master_base_address,
-							ajit_debug_interpreter_flash_address_nbytes, 
-					 		ajit_debug_interpreter_flash_erase_opcode);
+				fprintf (stderr,"Info: starting flash erase (opcode=0x%x).. this will take a while. \n", arg1);
+				spi_flash_erase (ajit_spi_flash_master_base_address, arg1);
+				err = 0;
+
 			}
 			break;
 		case WRST:  // "w rst"

@@ -112,7 +112,6 @@ void setDebugUtilsInUartMode();
 
 int dbg_load_mmap(char* memmap_filename);
 int dbg_load_mmap_optimized(char* memoryMapFile);
-int dbg_load_mmap_into_flash(char* memoryMapFile, uint32_t spi_flash_master_base_address, int naddr_bytes, uint8_t erase_opcode);
 
 int dbg_check_mmap(char* memmap_filename);
 
