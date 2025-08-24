@@ -8,13 +8,12 @@
 
 void setup_uart()
 {
-#ifdef SERIAL_ADAPTER_CAN_CONFIGURE__UART
 	__ajit_serial_set_uart_reset__(1);
 	__ajit_serial_set_baudrate__(115200, CLK_FREQUENCY);
 	__ajit_serial_set_uart_reset__(0);
-#endif
 	__ajit_write_serial_control_register__ ( TX_ENABLE );
 
+	*((int*) 0xffff3204) = 0x68686868;
 }
 
 

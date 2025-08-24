@@ -3,7 +3,7 @@ DATABASE=0x40040000
 MAIN=whetstone
 AAR=$AJIT_HOME/AjitPublicResources/tools/ajit_access_routines_mt
 PT=$AJIT_HOME/AjitPublicResources/tools/minimal_printf_timer
-DEFS=" -D AJIT -D DP -D HAS_FLOAT -D PRINTON -D CLK_FREQUENCY=60000000 "
+DEFS=" -D AJIT -D DP -D HAS_FLOAT -D PRINTON -D CLK_FREQUENCY=80000000 "
 #DEFS=" -D AJIT -D DP -D HAS_FLOAT "
 SRCS=" -C ../src/ -C $AAR/src -C $PT/src -s $AAR/asm/trap_handlers.s -s ../src/init.s "
 INCLUDES="-I /usr/include/x86_64-linux-gnu/gnu -I ../src/ -I ../ -I $AAR/include -I $PT/include"

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <time.h>
 #include <pipeHandler.h>
 #include <Pipes.h>
 #include <uarch_debug_utils.h>
@@ -187,18 +188,44 @@ void sendU32 (uint32_t base_address, uint8_t dev_id, uint32_t wdata, int n_bytes
 /////////////////////////////////////////////////////////////////////////////////
 //  Erase! use erase opcode!!
 /////////////////////////////////////////////////////////////////////////////////
-int spi_flash_erase (uint32_t spi_master_base_address, uint8_t erase_opcode)
+struct timespec ts, tf;
+int spi_flash_erase (uint32_t spi_master_base_address, 
+				uint8_t erase_opcode, 
+				uint32_t sector_start_address,
+				uint32_t number_of_sectors)
 {
-	// reset the flash
-	resetFlashMem (spi_master_base_address);
+	if((sector_start_address == 0xffffffff) ||
+		(number_of_sectors == 0xffffffff))
+	{
+		fprintf(stderr,"Error: flash sector erase incorrectly specified\n");
+		return(1);
+	}
 
-	// enable the flash memory..
-	writeEnableDisableSpiFlash (spi_master_base_address, 1);
+	int I;
+	uint32_t current_address = sector_start_address;
+	for(I = 0; I < number_of_sectors; I++)	
+	{
+		clock_gettime (CLOCK_REALTIME, &ts);
 
-	// base addr, device id = 0, 
-	sendByteOverSpi (spi_master_base_address, 0, erase_opcode, DESELECT);
+		// reset the flash
+		resetFlashMem (spi_master_base_address);
 
-	busyWaitOnFlash (spi_master_base_address, 0, 1);
+		// enable the flash memory..
+		writeEnableDisableSpiFlash (spi_master_base_address, 1);
+
+		// base addr, device id = 0, 
+		sendByteOverSpi (spi_master_base_address, 0, erase_opcode, !DESELECT);
+		sendU32 (spi_master_base_address, 0, current_address, 3, DESELECT);
+
+		busyWaitOnFlash (spi_master_base_address, 0, 1);
+
+		clock_gettime (CLOCK_REALTIME, &tf);
+		fprintf(stderr,"Info: completed sector erase (addr = 0x%x, elapsed time = %d seconds)\n", 
+					current_address, (int) (tf.tv_sec - ts.tv_sec));
+
+		current_address += 0x10000;
+	}
+
 	return(0);
 }
 

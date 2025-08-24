@@ -44,11 +44,11 @@ Software:
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
-    UseLibAjit: Yes 
-    UseDefaultLibAjit: Yes
-    Debug: No # Yes/No (Default: No)
+    UseLibAjit: No 
+    UseDefaultLibAjit: No
+    Debug: Yes # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: " "
+    BuildArgs: " -D CLK_FREQUENCY=80000000 -D USE_VMAP "
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

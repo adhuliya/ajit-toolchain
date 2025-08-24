@@ -115,7 +115,8 @@ int dbg_load_mmap_optimized(char* memoryMapFile);
 
 int dbg_check_mmap(char* memmap_filename);
 
-int spi_flash_erase (uint32_t spi_master_base_address, uint8_t erase_opcode);
+int spi_flash_erase (uint32_t spi_master_base_address, uint8_t erase_opcode, 
+							uint32_t start_address, uint32_t n_sectors);
 uint32_t spi_flash_read_mem (uint32_t spi_master_base_address, uint32_t addr, int nbytes_in_address);
 void spi_flash_write_mem (uint32_t spi_master_base_address, uint32_t addr, uint32_t wdata, int nbytes_in_address);
 

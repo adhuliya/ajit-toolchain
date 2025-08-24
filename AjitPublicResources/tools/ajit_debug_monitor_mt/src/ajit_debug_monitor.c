@@ -100,8 +100,8 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
 	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
-	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address? Currently only 3 is supported.\n");
-	fprintf(stderr, "   -F  <flash-spi-master-base-addr>    : optional, base address (in hex) of the spi flash master.\n");
+	fprintf(stderr, "   -F  <flash-spi-master-base-addr>    : required, base address (in hex) of the spi flash master.\n");
+	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address? Currently only the value 3 is supported.\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
 }

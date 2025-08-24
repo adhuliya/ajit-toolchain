@@ -110,7 +110,7 @@ void printHelpMessage()
 				"s <script-file>                     : execute commands in script-file\n"\
 				"m  <mmap-file>                      : load mmap file to processor system memory\n" \
 				"c  <mmap-file>                      : check load mmap values in processor system memory\n" \
-				"e  <erase-op-code>                  : erase flash (use opcode set by ajit_debug_monitor_mt\n"\
+				"e  <erase-op-code> <start-address> <n-sectors> : erase flash (use opcode set by ajit_debug_monitor_mt\n"\
 				"w rst <rst-val>                     : write reset value\n"\
 				"r mode [check-value]                : read processor-mode\n"\
 				"     if check-value is specified (0/1/2/3), wait here until mode becomes == value\n"\
@@ -501,8 +501,18 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 			}
 			else
 			{
-				fprintf (stderr,"Info: starting flash erase (opcode=0x%x).. this will take a while. \n", arg1);
-				spi_flash_erase (ajit_spi_flash_master_base_address, arg1);
+				if(arg2 != 0xffffffff)
+				{
+					fprintf (stderr, "Info: starting flash" 
+						" erase (opcode=0x%x, sector-addr=0x%x).." 
+						" this will take a while. \n", arg1, arg2);
+				}
+				else
+				{
+					fprintf (stderr, "Info: starting flash" 
+						" erase (opcode=0x%x)\n", arg1);
+				}
+				spi_flash_erase (ajit_spi_flash_master_base_address, arg1, arg2, arg3);
 				err = 0;
 
 			}
