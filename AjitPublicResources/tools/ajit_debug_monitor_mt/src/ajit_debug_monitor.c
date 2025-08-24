@@ -100,7 +100,7 @@ void print_usage(char* app_name)
 	fprintf(stderr, "   -c <console-server-port>    : optional, specifies tcp/ip port for console i/o.\n");
 	fprintf(stderr, "   -b                 : optional, if you want to operate the UART in blocking mode....\n");
 	fprintf(stderr, "   -B  <baud-rate>    : optional, baud-rate can be 9600/19200/28800/38400/57600/115200 (default=115200)\n");
-	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address?\n");
+	fprintf(stderr, "   -A  <flash-address-bytes>   : optional, for flash programming: how many bytes in the address? Currently only 3 is supported.\n");
 	fprintf(stderr, "   -F  <flash-spi-master-base-addr>    : optional, base address (in hex) of the spi flash master.\n");
 	fprintf(stderr, "   -v                 : optional, use to get verbose stuff....\n");
 	fprintf(stderr, "   -h                 : optional, print help message and quit ....\n");
@@ -214,11 +214,21 @@ int main(int argc, char **argv)
 				break;
 			case 'A': 
 				flash_address_nbytes = atoi (optarg);
-				fprintf(stderr,"Info: flash address nbytes = %d.\n", flash_address_nbytes);
+				if(flash_address_nbytes != 3)
+				{
+					fprintf(stderr,"Error: flash address nbytes = %d, only supported value is 3.\n", 
+							flash_address_nbytes);
+				}
+				else
+				{
+					fprintf(stderr,"Info: flash address nbytes = %d.\n", flash_address_nbytes);
+				}
+				
 				break;
 			case 'F': 
 				sscanf (optarg, "0x%x", &spi_flash_master_base_address);
 				fprintf(stderr,"Info: spi flash master base address= 0x%x.\n", spi_flash_master_base_address);
+			
 				break;
 			case 'n':
 				ncores = atoi(optarg);	
