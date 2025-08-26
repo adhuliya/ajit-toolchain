@@ -11,10 +11,13 @@
 #include "StartGPBThreads.h"
 
 #define LINESIZE 1023
+#define MAX_FLASH_SECTOR_COUNT   (4096 * 4096)
 #define MAX_NCORES       	 4
 #define MAX_NTHREADS_PER_CORE    2
 
 FILE* log_file = NULL;
+
+uint8_t active_sector_flags[MAX_FLASH_SECTOR_COUNT];
 
 int debug_interpreter_current_core_id = 0;
 int debug_interpreter_current_thread_id = 0;
@@ -25,6 +28,9 @@ int ajit_debug_interpreter_in_fast_mmap_download_mode = 0;
 
 int      ajit_debug_interpreter_flash_address_nbytes = -1;
 uint32_t ajit_spi_flash_master_base_address = 0;
+
+// default value is 0xd8, override by e <opcode>
+uint32_t ajit_spi_sector_erase_flash_op_code = 0xd8;
 
 void setDebugInterpreterFlashOptions(uint32_t spi_flash_master_base_address, int flash_address_nbytes)
 {
@@ -226,7 +232,7 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 	}
 	else if(kw[0] == 'e')
 	{
-		*opcode = ERASEFLASH;
+		*opcode = SET_ERASEFLASH_OPCODE;
 	}
 	else if ( (kw[0] == 's') ||
 			(kw[0] == 'm') ||
@@ -240,6 +246,8 @@ int parseCommandLine(char* lb, InterpreterCommand* opcode,
 			*opcode = MMAP;
 		else if(kw[0] == 'c')
 			*opcode = CMMAP;
+		else if(kw[0] == 'f')
+			*opcode = FMMAP;
 		else
 			*opcode = LOG;
 
@@ -381,6 +389,7 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 {
 	int err = 0;
 	uint32_t rval, count, addr;
+	uint32_t SC;
 	switch(op)
 	{
         	case HELP:  // "h"
@@ -483,6 +492,42 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 
 			fprintf(stdout,"mmap returns 0x%x\n", err);
 			break;
+		case FMMAP:
+			if(nargs < 2)
+			{
+				fprintf(stderr,"Error: not enough args\n");
+				err = 1;
+				break;
+			}
+		
+			spi_flash_calculate_active_sectors (cmd_file_name,
+								active_sector_flags, 
+								MAX_FLASH_SECTOR_COUNT);		
+
+			fprintf(stderr, "Info: erasing active flash sectors.\n");
+			for(SC = 0; SC < MAX_FLASH_SECTOR_COUNT; SC++)
+			{
+				if(active_sector_flags[SC])
+				{
+					uint32_t sec_addr = (SC << 16);
+					spi_flash_erase (ajit_spi_flash_master_base_address,
+							 	ajit_spi_sector_erase_flash_op_code,
+								sec_addr,
+								1);
+				}
+			}
+
+			if (getDebugInterpreterInFastMmapDownloadMode())
+			{
+				err = dbg_load_mmap_optimized(cmd_file_name);
+			}
+			else
+			{
+				err = dbg_load_mmap(cmd_file_name);
+			}
+
+			break;
+
 		case CMMAP:
 			if(nargs < 2)
 			{
@@ -493,28 +538,16 @@ int  executeInterpreterCommand(int nargs, InterpreterCommand op,
 
 			err = dbg_check_mmap(cmd_file_name);
 			break;
-		case ERASEFLASH:
+		case SET_ERASEFLASH_OPCODE:
 			if(arg1 == 0xfffffffff)
 			{
-				fprintf (stderr,"Error: flash erase opcode not set\n");
+				fprintf (stderr,"Error: e option requires  erase opcode.\n");
 				err = 1;
 			}
 			else
 			{
-				if(arg2 != 0xffffffff)
-				{
-					fprintf (stderr, "Info: starting flash" 
-						" erase (opcode=0x%x, sector-addr=0x%x).." 
-						" this will take a while. \n", arg1, arg2);
-				}
-				else
-				{
-					fprintf (stderr, "Info: starting flash" 
-						" erase (opcode=0x%x)\n", arg1);
-				}
-				spi_flash_erase (ajit_spi_flash_master_base_address, arg1, arg2, arg3);
+				ajit_spi_sector_erase_flash_op_code = arg1;
 				err = 0;
-
 			}
 			break;
 		case WRST:  // "w rst"

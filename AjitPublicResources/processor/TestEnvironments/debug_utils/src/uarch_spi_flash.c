@@ -16,6 +16,7 @@
 #define  READ_STATUS_COMMAND 		 0x5
 #define  WRITE_ENABLE_COMMAND 		 0x6
 // #define  BULK_ERASE_COMMAND 		 0xC7  This is set by ADM...
+#define  SECTOR_ERASE_COMMAND            0xd8
 #define  RESET_ENABLE_COMMAND 		 0x66
 #define  RESET_MEMORY_COMMAND 		 0x99
 
@@ -194,12 +195,9 @@ int spi_flash_erase (uint32_t spi_master_base_address,
 				uint32_t sector_start_address,
 				uint32_t number_of_sectors)
 {
-	if((sector_start_address == 0xffffffff) ||
-		(number_of_sectors == 0xffffffff))
-	{
-		fprintf(stderr,"Error: flash sector erase incorrectly specified\n");
-		return(1);
-	}
+	fprintf (stderr, "Info: starting flash" 
+			" erase (opcode=0x%x, sector-start-addr=0x%x, n-sectors=%d).." 
+			" this will take a while. \n", erase_opcode, sector_start_address, number_of_sectors);
 
 	int I;
 	uint32_t current_address = sector_start_address;
@@ -265,3 +263,55 @@ void spi_flash_write_mem (uint32_t spi_master_base_address, uint32_t addr, uint3
 	// disable write.
 	writeEnableDisableSpiFlash (spi_master_base_address, 0);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// find active sectors (at most 4096)
+//////////////////////////////////////////////////////////////////////////////
+void spi_flash_calculate_active_sectors (char* mmap_file_name, 
+						uint8_t* active_sector_flags,
+						uint32_t max_number_of_sectors)
+{
+	FILE * file;
+	file= fopen(mmap_file_name, "r");
+	if(!file)
+	{
+		fprintf(stderr,"Error:spi_flash_calculate_active_sectors: file %s could not be opened for reading!\n",mmap_file_name);
+		return;
+	}
+
+	int I;
+	for(I = 0; I < max_number_of_sectors; I++)
+		active_sector_flags[I] = 0;
+
+	int sector_count = 0;
+
+	uint32_t addr = 0;
+	uint32_t data = 0;
+	while (1)
+	{
+		int eof_reached = 0;
+		
+		int file_read=fscanf(file, "%x", &addr);
+		if (feof(file)) 
+		{
+			eof_reached = 1;
+			break;
+		}
+		else
+		{
+			file_read=fscanf(file, "%x", &data);
+		}
+
+		int sector_index = (addr >> 16) & (max_number_of_sectors-1);
+		
+		if(active_sector_flags[sector_index] == 0)
+		{
+			sector_count++;
+			active_sector_flags[sector_index] = 1;
+		}
+		
+	}
+	fprintf(stderr,"Info: need to erase %d sectors\n", sector_count);
+	fclose (file);
+}
+
