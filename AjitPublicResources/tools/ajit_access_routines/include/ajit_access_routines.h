@@ -557,11 +557,42 @@ uint8_t __ajit_do_spi_transfer_via_bypass__ (uint32_t spim_base_addr,
 
 
 //
+// clocking-mode
+// 00       master transmits mosi on falling edge, 
+//          slave transmits miso on rising edge.
+// 01       master transmits mosi on falling edge, 
+//          slave transmits miso on falling edge.
+// 10       master transmits mosi on rising edge, 
+//          slave transmits miso on falling edge.
+//            (idle value of clock is 1)
+// 11       master transmits mosi on rising edge
+//          slave transmit miso on rising edge.
+
+// Transfer length
+// 4/8/12/16 bits (default is 8)
+//                                   00= 4 bits,
+//                                   01= 8 bits,
+//                                   10=12 bits,
+//                                   11=16 bits
+
+//
+// div-count can be between 2 and 131072 (default is 16). 
+// 0000 -> /2
+// 0001 -> /4
+// 0010 -> /8
+// 0011 -> /16
+// etc.
+// 1111 -> 131072
+// 
+//
 // spi master's output clock is clock_frequency/(2^(clk_divide_count+1))
 // only the bottom 4-bits of clk_divide_count are used.  So we can
 // get spi clk frequencies in the range clk to clk/2^17.
 //
-uint8_t  __ajit_configure_spi_master_via_bypass___ (uint32_t spim_base_addr, uint8_t clk_divide_count);
+uint8_t  __ajit_configure_spi_master_via_bypass___ (uint32_t spim_base_addr, 
+							uint32_t clocking_mode,
+							uint32_t transfer_length,
+							uint32_t clk_divide_count);
 
 //---------------------------------------------------------------------------------------------
 // with normal load/store with non-cacheable page
@@ -576,7 +607,12 @@ uint8_t __ajit_do_spi_transfer_via_vmap__ (uint32_t spim_base_addr, uint8_t devi
 // only the bottom 4-bits of clk_divide_count are used.  So we can
 // get spi clk frequencies in the range clk to clk/2^17.
 //
-uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, uint8_t clk_divide_count);
+// See detailed comment above.
+//
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, 
+							uint32_t clocking_mode,
+							uint32_t transfer_length,
+							uint32_t clk_divide_count);
 
 #ifdef USE_VMAP
 #define   __ajit_write_spi_master_register__		__ajit_write_spi_master_register_via_vmap__

@@ -1070,19 +1070,54 @@ uint8_t __ajit_do_spi_transfer_via_vmap__ (uint32_t spim_base_addr,
 	return(__ajit_do_spi_transfer_inner__(1, spim_base_addr, device_id, send_byte, deselect_after_transfer));
 }
 
-uint8_t  __ajit_configure_spi_master_via_bypass___ (uint32_t spim_base_addr, uint8_t clk_divide_count)
+//
+// clocking-mode
+// 00       master transmits mosi on falling edge, 
+//          slave transmits miso on rising edge.
+// 01       master transmits mosi on falling edge, 
+//          slave transmits miso on falling edge.
+// 10       master transmits mosi on rising edge, 
+//          slave transmits miso on falling edge.
+//            (idle value of clock is 1)
+// 11       master transmits mosi on rising edge
+//          slave transmit miso on rising edge.
+
+// Transfer length
+// 4/8/12/16 bits (default is 8)
+//                                   00= 4 bits,
+//                                   01= 8 bits,
+//                                   10=12 bits,
+//                                   11=16 bits
+
+//
+// div-count can be between 2 and 131072 (default is 16). 
+// 0000 -> /2
+// 0001 -> /4
+// 0010 -> /8
+// 0011 -> /16
+// etc.
+// 1111 -> 131072
+// 
+uint8_t  __ajit_configure_spi_master_via_bypass___ 
+		(uint32_t spim_base_addr, 
+			uint32_t clocking_mode,
+			uint32_t transfer_length, 
+			uint32_t clk_divide_count)
 {
-	uint32_t addr = ADDR_SPI_CONFIG_REGISTER;
-	// transfer width is kept to 8 bits, clk divide count is modified.
-	__ajit_store_word_mmu_bypass__(((0x1 << 4) | (clk_divide_count & 0xf)), addr);
+	uint32_t addr = (spim_base_addr + 0xc);
+	uint32_t w = ((clocking_mode & 0x3) << 6) | (transfer_length << 4) | clk_divide_count;
+	__ajit_store_word_mmu_bypass__(w, addr);
 	return(0);
 }
 
-uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, uint8_t clk_divide_count)
+uint8_t  __ajit_configure_spi_master_via_vmap___ (uint32_t spim_base_addr, 
+							uint32_t clocking_mode,
+							uint32_t transfer_length,				 
+							uint32_t clk_divide_count)
 {
 	uint32_t addr = (spim_base_addr + 0xc);
-	// transfer width is kept to 8 bits, clk divide count is modified.
-	*((uint32_t*) addr) = (0x1 << 4) | (clk_divide_count & 0xf);
+	uint32_t w = ((clocking_mode & 0x3) << 6) | (transfer_length << 4) | clk_divide_count;
+	*((uint32_t*) addr) = w;
 	return(0);
 }
 

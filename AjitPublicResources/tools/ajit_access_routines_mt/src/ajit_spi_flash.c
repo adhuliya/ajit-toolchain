@@ -101,6 +101,25 @@ void ajit_spi_flash_memory_reset(uint32_t spim_base_addr, uint8_t device_id)
 }
 
 //
+// clocking-mode
+// 00       master transmits mosi on falling edge, 
+//          slave transmits miso on rising edge.
+// 01       master transmits mosi on falling edge, 
+//          slave transmits miso on falling edge.
+// 10       master transmits mosi on rising edge, 
+//          slave transmits miso on falling edge.
+//            (idle value of clock is 1)
+// 11       master transmits mosi on rising edge
+//          slave transmit miso on rising edge.
+
+// Transfer length
+// 4/8/12/16 bits (default is 8)
+//                                   00= 4 bits,
+//                                   01= 8 bits,
+//                                   10=12 bits,
+//                                   11=16 bits
+
+//
 // div-count can be between 2 and 131072 (default is 16). 
 // 0000 -> /2
 // 0001 -> /4
@@ -109,15 +128,12 @@ void ajit_spi_flash_memory_reset(uint32_t spim_base_addr, uint8_t device_id)
 // etc.
 // 1111 -> 131072
 // 
-// Transfer length
-// 4/8/12/16 bits (default is 8)
-//                                   00= 4 bits,
-//                                   01= 8 bits,
-//                                   10=12 bits,
-//                                   11=16 bits
-void ajit_spi_configure (uint32_t spim_base_addr, uint8_t transfer_length, uint8_t clk_divide_count)
+void ajit_spi_configure (uint32_t spim_base_addr, 
+				uint32_t clocking_mode,
+				uint32_t transfer_length, 
+				uint32_t clk_divide_count)
 {
-	uint32_t w = (transfer_length << 4) | clk_divide_count;
+	uint32_t w = ((clocking_mode & 0x3) << 6) | (transfer_length << 4) | clk_divide_count;
 #ifdef USE_VMAP
 	*((uint32_t*) (spim_base_addr + 0xc)) = w;
 #else
@@ -150,21 +166,17 @@ void ajit_spi_flash_generic_erase(uint32_t spim_base_addr, uint8_t device_id, ui
 	ajit_spi_flash_send_byte (spim_base_addr, device_id, (addr >> 8) & 0xff, 0);
 	ajit_spi_flash_send_byte (spim_base_addr, device_id, addr & 0xff, 1);
 
+	while(ajit_spi_flash_is_busy(spim_base_addr, 0))
+	{
+		__ajit_sleep__ (256);
+	}
+
 	ajit_spi_flash_send_byte (spim_base_addr, device_id, WRITE_DISABLE_COMMAND, 1);
 }
 
-void ajit_spi_flash_subsector_erase(uint32_t spim_base_addr, uint8_t device_id, uint32_t addr)
-{
-	ajit_spi_flash_generic_erase (spim_base_addr, device_id, SUB_SECTOR_ERASE_COMMAND, addr);
-}
 void ajit_spi_flash_sector_erase(uint32_t spim_base_addr, uint8_t device_id, uint32_t addr)
 {
 	ajit_spi_flash_generic_erase (spim_base_addr, device_id, SECTOR_ERASE_COMMAND, addr);
-}
-
-void ajit_spi_flash_bulk_erase(uint32_t spim_base_addr, uint8_t device_id, uint32_t addr)
-{
-	ajit_spi_flash_generic_erase (spim_base_addr, device_id, BULK_ERASE_COMMAND, addr);
 }
 
 void ajit_spi_flash_read (uint32_t spim_base_addr,
@@ -205,6 +217,11 @@ void ajit_spi_flash_write(uint32_t spim_base_addr,
 	{
 		uint8_t desel_flag = (I == (n_bytes-1));
 		ajit_spi_flash_send_byte(spim_base_addr, device_id, buffer[I], desel_flag);
+	}
+
+	while(ajit_spi_flash_is_busy(spim_base_addr, 0))
+	{
+		__ajit_sleep__ (256);
 	}
 
 	ajit_spi_flash_send_byte (spim_base_addr, device_id, WRITE_DISABLE_COMMAND,  1);

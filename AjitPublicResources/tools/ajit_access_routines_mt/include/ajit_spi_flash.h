@@ -19,9 +19,7 @@
 #define WRITE_DISABLE_COMMAND			 0x4
 #define READ_STATUS_COMMAND			 0x5
 #define WRITE_ENABLE_COMMAND			 0x6
-#define SUB_SECTOR_ERASE_COMMAND		 0x20
-#define SECTOR_ERASE_COMMAND			 0xD8
-#define BULK_ERASE_COMMAND			 0xC7
+#define SECTOR_ERASE_COMMAND			 0xD8  // This is the one we use.
 #define RESET_ENABLE_COMMAND			 0x66
 #define RESET_MEMORY_COMMAND			 0x99
 
@@ -56,13 +54,38 @@ void ajit_spi_flash_memory_reset(uint32_t spim_base_addr, uint8_t device_id);
 // so if the clk_divide count is 0, SPI clk = clk/2, and if the clk_divide_count = 0xf, then
 // SPI clk = clk/65536.
 //
+//
+// clocking-mode
+// 00       master transmits mosi on falling edge, 
+//          slave transmits miso on rising edge.
+// 01       master transmits mosi on falling edge, 
+//          slave transmits miso on falling edge.
+// 10       master transmits mosi on rising edge, 
+//          slave transmits miso on falling edge.
+//            (idle value of clock is 1)
+// 11       master transmits mosi on rising edge
+//          slave transmit miso on rising edge.
+
 // Transfer length
 // 4/8/12/16 bits (default is 8)
 //                                   00= 4 bits,
 //                                   01= 8 bits,
 //                                   10=12 bits,
 //                                   11=16 bits
-void ajit_spi_configure (uint32_t spim_base_addr, uint8_t  transfer_length, uint8_t clk_divide_count);
+
+//
+// div-count can be between 2 and 131072 (default is 16). 
+// 0000 -> /2
+// 0001 -> /4
+// 0010 -> /8
+// 0011 -> /16
+// etc.
+// 1111 -> 131072
+// 
+void ajit_spi_configure (uint32_t spim_base_addr, 
+				uint32_t clocking_mode,
+					uint32_t  transfer_length, 
+					uint32_t clk_divide_count);
 
 void    ajit_spi_set_transfer_length (uint32_t spim_base_addr, uint8_t tx_length);
 uint8_t ajit_spi_get_register (uint32_t spim_base_addr, uint8_t reg_id);
