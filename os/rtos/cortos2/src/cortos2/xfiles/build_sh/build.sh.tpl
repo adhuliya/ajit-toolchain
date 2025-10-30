@@ -33,6 +33,7 @@ compileToSparcUclibc.py \
   -S ${_CORTOS_SRC_DIR} \
   -C .. \
   -C ${_CORTOS_SRC_DIR} \
+  -l .. \
   -N ${_MAIN} \
   -L ${_LINKER_SCRIPT} \
 % if confObj.software.build.useLibAjit:

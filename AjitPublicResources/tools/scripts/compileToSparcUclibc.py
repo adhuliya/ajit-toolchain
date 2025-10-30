@@ -157,10 +157,8 @@ def  compileFiles(work_area, src_files,src_dirs,include_dirs,define_strings,asse
            else:
               obj_files.append(work_area + "/sparc-obj/" + name + ".o")
 
-    
     for src_file in src_files:
         all_src_files.append(src_file)
-
 
     for src_dir in src_dirs:
         for ssfile in os.listdir(src_dir):
@@ -224,6 +222,8 @@ def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump
     obj_file_string += " "
     full_elf_file     = work_area + "/" + elf_file
 
+    all_ld_libs = [];
+
     sparc_ld_command = SPARC_LD + SPARC_LD_FLAGS + linker_script_file
     sparc_ld_command +=  obj_file_string + " -o " + full_elf_file
     if (uclibc_flag):
@@ -233,11 +233,20 @@ def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump
       sparc_ld_command += " -static -lm -lc -lgcc "
       sparc_ld_command += " --gc-sections"
 
+    for lib_dir in ld_lib_directories:
+        for libfile in os.listdir(lib_dir):
+            lname,extn = os.path.splitext(libfile)
+            if(extn == ".a"):
+                all_ld_libs.append(lname[3:])
+
     for libdir in ld_lib_directories:
       sparc_ld_command += " -L " + libdir + " "
     
     for lib in ld_libs:
       sparc_ld_command += " -l" + lib + " "
+
+    for libb in all_ld_libs:
+      sparc_ld_command += " -l" + libb + " "
 
     ret_val = execSysCmd(sparc_ld_command)
     if(ret_val != 0):

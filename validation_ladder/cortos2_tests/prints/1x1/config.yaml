@@ -53,7 +53,7 @@ Software:
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
     - CortosInitCalls:
-        - main
+        - fake_main
   # One can also specify an infinite loop on the function:
   #   CortosLoopCalls:
   #     - main1
