@@ -33,8 +33,11 @@
 package GlobalConstants is
     constant global_debug_flag: boolean := false;
     constant global_pipe_report_flag: boolean := true;
-    constant global_use_vivado_bbank_dual_port : boolean := false;
-    constant global_use_vivado_distributed_ram_queue : boolean := false;
+    constant global_use_vivado_bbank_dual_port : boolean := true;
+    constant global_use_vivado_distributed_ram_queue : boolean := true;
+
+    -- clock gating using Xilinx IP?
+    constant use_xilinx_bufce: boolean := true;
 
     --
     -- for guarded statements... increase this with care!
@@ -46,6 +49,14 @@ package GlobalConstants is
     -- this or deeper pipes with DPRAM.  Note: this is a hack!
     constant global_pipe_shallowness_threshold : integer := 10;  
 
+    -- for debug of memory cuts.
+    constant global_debug_mem_cuts: boolean := false;
+
+    -- use the optimized unload buffer implementation if possible.
+    -- this saves a substantial amount of logic, but  can result
+    -- in a slight (2.5%) performance reduction.  use it for the
+    -- minimizing resource usage.
+    constant global_use_optimized_unload_buffer : boolean := false;
 
 end package GlobalConstants;
 ------------------------------------------------------------------------------------------------
@@ -177,7 +188,10 @@ package Utilities is
 
   function Reverse(x: unsigned) return unsigned;
   procedure TruncateOrPad(signal rhs: in std_logic_vector; signal lhs : out std_logic_vector);
-  
+
+  function TieLowSlvConstant (constant W: integer) return std_logic_vector;
+  function TieHighSlvConstant (constant W: integer) return std_logic_vector;
+
 end Utilities;
 
 
@@ -505,6 +519,20 @@ package body Utilities is
 	alhs(L downto 1) <= arhs(L downto 1);
   end procedure TruncateOrPad;
 
+  function TieLowSlvConstant (constant W: integer) return std_logic_vector is
+	variable ret_var : std_logic_vector(1 to W) ;
+  begin
+	ret_var := (others => '0');
+	return(ret_var);
+  end TieLowSlvConstant;
+
+  function TieHighSlvConstant (constant W: integer) return std_logic_vector is
+	variable ret_var : std_logic_vector(1 to W) ;
+  begin
+	ret_var := (others => '1');
+	return(ret_var);
+  end TieHighSlvConstant;
+  
 end Utilities;
 ------------------------------------------------------------------------------------------------
 --
@@ -2443,6 +2471,21 @@ package BaseComponents is
   -----------------------------------------------------------------------------
   -- queue, fifo, lifo
   -----------------------------------------------------------------------------
+  component QueueBaseCore is
+  generic(name : string := "Anon"; 
+		queue_depth: integer := 3; 
+		reverse_bypass_flag: boolean := false;
+		data_width: integer := 32);
+  port(clk: in std_logic;
+       reset: in std_logic;
+       empty, full: out std_logic;
+       data_in: in std_logic_vector(data_width-1 downto 0);
+       push_req: in std_logic;
+       push_ack: out std_logic;
+       data_out: out std_logic_vector(data_width-1 downto 0);
+       pop_ack : out std_logic;
+       pop_req: in std_logic);
+  end component QueueBaseCore;
   
   component QueueBase 
     generic(name : string; queue_depth: integer := 2; data_width: integer := 32; save_one_slot: Boolean := false);
@@ -2505,6 +2548,19 @@ package BaseComponents is
          pop_req: in std_logic);
   end component QueueBaseWithEmptyFull;
 
+  component QueueBaseWithEmptyFullNext is
+  generic(name : string; queue_depth: integer := 1; data_width: integer := 32);
+  port(clk: in std_logic;
+       reset: in std_logic;
+       empty, full, next_valid: out std_logic;
+       data_in: in std_logic_vector(data_width-1 downto 0);
+       push_req: in std_logic;
+       push_ack: out std_logic;
+       data_out: out std_logic_vector(data_width-1 downto 0);
+       pop_ack : out std_logic;
+       pop_req: in std_logic);
+  end component QueueBaseWithEmptyFullNext;
+
   component QueueEmptyFullLogic is
 	port (clk, reset: in std_logic;
 		read,write,eq_flag: in boolean;
@@ -2516,7 +2572,7 @@ package BaseComponents is
   -- a special purpose queue which keeps a 1-bit data value.
   --
   component SingleBitQueueBase is
-    generic(name : string; queue_depth: integer := 1);
+    generic(name : string; queue_depth: integer := 1; bypass_flag: boolean := false);
     port(clk: in std_logic;
        reset: in std_logic;
        data_in: in std_logic_vector(0 downto 0);
@@ -2583,7 +2639,7 @@ package BaseComponents is
 
 
   component ShiftRegisterSingleBitQueue is
-    generic(name : string; queue_depth: integer; number_of_stages: integer);
+    generic(name : string; queue_depth: integer; number_of_stages: integer; bypass_flag: boolean := false);
     port(clk: in std_logic;
        reset: in std_logic;
        data_in: in std_logic_vector(0 downto 0);
@@ -3814,6 +3870,18 @@ package BaseComponents is
 		clk, reset: in std_logic);
   end component;
 
+  component SgiUpdateFsm is
+	generic (name: string);
+	port (cr_in: in Boolean;
+		cr_out: out Boolean;
+		ca_in: in Boolean;
+		ca_out: out Boolean;
+		pop_req: out std_logic;
+		pop_ack: in std_logic;
+		pop_data: in std_logic_vector(0 downto 0);
+		clk, reset: in std_logic);
+  end component;
+
   component SplitGuardInterface is
 	generic (name: string;
 	     		nreqs: integer; buffering: IntegerArray; use_guards: BooleanArray;
@@ -4292,6 +4360,7 @@ package BaseComponents is
 		out_data_width : integer := 32;
 		flow_through: boolean := false;
 		cut_through: boolean  := false;
+		in_phi     : boolean  := false;
 		bypass_flag : boolean := false); 
     port ( write_req: in boolean;
         write_ack: out boolean;
@@ -4387,8 +4456,10 @@ package BaseComponents is
 
   component UnloadBuffer 
     generic (name: string; buffer_size: integer; data_width : integer; 
-				bypass_flag: boolean := false; nonblocking_read_flag: boolean := false;
-					use_unload_register: boolean := true);
+				bypass_flag: boolean := false; 
+					nonblocking_read_flag: boolean := false;
+						use_safe_mode: boolean := false;
+							use_unload_register: boolean := true);
     port (write_req: in std_logic;
           write_ack: out std_logic;
           write_data: in std_logic_vector(data_width-1 downto 0);
@@ -4411,7 +4482,49 @@ package BaseComponents is
         clk : in std_logic;
         reset: in std_logic);
   end component UnloadBufferDeep;
+  component UnloadBufferOptimized is
+    generic (name: string; buffer_size: integer ; data_width : integer ; 
+			bypass_flag, nonblocking_read_flag : boolean := false);
+    port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data: out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+  end component UnloadBufferOptimized;
   component UnloadBufferRevised is
+    generic (name: string; 
+		buffer_size: integer ; 
+		data_width : integer ; 
+		bypass_flag: boolean := false);
+    port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data: out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+  end component;
+  component UnloadBufferRevisedSafe is
+    generic (name: string; 
+		buffer_size: integer ; 
+		data_width : integer ); 
+    port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data: out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+  end component;
+  component UnloadBufferRevisedNonblocking is
     generic (name: string; 
 		buffer_size: integer ; 
 		data_width : integer ; 
@@ -4443,6 +4556,33 @@ package BaseComponents is
   end component UnloadRegister;
 
   component UnloadFsm is
+  generic (name: string; data_width: integer);
+  port ( 
+	 write_req: in std_logic;
+         write_ack: out std_logic;
+         unload_req: in boolean;
+         unload_ack: out boolean;
+	 data_in :  in std_logic_vector(data_width-1 downto 0);
+	 data_out :  out std_logic_vector(data_width-1 downto 0);
+         clk : in std_logic;
+         reset: in std_logic);
+  end component;
+
+  component UnloadFsmSafe is
+  generic (name: string; data_width: integer);
+  port ( 
+	 next_valid: in std_logic;
+	 write_req: in std_logic;
+         write_ack: out std_logic;
+         unload_req: in boolean;
+         unload_ack: out boolean;
+	 data_in :  in std_logic_vector(data_width-1 downto 0);
+	 data_out :  out std_logic_vector(data_width-1 downto 0);
+         clk : in std_logic;
+         reset: in std_logic);
+  end component;
+
+  component UnloadFsmNoblock is
   generic (name: string; data_width: integer);
   port ( 
 	 write_req: in std_logic;
@@ -4605,6 +4745,20 @@ package BaseComponents is
   );
   -- 
   end component dpram_1w_1r_1024x32_Operator;
+
+  component module_clock_gate is
+	port (reset, start_req, start_ack, fin_req, fin_ack, clock_in: in std_logic;
+		clock_out : out std_logic);
+  end component module_clock_gate;
+
+  component signal_clock_gate is
+	port (reset, clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+  end component signal_clock_gate;
+
+  component clock_gater is
+	port (clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+  end component clock_gater;
+
 end BaseComponents;
 ------------------------------------------------------------------------------------------------
 --
@@ -5797,6 +5951,23 @@ component register_file_1w_1r_port is
          clk: in std_logic;
          reset : in std_logic);
 end component register_file_1w_1r_port;
+
+-- with write to read bypass.
+component register_file_1w_1r_port_with_bypass is
+   generic ( name: string; g_addr_width: natural := 10; g_data_width : natural := 16);
+   port (
+         -- write port 0
+         datain_0 : in std_logic_vector(g_data_width-1 downto 0);
+         addrin_0: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_0: in std_logic;
+         -- read port 1 
+         dataout_1: out std_logic_vector(g_data_width-1 downto 0);
+         addrin_1: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_1: in std_logic;
+
+         clk: in std_logic;
+         reset : in std_logic);
+end component register_file_1w_1r_port_with_bypass;
 
 component fifo_mem_synch_write_asynch_read is
    generic ( name: string; address_width: natural;  data_width : natural;
@@ -9481,6 +9652,14 @@ end entity base_bank_dual_port;
 
 architecture XilinxBramInfer of base_bank_dual_port is
 	signal wea, web: std_logic;
+	signal samplea, sampleb: std_logic;
+
+        signal mdataout_0: std_logic_vector(g_data_width-1 downto 0);
+        signal mdataout_1: std_logic_vector(g_data_width-1 downto 0);
+
+        signal dataout_0_reg: std_logic_vector(g_data_width-1 downto 0);
+        signal dataout_1_reg: std_logic_vector(g_data_width-1 downto 0);
+
 begin  -- XilinxBramInfer
 
   debugGen: if global_debug_flag generate
@@ -9490,6 +9669,34 @@ begin  -- XilinxBramInfer
 
 	wea <= not writebar_0;
 	web <= not writebar_1;
+
+	process(clk, reset)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then 
+				samplea <= '0';
+				sampleb <= '0';
+			else
+				samplea <= enable_0 and writebar_0;
+				sampleb <= enable_1 and writebar_1;
+			end if;
+		end if;
+	end process;
+
+	process(clk, reset)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(samplea = '1') then
+				dataout_0_reg <= mdataout_0;
+			end if;
+			if(sampleb = '1') then
+				dataout_1_reg <= mdataout_1;
+			end if;
+		end if;
+	end process;
+
+	dataout_0 <= mdataout_0 when (samplea = '1') else dataout_0_reg;
+	dataout_1 <= mdataout_1 when (sampleb = '1') else dataout_1_reg;
 
 	-- global constant: use_vivado_bbank_dual_port.
 	ifVivado: if global_use_vivado_bbank_dual_port generate
@@ -9508,8 +9715,8 @@ begin  -- XilinxBramInfer
 					addrb => addrin_1,
 					dia => datain_0,
 					dib => datain_1,
-					doa => dataout_0,
-					dob => dataout_1
+					doa => mdataout_0,
+					dob => mdataout_1
 				);
 	end generate ifVivado;
 
@@ -9520,12 +9727,12 @@ begin  -- XilinxBramInfer
 						g_data_width => g_data_width)
 				port map (
 	 				datain_0 => datain_0,
-         				dataout_0 => dataout_0,
+         				dataout_0 => mdataout_0,
          				addrin_0 => addrin_0,
          				enable_0 => enable_0,
          				writebar_0 => writebar_0,
 	 				datain_1 => datain_1,
-         				dataout_1 => dataout_1,
+         				dataout_1 => mdataout_1,
          				addrin_1 => addrin_1,
          				enable_1 => enable_1,
          				writebar_1 => writebar_1,
@@ -9743,6 +9950,122 @@ begin  -- XilinxBramInfer
 				-- reset active high.
 				reset => reset
 			 );
+
+end Struct;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ahir;
+use ahir.Utilities.all;
+use ahir.GlobalConstants.all;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.mem_component_pack.all;
+use ahir.GlobalConstants.all;
+--
+-- synchronous memory with 1 write and 1 read port.
+--    write value is bypassed to read out on address match.
+entity register_file_1w_1r_port_with_bypass is
+   generic ( name: string; g_addr_width: natural := 10; g_data_width : natural := 16);
+   port (
+	 -- write port 0
+	 datain_0 : in std_logic_vector(g_data_width-1 downto 0);
+         addrin_0: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_0: in std_logic;
+	 -- read port 1
+         dataout_1: out std_logic_vector(g_data_width-1 downto 0);
+         addrin_1: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_1: in std_logic;
+	
+         clk: in std_logic;
+         reset : in std_logic);
+end entity register_file_1w_1r_port_with_bypass;
+
+
+architecture Struct of register_file_1w_1r_port_with_bypass is
+
+	signal bypassed_write_to_read: std_logic_vector(g_data_width-1 downto 0);
+        signal mem_dataout_1, mem_dataout_1_reg, resolved_mem_dataout_1: std_logic_vector(g_data_width-1 downto 0);
+	signal write_to_read_bypass, use_bypassed_value, enable_1_reg: std_logic;
+
+begin  -- XilinxBramInfer
+
+	base_inst: register_file_1w_1r_port 
+			generic map (name => name & ":Base", 
+					g_addr_width => g_addr_width,
+					g_data_width => g_data_width)
+			port map (clk => clk, reset => reset,
+	 				datain_0 => datain_0,
+         				addrin_0 => addrin_0,
+         				enable_0 => enable_0,
+         				dataout_1 => mem_dataout_1,
+         				addrin_1 => addrin_1,
+         				enable_1 => enable_1);
+					
+
+	write_to_read_bypass <= '1' when
+		(enable_1 = '1') and (enable_0 = '1') and (addrin_0 = addrin_1) else '0';
+
+	process(clk)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				use_bypassed_value <= '0';
+				bypassed_write_to_read <= (others => '0');
+				enable_1_reg <= '0';
+			else 
+				enable_1_reg <= enable_1;
+				if(write_to_read_bypass = '1') then
+					bypassed_write_to_read <= datain_0;
+					use_bypassed_value <= '1';
+				elsif (enable_1 = '1') then  -- an unmatched memory read resets the bypass flag.
+					bypassed_write_to_read <= (others => '0');
+					use_bypassed_value <= '0';
+				end if;
+
+				if(enable_1_reg = '1') then
+					mem_dataout_1_reg <= mem_dataout_1;
+				end if;
+			end if;
+		end if;
+	end process;
+
+	-- hold the data...
+	resolved_mem_dataout_1 <= mem_dataout_1 when (enable_1_reg = '1') else mem_dataout_1_reg;
+	dataout_1 <= bypassed_write_to_read when (use_bypassed_value = '1') else resolved_mem_dataout_1;
 
 end Struct;
 ------------------------------------------------------------------------------------------------
@@ -18375,7 +18698,6 @@ begin  -- SimModel
 
  qDGt1: if queue_depth > 1 generate 
   NTB: block 
-   signal queue_array : QueueArray(queue_depth-1 downto 0);
    signal read_pointer, write_pointer, write_pointer_plus_1: unsigned ((Ceil_Log2(queue_depth))-1 downto 0);
    signal next_read_pointer, next_write_pointer: unsigned ((Ceil_Log2(queue_depth))-1 downto 0);
 
@@ -18424,35 +18746,43 @@ begin  -- SimModel
     end process;
     wrpReg: SynchResetRegisterUnsigned generic map (name => name & ":wrpreg", data_width => write_pointer'length)
 		port map (clk => clk, reset => reset, din => next_write_pointer, dout => write_pointer);
+
+  -----------------------------------------  declared the array if not distrib ram case ------------------------
   notDistribRam: if not global_use_vivado_distributed_ram_queue generate
-    -- bottom pointer gives the data in FIFO mode..
-    process (read_pointer, queue_array)
-	variable data_out_var : std_logic_vector(data_width-1 downto 0);
-    begin
-	data_out_var := (others =>  '0');
-        for I in 0 to queue_depth-1 loop
-	    if(I = To_Integer(read_pointer)) then
-    		data_out_var := queue_array(I);
-	    end if;
-	end loop;
-	base_data_out <= data_out_var;
-    end process;
+    QueueArrayBlock: block
+   	signal queue_array : QueueArray(queue_depth-1 downto 0);
+    begin 
+        -- bottom pointer gives the data in FIFO mode..
+        process (read_pointer, queue_array)
+	    variable data_out_var : std_logic_vector(data_width-1 downto 0);
+        begin
+	    data_out_var := (others =>  '0');
+            for I in 0 to queue_depth-1 loop
+	        if(I = To_Integer(read_pointer)) then
+    		    data_out_var := queue_array(I);
+	        end if;
+	    end loop;
+	    base_data_out <= data_out_var;
+        end process;
 
-    -- write to queue-array.
-    Wgen: for W in 0 to queue_depth-1 generate
-       process(clk, reset, write_flag, write_pointer, data_in) 
-       begin
-		if(clk'event and (clk = '1')) then
-			if(reset = '1') then
-                             queue_array(W) <= (others => '0');
-			elsif (write_flag and (W = write_pointer)) then
-			     queue_array(W) <= data_in;
-			end if;
-		end if;
-       end process;
-    end generate Wgen;
+        -- write to queue-array.
+        Wgen: for W in 0 to queue_depth-1 generate
+           process(clk, reset, write_flag, write_pointer, data_in) 
+           begin
+		    if(clk'event and (clk = '1')) then
+			    if(reset = '1') then
+                                 queue_array(W) <= (others => '0');
+			    elsif (write_flag and (W = write_pointer)) then
+			         queue_array(W) <= data_in;
+			    end if;
+		    end if;
+           end process;
+        end generate Wgen;
+    end block QueueArrayBlock;
   end generate notDistribRam;
+  -----------------------------------------  end non distrib ram case -------------------------------------------
 
+  -----------------------------------------  begin distrib ram case   -------------------------------------------
   write_enable <= '1' when write_flag else '0';
   DistribRam: if global_use_vivado_distributed_ram_queue generate
       distrib_ram_inst:
@@ -18470,6 +18800,7 @@ begin  -- SimModel
 					clk => clk
 				);
   end generate DistribRam;
+  -----------------------------------------  end distrib ram case   -------------------------------------------
   
    not_rbypGen: if not reverse_bypass_flag generate
 
@@ -21374,6 +21705,211 @@ use ahir.Types.all;
 use ahir.Subprograms.all;
 use ahir.Utilities.all;
 use ahir.BaseComponents.all;
+
+--
+-- An optimized version of the unload buffer, to be used when the buffer_size is > 1.
+--     Uses a standard queue followed by a state machine..
+--
+entity UnloadBufferOptimized is
+  generic (name: string; buffer_size: integer ; data_width : integer; 
+		bypass_flag: boolean; nonblocking_read_flag : boolean := false);
+  port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data : out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+end UnloadBufferOptimized;
+
+architecture default_arch of UnloadBufferOptimized is
+
+  signal pop_req, pop_ack : std_logic;
+  signal unload_ack_sig: boolean; 
+  signal empty, full: std_logic;
+
+   type FsmState is (sA, sB, sC, sD);
+   signal fsm_state: FsmState;
+
+   signal queue_data_out: std_logic_vector(data_width-1 downto 0);
+
+begin  -- default_arch
+
+  assert (buffer_size /= 1) report "UnloadBufferOptimized must have queue-size != 1" severity failure;
+
+  has_data <= not empty;
+
+  qinst: QueueBaseWithEmptyFull
+		generic map (name => name & ":qinst",
+				queue_depth => buffer_size,
+				data_width => data_width,
+				reverse_bypass_flag => bypass_flag
+			    )
+		port map (
+				empty => empty,
+				full  => full,
+				push_req => write_req,
+				push_ack => write_ack,
+				pop_req => pop_req,
+				pop_ack => pop_ack,
+				data_in => write_data,
+				data_out => queue_data_out,
+				clk => clk,
+				reset => reset);	
+
+	-- FSM
+        process(clk, reset, pop_ack, fsm_state, unload_req, queue_data_out)
+		variable next_fsm_state_var:  FsmState;
+		variable unload_ack_var: boolean;
+		variable pop_req_var: std_logic;
+   		variable read_data_var: std_logic_vector(data_width-1 downto 0);
+	begin
+		next_fsm_state_var := fsm_state;
+		unload_ack_var := false;
+		pop_req_var := '0';
+		read_data_var := queue_data_out;
+
+		case fsm_state is
+			when sA =>
+				-- In the beginning, nothing has
+				-- been read from the queue.
+				if unload_req then
+					next_fsm_state_var := sB;
+				end if;
+			when sB =>
+				--
+				-- Ack if queue has data 
+				--
+				-- Careful about the non-blocking
+				-- behaviour.
+				if (pop_ack = '1') then		     -- p
+					unload_ack_var := true;
+					if unload_req then
+						-- pop from the queue
+						-- since the next-req
+						-- has arrived.
+						pop_req_var := '1';
+					else
+						next_fsm_state_var := sC;
+					end if;
+				elsif nonblocking_read_flag then -- (~p).n
+					-- non-blocking... as if pop_ack is
+					-- asserted except that read data 
+					-- will be zero-ed out.
+					read_data_var := (others => '0');
+
+					-- ack the zero data..
+					unload_ack_var := true;
+
+					if unload_req then
+						-- do not pop here
+						-- The queue data has not 
+						-- been used yet.
+						next_fsm_state_var := sB;
+					else
+						-- wait for update req
+						-- but ensure that read_data
+						-- is zero-ed out.
+						next_fsm_state_var := sD;
+					end if;
+				end if;
+			when sC =>
+				--
+				-- you will come to this state only
+				-- if pop_ack = '1'... you are waiting
+				-- for an update-req to start the
+				-- next cycle.
+				if unload_req then
+					-- pop only when signaled by
+					-- unload_req
+					pop_req_var := '1';
+
+					-- go to sB before reacting
+					-- to the update-req.
+					next_fsm_state_var := sB;
+				end if;
+
+			when SD =>
+				--
+				-- you got here because pop_ack was false
+				-- and non-block was true.  zero out the
+				-- read_data until the next unload_req.
+				-- 
+				-- you are waiting for an update-req to
+				-- start the next cycle.
+				--
+				-- Keep read_data_var = 0 here.  you
+				-- do not want the changed queue output
+				-- to sneak to the user.
+				--
+				read_data_var := (others => '0');
+				if unload_req then
+					--
+					-- do not pop!  
+					-- 
+					-- go to sB before reacting
+					-- to the update-req.
+					next_fsm_state_var := sB;
+				end if;
+		end case;
+
+		pop_req <= pop_req_var;
+		unload_ack <= unload_ack_var;
+		read_data <= read_data_var;
+
+		if(clk'event and (clk = '1')) then
+			if (reset = '1') then
+				fsm_state <= sA;
+			else
+				fsm_state <= next_fsm_state_var;
+			end if;
+		end if;
+	end process;
+
+end default_arch;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.Types.all;
+use ahir.Subprograms.all;
+use ahir.Utilities.all;
+use ahir.BaseComponents.all;
 use ahir.GlobalConstants.all;
 -- Synopsys DC ($^^$@!)  needs you to declare an attribute
 -- to infer a synchronous set/reset ... unbelievable.
@@ -21406,6 +21942,10 @@ entity UnloadBuffer is
 			bypass_flag : boolean := false; 
 			-- self-explanatory.
 			nonblocking_read_flag : boolean := false;
+			-- PHI statements are special and need the
+			-- safe mode of operation (see UnloadBufferRevisedSafe
+			-- for more on this..).
+			use_safe_mode: boolean := false;
 			-- if false use new revised version of the unload buffer (revised)
 			-- which does not need an unload-register.
 			use_unload_register: boolean := true);
@@ -21442,15 +21982,15 @@ architecture default_arch of UnloadBuffer is
   -- and allows us to use 2-depth buffers to cut long
   -- combinational paths.
   --
-  function DecrDepth (buffer_size: integer; bypass: boolean)
+  function DecrDepth (buf_size: integer; bypass: boolean)
 	return integer is
-      variable actual_buffer_size: integer;
+      variable ret_val: integer;
   begin
-      actual_buffer_size := buffer_size;
+      ret_val := buf_size;
       if((not bypass) and (buffer_size = 1)) then
-	actual_buffer_size := buffer_size - 1;
+	ret_val := buf_size - 1;
       end if;
-      return actual_buffer_size;
+      return ret_val;
   end function DecrDepth;
 
   constant actual_buffer_size  : integer  := DecrDepth (buffer_size, bypass_flag);
@@ -21459,15 +21999,82 @@ architecture default_arch of UnloadBuffer is
 
   constant shallow_flag : boolean :=    (buffer_size < global_pipe_shallowness_threshold);
 
-  constant revised_case: boolean := ((buffer_size > 0) and shallow_flag and (not use_unload_register) and (not nonblocking_read_flag));
-  -- constant revised_case: boolean := false;
+  constant revised_case_blocking: boolean := 
+		((buffer_size > 0) 
+			-- in safe mode, no bypass is allowed!
+			and (not (use_safe_mode and bypass_flag))    -- no bypass in safe mode....
+			-- in safe mode, at queue depth is > 1.
+			and (not (use_safe_mode and (buffer_size < 1)))  -- buffer size >= 1 in safe mode.
+			and (bypass_flag or (buffer_size > 1))       -- bypass or deeper than 1, to give fullrate
+								     -- performance...
+			-- OK shallow
+                        and shallow_flag
+								     -- technically doable with non-shallow...
+							             -- in non-safe mode..
+			and (not use_unload_register) 
+			and (not nonblocking_read_flag));
 
+  constant revised_case_non_blocking: boolean := 
+		global_use_optimized_unload_buffer and
+			((buffer_size > 1) and (not bypass_flag) 
+				and shallow_flag 		-- technically doable with non-shallow
+					and  nonblocking_read_flag);
+
+
+  constant un_revised_case: boolean :=  (not revised_case_blocking) and 
+						(not revised_case_non_blocking) and
+							shallow_flag;
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
 begin  -- default_arch
 
-  RevisedCase: if revised_case generate
-	ulb_revised: UnloadBufferRevised
+  RevisedCaseBlocking: if revised_case_blocking generate
+
+
+        fastMode: if (not use_safe_mode) generate 
+           assert false report "ULB REVISED BLOCKING  " & name & ":" & Convert_To_String(data_width*buffer_size) 
+			severity note;
+	   ulb_revised: UnloadBufferRevised
+			generic map (name => name & "-revised",
+					buffer_size => buffer_size, data_width => data_width,
+						bypass_flag => bypass_flag)
+			port map (
+				write_req  => write_req,
+				write_ack  => write_ack,
+				unload_req => unload_req,
+				unload_ack => unload_ack,
+				write_data => write_data,
+				read_data  => read_data, 
+				has_data   => has_data,
+				clk => clk, reset => reset);
+         end generate fastMode;
+
+        safeMode: if (use_safe_mode) generate 
+           assert false report "ULB REVISED SAFE  " & name & ":" & Convert_To_String(data_width*buffer_size) 
+			severity note;
+
+	   ulb_revised_safe: UnloadBufferRevisedSafe
+			generic map (name => name & "-revised-safe",
+					buffer_size => buffer_size, data_width => data_width)
+			port map (
+				write_req => write_req,
+				write_ack => write_ack,
+				unload_req => unload_req,
+				unload_ack => unload_ack,
+				write_data => write_data,
+				read_data => read_data, 
+				has_data => has_data,
+				clk => clk, reset => reset);
+         end generate safeMode;
+
+  end generate RevisedCaseBlocking;
+
+  RevisedCaseNonblocking: if revised_case_non_blocking generate
+
+         assert false report "ULB REVISED NONBLOCKING  " & name & ":" & Convert_To_String(data_width*buffer_size) 
+			severity note;
+
+	ulb_revised: UnloadBufferRevisedNonblocking
 			generic map (name => name & "-revised",
 					buffer_size => buffer_size, data_width => data_width,
 						bypass_flag => bypass_flag)
@@ -21480,9 +22087,12 @@ begin  -- default_arch
 				read_data => read_data, 
 				has_data => has_data,
 				clk => clk, reset => reset);
-  end generate RevisedCase;
+  end generate RevisedCaseNonblocking;
 
   DeepCase: if not shallow_flag generate
+         assert false report "ULB DEEP " & name & ":" & Convert_To_String(data_width*buffer_size) 
+			severity note;
+
 	ulb_deep: UnloadBufferDeep
 			generic map (name => name & "-deep",
 					buffer_size => buffer_size, data_width => data_width,
@@ -21498,9 +22108,12 @@ begin  -- default_arch
 				clk => clk, reset => reset);
   end generate DeepCase;
 
-  NotRevisedCase: if not revised_case generate
+  NotRevisedCase: if un_revised_case generate
 
     ShallowCase: if shallow_flag  generate
+      assert false report "ULB with ULREG " & name & ":" & Convert_To_String(data_width*buffer_size) 
+			severity note;
+
       bufGt0: if actual_buffer_size > 0 generate
 
   	has_data <= '1' when pipe_has_data else '0';
@@ -26684,6 +27297,7 @@ use ahir.Types.all;
 use ahir.Subprograms.all;
 use ahir.Utilities.all;
 use ahir.BaseComponents.all;
+use ahir.GlobalConstants.all;
 
 -- Synopsys DC ($^^$@!)  needs you to declare an attribute
 -- to infer a synchronous set/reset ... unbelievable.
@@ -26695,6 +27309,7 @@ entity InterlockBuffer is
   	out_data_width : integer := 32;
   	flow_through: boolean := false;
 	cut_through : boolean := false;
+	in_phi	    : boolean := false;
   	bypass_flag : boolean := false);
   port (write_req: in boolean;
         write_ack: out boolean;
@@ -26718,8 +27333,18 @@ architecture default_arch of InterlockBuffer is
 
   signal has_data: std_logic;
 
-  constant use_unload_register : boolean := not cut_through;
-  
+  -- Don't F-around with this.
+  --  optim cut-through in-phi  use-unload-reg
+  --    0        0        *       1
+  --    1        *        0       revised-fast
+  --    1        *        1       revised-slow
+  --
+  --   in optimized (small) case, never use the unload register
+  --   in non-optimized (fast) case, use the unload register if cut_through is false. 
+  --   in_phi if set, selects safe mode.
+  constant use_unload_register : boolean :=  
+		(not global_use_optimized_unload_buffer) and (not cut_through);
+
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
 
@@ -26767,61 +27392,62 @@ begin  -- default_arch
         buf_write_data <= write_data(data_width-1 downto 0);
         read_data  <= buf_read_data;
       end generate outSmaller;
-  
+      
+
       -- write FSM to pipe.
       process(clk,reset, l_fsm_state, buf_write_ack, write_req)
-        variable nstate : LoadFsmState;
+           variable nstate : LoadFsmState;
       begin
-        nstate := l_fsm_state;
-        buf_write_req <= '0';
-        write_ack <= false;
-        if(l_fsm_state = l_idle) then
-	  if(write_req) then
-            buf_write_req <= '1';
-            if(buf_write_ack = '1') then
-              write_ack <= true;
-            else
-              nstate := l_busy;
-            end if;
-	  end if;
-        else
-	  buf_write_req <= '1';
-	  if(buf_write_ack = '1') then
-            nstate := l_idle;
-            write_ack <= true;
-	  end if;
-        end if;
+           nstate := l_fsm_state;
+           buf_write_req <= '0';
+           write_ack <= false;
+           if(l_fsm_state = l_idle) then
+	     if(write_req) then
+               buf_write_req <= '1';
+               if(buf_write_ack = '1') then
+                 write_ack <= true;
+               else
+                 nstate := l_busy;
+               end if;
+	     end if;
+           else
+	     buf_write_req <= '1';
+	     if(buf_write_ack = '1') then
+               nstate := l_idle;
+               write_ack <= true;
+	     end if;
+           end if;
+     
+           if(clk'event and clk = '1') then
+	     if(reset = '1') then
+               l_fsm_state <= l_idle;
+	     else
+               l_fsm_state <= nstate;
+	     end if;
+           end if;
+       end process;
+     
+         -- the unload buffer.
+       buf : UnloadBuffer generic map (
+           name =>  name & " buffer ",
+           data_width => data_width,
+           buffer_size => buffer_size, 
+	   use_unload_register => use_unload_register,
+	   use_safe_mode => in_phi,
+           bypass_flag => bypass_flag)
+           port map (
+             write_req   => buf_write_req,
+             write_ack   => buf_write_ack,
+             write_data  => buf_write_data,
+             unload_req  => read_req,
+             unload_ack  => read_ack,
+             read_data   => buf_read_data,
+ 	     has_data => has_data,
+             clk         => clk,
+             reset       => reset);
   
-        if(clk'event and clk = '1') then
-	  if(reset = '1') then
-            l_fsm_state <= l_idle;
-	  else
-            l_fsm_state <= nstate;
-	  end if;
-        end if;
-      end process;
-  
-      -- the unload buffer.
-      buf : UnloadBuffer generic map (
-        name =>  name & " buffer ",
-        data_width => data_width,
-        buffer_size => buffer_size, 
-	use_unload_register => use_unload_register,
-        bypass_flag => bypass_flag)
-        port map (
-          write_req   => buf_write_req,
-          write_ack   => buf_write_ack,
-          write_data  => buf_write_data,
-          unload_req  => read_req,
-          unload_ack  => read_ack,
-          read_data   => buf_read_data,
- 	  has_data => has_data,
-          clk         => clk,
-          reset       => reset);
-
-    end generate interlockBuf;
-  end generate NoFlowThrough;
-
+       end generate interlockBuf;
+     end generate NoFlowThrough;
 end default_arch;
 ------------------------------------------------------------------------------------------------
 --
@@ -27457,6 +28083,286 @@ end default_arch;
 -- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
 ------------------------------------------------------------------------------------------------
 -- copyright: Madhav Desai
+--   re-engineered Queue core implementation to improve LUT count and critical path!
+--   Why didn't I think of this before?
+--
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+entity QueueBaseCore is
+  generic(name : string := "Anon"; 
+		queue_depth: integer := 3; 
+		reverse_bypass_flag: boolean := false;
+		data_width: integer := 32);
+  port(clk: in std_logic;
+       reset: in std_logic;
+       empty, full: out std_logic;
+       data_in: in std_logic_vector(data_width-1 downto 0);
+       push_req: in std_logic;
+       push_ack: out std_logic;
+       data_out: out std_logic_vector(data_width-1 downto 0);
+       pop_ack : out std_logic;
+       pop_req: in std_logic);
+end entity QueueBaseCore;
+
+architecture behave of QueueBaseCore is
+
+  type QueueArray is array(natural range <>) of std_logic_vector(data_width-1 downto 0);
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+
+begin  -- SimModel
+
+ pDZero:  if(queue_depth = 0) generate
+
+	empty <= '1';
+	full  <= '1';
+
+	data_out <= data_in;
+
+	push_ack <= pop_req;
+	pop_ack  <= push_req;
+
+ end generate pDZero;
+
+ pDEq1: if (queue_depth = 1) generate
+    bbb1: block
+	signal qsize: std_logic;
+	signal push_ack_sig, pop_ack_sig: std_logic;
+    begin
+   
+
+     	rbpGen1: if (reverse_bypass_flag) generate
+		push_ack_sig <= '1' when (qsize = '0') or (pop_req = '1') else '0';
+     	end generate rbpGen1;
+
+     	noRbpGen1: if (not reverse_bypass_flag) generate
+		push_ack_sig <= '1' when (qsize = '0') else '0';
+     	end generate noRbpGen1;
+		
+	pop_ack_sig  <= '1' when (qsize = '1') else '0';
+
+	full  <= not push_ack_sig;
+	empty <= not pop_ack_sig;
+
+	push_ack <= push_ack_sig;
+	pop_ack <= pop_ack_sig;
+     	ob: block
+        	signal queue_data: std_logic_vector(data_width-1 downto 0);
+     	begin
+		
+		process(clk, reset, data_in, push_req, push_ack_sig, pop_req, pop_ack_sig, qsize, queue_data)
+        		variable next_queue_data: std_logic_vector(data_width-1 downto 0);
+			variable next_qsize: std_logic;
+			variable push, pop: boolean;
+		begin 
+		 	next_qsize := qsize;
+			next_queue_data := queue_data;
+
+			push := (push_req = '1') and (push_ack_sig = '1');
+			pop := (pop_req = '1') and (pop_ack_sig = '1');
+
+			if (push and (not pop)) then
+				next_qsize := '1';
+			elsif (pop and (not push)) then
+				next_qsize := '0';
+			end if;
+
+			if(push) then
+				next_queue_data := data_in;
+			end if;
+
+			if(clk'event and (clk = '1')) then
+				if(reset = '1') then
+					qsize <= '0';
+					queue_data <= (others => '0');
+				else
+					qsize <= next_qsize;
+					queue_data <= next_queue_data;
+				end if;
+			end if;
+		end process;
+
+		data_out <= queue_data;
+     	end block ob;
+    end block bbb1;
+ end generate pDEq1;
+ 
+ pDGOne: if (queue_depth > 1) generate
+
+     lb: block
+     	signal queue_data: QueueArray (0 to queue_depth-1); 
+        signal state_vector: std_logic_vector(queue_depth-1 downto 0);
+        signal reverse_bypass_applicable : boolean;
+	signal push_ack_sig, pop_ack_sig: std_logic;
+	constant Zstatus: std_logic_vector(queue_depth-1 downto 0) := (others => '1');
+     begin
+
+
+	empty <= (not pop_ack_sig);
+	full  <= (not push_ack_sig);
+	
+     	rbpGen: if (reverse_bypass_flag) generate
+
+     		push_ack_sig <= '1' when ((state_vector(queue_depth-1) = '0') or reverse_bypass_applicable) else '0';
+		reverse_bypass_applicable <= (state_vector = Zstatus) and (pop_req = '1');
+     	end generate rbpGen;
+	
+     	noRbpGen: if (not reverse_bypass_flag) generate
+     		push_ack_sig <= '1' when (state_vector(queue_depth-1) = '0')  else '0';
+		reverse_bypass_applicable <= false;
+     	end generate noRbpGen;
+	push_ack <= push_ack_sig;
+
+     	pop_ack_sig <= '1' when state_vector(0) = '1' else '0';
+	pop_ack <= pop_ack_sig;
+
+     	data_out <= queue_data(0);
+
+	-- sequence of stages
+	--   Each stage has the following inputs
+	--        push pop  status(k+1) status(k) status(k-1)
+	--   and performs actions as follows:
+	--  -------------------------------------------------------------------
+	--   status(k+1) status(k) status(k-1)   Action
+	--  -------------------------------------------------------------------
+	--      0           0            0        No action.
+	--      0           0            1        If push.(~pop), then load din 
+	--                                        into stage, set status(k) = 1
+	--                                        Else, nothing.
+	--      0           1            1        If push.pop then load din into
+	--                                        stage, status stays the same.
+	--                                        If (~push).pop set status(k) = 0
+	--                                        Else nothing.
+	--      1           1             1       If pop load data(k+1) into
+	--                                        stage, keep status(k) = 1
+	--                                        Else nothing.
+	--  -------------------------------------------------------------------
+	stageGen: for K in queue_depth-1 downto 0 generate 
+		sb: block
+		   -- signals
+		   signal data_kp1: std_logic_vector(data_width-1 downto 0);
+                   signal status_kp1, status_k, status_km1: std_logic;
+		   signal stat_3 : std_logic_vector(2 downto 0); 
+		   signal push, pop: boolean;
+		begin
+			push <= (push_req = '1') and (push_ack_sig = '1');
+			pop  <= (pop_req = '1')  and (pop_ack_sig  = '1');
+
+			stat_3 (1) <= state_vector(K);
+
+			topGen: if (K = (queue_depth - 1)) generate
+			    cb: block
+                            begin
+				stat_3 (2) <= '0';
+				stat_3 (0) <= state_vector(K-1);
+				data_kp1 <= (others => '0');
+                            end block cb;
+			end generate topGen;
+
+			midGen: if (K < (queue_depth-1)) and (K > 0) generate 
+			    cb: block
+                            begin
+				stat_3 (2) <= state_vector(K+1);
+				stat_3 (0) <= state_vector(K-1);
+				data_kp1 <= queue_data(K+1);
+                            end block cb;
+			end generate midGen;
+
+			botGen: if (K = 0) generate
+			    cb: block
+                            begin
+				stat_3 (2) <= state_vector(K+1);
+				stat_3 (0) <= '1';
+				data_kp1 <= queue_data(K+1);
+                            end block cb;
+			end generate botGen;
+		
+			status_k <= state_vector(K);
+
+			process(clk, reset)
+                   		variable next_status_k_var: std_logic;
+				variable next_stage_data_var: std_logic_vector(data_width-1 downto 0);
+			begin
+				next_status_k_var := status_k;
+				next_stage_data_var := queue_data(K);
+				
+				case stat_3 is
+					when "001" =>
+						if(push and (not pop)) then
+							next_stage_data_var := data_in;
+							next_status_k_var   := '1';
+						end if;
+					when "011" =>
+						if (push and pop) then
+							next_stage_data_var := data_in;
+							next_status_k_var := '1';
+						elsif ((not push) and pop) then
+							next_status_k_var := '0';
+						end if;
+					when "111" =>
+						if pop then
+							next_stage_data_var := data_kp1;
+						end if;
+					when others => null;
+				end case;	
+			
+				if(clk'event and (clk = '1')) then
+					if(reset = '1') then
+						state_vector(K) <= '0';
+						queue_data(K) <= (others => '0');
+					else
+						state_vector(K) <= next_status_k_var;
+						queue_data(K) <= next_stage_data_var;
+					end if;
+				end if;
+			end process;
+		end block sb;
+	end generate stageGen;
+     end block lb;
+ end generate pDGOne;
+
+
+end behave;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+-- copyright: Madhav Desai
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -27759,6 +28665,197 @@ begin  -- SimModel
    end block NTB;
   end generate nontriv;
   
+
+end behave;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+-- copyright: Madhav Desai
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.Utilities.all;
+use ahir.BaseComponents.all;
+
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+entity QueueBaseWithEmptyFullNext is
+  generic(name : string; queue_depth: integer := 1; data_width: integer := 32);
+  port(clk: in std_logic;
+       reset: in std_logic;
+       empty, full, next_valid: out std_logic;
+       data_in: in std_logic_vector(data_width-1 downto 0);
+       push_req: in std_logic;
+       push_ack: out std_logic;
+       data_out: out std_logic_vector(data_width-1 downto 0);
+       pop_ack : out std_logic;
+       pop_req: in std_logic);
+end entity QueueBaseWithEmptyFullNext;
+
+architecture behave of QueueBaseWithEmptyFullNext is
+
+  type QueueArray is array(natural range <>) of std_logic_vector(data_width-1 downto 0);
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+
+   signal queue_array : QueueArray(queue_depth-1 downto 0);
+   signal read_pointer, write_pointer: unsigned ((Ceil_Log2(queue_depth))-1 downto 0);
+   signal next_read_pointer, next_write_pointer, write_pointer_plus_1: unsigned ((Ceil_Log2(queue_depth))-1 downto 0);
+   signal queue_size: integer range 0 to queue_depth;
+
+
+  signal full_flag, empty_flag: boolean;
+
+  signal incr_read_pointer, incr_write_pointer: boolean;
+  signal incr_queue_size, decr_queue_size: boolean;
+
+  signal write_flag : boolean;
+
+begin  -- SimModel
+
+ assert (queue_depth > 1) report
+		"Error: QueueBaseEmptyFullNext depth must be > 0" severity error;
+ okGen: if queue_depth > 1 generate
+    full <= '1' when full_flag else '0';
+    empty <= '1' when empty_flag else '0';
+ 
+    assert (not full_flag) report "Queue " & name & " is full." severity note;
+
+    write_pointer_plus_1 <= (others => '0') when (write_pointer = queue_depth-1) else (write_pointer+1);
+
+    push_ack <= '1' when (not full_flag) else '0';
+    pop_ack  <= '1' when (not empty_flag) else '0';
+
+    -- next read pointer, write pointer.
+    process(incr_read_pointer, read_pointer) 
+    begin
+	if(incr_read_pointer) then
+		if(read_pointer = queue_depth-1) then
+			next_read_pointer <= (others => '0');
+		else
+			next_read_pointer <= read_pointer + 1;
+		end if;
+	else
+		next_read_pointer <= read_pointer;
+	end if;
+    end process;
+    rdpReg: SynchResetRegisterUnsigned generic map (name => name & ":rpreg", data_width => read_pointer'length)
+		port map (clk => clk, reset => reset, din => next_read_pointer, dout => read_pointer);
+
+    process(incr_write_pointer, write_pointer, write_pointer_plus_1) 
+    begin
+	if(incr_write_pointer) then
+		next_write_pointer <= write_pointer_plus_1;
+	else
+		next_write_pointer <= write_pointer;
+	end if;
+    end process;
+  
+    -- queue size.
+    process(clk, reset, queue_size, incr_read_pointer, incr_write_pointer)
+    begin
+ 	if(clk'event and (clk = '1')) then
+		if(reset = '1') then
+			queue_size <= 0;
+		elsif (incr_write_pointer and (not incr_read_pointer)) then
+			queue_size <= queue_size + 1;
+		elsif ((not incr_write_pointer) and incr_read_pointer) then
+			queue_size <= queue_size - 1;
+		end if;
+	end if;
+    end process;
+
+    -- Flags.
+    empty_flag <= (queue_size = 0);
+    full_flag  <= (queue_size = queue_depth);
+
+    -- next output of the queue is present... 
+    next_valid <= '1' when ((queue_size > 1) or (push_req = '1'))  else '0';
+
+    wrpReg: SynchResetRegisterUnsigned generic map (name => name & ":wrpreg", data_width => write_pointer'length)
+		port map (clk => clk, reset => reset, din => next_write_pointer, dout => write_pointer);
+
+    -- bottom pointer gives the data in FIFO mode..
+    process (read_pointer, queue_array)
+	variable data_out_var : std_logic_vector(data_width-1 downto 0);
+    begin
+	data_out_var := (others =>  '0');
+        for I in 0 to queue_depth-1 loop
+	    if(I = To_Integer(read_pointer)) then
+    		data_out_var := queue_array(I);
+	    end if;
+	end loop;
+	data_out <= data_out_var;
+    end process;
+
+    -- write to queue-array.
+    Wgen: for W in 0 to queue_depth-1 generate
+       process(clk, reset, write_flag, write_pointer, data_in) 
+       begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+                             queue_array(W) <= (others => '0');
+			elsif (write_flag and (W = write_pointer)) then
+			     queue_array(W) <= data_in;
+			end if;
+		end if;
+       end process;
+    end generate Wgen;
+  
+    process(read_pointer, write_pointer, empty_flag, full_flag, push_req, pop_req)
+      variable push,pop : boolean;
+    begin
+      push  := false;
+      pop   := false;
+      
+      if((not full_flag) and push_req = '1') then
+          push := true;
+      end if;
+  
+      if((not empty_flag) and pop_req = '1') then
+          pop := true;
+      end if;
+  
+      incr_read_pointer <= pop;
+      incr_write_pointer <= push;
+  
+      write_flag <= push;
+    end process;
+  end generate okGen;
 
 end behave;
 ------------------------------------------------------------------------------------------------
@@ -28152,6 +29249,152 @@ end BehaviouralFsm;
 ------------------------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.Types.all;
+
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+-- Assumption: guard-interface will not change until
+-- sr_in -> sa_out sequence has completed.
+--
+entity SgiUpdateFsm is
+	generic (name: string);
+	port (cr_in: in Boolean;
+		cr_out: out Boolean;
+		ca_in: in Boolean;
+		ca_out: out Boolean;
+		pop_req: out std_logic;
+		pop_ack: in std_logic;
+		pop_data: in std_logic_vector(0 downto 0);
+		clk, reset: in std_logic);
+end entity;
+
+architecture BehaviouralFsm of SgiUpdateFsm is
+
+	type UpdateFsmState is (UpdateFsmRun, UpdateFsmWaitPop, UpdateFsmWaitCain);
+	signal update_fsm_state: UpdateFsmState;
+
+	signal ca_out_d, ca_out_u: boolean;
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+begin
+
+	process(clk, reset, pop_ack, cr_in, ca_in, pop_data, update_fsm_state)
+		variable next_update_fsm_state_var: UpdateFsmState;
+		variable pop_req_var : std_logic;
+		variable cr_out_var, ca_out_d_var, ca_out_u_var: boolean;
+	begin
+		next_update_fsm_state_var := update_fsm_state;
+		pop_req_var := '0';
+		cr_out_var := false;
+		ca_out_d_var := false;
+		ca_out_u_var := false;
+
+		case update_fsm_state is
+			when UpdateFsmRun =>
+				if(cr_in) then
+					pop_req_var := '1';
+					if(pop_ack = '1') then
+						if(pop_data(0) = '0') then
+							ca_out_d_var := true;
+						else
+							cr_out_var := true;
+							next_update_fsm_state_var := UpdateFsmWaitCain;
+						end if;
+					else
+						next_update_fsm_state_var := UpdateFsmWaitPop;
+					end if;
+				end if;
+			when UpdateFsmWaitPop =>
+				pop_req_var := '1';
+				if(pop_ack = '1') then
+					if(pop_data(0) = '0') then
+						ca_out_d_var := true;
+						next_update_fsm_state_var := UpdateFsmRun;
+					else
+						cr_out_var := true;
+						next_update_fsm_state_var := UpdateFsmWaitCain;
+					end if;
+				end if;
+			when UpdateFsmWaitCain =>
+				if(ca_in) then
+					ca_out_u_var := true;
+					if(cr_in) then 
+						pop_req_var := '1';
+						if(pop_ack = '1') then
+							if(pop_data(0) = '0') then
+								ca_out_d_var := true;
+								next_update_fsm_state_var := UpdateFsmRun;
+							else
+								cr_out_var := true;
+							end if;
+						else
+							next_update_fsm_state_var := UpdateFsmWaitPop;
+						end if;
+					else
+						next_update_fsm_state_var := UpdateFsmRun;
+					end if;
+				end if;
+		end case;
+
+		ca_out_u <= ca_out_u_var;
+		cr_out   <= cr_out_var;
+		pop_req  <= pop_req_var;
+
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				ca_out_d <= false;
+				update_fsm_state <= UpdateFsmRun;
+			else
+				ca_out_d <= ca_out_d_var;
+				update_fsm_state <= next_update_fsm_state_var;
+			end if;
+		end if;
+	end process;
+
+	ca_out <= ca_out_d or ca_out_u;
+end BehaviouralFsm;
+	
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
 
 library ahir;
 use ahir.BaseComponents.all;
@@ -28285,7 +29528,7 @@ use ahir.SubPrograms.all;
 -- a special purpose queue which keeps a 1-bit data value.
 --
 entity SingleBitQueueBase is
-  generic(name : string; queue_depth: integer := 1);
+  generic(name : string; queue_depth: integer := 1; bypass_flag: boolean := false);
   port(clk: in std_logic;
        reset: in std_logic;
        data_in: in std_logic_vector(0 downto 0);
@@ -28327,7 +29570,10 @@ begin  -- SimModel
   	signal write_pointer, incr_write_pointer: std_logic_vector(queue_depth-1 downto 0);
   	signal read_pointer, incr_read_pointer: std_logic_vector(queue_depth-1 downto 0);
      	signal queue_size : unsigned ((Ceil_Log2(queue_depth+1))-1 downto 0);
+	signal empty_flag, bypass_active : boolean := false;
+	signal actual_push_req: std_logic;
   begin
+
  
     assert (queue_size < queue_depth) report "Queue " & name & " is full." severity note;
     assert (queue_size < (3*queue_depth/4)) report "Queue " & name & " is three-quarters-full." severity note;
@@ -28339,22 +29585,44 @@ begin  -- SimModel
      incr_write_pointer <= write_pointer;
     end generate qD1;
 
+    byp_gen: if bypass_flag generate
+
+	empty_flag <= (queue_size = 0);
+	bypass_active <= (empty_flag and (push_req = '1'));
+
+	actual_push_req <= '0' when (bypass_active and (pop_req = '1')) else push_req;
+    	pop_ack  <= '1' when ((queue_size > 0) or bypass_active) else '0';
+
+    	data_out(0) <= data_in(0) when bypass_active else
+				OrReduce (queue_vector and read_pointer);
+    end generate byp_gen;
+
+    no_byp_gen: if not bypass_flag generate
+
+	bypass_active <= false;
+	actual_push_req <= push_req;
+    	pop_ack  <= '1' when (queue_size > 0) else '0';
+    
+	-- bottom pointer gives the data in FIFO mode..
+    	data_out(0) <= OrReduce (queue_vector and read_pointer);
+
+    end generate no_byp_gen;
+
     qDG1: if (queue_depth > 1) generate
      incr_read_pointer <= rotate_left(read_pointer);
      incr_write_pointer <= rotate_left(write_pointer);
     end generate qDG1;
 
     push_ack <= '1' when (queue_size < queue_depth) else '0';
-    pop_ack  <= '1' when (queue_size > 0) else '0';
 
-    -- bottom pointer gives the data in FIFO mode..
-    data_out(0) <= OrReduce (queue_vector and read_pointer);
   
     -- single process
-    process(clk, reset, read_pointer, write_pointer, incr_read_pointer, incr_write_pointer, queue_size, push_req, pop_req)
+    process(clk, reset, read_pointer, write_pointer, incr_read_pointer, incr_write_pointer, queue_size, 
+			actual_push_req, pop_req)
       variable qsize : unsigned ((Ceil_Log2(queue_depth+1))-1 downto 0);
       variable push,pop : boolean;
       variable next_read_ptr,next_write_ptr : std_logic_vector(queue_depth-1 downto 0);
+      variable init_pointer_var: std_logic_vector(queue_depth -1 downto 0);
     begin
 
       qsize := queue_size;
@@ -28363,11 +29631,11 @@ begin  -- SimModel
       next_read_ptr := read_pointer;
       next_write_ptr := write_pointer;
       
-      if((qsize < queue_depth) and push_req = '1') then
+      if((qsize < queue_depth) and (actual_push_req = '1')) then
           push := true;
       end if;
   
-      if((qsize > 0) and pop_req = '1') then
+      if((qsize > 0) and (pop_req = '1') and (not bypass_active)) then
           pop := true;
       end if;
   
@@ -28380,7 +29648,11 @@ begin  -- SimModel
           next_read_ptr := incr_read_pointer;
       end if;
   
+      -- HACK FOR SYNOPSYS W^#^U#&! DC
+      init_pointer_var := (others => '0');  -- Initialize the entire vector to '0'
+      init_pointer_var(0) := '1';
   
+      -- queue size modified only in non-bypass case
       if(pop and (not push)) then
           qsize := qsize - 1;
       elsif(push and (not pop)) then
@@ -28392,8 +29664,8 @@ begin  -- SimModel
         
 	if(reset = '1') then
            queue_size <= (others => '0');
-           read_pointer <= (0 => '1', others => '0');
-           write_pointer <= (0 => '1', others => '0');
+           read_pointer <= init_pointer_var;
+           write_pointer <= init_pointer_var;
            queue_vector <= (others => '0'); -- initially 0.
 	else
            if(push) then
@@ -28598,9 +29870,6 @@ architecture Behave of SplitGuardInterfaceBase is
   -- for debug purposes only
   signal s_counter, c_counter: integer;
 
-  signal ca_out_d, ca_out_u: Boolean;
-
-
   -- number of stages!  This will cause
   -- the minimum latency of sr -> ca to
   -- increase to this number...  Be careful..
@@ -28615,12 +29884,14 @@ architecture Behave of SplitGuardInterfaceBase is
 --##decl_synopsys_sync_set_reset##
 
 begin
-	ca_out <= ca_out_d or ca_out_u;
-
 	qdata_in(0) <= guard_interface;
 
-	qI: ShiftRegisterSingleBitQueue  -- dont bypass.. combinational cycle alert!
-		generic map(name => name & "-qI", queue_depth => buffering, number_of_stages => g_queue_number_of_stages)
+	qI: ShiftRegisterSingleBitQueue  -- bypass to maintain delays
+		generic map(name => name & "-qI", 
+					queue_depth => buffering, 
+					number_of_stages => g_queue_number_of_stages,
+					bypass_flag => true
+			   )
 		port map(clk => clk, reset => reset,
 				data_in => qdata_in,
 				push_req => push,
@@ -28637,6 +29908,7 @@ begin
 			port map (clk => clk, reset => reset,
 					sr_in => sr_in, sr_in_q => sr_in_q,
 					push_req => push, push_ack => push_ack);
+
 
 	-- Race condition in PHI statements can be an issue!
 	process(clk, reset, guard_interface, sr_in)
@@ -28657,156 +29929,21 @@ begin
 	-- sa_out
 	sa_out <= sr_in_q when (guard_interface_sustained = '0') else sa_in;
 
-
-	-- RHS State machine.
-	------------------------------------------------------------------------------------------
-        --   Present-state  cr_in  pop_ack      qdata        ca_in    Nstate  cr_out  ca_out  pop
-	------------------------------------------------------------------------------------------
-	--   r_Idle          0        _           _            _      r_Idle
-	--   r_Idle          1        0           _            _      W-Queue                  1
-	--   r_Idle          1        1           1            _      W-Ack-In  1              1
-	--   r_Idle          1        1           0            _      r_Idle           1d      1
-	--      Note: ca_in is never expected to be asserted in the idle state.
-	------------------------------------------------------------------------------------------
-        --   Present-state  cr_in  pop_ack      qdata        ca_in    Nstate  cr_out  ca_out  pop
-	------------------------------------------------------------------------------------------
-	--   W-Queue         _        0           _            _      W-Queue                  1
-	--   W-Queue         1        1           0            _      W-Queue          1       1
-	--   W-Queue         0        1           0            _      r-Idle           1       1
-	--   W-Queue         0        1           1            1      r_Idle    1      1       1
-	--   W-Queue         1        1           1            1      W_Queue   1      1       1
-	--   W-Queue         _        1           1            0      W-Ack-In  1              1
-	--      Note: cr_in will be asserted only if ca_out is asserted.
-	------------------------------------------------------------------------------------------
-        --   Present-state  cr_in  pop_ack      qdata        ca_in    Nstate  cr_out  ca_out  pop
-	------------------------------------------------------------------------------------------
-	--   W-Ack-In        _        _           _            0      W-Ack-In  
-	--   W-Ack-In        1        1           1            1      W-Ack-In  1       1      1
-	--   W-Ack-In        1        1           0            1      r_Idle            1,1d   1
-	--   W-Ack-In        1        0           _            1      W-Queue           1      1
-	--   W-Ack-In        0        _           _            1      r_Idle            1  
-	--	Note: cr_in will be asserted only if ca_out is asserted.
-	--            ca_out-u will be asserted only on ca_in.
-	--            ca-out-d can depend on cr_in.
-	------------------------------------------------------------------------------------------
-	process(clk,cr_in,pop_ack,qdata,ca_in,rhs_state,reset, c_counter)
-		variable nstate : RhsState;
-		variable ca_out_u_var : Boolean;
-		variable ca_out_d_var : Boolean;
-		variable cr_out_var : Boolean;
-		variable next_c_counter: integer;
-	begin
-		nstate := rhs_state;
-		pop <= '0';
-		cr_out_var := false;
-		ca_out_u_var := false;
-		ca_out_d_var := false;
-		next_c_counter := c_counter;
-
-		case rhs_state is
-			when r_Idle =>
-				if cr_in then
-					pop <= '1';
-					--
-					-- what happens if ca_in appears immediately?
-					-- not permitted in this state.
-					--	
-					if(pop_ack = '0') then
-						nstate := r_Wait_On_Queue;			
-					else
-						if(qdata(0) = '1') then
-							cr_out_var := true;
-							nstate := r_Wait_On_Ack_In;
-							next_c_counter := (next_c_counter + 1);
-						else
-							ca_out_d_var := true;
-							nstate := r_Idle;
-						end if;
-					end if;
-				end if;
-			when r_Wait_On_Queue =>
-				pop <= '1';
-				if(pop_ack = '1') then
-					if(qdata(0) = '0') then
-						ca_out_u_var := true;
-						if(cr_in) then
-							nstate := r_Wait_On_Queue;
-						else
-							nstate := r_Idle;
-						end if;
-					else 
-						cr_out_var := true;
-						if(ca_in) then	
-							ca_out_u_var := true;
-						end if;
-
-						if(cr_in and ca_in) then
-							nstate := r_Wait_On_Queue;
-						elsif ((not cr_in) and ca_in)  then
-							nstate := r_Idle;
-						elsif (not ca_in) then
-							nstate := r_Wait_On_Ack_In;
-						end if;
-					
-						next_c_counter := (next_c_counter + 1);
-					end if;
-				end if;
-			when r_Wait_On_Ack_In =>
-				-- assumption: there is at least a unit delay from cr_out -> ca_in.
-				if(ca_in) then 
-					ca_out_u_var := true;
-					if(cr_in  and (pop_ack = '1') and (qdata(0) = '1')) then
-						pop <= '1';
-						cr_out_var := true;
-						next_c_counter := (next_c_counter + 1);
-					elsif(cr_in and (pop_ack = '1') and (qdata(0) = '0')) then
-						nstate := r_Idle;
-						ca_out_d_var := true;
-						pop <= '1';
-					elsif(cr_in and (pop_ack = '0')) then
-						pop <= '1';
-						nstate := r_Wait_On_Queue;
-					elsif(not cr_in) then
-						nstate := r_Idle;
-					end if;
-				end if;
-		end case;
-
-		-- done separately below.
-		--   Xilinx xst optimization seems to be imperfect
-		--   and we need to help it out.
-		--
-		-- ca_out_u <= ca_out_u_var;
-		-- cr_out <= cr_out_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				rhs_state <= r_Idle;
-				ca_out_d <= false;
-				c_counter <= 0;
-			else
-				ca_out_d <= ca_out_d_var;
-				rhs_state <= nstate;
-				c_counter <= next_c_counter;
-			end if;
-		end if;
-	end process;
-
-
-	-- Mealy outputs (to ensure that xst doesn't screw up.)
-	cr_out <=  (((rhs_state = r_Idle) and cr_in and (pop_ack = '1') and (qdata(0) = '1')) 
-				or
-			 ((rhs_state = r_Wait_On_Queue) and (pop_ack = '1') and (qdata(0) = '1'))
-				or
-			  ((rhs_state = r_Wait_On_Ack_In) and ca_in and 
-						cr_in and (pop_ack = '1') and (qdata(0) = '1')));
-
-	ca_out_u <= (((rhs_state = r_Wait_On_Queue) and (pop_ack = '1') and (qdata(0) = '0'))
-				or
-			 ((rhs_state = r_Wait_On_Queue) and (pop_ack = '1') and (qdata(0) = '1') and ca_in)
-				or
-			 ((rhs_state = r_Wait_On_Ack_In) and ca_in));
-
+	-----------------------------------------------------------------------------------------------
+	-- update side logic.
+	-----------------------------------------------------------------------------------------------
+	updateFsm: SgiUpdateFsm
+			generic map 
+				 (name => name & "-update-fsm")
+			port map (clk => clk,
+					reset => reset,
+					cr_in => cr_in,
+					cr_out => cr_out,
+					ca_in => ca_in,
+					ca_out => ca_out,
+					pop_req => pop,
+					pop_ack => pop_ack,
+					pop_data => qdata);
 
 end Behave;
 ------------------------------------------------------------------------------------------------
@@ -29131,18 +30268,29 @@ architecture Behave of SplitUpdateGuardInterfaceBase is
 	Type FsmState is (Idle, Busy);
 	signal fsm_state: FsmState;
 	signal ca_out_u, ca_out_d: Boolean;
-	signal sampled_guard_interface: std_logic;
+	signal guard_interface_reg, sampled_guard_interface: std_logic;
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
 begin
+	sa_out <= sr_in;
+	sr_out <= false;
 		
 	-- sr/sa interface is a dummy... no need to forward to the
-	sa_out <= sr_in;
+	process (clk, reset, sr_in)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				guard_interface_reg <= '0';
+			elsif sr_in then
+				guard_interface_reg <= guard_interface;
+			end if;
+		end if;
+	end process;
+	sampled_guard_interface <= guard_interface when sr_in else guard_interface_reg;
 
-	sr_out <= false;
 
 	-- update guard FSM.
-	process(clk, guard_interface, fsm_state, cr_in, ca_in)
+	process(clk, sampled_guard_interface, fsm_state, cr_in, ca_in)
 		variable next_state : FsmState;
 		variable cr_out_var, ca_out_var_d, ca_out_var_u: Boolean;
 	begin
@@ -29153,7 +30301,7 @@ begin
 		case fsm_state is
 			when Idle =>
 				if(cr_in) then
-					if(guard_interface  = '1') then
+					if(sampled_guard_interface  = '1') then
 						cr_out_var := true;
 						next_state := Busy;
 					else
@@ -29165,7 +30313,7 @@ begin
 				if(ca_in) then
 					ca_out_var_u := true;
 					if(cr_in) then
-						if(guard_interface = '1') then
+						if(sampled_guard_interface = '1') then
 							cr_out_var := true;
 						else
 							ca_out_var_d := true;
@@ -29637,6 +30785,289 @@ use ahir.GlobalConstants.all;
 -- when buffer-size > 1.
 --  
 --
+entity UnloadBufferRevisedNonblocking is
+
+  generic (name: string; 
+		buffer_size: integer ; 
+		data_width : integer ; 
+		bypass_flag: boolean );
+
+  port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data: out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+
+end UnloadBufferRevisedNonblocking;
+
+architecture default_arch of UnloadBufferRevisedNonblocking is
+
+  signal pop_req, pop_ack, push_req, push_ack: std_logic_vector(0 downto 0);
+
+  signal pipe_data_out, ufsm_bypass_write_data, ufsm_write_data:  std_logic_vector(data_width-1 downto 0);
+  signal pipe_has_data: boolean;
+
+
+  signal write_to_pipe: boolean;
+  signal unload_from_pipe : boolean;
+
+  signal empty, full: std_logic;
+  signal ufsm_write_req, ufsm_write_ack: std_logic;
+  signal ufsm_bypass_write_req, ufsm_bypass_write_ack: std_logic;
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+begin  -- default_arch
+
+	ufsm_write_data <= pipe_data_out;
+	ufsm_write_req  <= pop_ack(0);
+	pop_req(0) <= ufsm_write_ack;
+
+	push_req(0) <= write_req;
+	write_ack   <= push_ack(0);
+
+	ufsm: UnloadFsmNoblock generic map (name => name & ":ufsm", data_width => data_width)
+		port map (
+			   write_req => ufsm_write_req,
+			   write_ack => ufsm_write_ack,
+			   unload_req => unload_req,
+			   unload_ack => unload_ack,
+			   data_in => ufsm_write_data,
+			   data_out => read_data,
+			   clk => clk, reset => reset);
+
+  	pipe_has_data <= (empty = '0');
+  	has_data <= '1' when pipe_has_data else '0';
+
+
+  	bufPipe : QueueBaseWithEmptyFull generic map (
+        	name =>  name & "-blocking_read-bufPipe",
+        	data_width => data_width,
+		reverse_bypass_flag => bypass_flag,
+        	queue_depth      => buffer_size)
+      	port map (
+        	pop_req   => pop_req(0),
+        	pop_ack   => pop_ack(0),
+        	data_out  => pipe_data_out,
+        	push_req  => push_req(0),
+        	push_ack  => push_ack(0),
+        	data_in => write_data,
+		empty => empty,
+		full => full,
+        	clk        => clk,
+        	reset      => reset);
+
+	
+end default_arch;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.Types.all;
+use ahir.Subprograms.all;
+use ahir.Utilities.all;
+use ahir.BaseComponents.all;
+use ahir.GlobalConstants.all;
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+--  
+--
+-- A more "optimized" version of the old UnloadBuffer.
+-- tries to avoid the use of an extra register.  Use
+-- when buffer-size > 1.
+--  
+-- This implements the following invariant.
+--   Output read_data is updated at the same
+--   instant that unload_ack is asserted, and
+--   the read_data is maintained until the next
+--   unload_ack!   
+--
+-- This is required for correct operation of
+-- PHI scheduling...
+--
+-- Correct but slow.
+--
+entity UnloadBufferRevisedSafe is
+
+  generic (name: string; 
+		buffer_size: integer ; 
+		data_width : integer ); 
+  port ( write_req: in std_logic;
+        write_ack: out std_logic;
+        write_data: in std_logic_vector(data_width-1 downto 0);
+        unload_req: in boolean;
+        unload_ack: out boolean;
+        read_data: out std_logic_vector(data_width-1 downto 0);
+	has_data: out std_logic;
+        clk : in std_logic;
+        reset: in std_logic);
+
+end UnloadBufferRevisedSafe;
+
+architecture default_arch of UnloadBufferRevisedSafe is
+
+  signal pop_req, pop_ack, push_req, push_ack: std_logic_vector(0 downto 0);
+
+  signal pipe_data_out, ufsm_bypass_write_data, ufsm_write_data:  std_logic_vector(data_width-1 downto 0);
+  signal pipe_has_data: boolean;
+
+
+  signal write_to_pipe: boolean;
+  signal unload_from_pipe : boolean;
+
+  signal empty, full, next_valid: std_logic;
+  signal ufsm_write_req, ufsm_write_ack: std_logic;
+  signal ufsm_bypass_write_req, ufsm_bypass_write_ack: std_logic;
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+begin  -- default_arch
+
+	-- To avoid a U getting into the logic...
+	--  Badly broken see note above.
+	ufsm_write_data <= pipe_data_out when (pop_ack(0) = '1') else (others => '0');
+	ufsm_write_req  <= pop_ack(0);
+	pop_req(0) <= ufsm_write_ack;
+
+	push_req(0) <= write_req;
+	write_ack   <= push_ack(0);
+
+	ufsm: UnloadFsmSafe generic map (name => name & ":ufsm", data_width => data_width)
+		port map (
+			   next_valid => next_valid,
+			   write_req => ufsm_write_req,
+			   write_ack => ufsm_write_ack,
+			   unload_req => unload_req,
+			   unload_ack => unload_ack,
+			   data_in => ufsm_write_data,
+			   data_out => read_data,
+			   clk => clk, reset => reset);
+
+  	pipe_has_data <= (empty = '0');
+  	has_data <= '1' when pipe_has_data else '0';
+
+
+  	bufPipe : QueueBaseWithEmptyFullNext generic map (
+        	name =>  name & "-blocking_read-bufPipe",
+        	data_width => data_width,
+        	queue_depth      => buffer_size)
+      	port map (
+        	pop_req   => pop_req(0),
+        	pop_ack   => pop_ack(0),
+        	data_out  => pipe_data_out,
+        	push_req  => push_req(0),
+        	push_ack  => push_ack(0),
+        	data_in => write_data,
+		empty => empty,
+		full => full,
+                next_valid => next_valid,
+        	clk        => clk,
+        	reset      => reset);
+
+	
+end default_arch;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.Types.all;
+use ahir.Subprograms.all;
+use ahir.Utilities.all;
+use ahir.BaseComponents.all;
+use ahir.GlobalConstants.all;
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+--  
+--
+-- A more "optimized" version of the old UnloadBuffer.
+-- tries to avoid the use of an extra register.  
+--  
+-- Implements the following invariant.
+--   read_data updated by an unload_ack is
+--   maintained until the next unload_req
+--   is asserted.
+--
+-- Sufficient for normal producer->consumer links.
+--
+-- This should not be used inside interlock buffers
+-- associated with a PHI statement, because RAW
+-- and WAR are suppressed in PHI statement blocks.
+--
+--
 entity UnloadBufferRevised is
 
   generic (name: string; 
@@ -29714,6 +31145,283 @@ begin  -- default_arch
         	reset      => reset);
 
 	
+end default_arch;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+--  A non-blocking version of the state machine for
+--  handling the revised case of the unload-buffer.
+--
+-- BUG ALERT:  there is something wrong about this 
+--             which causes incorrect behaviour. 
+--             Am stymied for the moment (MPD)
+--
+entity UnloadFsmNoBlock is
+  generic (name: string; data_width: integer);
+  port ( 
+	 write_req: in std_logic;
+         write_ack: out std_logic;
+         unload_req: in boolean;
+         unload_ack: out boolean;
+	 data_in :  in std_logic_vector(data_width-1 downto 0);
+	 data_out :  out std_logic_vector(data_width-1 downto 0);
+         clk : in std_logic;
+         reset: in std_logic
+	);
+end UnloadFsmNoBlock;
+
+architecture default_arch of UnloadFsmNoBlock is
+
+	signal unload_ack_sig : boolean;
+	signal write_ack_sig: std_logic;
+
+	type FsmState is (Idle, UnloadAck, DataValid, ZeroData);
+	signal fsm_state : FsmState;
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+begin  -- default_arch
+
+	process(fsm_state, write_req, data_in,  unload_req, clk, reset)
+		variable next_fsm_state_var : FsmState;
+		variable unload_ack_var: boolean;
+		variable write_ack_var : std_logic;
+
+		variable data_out_var: std_logic_vector(data_width-1 downto 0);
+
+	begin
+		unload_ack_var := false;
+		write_ack_var  := '0';
+		next_fsm_state_var := fsm_state;
+
+		data_out_var := data_in;
+
+		case fsm_state is 
+			-- reset state, nothing seen so far.
+			when Idle =>
+				if(unload_req) then
+					next_fsm_state_var := UnloadAck;
+				end if;
+			when UnloadAck =>
+			-- have received an unload-req, unload-ack true.
+				unload_ack_var := true;
+
+				if(write_req = '0') then
+				-- noblock 0 data.
+					data_out_var := (others => '0');
+				end if;
+					
+				if(unload_req) then
+					if(write_req = '1') then
+						-- new unload-req, ack
+						-- the last write data.
+						write_ack_var := '1';
+					end if;
+				else
+					-- go to a holding state..
+					if(write_req = '1') then
+						-- valid data
+						next_fsm_state_var := DataValid;
+					else
+						-- zero data.
+						next_fsm_state_var := ZeroData;
+					end if;
+				end if;
+
+			when ZeroData => 
+				-- Acked state, hold until next unload-req
+				-- hold 0 data until next unload-req.
+				data_out_var := (others => '0');
+				if(unload_req) then
+					next_fsm_state_var := UnloadAck;
+				end if;
+			when DataValid =>
+				-- Acked state, hold until next unload-req
+				-- write_req is '1' here... 
+				if(unload_req) then
+					-- write-data is no longer needed.
+					write_ack_var := '1';
+					next_fsm_state_var := UnloadAck;
+				end if;
+		end case;
+
+		unload_ack_sig <= unload_ack_var;
+		write_ack_sig <= write_ack_var;
+		data_out <= data_out_var;
+
+		if(clk'event and clk='1') then
+			if(reset = '1') then
+				fsm_state <= Idle;
+			else
+				fsm_state <= next_fsm_state_var;
+			end if;
+		end if;
+	end process;
+
+	unload_ack <= unload_ack_sig;
+	write_ack  <= write_ack_sig;
+
+end default_arch;
+------------------------------------------------------------------------------------------------
+--
+-- Copyright (C) 2010-: Madhav P. Desai
+-- All Rights Reserved.
+--  
+-- Permission is hereby granted, free of charge, to any person obtaining a
+-- copy of this software and associated documentation files (the
+-- "Software"), to deal with the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+--  * Redistributions of source code must retain the above copyright
+--    notice, this list of conditions and the following disclaimers.
+--  * Redistributions in binary form must reproduce the above
+--    copyright notice, this list of conditions and the following
+--    disclaimers in the documentation and/or other materials provided
+--    with the distribution.
+--  * Neither the names of the AHIR Team, the Indian Institute of
+--    Technology Bombay, nor the names of its contributors may be used
+--    to endorse or promote products derived from this Software
+--    without specific prior written permission.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+-- OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+-- IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+-- ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+-- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+-- SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE SOFTWARE.
+------------------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+
+entity UnloadFsmSafe is
+  generic (name: string; data_width: integer);
+  port ( 
+	 next_valid: in std_logic;
+	 write_req: in std_logic;
+         write_ack: out std_logic;
+         unload_req: in boolean;
+         unload_ack: out boolean;
+	 data_in :  in std_logic_vector(data_width-1 downto 0);
+	 data_out :  out std_logic_vector(data_width-1 downto 0);
+         clk : in std_logic;
+         reset: in std_logic
+	);
+end UnloadFsmSafe;
+
+architecture default_arch of UnloadFsmSafe is
+	signal unload_ack_d_sig : boolean;
+	signal write_ack_sig: std_logic;
+
+	type FsmState is (Idle, WaitOnWrite, WaitOnNext, DataValid);
+	signal fsm_state : FsmState;
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+begin  -- default_arch
+
+	data_out <= data_in;
+
+	process(fsm_state, write_req, data_in, next_valid, unload_req, clk, reset)
+		variable next_fsm_state_var : FsmState;
+		variable unload_ack_d_var: boolean;
+		variable write_ack_var : std_logic;
+	begin
+		unload_ack_d_var := false;
+
+		write_ack_var  := '0';
+		next_fsm_state_var := fsm_state;
+
+		case fsm_state is 
+			-- reset state, nothing seen so far.
+			when Idle =>
+				if(unload_req) then
+					if(write_req = '1') then
+						next_fsm_state_var := DataValid;
+						unload_ack_d_var := true;
+					else
+						next_fsm_state_var := WaitOnWrite;
+					end if;
+				end if;
+			when WaitOnWrite =>
+				if(write_req = '1') then
+					next_fsm_state_var := DataValid;
+					unload_ack_d_var   := true;
+				end if;
+			when WaitOnNext => 
+				if(next_valid = '1') then
+					next_fsm_state_var := DataValid;
+					unload_ack_d_var  := true;
+					write_ack_var := '1';
+				end if;
+			when DataValid => 
+				if(unload_req) then
+					if(next_valid = '1') then
+						unload_ack_d_var := true;
+						write_ack_var    := '1';
+					else
+						next_fsm_state_var := WaitOnNext;
+					end if;
+				end if;
+				
+		end case;
+
+		write_ack_sig <= write_ack_var;
+		if(clk'event and clk='1') then
+			if(reset = '1') then
+				fsm_state <= Idle;
+				unload_ack_d_sig <= false;
+			else
+				fsm_state <= next_fsm_state_var;
+				unload_ack_d_sig <= unload_ack_d_var;
+			end if;
+		end if;
+	end process;
+
+	unload_ack <= unload_ack_d_sig;
+	write_ack  <= write_ack_sig;
+
 end default_arch;
 ------------------------------------------------------------------------------------------------
 --
@@ -30401,6 +32109,7 @@ use ahir.Components.all;
 use ahir.BaseComponents.all;
 use ahir.Subprograms.all;
 use ahir.Utilities.all;
+use ahir.GlobalConstants.all;
 
 --  input port specialized for P2P ports.
 entity InputPort_P2P is
@@ -30431,6 +32140,10 @@ architecture Base of InputPort_P2P is
   type SampleFsmState is (IDLE, WAITING);
   signal fsm_state: SampleFsmState;
   signal has_data: std_logic;
+
+  -- Don't f-around with this.
+  constant use_unload_register :boolean :=  (not global_use_optimized_unload_buffer) or bypass_flag;
+
 begin
 
     noBarrier: if (not barrier_flag) or nonblocking_read_flag generate
@@ -30474,7 +32187,8 @@ begin
 				data_width => data_width,
 				   buffer_size => queue_depth, 
 					bypass_flag => bypass_flag,  
-						nonblocking_read_flag => nonblocking_read_flag)
+						use_unload_register => use_unload_register,
+							nonblocking_read_flag => nonblocking_read_flag)
 	port map (write_req => oack, write_ack => oreq, 
 					write_data => odata,
 				unload_req => update_req,
@@ -30878,7 +32592,7 @@ use ahir.GlobalConstants.all;
 -- often good enough.
 --
 entity ShiftRegisterSingleBitQueue is
-  generic(name : string; queue_depth: integer; number_of_stages: integer);
+  generic(name : string; queue_depth: integer; number_of_stages: integer; bypass_flag: boolean := false);
   port(clk: in std_logic;
        reset: in std_logic;
        data_in: in std_logic_vector(0 downto 0);
@@ -30908,7 +32622,7 @@ begin  -- SimModel
      stageGen: for I in 0 to number_of_stages-1 generate
 	qinst: SingleBitQueueBase 
 		generic map (name => name & "-stageGen-qinst-" & Convert_To_String(I),
-				queue_depth => stage_depth)
+				queue_depth => stage_depth, bypass_flag => bypass_flag)
 		port map ( reset => reset, clk => clk, 
 				data_in => intermediate_data(I to I),
 				push_req => intermediate_lr_req(I),
@@ -31120,7 +32834,7 @@ begin  -- SimModel
 
         assert (g_depth > 0) report "SquashLevelRepeater:" & name & " depth must be > 0" severity error;
 
-	-- if enable is low, we stuff the data-in else we stuff in the
+	-- if enable is high, we stuff the data-in else we stuff in the
 	-- last data seen..  (ie, hold it.)
  	nontriv: if (g_depth > 0) generate
         	data_regs(0) <= data_in when (enable = '1') else data_regs(1);
@@ -34119,3 +35833,351 @@ begin  -- Pipelined
   slv_RESULT <= intermediate_results(pipe_depth);
   
 end Pipelined;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.BaseComponents.all;
+
+entity module_clock_gate is
+	port (reset, start_req, 
+		start_ack, fin_req, fin_ack, clock_in: in std_logic;
+		clock_out : out std_logic);
+end entity module_clock_gate;
+
+architecture behavioural of module_clock_gate is
+	signal clock_enable_raw, clock_enable: std_logic;
+	type FsmState is (RESET_STATE, IDLE, STARTED, WORKING);
+	signal fsm_state: FsmState;
+	signal job_counter: integer;
+begin
+
+       -------------------------------------------------------------------
+       -- clock enabler.
+       -------------------------------------------------------------------
+       cgInst: clock_gater
+			port map (clock_in => clock_in,
+					clock_enable => clock_enable_raw,
+					clock_out => clock_out);
+	-------------------------------------------------------
+	-- FSM.  If there is something going on inside, enable
+	-- the clock...
+	-------------------------------------------------------
+	process(clock_in, reset, start_req, start_ack, fin_req, fin_ack)
+
+		variable next_fsm_state_var: FsmState;
+		variable incr_counter_var, decr_counter_var: boolean;
+		variable clock_enable_raw_var: std_logic;
+
+	begin
+		next_fsm_state_var := fsm_state;
+		incr_counter_var := false;
+		decr_counter_var := false;
+		clock_enable_raw_var := '0';
+
+		case fsm_state is 
+			when RESET_STATE =>
+				--
+				-- enable in reset state to ensure that
+				-- reset gets applied correctly....
+				--
+				clock_enable_raw_var := '1';
+				if(reset = '0') then 
+					next_fsm_state_var := IDLE;
+				end if;
+			when IDLE => 
+				if(start_req = '1') then
+					clock_enable_raw_var := '1';
+
+					if(start_ack = '1') then
+						incr_counter_var := true;
+						next_fsm_state_var := 	WORKING;
+					else
+						next_fsm_state_var := STARTED;
+					end if;
+				end if;
+			when STARTED =>
+
+				clock_enable_raw_var := '1';
+				if(start_ack = '1') then
+					incr_counter_var := true;
+					next_fsm_state_var := WORKING;
+				end if;
+
+			when WORKING =>
+				clock_enable_raw_var := '1';
+				incr_counter_var := ((start_req = '1') and (start_ack = '1'));
+				decr_counter_var := ((fin_req = '1') and (fin_ack = '1'));
+				if((job_counter = 0) and (start_req = '0')) then
+					next_fsm_state_var := IDLE;
+				end if;
+		end case;
+
+		clock_enable_raw <= clock_enable_raw_var;
+		if (clock_in'event and (clock_in = '1')) then
+			if(reset = '1') then
+				fsm_state <= RESET_STATE;
+				job_counter <= 0;
+			else
+				fsm_state <= next_fsm_state_var;
+				if(incr_counter_var and (not decr_counter_var)) then
+					job_counter <= job_counter + 1;
+				elsif ((not incr_counter_var) and decr_counter_var) then
+					job_counter <= job_counter - 1;
+				end if;
+			end if;
+		end if;
+	end process;
+	
+end behavioural;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.GlobalConstants.all;
+use ahir.BaseComponents.all;
+
+
+entity signal_clock_gate is
+	port (reset, clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+end entity signal_clock_gate;
+
+architecture behavioural of signal_clock_gate is
+      signal clock_enable_latched: std_logic;
+
+      signal is_in_reset: std_logic;
+      signal clock_enable_qualified: std_logic;
+begin
+	assert (not use_xilinx_bufce) report "For vanilla AHIR, use_xilinx_bufce must be set false"
+		severity failure;
+
+	--
+	-- In reset, the clock is enabled so that things can be
+	-- initialized.
+	--
+	process(clock_in, reset)
+	begin
+		if(clock_in'event and (clock_in = '1')) then
+			if(reset = '1') then
+				is_in_reset <= '1';
+			else
+				is_in_reset <= '0';
+			end if;
+		end if;
+	end process;
+	clock_enable_qualified <= clock_enable or is_in_reset;
+
+	-------------------------------------------------------
+	-- base instance
+	-------------------------------------------------------
+	base_inst: clock_gater
+		port map (clock_in => clock_in, clock_enable => clock_enable_qualified, clock_out => clock_out);
+
+end behavioural;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.GlobalConstants.all;
+
+
+entity clock_gater is
+	port (clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+end entity clock_gater;
+
+architecture behavioural of clock_gater is
+      signal clock_enable_latched: std_logic;
+begin
+	assert (not use_xilinx_bufce) report "For vanilla AHIR, use_xilinx_bufce must be set false"
+		severity failure;
+
+	-------------------------------------------------------
+	-- latch followed by AND.
+	-------------------------------------------------------
+	process(clock_in)
+	begin
+		if(clock_in = '0') then
+			clock_enable_latched <= clock_enable;
+		end if;
+	end process;
+	clock_out <= clock_in and clock_enable_latched;
+	-------------------------------------------------------
+
+end behavioural;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.BaseComponents.all;
+
+entity module_clock_gate is
+	port (reset, start_req, 
+		start_ack, fin_req, fin_ack, clock_in: in std_logic;
+		clock_out : out std_logic);
+end entity module_clock_gate;
+
+architecture behavioural of module_clock_gate is
+	signal clock_enable_raw, clock_enable: std_logic;
+	type FsmState is (RESET_STATE, IDLE, STARTED, WORKING);
+	signal fsm_state: FsmState;
+	signal job_counter: integer;
+begin
+
+       -------------------------------------------------------------------
+       -- clock enabler.
+       -------------------------------------------------------------------
+       cgInst: clock_gater
+			port map (clock_in => clock_in,
+					clock_enable => clock_enable_raw,
+					clock_out => clock_out);
+	-------------------------------------------------------
+	-- FSM.  If there is something going on inside, enable
+	-- the clock...
+	-------------------------------------------------------
+	process(clock_in, reset, start_req, start_ack, fin_req, fin_ack)
+
+		variable next_fsm_state_var: FsmState;
+		variable incr_counter_var, decr_counter_var: boolean;
+		variable clock_enable_raw_var: std_logic;
+
+	begin
+		next_fsm_state_var := fsm_state;
+		incr_counter_var := false;
+		decr_counter_var := false;
+		clock_enable_raw_var := '0';
+
+		case fsm_state is 
+			when RESET_STATE =>
+				--
+				-- enable in reset state to ensure that
+				-- reset gets applied correctly....
+				--
+				clock_enable_raw_var := '1';
+				if(reset = '0') then 
+					next_fsm_state_var := IDLE;
+				end if;
+			when IDLE => 
+				if(start_req = '1') then
+					clock_enable_raw_var := '1';
+
+					if(start_ack = '1') then
+						incr_counter_var := true;
+						next_fsm_state_var := 	WORKING;
+					else
+						next_fsm_state_var := STARTED;
+					end if;
+				end if;
+			when STARTED =>
+
+				clock_enable_raw_var := '1';
+				if(start_ack = '1') then
+					incr_counter_var := true;
+					next_fsm_state_var := WORKING;
+				end if;
+
+			when WORKING =>
+				clock_enable_raw_var := '1';
+				incr_counter_var := ((start_req = '1') and (start_ack = '1'));
+				decr_counter_var := ((fin_req = '1') and (fin_ack = '1'));
+				if((job_counter = 0) and (start_req = '0')) then
+					next_fsm_state_var := IDLE;
+				end if;
+		end case;
+
+		clock_enable_raw <= clock_enable_raw_var;
+		if (clock_in'event and (clock_in = '1')) then
+			if(reset = '1') then
+				fsm_state <= RESET_STATE;
+				job_counter <= 0;
+			else
+				fsm_state <= next_fsm_state_var;
+				if(incr_counter_var and (not decr_counter_var)) then
+					job_counter <= job_counter + 1;
+				elsif ((not incr_counter_var) and decr_counter_var) then
+					job_counter <= job_counter - 1;
+				end if;
+			end if;
+		end if;
+	end process;
+	
+end behavioural;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.GlobalConstants.all;
+use ahir.BaseComponents.all;
+
+
+entity signal_clock_gate is
+	port (reset, clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+end entity signal_clock_gate;
+
+architecture behavioural of signal_clock_gate is
+      signal clock_enable_latched: std_logic;
+
+      signal is_in_reset: std_logic;
+      signal clock_enable_qualified: std_logic;
+begin
+	assert (not use_xilinx_bufce) report "For vanilla AHIR, use_xilinx_bufce must be set false"
+		severity failure;
+
+	--
+	-- In reset, the clock is enabled so that things can be
+	-- initialized.
+	--
+	process(clock_in, reset)
+	begin
+		if(clock_in'event and (clock_in = '1')) then
+			if(reset = '1') then
+				is_in_reset <= '1';
+			else
+				is_in_reset <= '0';
+			end if;
+		end if;
+	end process;
+	clock_enable_qualified <= clock_enable or is_in_reset;
+
+	-------------------------------------------------------
+	-- base instance
+	-------------------------------------------------------
+	base_inst: clock_gater
+		port map (clock_in => clock_in, clock_enable => clock_enable_qualified, clock_out => clock_out);
+
+end behavioural;
+library std;
+library ieee;
+use ieee.std_logic_1164.all;
+
+library ahir;
+use ahir.GlobalConstants.all;
+
+
+entity clock_gater is
+	port (clock_in, clock_enable: in std_logic; clock_out : out std_logic);
+end entity clock_gater;
+
+architecture behavioural of clock_gater is
+      signal clock_enable_latched: std_logic;
+begin
+	assert (not use_xilinx_bufce) report "For vanilla AHIR, use_xilinx_bufce must be set false"
+		severity failure;
+
+	-------------------------------------------------------
+	-- latch followed by AND.
+	-------------------------------------------------------
+	process(clock_in)
+	begin
+		if(clock_in = '0') then
+			clock_enable_latched <= clock_enable;
+		end if;
+	end process;
+	clock_out <= clock_in and clock_enable_latched;
+	-------------------------------------------------------
+
+end behavioural;
