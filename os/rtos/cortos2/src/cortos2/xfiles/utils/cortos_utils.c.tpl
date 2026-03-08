@@ -87,7 +87,9 @@ int cortos_vprintf(const char* fmt, va_list args)
   p=buf;
   int n=0;
 
+#ifndef NO_PRINT_LOCK
   cortos_lock_acquire_buzy(printingLockAddr);
+#endif
 
   while (*p) {
     uart_send_char(*p);
@@ -95,7 +97,9 @@ int cortos_vprintf(const char* fmt, va_list args)
     p++;
   }
 
+#ifndef NO_PRINT_LOCK
   cortos_lock_release(printingLockAddr);
+#endif
 
   return(n);
 }

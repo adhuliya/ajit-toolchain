@@ -41,7 +41,9 @@ int __cortos_log_printf(
   :"%l1"
   );
 
+#ifndef NO_PRINT_LOCK
   cortos_lock_acquire_buzy(loggingLockAddr);
+#endif
 
 
   clock_time = cortos_get_clock_time();
@@ -64,7 +66,9 @@ int __cortos_log_printf(
 
   n += mp_printf("\n");
 
+#ifndef NO_PRINT_LOCK
   cortos_lock_release(loggingLockAddr);
+#endif
 
   return n;
 }
