@@ -5,9 +5,9 @@
 //
 // Defined in Ajit_Hardware_Configuration.h:
 // Interrupt levels for interrupting sources in sparc
-// #define TIMER_IRL  10
-// #define SERIAL_IRL 12
-// #define IPI_IRL    13
+// #define TIMER_IRL       10
+// #define IPI_IRL         11
+// #define SERIAL_IRL 	   12
 // #define EXTERNAL_IRL    14
 
 //time in microsends for which the output 

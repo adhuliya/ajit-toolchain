@@ -174,6 +174,7 @@ void __ajit_sleep__(uint32_t clock_cycles);
 #define ASI_MMU_REGISTER 		0x04	// MMU register
 #define ASI_MMU_FLUSH_PROBE	 	0x03    // used in doing an MMU FLUSH/PROBE
 #define ASI_FLUSH_I_D_CONTEXT		0x13	// A write with this ASI causes the data cache to be flushed.
+#define ASI_FLUSH_I_D_USER              0x14
 #define ASI_MMU_BYPASS			0x20
 #define ASI_MMU_BYPASS_N(n)		(0x20 + n)
 					 	// 0x20 to 0x2f is the range of bypass asi's.
@@ -181,6 +182,7 @@ void __ajit_sleep__(uint32_t clock_cycles);
 						// of the physical address (ingenious?)  We will
 						// treat these top 4 bits as 0 when mapping device
 						// addresses to physical..
+
 
 //
 // Addresses of MMU registers
@@ -270,6 +272,9 @@ void __ajit_flush_icache__(void);
 void __ajit_flush_dcache__(void);
 
 
+// flush icache and dcache line
+//   (entire set containing the line will be flushed).
+void __ajit_flush_line__ (uint32_t addr);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Cycle-count register
