@@ -248,6 +248,9 @@ def buildExecutable(work_area, obj_files, linker_script_file, elf_file, hex_dump
     for libb in all_ld_libs:
       sparc_ld_command += " -l" + libb + " "
 
+    if (uclibc_flag):
+      sparc_ld_command += " -lm -lc -lgcc "
+
     ret_val = execSysCmd(sparc_ld_command)
     if(ret_val != 0):
        logError("in building elf " + elf_file)
@@ -287,7 +290,8 @@ def Usage():
                (-D define-string)* (add define-string as a define when compiling C files)\n\
                (-g )? (compile with debug -g flag) \n\
                (-U )? (compile with uclibc (in the buildroot) \n\
-               (-V <vmap-file>) (generate page-table setup assembly code\n\
+               (-V <vmap-file>) (generate page-table setup assembly code)\n\
+               (-R <directory>) (overRide vmap file with the *.VMAP file in directory if present)\n\
                (-F <compiler-option>)* \n\
                (-o <0/1/2/3>)* (compile with -O0/1/2/3)")
     return 0
@@ -310,6 +314,7 @@ def Usage():
 #     (-g )? (compile with debug -g flag) \n\
 #     (-o <0/1/2/3>)* (compile with -O0/1/2/3)"
 #     (-U )? (enable uclibc) \n\
+#     (-R <directory>) (look for overRide vmap file in <directory> \n\
 #     (-V <vmap-file>) (generate page-table setup assembly code\n\
 def parseOptions(opts):
     work_area = "./"
@@ -328,6 +333,7 @@ def parseOptions(opts):
     ld_lib_directories = []
     ld_libs = []
     uclibc_flag = False
+    override_vmap_directory = None
 
     assembly_dirs = []
     assembly_files = []
@@ -347,6 +353,9 @@ def parseOptions(opts):
         if option == '-V':
            vmap_file = parameter
            logInfo("vmap_file  = " + parameter + ".")
+        if option == '-R':
+           override_vmap_directory = parameter
+           logInfo("override_vmap_directory  = " + parameter + ".")
         if option == '-F':
            compile_options.append(parameter)
            logInfo("added-CC-option  = -" + parameter + ".")
@@ -398,7 +407,27 @@ def parseOptions(opts):
        var_file = app_name + ".vars"
        mmap_file = app_name + ".mmap"
 
-    return help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings , debug_mode, opt_level, compile_options, uclibc_flag, vmap_file, ld_lib_directories, ld_libs
+    if override_vmap_directory != None:
+       override_vmap_file = findOverrideVmapFile (override_vmap_directory)
+       if (override_vmap_file != None):
+          logInfo ("Overriding vmap file with " + override_vmap_file)
+          vmap_file = override_vmap_file
+
+    return help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings , debug_mode, opt_level, compile_options, uclibc_flag, vmap_file, ld_lib_directories, ld_libs, override_vmap_directory
+
+def findOverrideVmapFile (search_dir):
+
+   file_name = None
+   for libfile in os.listdir(search_dir):
+      lname,extn = os.path.splitext(libfile)
+      if (extn == ".VMAP"):
+         if file_name == None:
+            file_name = search_dir + "/" + libfile
+            logInfo ("Found override VMAP file " + file_name)
+            break
+
+   return file_name
+
 
 def main():
     ret_status = 0
@@ -415,8 +444,8 @@ def main():
     setGlobals(ajit_uclibc_install_dir, ajit_libgcc_install_dir)
 
     arg_list = sys.argv[1:]
-    opts,args = getopt.getopt(arg_list,'W:L:C:c:S:s:I:D:Uhgo:T:F:V:N:l:a:')
-    help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings, debug_mode, opt_level,compiler_options,uclibc_flag,vmap_file, ld_lib_directories, ld_libs  = parseOptions(opts)
+    opts,args = getopt.getopt(arg_list,'W:L:C:c:S:s:I:D:Uhgo:T:F:V:N:l:a:R:')
+    help_flag, work_area, linker_script_file, elf_file, hex_file, var_file, mmap_file, objdump_file, assembly_dirs, assembly_files,  src_dirs, src_files, include_dirs, define_strings, debug_mode, opt_level,compiler_options,uclibc_flag,vmap_file, ld_lib_directories, ld_libs, override_vmap_directory  = parseOptions(opts)
     
     #pdb.set_trace()
     if(help_flag == 1):

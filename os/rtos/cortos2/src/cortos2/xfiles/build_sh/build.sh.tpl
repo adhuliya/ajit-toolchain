@@ -21,6 +21,7 @@ compileToSparcUclibc.py \
   -o {{ confObj.software.build.optLevel }} \
 % if confObj.hardware.cpu.mmu:
   -V ${_CORTOS_VMAP} \
+  -R .. \
 % end
   -I ${AJIT_UCLIBC_HEADERS_DIR} \
   -I ${AJIT_LIBGCC_INSTALL_DIR}/include \

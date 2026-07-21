@@ -472,6 +472,14 @@ void __ajit_flush_dcache__(void)
 }
 
 
+// flush line in dcache and icache..
+//   (note: an entire set will be invalidated).
+void __ajit_flush_line__ (uint32_t addr)
+{
+	uint32_t value = 0;
+	__asm__ __volatile__("sta %0, [%1] %2\n\t" : : "r"(value), "r"(addr),
+			     "i"(ASI_FLUSH_I_D_USER) : "memory");
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Built-in peripherals
