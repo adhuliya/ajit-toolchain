@@ -1,116 +1,154 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eE
 
-usage() {
-    cat <<'EOF'
-Usage: sync-marshal-content.sh [--dry-run] MARSHAL_WORKTREE [AJIT_TOOLS_WORKTREE]
+BASE_MARSHAL=e5243630ddb091eeda27678d2d124806cfe35dc6
 
-Copy the reviewed, Git-tracked marshal directories into an ajit_tools branch
-worktree. The destination defaults to the repository containing this script.
-
-This deliberately excludes ahir_release, pthread compatibility files,
-Ajit's hello/print test changes, generated outputs, and untracked files.
-EOF
-}
-
-dry_run=false
-if [[ ${1:-} == --dry-run ]]; then
-    dry_run=true
-    shift
-fi
-
-if (($# < 1 || $# > 2)); then
-    usage >&2
-    exit 2
-fi
-
-marshal_root=$(git -C "$1" rev-parse --show-toplevel 2>/dev/null) || {
-    printf 'error: not a Git worktree: %s\n' "$1" >&2
-    exit 1
-}
+temporary_root=
+failure=
+trap 'failure="line $LINENO: $BASH_COMMAND"' ERR
+trap 'status=$?; rm -rf -- "${temporary_root:-}"; if ((status)); then printf "Exited %d; last failure: %s\n" "$status" "$failure" >&2; else printf "Exited successfully.\n"; fi' EXIT
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-destination_arg=${2:-"$script_dir/.."}
-ajit_tools_root=$(git -C "$destination_arg" rev-parse --show-toplevel 2>/dev/null) || {
-    printf 'error: not a Git worktree: %s\n' "$destination_arg" >&2
-    exit 1
-}
+script_path="$script_dir/${BASH_SOURCE[0]##*/}"
+ajit_tools_root=$(git -C "$script_dir/.." rev-parse --show-toplevel)
 
-marshal_branch=$(git -C "$marshal_root" branch --show-current)
-destination_branch=$(git -C "$ajit_tools_root" branch --show-current)
+base_marshal=$BASE_MARSHAL
+new_marshal=$(git -C "$ajit_tools_root" rev-parse refs/heads/marshal)
 
-if [[ $marshal_branch != marshal ]]; then
-    printf 'error: source must have marshal checked out (found %s)\n' \
-        "$marshal_branch" >&2
-    exit 1
+if [[ $base_marshal == "$new_marshal" ]]; then
+    printf 'Already synchronized with marshal %s\n' "$new_marshal"
 fi
 
-if [[ $destination_branch != ajit_tools ]]; then
-    printf 'error: destination must have ajit_tools checked out (found %s)\n' \
-        "$destination_branch" >&2
-    exit 1
-fi
-
-if [[ $marshal_root == "$ajit_tools_root" ]]; then
-    printf 'error: source and destination must be different worktrees\n' >&2
-    exit 1
-fi
-
-# Each entry is SOURCE_DIRECTORY|DESTINATION_DIRECTORY.
-# Keep this list narrow: these boundaries were reviewed against the two branch
-# tips and do not include Ajit's pthread or other host-compatibility changes.
-sync_paths=(
-    'AjitPublicResources/processor/64bit/C_multi_core_multi_thread/common/include|ajit-processor/AjitPublicResources/processor/64bit/C_multi_core_multi_thread/common/include'
-    'AjitPublicResources/processor/64bit/C_multi_core_multi_thread/devices|ajit-processor/AjitPublicResources/processor/64bit/C_multi_core_multi_thread/devices'
-    'AjitPublicResources/tools/ajit_access_routines|ajit-processor/AjitPublicResources/tools/ajit_access_routines'
-    'AjitPublicResources/tools/scripts|ajit-processor/AjitPublicResources/tools/scripts'
-    'os|os'
-    'validation_ladder/basic_tests/dot_product/BIGMEM|testing/validation_ladder/basic_tests/dot_product/BIGMEM'
-    'validation_ladder/benchmarks/coremark/opt|testing/validation_ladder/benchmarks/coremark/opt'
-    'validation_ladder/benchmarks/nnet|testing/validation_ladder/benchmarks/nnet'
-    'validation_ladder/cortos2_tests/mutexes|testing/validation_ladder/cortos2_tests/mutexes'
+destination_roots=(
+    ajit-processor/AjitPublicResources
+    ajit-processor/ahir_release
+    ajit-processor/application_development
+    docs
+    os
+    testing/tests
+    testing/training
+    testing/validation_ladder
 )
 
-copy_tracked_directory() {
+temporary_root=$(mktemp -d)
+
+generated_excludes=(
+    ':(exclude,glob)**/bin/**'
+    ':(exclude,glob)**/lib/*.a'
+    ':(exclude,glob)**/lib/**/*.a'
+    ':(exclude,glob)**/obj_assembly/**'
+    ':(exclude,glob)**/.sconsign.dblite'
+    ':(exclude,glob)**/cortos_build/**'
+    ':(exclude,glob)**/*.log'
+    ':(exclude,glob)**/*.elf'
+    ':(exclude,glob)**/*.hex'
+    ':(exclude,glob)**/*.mmap'
+    ':(exclude,glob)**/*.mmap.remapped'
+    ':(exclude,glob)**/*.objdump'
+    ':(exclude,glob)**/*.vars'
+    ':(exclude,glob)**/*.wtrace.*'
+    ':(exclude,glob)**/*~'
+)
+
+compatibility_excludes=(
+    ':(exclude)build.sh'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/SConscript'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/SConstruct'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/common/src/Ancillary.c'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/cpu/SConscript'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/cpu/SConstruct'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/half_precision_float/SConscript'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/half_precision_float/SConstruct'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/half_precision_float/aa2clib/SConscript'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/half_precision_float/aa2clib/SConstruct'
+    ':(exclude,glob)processor/64bit/C_multi_core_multi_thread/half_precision_float/**/*pthread*'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/testbench/SConscript'
+    ':(exclude)processor/64bit/C_multi_core_multi_thread/testbench/SConstruct'
+    ':(exclude)processor/C_reference_model/SConscript'
+    ':(exclude)processor/C_reference_model/SConstruct'
+    ':(exclude)processor/C_reference_model/cache/src/DummyDcache.c'
+    ':(exclude)processor/C_reference_model/cache/src/DummyIcache.c'
+    ':(exclude)processor/C_reference_model/common/src/Ancillary.c'
+    ':(exclude)processor/C_reference_model/cpu/SConscript'
+    ':(exclude)processor/C_reference_model/debugger/gpb/src/GDBtoAJITbridge.c'
+    ':(exclude)processor/TestEnvironments/core_environment/aggregator/include/spi.h'
+    ':(exclude)processor/TestEnvironments/core_environment/aggregator/src/aggregator.c'
+    ':(exclude)processor/TestEnvironments/core_environment/bootmem/SConscript'
+    ':(exclude)processor/TestEnvironments/core_environment/char_client_server/src/char_client_server.c'
+    ':(exclude)tools/ajit_debug_monitor/SConscript'
+    ':(exclude)tools/ajit_debug_monitor/SConstruct'
+    ':(exclude)tools/ajit_debug_monitor_mt/SConscript'
+    ':(exclude)tools/ajit_debug_monitor_mt/SConstruct'
+    ':(exclude)tools/antlr3Cruntime/SConscript'
+    ':(exclude)tools/antlr3Cruntime/SConstruct'
+)
+
+patch_counter=0
+
+apply_tree() {
     local source_directory=$1
     local destination_directory=$2
-    local source_path relative_path destination_path
-    local copied=0
+    shift 2
 
-    if ! git -C "$marshal_root" diff --quiet HEAD -- "$source_directory"; then
-        printf 'error: source has tracked changes under %s\n' \
-            "$source_directory" >&2
-        return 1
+    ((patch_counter += 1))
+    local patch_file="$temporary_root/$patch_counter.patch"
+
+    # marshal is read-only: this command only creates a patch from commit trees.
+    git -C "$ajit_tools_root" diff \
+        --binary \
+        --full-index \
+        --no-renames \
+        "$base_marshal:$source_directory" \
+        "$new_marshal:$source_directory" \
+        -- \
+        . \
+        "${generated_excludes[@]}" \
+        "$@" \
+        > "$patch_file"
+
+    if [[ ! -s $patch_file ]]; then
+        return
     fi
 
-    while IFS= read -r -d '' source_path; do
-        relative_path=${source_path#"$source_directory"/}
-        destination_path="$ajit_tools_root/$destination_directory/$relative_path"
-        printf 'copy %s -> %s\n' "$source_path" \
-            "$destination_directory/$relative_path"
+    printf 'apply %s -> %s\n' "$source_directory" "$destination_directory"
 
-        if ! $dry_run; then
-            mkdir -p -- "$(dirname -- "$destination_path")"
-            cp -a -- "$marshal_root/$source_path" "$destination_path"
-        fi
-        ((copied += 1))
-    done < <(git -C "$marshal_root" ls-files -z -- "$source_directory")
-
-    if ((copied == 0)); then
-        printf 'error: no tracked files found under %s\n' \
-            "$source_directory" >&2
-        return 1
-    fi
+    # All index and worktree updates explicitly target ajit_tools.
+    git -C "$ajit_tools_root" apply \
+        --3way \
+        --index \
+        --directory="$destination_directory" \
+        "$patch_file"
 }
 
-for mapping in "${sync_paths[@]}"; do
-    copy_tracked_directory "${mapping%%|*}" "${mapping#*|}"
-done
+apply_tree \
+    AjitPublicResources \
+    ajit-processor/AjitPublicResources \
+    "${compatibility_excludes[@]}"
 
-if $dry_run; then
-    printf 'Dry run complete; no files changed.\n'
-else
-    printf 'Synchronization complete. Review with: git -C %q status --short\n' \
-        "$ajit_tools_root"
-fi
+apply_tree \
+    ahir_release \
+    ajit-processor/ahir_release \
+    ':(exclude)include/pthreadUtils.h'
+
+apply_tree \
+    application_development \
+    ajit-processor/application_development
+
+apply_tree docs docs
+apply_tree os os
+apply_tree tests testing/tests
+apply_tree training testing/training
+apply_tree validation_ladder testing/validation_ladder
+
+# git apply --3way uses the index. Return successful results to the same
+# unstaged working-tree form produced by the earlier synchronizer.
+git -C "$ajit_tools_root" reset -q HEAD -- "${destination_roots[@]}"
+
+updated_script="$temporary_root/sync-marshal-content.sh"
+sed "s/^BASE_MARSHAL=.*/BASE_MARSHAL=$new_marshal/" \
+    "$script_path" > "$updated_script"
+chmod 755 "$updated_script"
+mv -- "$updated_script" "$script_path"
+
+printf 'Synchronized to marshal %s\n' "$new_marshal"
