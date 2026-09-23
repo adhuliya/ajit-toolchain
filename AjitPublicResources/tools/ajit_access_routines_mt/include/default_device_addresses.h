@@ -55,7 +55,7 @@
 //		Register 1 is the TX register.
 //		Register 2 is the RX register.
 //		Leave room for 64 serial devices.
-#define ADDR_SERIAL_MIN 				(ADDR_IO_MIN + 0x3200) // AJIT default-countdown-timer control register (word).
+#define ADDR_SERIAL_MIN 				(ADDR_IO_MIN + 0x3200) // AJIT serial address min 
 #define ADDR_SERIAL_CONTROL_REGISTER 			(ADDR_IO_MIN + 0x3200) // AJIT default-serial-device control register (word).
 // Note: the next two are byte accesses..
 #define ADDR_SERIAL_TX_REGISTER      			(ADDR_IO_MIN + 0x3204) // AJIT default-serial-device transmit register (byte).

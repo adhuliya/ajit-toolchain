@@ -77,6 +77,7 @@ void ajit_get_core_and_thread_id(uint8_t* core_id, uint8_t* thread_id);
 // core description structure.
 //////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct __AjitHwThreadDescriptor {
+	// ASR 28
 	uint8_t l1_dcache_size_in_KB;   	// 31:30
 	uint8_t l1_icache_size_in_KB;		// 29:28
 	uint8_t log_dcache_associativity;	// 27:26
@@ -91,7 +92,18 @@ typedef struct __AjitHwThreadDescriptor {
 	uint8_t has_noncacheable_bypass_path;	// 2
 	uint8_t has_two_threads;		// 1
 	uint8_t implements_isa_64;		// 0
+						//
+	// ASR 27
+	uint8_t log2_dcache_dwords_per_block;   // 1:0
+	uint8_t log2_icache_dwords_per_block;   // 3:2
+	uint8_t l2cache_present;   		// 4:4
+	uint8_t log2_l2cache_number_of_lines;   // 8:5
+	uint8_t log2_l2cache_associativity  ;   // 11:9
+						//
+	uint8_t log2_l2cache_line_size_in_dwords; // 14:12
+	uint8_t mmu_present;			  // 15:15
 } AjitHwThreadDescriptor;
+
 void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr);
 
 

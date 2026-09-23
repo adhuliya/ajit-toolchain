@@ -21,14 +21,14 @@ Hardware:
       SizeInMegaBytes: 0
       Permissions: RXC  # (Read,Write,eXecute,Cacheable)
     RAM:
-      StartAddr: 0x0
+      StartAddr: 0x40000000
       # EndAddr: ...
       # SizeInBytes: ...
       # SizeInKiloBytes: ...
       SizeInMegaBytes: 2
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x2000000
+      StartAddr: 0x50000000
       SizeInMegaBytes: 2
       Permissions: RW
     MMIO: # Memory Mapped IO
@@ -77,7 +77,7 @@ Software:
     LogLevel: DEBUG
     OptimizationLevel: 2 # i.e. O2 (Accepted values: 0, 1, 2)
     # specify argument string for C compiler......
-    EnableSerial: Yes # Yes/No (Default: Yes)
+    EnableSerial: No # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
 

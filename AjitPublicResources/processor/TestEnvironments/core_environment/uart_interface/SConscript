@@ -17,3 +17,4 @@ env.Program('./bin/sendBinfileOverUart', [ 'util/sendBinFileOverUart.c' ], CCFLA
 env.Program('./bin/calibrateUart', [ 'util/calibrateUart.c'], CCFLAGS=' -g ', LIBS=(Split(LLIBS)), LIBPATH=(Split(LLIBPATHS))); 
 
 
+env.Program('./bin/quasiTerm', [ 'util/quasiTerm.c'], CCFLAGS=' -g ', LIBS=(Split(LLIBS)), LIBPATH=(Split(LLIBPATHS))); 

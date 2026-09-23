@@ -158,8 +158,10 @@ uint32_t __ajit_read_core_thread_id_word__()
 // 
 void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr)
 {
-        uint32_t retval;
+        uint32_t retval, additional_retval;
+	
         __asm__ __volatile__("rd %%asr28, %0 " :  "=r" (retval) : );
+        __asm__ __volatile__("rd %%asr27, %0 " :  "=r" (additional_retval) : );
 
 	uint8_t tmp = 		(retval >> 30) & 0x3;   		// 31:30
 	descr->l1_dcache_size_in_KB = ((tmp == 0x3) ? 32 : ((tmp == 0x2) ? 16 : ((tmp == 1) ? 8 : 4)));
@@ -179,6 +181,15 @@ void ajit_read_thread_descriptor (AjitHwThreadDescriptor* descr)
 	descr->has_two_threads = (retval >> 1) & 0x1;			// 1
 	descr->implements_isa_64 = retval & 0x1;			// 0
 
+	// ASR 27
+	descr->log2_dcache_dwords_per_block = (additional_retval & 0x3);       // 1:0
+	descr->log2_icache_dwords_per_block = (additional_retval >> 2) & 0x3;  // 3:2
+	descr->l2cache_present              = (additional_retval >> 4) & 0x1;  // 4:4
+	descr->log2_l2cache_number_of_lines = (additional_retval >> 5) & 0xf;  // 8:5
+	descr->log2_l2cache_associativity   = (additional_retval >> 9) & 0x7;  // 11:9
+									       
+	descr->log2_l2cache_line_size_in_dwords = (additional_retval >> 12) & 0x7; // 14:12
+	descr->mmu_present			= (additional_retval >> 15) & 0x1;  // 15:15
 }
 
 //
